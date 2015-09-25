@@ -1,0 +1,60 @@
+{
+    "cksum": "3837048108 1643",
+    "name": "dhcp_leases",
+    "tables": {
+        "DHCP_Lease": {
+            "columns": {
+                "client_hostname": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "client_id": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "expiry_time": {
+                    "type": {
+                        "key": {
+                            "maxLength": 10,
+                            "type": "string"
+                        }
+                    }
+                },
+                "ip_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "mac_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 17,
+                            "minLength": 17,
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "ip_address"
+                ]
+            ],
+            "isRoot": true
+        }
+    },
+    "version": "0.0.1"
+}
