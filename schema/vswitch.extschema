@@ -3530,6 +3530,41 @@
          }
        }
      }
+    },
+    "Test": {
+      "isRoot":true,
+      "columns": {
+        "stringField": {
+          "category": "configuration",
+          "type": "string"
+        },
+        "numericField": {
+          "category": "configuration",
+          "type": "integer"
+        },
+        "enumField": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "enum": [
+                "set",
+                [
+                  "enumValue1",
+                  "enumValue2",
+                  "enumValue3"
+                ]
+              ],
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "boolField": {
+          "category": "configuration",
+          "type": "boolean"
+        }
+      }
     }
   }
 }
