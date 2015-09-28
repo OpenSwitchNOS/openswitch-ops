@@ -890,8 +890,8 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 1,
-              "maxInteger": 32
+              "minInteger": 0,
+              "maxInteger": 128
             },
             "min": 0,
             "max": 1
@@ -902,8 +902,8 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 1,
-              "maxInteger": 32
+              "minInteger": 0,
+              "maxInteger": 128
             },
             "min": 0,
             "max": 1
@@ -1253,18 +1253,10 @@
          "redistribute": {
           "category": "configuration",
           "type": {
-            "key": {
-              "type": "string",
-              "enum": [
-                "set",
-                [
-                  "connected",
-                  "static"
-                ]
-              ]
-            },
+            "key": "string",
+            "value": "string",
             "min": 0,
-            "max": 2
+            "max": 7
           }
         },
         "always_compare_med": {
@@ -1315,7 +1307,46 @@
             "max": "unlimited"
           }
         },
-
+       "bestpath_compare_routerid": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+        }
+       },
+       "fast_external_failover": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+         }
+       },
+       "log_neighbor_changes": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+         }
+       },
+       "network_import_check": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+         }
+       },
        "status": {
           "category": "status",
           "type": {
@@ -1488,6 +1519,135 @@
               "type": "integer",
               "minInteger": 0,
               "maxInteger": 600
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "activate": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "dont_capability_negotiate": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ebgp_multihop": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 255
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "send_community": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "both",
+                  "extended",
+                  "standard"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "filter_list": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "filter_list_direction": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "in",
+                  "out"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "prefix_list": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "prefix_list_direction": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "in",
+                  "out"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ttl_security_hops": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 254
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "update_source": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
             },
             "min": 0,
             "max": 1
