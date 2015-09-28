@@ -818,6 +818,67 @@
         }
       }
     },
+    "Filter_List": {
+      "columns": {
+        "name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
+        },
+        "action": {
+          "category": "configuration",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "permit",
+                  "deny"
+                ]
+              ]
+            }
+          }
+        },
+        "match_string": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
+        },
+        "other_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "external_ids": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ],
+      "isRoot": true
+    },
     "Prefix_List": {
       "columns": {
         "name": {
@@ -890,8 +951,8 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 1,
-              "maxInteger": 32
+              "minInteger": 0,
+              "maxInteger": 128
             },
             "min": 0,
             "max": 1
@@ -902,8 +963,8 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 1,
-              "maxInteger": 32
+              "minInteger": 0,
+              "maxInteger": 128
             },
             "min": 0,
             "max": 1
@@ -952,6 +1013,66 @@
           }
         }
       }
+    },
+    "Community_Filter" : {
+      "columns" : {
+        "name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
+        },
+        "description": {
+          "category": "configuration",
+          "type": {
+            "key": {
+             "type": "string",
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "action": {
+          "category": "configuration",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "permit",
+                  "deny"
+                ]
+              ]
+            }
+          }
+        },
+        "type": {
+          "category": "configuration",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "extcommunity-list",
+                  "community-list"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ],
+      "isRoot": true
     },
 
     "Route": {
@@ -1253,18 +1374,10 @@
          "redistribute": {
           "category": "configuration",
           "type": {
-            "key": {
-              "type": "string",
-              "enum": [
-                "set",
-                [
-                  "connected",
-                  "static"
-                ]
-              ]
-            },
+            "key": "string",
+            "value": "string",
             "min": 0,
-            "max": 2
+            "max": 7
           }
         },
         "always_compare_med": {
@@ -1315,7 +1428,46 @@
             "max": "unlimited"
           }
         },
-
+       "bestpath_compare_routerid": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+        }
+       },
+       "fast_external_failover": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+         }
+       },
+       "log_neighbor_changes": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+         }
+       },
+       "network_import_check": {
+         "category": "configuration",
+         "type": {
+           "key": {
+             "type": "boolean"
+           },
+           "min": 0,
+           "max": 1
+         }
+       },
        "status": {
           "category": "status",
           "type": {
@@ -1493,6 +1645,79 @@
             "max": 1
           }
         },
+        "activate": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "dont_capability_negotiate": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ebgp_multihop": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 255
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "send_community": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "both",
+                  "extended",
+                  "standard"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ttl_security_hops": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 254
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "update_source": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "maximum_prefix_limit": {
           "category": "configuration",
           "type": {
@@ -1591,6 +1816,50 @@
             "max": "unlimited"
           },
           "ephemeral": true
+        },
+        "filter_lists": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "in",
+                  "out"
+                ]
+              ]
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "Filter_List"
+            },
+            "min": 0,
+            "max": 2
+          }
+        },
+        "prefix_lists": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "in",
+                  "out"
+                ]
+              ]
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "Prefix_List"
+            },
+            "min": 0,
+            "max": 2
+          }
         },
         "route_maps": {
           "category": "configuration",
