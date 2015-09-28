@@ -1074,7 +1074,19 @@
       </column>
    </group>
   </table>
-
+  <table name="Filter_List" title="Filter List">
+    <group title="IP AS Path filter List Configuration">
+      <column name="name">
+        Name of the filter list.
+      </column>
+      <column name="action">
+        Action to permit or deny.
+      </column>
+      <column name="match_string">
+      Specify regex expression to match.
+      </column>
+    </group>
+  </table>
   <table name="Prefix_List" title="Prefix List">
     <group title="Global IP Address Prefix List Configuration">
       <column name="name">
@@ -1116,6 +1128,23 @@
       </column>
       <column name="external_ids">
       </column>
+   </group>
+  </table>
+
+  <table name="Community_Filter" title="Community_Filter">
+   <group title="Global Community and Extended Community Configuration">
+     <column name="name">
+       Name of the list.
+     </column>
+     <column name="description">
+       Regular expression.
+     </column>
+     <column name="action">
+       There are two types, permit and  deny.
+     </column>
+     <column name="type">
+       There are two types, extcommunity-list and community-list.
+     </column>
    </group>
   </table>
 
@@ -1394,7 +1423,6 @@
       </column>
     </group>
   </table>
-
   <table name="BGP_Router" title="BGP high level configuration">
     <group title="Configuration">
       BGP_router includes all bgp config related information. The entries are
@@ -1421,9 +1449,12 @@
       Default is 180 seconds.
       </column>
       <column name="redistribute">
-      Allows redistribution of routes from various protocols.
-      For example: static, connected. Enabling of redistribution protocols is not mutually
-      exclusive.
+      Specifies map of string-string pairs and allows redistribution of
+      routes from various protocols. The keys are protocol names or kind of
+      routes (for example - rip, ospf, static, connected, kernel, isis, babel)
+      and values are the name of route maps using which routes are filtered. If
+      no route maps are specified, then value would be string "none" matching
+      all routes of the protocol or kind.
       </column>
       <column name="always_compare_med">
       Compares MED (Multi-Exit Discriminitor) from different neighbors.
@@ -1441,6 +1472,23 @@
       <column name="bgp_neighbors" keyname="ip_or_group_name">
         BGP neighbors or neighbor groups, keyed by IP for the former or any
 	string name for the latter.
+      </column>
+      <column name="bestpath_compare_routerid">
+        To compare identical routes received from different external peers
+        during the best path selection process.
+        Default is false.
+      </column>
+      <column name="fast_external_failover">
+        To enable fast external failover for BGP directly connected peering sessions.
+        Default is false.
+      </column>
+      <column name="log_neighbor_changes">
+        To enable logging of BGP neighbor status changes.
+        Default is false.
+      </column>
+      <column name="network_import_check">
+        To enable advertising of the BGP network in IGP.
+        Default is false.
       </column>
     </group>
    <group title="Status">
@@ -1520,6 +1568,43 @@
 
       <column name="advertisement_interval">
       Minimum interval between sending BGP routing updates. Range: 0-600 seconds.
+      Default value is 30 seconds.
+      </column>
+
+      <column name="strict_capability_match">
+      Strictly sets/unsets comparison of remote capabilities and local
+      capabilities with specified BGP peer.
+      If capabilities are different, Unsupported Capability error is sent and connection is reset.
+      </column>
+
+      <column name="activate">
+      Handles activation of specified neighboring peer to facilitate multicast routing updates.
+      </column>
+
+      <column name="negotiate_capability">
+      Suppresses sending of capability negotiation as OPEN message optional parameter
+      to the peer.
+      </column>
+
+      <column name="ebgp_multihop">
+      Stores ttl values when attempts to establish BGP connections with external AS
+      routers that are not directly connected are made.
+      Possible values:  1 - 255
+      </column>
+
+      <column name="send_community">
+      Specifies that a communities attribute should be sent to a BGP neighbor.
+      POssible values: both, standard or extended.
+      </column>
+
+      <column name="ttl_security_hops">
+      Specifies the maximum number of hops to the BGP peer.
+      Possible values: 1 -254
+      </column>
+
+      <column name="update_source">
+      Specifies the source-address to establish BGP connections to the neighbors sourced
+      from the interface IP address stored in the column.
       </column>
 
       <column name="maximum_prefix_limit">
@@ -1571,6 +1656,22 @@
 
       <column name="route_maps" key="out">
       Map associated with outbound routes.
+      </column>
+
+      <column name="filter_lists" key="in">
+      Filter list associated with incoming routes.
+      </column>
+
+      <column name="filter_lists" key="out">
+      Filter list associated with outbound routes.
+      </column>
+
+      <column name="prefix_lists" key="in">
+      Prefix list associated with incoming routes.
+      </column>
+
+      <column name="prefix_lists" key="out">
+      Prefix list associated with outbound routes.
       </column>
 
     </group>
