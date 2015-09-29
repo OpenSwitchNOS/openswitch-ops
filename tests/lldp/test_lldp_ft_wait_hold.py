@@ -1,4 +1,4 @@
-"""#!/usr/bin/env python
+#!/usr/bin/env python
 
 # Copyright (C) 2015 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
@@ -225,4 +225,5 @@ class Test_lldp_configuration:
     def test_lldp_wait_hold(self):
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
-        lldp_wait_hold(device1=dut01Obj, device2=dut02Obj)"""
+        lldp_wait_hold(device1=dut01Obj, device2=dut02Obj)
+

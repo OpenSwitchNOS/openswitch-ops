@@ -21,18 +21,19 @@ from opstestfw.switch.CLI import *
 from opstestfw.switch.OVS import *
 
 # Topology definition
-topoDict = {"topoExecution": 1000,
+topoDict = {"topoExecution": 9000,
             "topoType": "physical",
-            "topoTarget": "dut01 dut02 dut03 dut04",
+            "topoTarget": "dut01 dut02",
             "topoDevices": "dut01 dut02 wrkston01 wrkston02 wrkston03",
-            "topoLinks": "lnk01:dut01:dut02, \
-                          lnk02:dut01:wrkston01, \
-                          lnk03:dut01:wrkston02, \
-                          lnk04:dut02:wrkston03,lnk05:dut01:dut02",
-            "topoFilters": "dut01:system-category:switch, \
-                            dut02:system-category:switch, \
-                            wrkston01:system-category:workstation, \
-                            wrkston02:system-category:workstation, \
+            "topoLinks": "lnk01:dut01:dut02,\
+                          lnk02:dut01:wrkston01,\
+                          lnk03:dut01:wrkston02,\
+                          lnk04:dut02:wrkston03,\
+                          lnk05:dut01:dut02",
+            "topoFilters": "dut01:system-category:switch,\
+                            dut02:system-category:switch,\
+                            wrkston01:system-category:workstation,\
+                            wrkston02:system-category:workstation,\
                             wrkston03:system-category:workstation"}
 
 
