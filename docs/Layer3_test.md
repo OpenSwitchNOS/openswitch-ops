@@ -20,13 +20,13 @@ Test case checks L3 interface configuration by doing ping tests.
 
 ### Setup
 #### Topology Diagram
-    ```ditaa
+```ditaa
     +--------+               +--------+                +--------+
     |        |               |        |                |        |
     |   H1   | <-------------+   S1   +--------------> |   H2   |
     |        |               |        |                |        |
     +--------+               +--------+                +--------+
-    ```
+```
 
 ### Description
 1. Assign IPv4 and IPv6 address to an interface on the switch.
@@ -47,13 +47,13 @@ Test case checks if ping went through fastpath by checking hit bit in ASIC.
 
 ### Setup
 #### Topology Diagram
-    ```ditaa
+```ditaa
     +--------+               +--------+                +--------+
     |        |               |        |                |        |
     |   H1   | <-------------+   S1   +--------------> |   H2   |
     |        |               |        |                |        |
     +--------+               +--------+                +--------+
-    ```
+```
 
 ### Description
 1. Configure two L3 interfaces on switch.
@@ -84,7 +84,7 @@ Test case checks if ping works when IPv4 static routes are configured.
 ### Setup
 #### Topology Diagram
 
-        ```ditaa
+```ditaa
                                                  +-------------+                              +-------------+                                         
                                                 1|             |2                            2|             |1                                        
                    +----------------------------->  Switch 1   <------------------------------>  Switch 2   <------------------------------+          
@@ -110,7 +110,7 @@ Test case checks if ping works when IPv4 static routes are configured.
         |  IP: 10.0.10.1/24 | ip route add 10.0.30.0/24 via 10.0.10.2                    ip route add 10.0.20.0/24 via 10.0.30.2 |  IP: 10.0.30.1/24 |
         |                   |                                                                                                    |                   |
         +-------------------+                                                                                                    +-------------------+
-        ```
+```
 
 ### Description
 Configure a topology with 2 hosts and 2 switches, connected as shown in Topology Diagram.
@@ -187,7 +187,7 @@ Test case checks if ping fails when IPv4 static routes are deleted.
 
 ### Setup
 #### Topology Diagram
-        ```ditaa
+```ditaa
                                                  +-------------+                              +-------------+                                         
                                                 1|             |2                            2|             |1                                        
                    +----------------------------->  Switch 1   <------------------------------>  Switch 2   <------------------------------+          
@@ -213,7 +213,7 @@ Test case checks if ping fails when IPv4 static routes are deleted.
         |  IP: 10.0.10.1/24 | ip route add 10.0.30.0/24 via 10.0.10.2                    ip route add 10.0.20.0/24 via 10.0.30.2 |  IP: 10.0.30.1/24 |
         |                   |                                                                                                    |                   |
         +-------------------+                                                                                                    +-------------------+
-        ```
+```
 
 ### Description
 Delete a route from one of the switches
@@ -238,7 +238,7 @@ Test case checks if ping works when IPv6 static routes are configured.
 ### Setup
 #### Topology Diagram
 
-        ```ditaa
+```ditaa
                                                  +-------------+                              +-------------+                                         
                                                 1|             |2                            2|             |1                                        
                    +----------------------------->  Switch 1   <------------------------------>  Switch 2   <------------------------------+          
@@ -264,7 +264,7 @@ Test case checks if ping works when IPv6 static routes are configured.
         |  IP: 2000::1/120  | ip route add 2002::0/120 via 2000::2                          ip route add 2001::0/120 via 2002::2 |  IP: 2002::1/120  |
         |                   |                                                                                                    |                   |
         +-------------------+                                                                                                    +-------------------+
-        ```
+```
 
 ### Description
 Configure a topology with 2 hosts and 2 switches, connected as shown in
@@ -346,7 +346,7 @@ Test case checks if ping fails when IPv6 static routes are deleted.
 ### Setup
 #### Topology Diagram
 
-    ```ditaa
+```ditaa
                                              +-------------+                              +-------------+                                         
                                             1|             |2                            2|             |1                                        
                +----------------------------->  Switch 1   <------------------------------>  Switch 2   <------------------------------+          
@@ -372,7 +372,7 @@ Test case checks if ping fails when IPv6 static routes are deleted.
     |  IP: 2000::1/120  | ip route add 2002::0/120 via 2000::2                          ip route add 2001::0/120 via 2002::2 |  IP: 2002::1/120  |
     |                   |                                                                                                    |                   |
     +-------------------+                                                                                                    +-------------------+
-    ```
+```
 
 ### Description
 Delete a route from one of the switches
@@ -385,4 +385,3 @@ root(config): no ipv6 route 2002::0/120 2001::2
 * Ping6 from Host 1 to Host 2 fails.
 * If the routes are added again, ping will succeed. Which means that it was failing because the routes were deleted correctly from the database and the kernel.
 #### Test Fail Criteria
-
