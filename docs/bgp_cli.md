@@ -2,77 +2,94 @@
 BGP Commands Reference
 =======================
 
-[TOC]
+## Contents
 
-## BGP Configuration Commands ##
+- [BGP Configuration Commands](#bgp-configuration-commands)
+	- [router bgp](#router-bgp)
+	- [bgp router-id](#bgp-router-id)
+	- [network](#network)
+	- [maximum-paths](#maximum-paths)
+	- [timers bgp](#timers-bgp)
+	- [BGP Neighbor](#bgp-neighbor)
+		- [neighbor remote-as](#neighbor-remote-as)
+		- [neighbor description](#neighbor-description)
+		- [neighbor password](#neighbor-password)
+		- [neighbor timers](#neighbor-timers)
+		- [neighbor allowas-in](#neighbor-allowas-in)
+		- [neighbor remove-private-AS](#neighbor-remove-private-as)
+		- [neighbor soft-reconfiguration inbound](#neighbor-soft-reconfiguration-inbound)
+		- [neighbor shutdown](#neighbor-shutdown)
+		- [neighbor peer-group](#neighbor-peer-group)
+		- [neighbor route-map](#neighbor-route-map)
+	- [BGP Peer-Group](#bgp-peer-group)
+- [Route Map Configuration Commands](#route-map-configuration-commands)
+	- [route-map](#route-map)
+	- [Route Map Match](#route-map-match)
+	- [Route Map Set](#route-map-set)
+	- [Route Map Description](#route-map-description)
+- [IP Prefix-list Configuration Commands](#ip-prefix-list-configuration-commands)
+	- [IP prefix-list](#ip-prefix-list)
+- [Display Commands](#display-commands)
+	- [show ip bgp](#show-ip-bgp)
+	- [show ip bgp summary](#show-ip-bgp-summary)
+	- [show bgp neighbors](#show-bgp-neighbors)
 
-###  router bgp ###
-
+## BGP Configuration Commands
+###  router bgp
 To use the BGP feature, you must first configure BGP router as shown below.
 
-#### Syntax ####
-
+#### Syntax
 ```
 [no] router bgp <asn>
 ```
 
-#### Description ####
-
+#### Description
 
 This command is used to configure the BGP router. To configure the BGP router, you need the Autonomous System (AS) number. The BGP protocol uses the AS number for detecting whether the BGP connection is internal or external.
 
-#### Authority ####
-
+#### Authority
 
 admin
 
-#### Parameters ####
-
+#### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *asn*  | Required | 1 - 4294967295 | AS number |
 | **no** | Optional | Literal | Destroys a BGP router with the specified ASN |
 
-#### Examples ####
-
+#### Examples
 ```
 s1(config)#router bgp 6001
 s1(config)#no router bgp 6001
 ```
 
-### bgp router-id ###
+### bgp router-id
 
-
-#### Syntax ####
-
+#### Syntax
 
 ```
 [no] bgp router-id <A.B.C.D>
 ```
 
-#### Description ####
-
+#### Description
 
 
 This command specifies the BGP router-ID for a BGP Router.
 
-#### Authority ####
-
+#### Authority
 
 
 admin
 
-#### Parameters ####
-
+#### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D*  | Required | A.B.C.D | IPv4 address |
 | **no** | Optional | Literal | Deletes BGP Router IP address |
 
-#### Examples ####
-
+#### Examples
 
 
 ```
@@ -80,36 +97,30 @@ s1(config-router)# bgp router-id 9.0.0.1
 s1(config-router)# no bgp router-id 9.0.0.1
 ```
 
-### network ###
+### network
 
-
-#### Syntax ####
-
+#### Syntax
 
 ```
 [no] network <A.B.C.D/M>
 ```
 
-#### Description ####
-
+#### Description
 
 This command adds the announcement network.
 
-#### Authority ####
-
+#### Authority
 
 admin
 
-#### Parameters ####
-
+#### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D/M*  | Required | A.B.C.D/M | IPv4 address with the prefix length.|
 | **no** | Optional | Literal | Removes the announced network for this BGP router. |
 
-#### Examples ####
-
+#### Examples
 
 This configuration example shows that network 10.0.0.0/8 is announced to all neighbors.
 
@@ -123,28 +134,23 @@ router bgp 6001
      network 10.0.0.0/8
 ```
 
-### maximum-paths ###
+### maximum-paths
 
-
-#### Syntax ####
-
+#### Syntax
 
 ```
 [no] maximum-paths <num>
 ```
 
-#### Description ####
-
+#### Description
 
 This command sets the maximum number of paths for a BGP route.
 
-#### Authority ####
-
+#### Authority
 
 admin
 
-#### Parameters ####
-
+#### Parameters
 
 
 | Parameter | Status   | Syntax |	Description          |
@@ -153,36 +159,30 @@ admin
 | **no** | Optional | Literal | Sets the maximum number of paths to the default value of 1 |
 
 
-#### Examples ####
-
+#### Examples
 
 ```
 s1(config)# router bgp 6001
 s1(config-router)# maximum-paths 5
 ```
 
-### timers bgp ###
+### timers bgp
 
-
-#### Syntax ####
-
+#### Syntax
 
 ```
 [no] timers bgp <keepalive> <holdtime>
 ```
 
-#### Description ####
-
+#### Description
 
 This command sets the keepalive interval and hold time for a BGP router.
 
-#### Authority ####
-
+#### Authority
 
 admin
 
-#### Parameters ####
-
+#### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
@@ -190,38 +190,31 @@ admin
 | *holdtime* | Required| 0 - 65535 | Hold time in seconds |
 | **no** | Optional | Literal | Resets the keepalive and hold time values to their default values (60 seconds for the keepalive interval and 180 seconds for the hold time value)  |
 
-#### Examples ####
-
+#### Examples
 
 ```
 s1(config)# router bgp 6001
 s1(config-router)# timers bgp 60 30
 ```
 
-### BGP Neighbor ###
+### BGP Neighbor
 
-
-#### neighbor remote-as ####
-
-##### Syntax ####
-
+#### neighbor remote-as
+##### Syntax
 
 ```
 [no] neighbor <A.B.C.D> remote-as <asn>
 ```
 
-##### Description ####
-
+##### Description
 
 This command creates a neighbor whose remote-as is *asn*, an autonomous system number. Currently only an IPv4 address is supported.
 
-##### Authority ####
-
+##### Authority
 
 admin
 
-##### Parameters ####
-
+##### Parameters
 
 
 | Parameter | Status   | Syntax |	Description          |
@@ -230,8 +223,7 @@ admin
 | *asn* | Required| 1 - 4294967295 |  The autonomous system number of the peer |
 | **no** | Optional | Literal | Deletes a configured BGP peer|
 
-##### Examples ####
-
+##### Examples
 
 
 ```
@@ -240,29 +232,24 @@ s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# no neighbor 9.0.0.2 remote-as 6002
 ```
 
-#### neighbor description ###
+#### neighbor description
 
 
-
-##### Syntax ####
-
+##### Syntax
 
 ```
 [no] neighbor <A.B.C.D> description <text>
 
 ```
-##### Description ####
-
+##### Description
 
 This command sets the description for the peer.
 
-##### Authority ####
-
+##### Authority
 
 admin
 
-##### Parameters ####
-
+##### Parameters
 
 
 | Parameter | Status   | Syntax |	Description          |
@@ -271,8 +258,7 @@ admin
 | *text* | Required| String of maximum length 80 chars| Description of the peer |
 | **no** | Optional | Literal | Deletes the peer description|
 
-##### Examples ####
-
+##### Examples
 
 ```
 s1(config)# router bgp 6001
@@ -280,30 +266,25 @@ s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 description peer1
 ```
 
-#### neighbor password ###
+#### neighbor password
 
-
-##### Syntax ####
-
+##### Syntax
 
 
 ```
 [no] neighbor <A.B.C.D> password <text>
 ```
 
-##### Description ####
-
+##### Description
 
 This command enables MD5 authentication on a TCP connection between BGP peers.
 
-##### Authority ####
-
+##### Authority
 
 
 admin
 
-##### Parameters ####
-
+##### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
@@ -311,8 +292,7 @@ admin
 | *text* | Required| String of maximum length 80 chars| Password for peer connection |
 | **no** | Optional | Literal | Disables authentication for the peer connection|
 
-##### Examples ####
-
+##### Examples
 
 
 ```
@@ -321,30 +301,25 @@ s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 password secret
 ```
 
-#### neighbor timers ###
+#### neighbor timers
 
 
-
-##### Syntax ####
-
+##### Syntax
 
 
 ```
 [no] neighbor <A.B.C.D> timers <keepalive> <holdtimer>
 ```
 
-##### Description ####
-
+##### Description
 
 This command sets the keepalive interval and hold time for a specific BGP peer.
 
-##### Authority ####
-
+##### Authority
 
 admin
 
-##### Parameters ####
-
+##### Parameters
 
 
 | Parameter | Status   | Syntax |	Description          |
@@ -353,8 +328,7 @@ admin
 | *holdtime* | Required| 0 - 65535 | Hold time in seconds |
 | **no** | Optional | Literal | Resets the keepalive and hold time values to their default values which is 0  |
 
-##### Examples ####
-
+##### Examples
 
 ```
 s1(config)# router bgp 6001
@@ -362,22 +336,17 @@ s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 timers 20 10
 
 ```
-#### neighbor allowas-in ###
-
-##### Syntax ####
-
+#### neighbor allowas-in
+##### Syntax
 ```
 [no] neighbor <A.B.C.D> allowas-in <val>
 ```
-##### Description ####
-
+##### Description
 This command specifies an allow-as-in occurrence number for an AS to be in the AS path. Issue the `no` command to clear the state.
 
-##### Authority ####
-
+##### Authority
 admin
-##### Parameters ####
-
+##### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
@@ -385,199 +354,159 @@ admin
 | *val* | Required| 1-10| Number of times BGP can allow an instance of AS to be in the AS_PATH  |
 | **no** | Optional | Literal | Clears the state |
 
-##### Examples ####
-
+##### Examples
 ```
 s1(config)# router bgp 6001
 s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 allowas-in 2
 ```
-#### neighbor remove-private-AS ###
-
-##### Syntax ####
-
+#### neighbor remove-private-AS
+##### Syntax
 ```
 [no] neighbor <A.B.C.D> remove-private-AS
 ```
-##### Description ####
-
+##### Description
 This command removes private AS numbers from the AS path in outbound routing updates.
-##### Authority ####
-
+##### Authority
 admin
-##### Parameters ####
-
+##### Parameters
 
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D*  | Required | A.B.C.D | Peer IPv4 address |
 | **no** | Optional | Literal |Resets to a cleared state (default) |
-##### Examples ####
-
+##### Examples
 ```
 s1(config)# router bgp 6001
 s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 remove-private-AS
 ```
-#### neighbor soft-reconfiguration inbound ###
-
-##### Syntax ####
-
+#### neighbor soft-reconfiguration inbound
+##### Syntax
 ```
 [no] neighbor <A.B.C.D> soft-reconfiguration inbound
 ```
-##### Description ####
-
+##### Description
 This command enables software-based reconfiguration to generate inbound updates from a neighbor without clearing the BGP session. Issue the `no` command to clear this state.
-##### Authority ####
-
+##### Authority
 admin
-##### Parameters ####
-
+##### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D*  | Required | A.B.C.D | Peer IPv4 address |
 | **no** | Optional | Literal |Resets to a cleared state (default) |
 
-##### Examples ####
-
+##### Examples
 ```
 s1(config)# router bgp 6001
 s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 soft-reconfiguration inbound
 ```
-#### neighbor shutdown ###
-
-##### Syntax ####
-
+#### neighbor shutdown
+##### Syntax
 ```
 [no] neighbor <A.B.C.D> shutdown
 ```
-##### Description ####
-
+##### Description
 This command shuts down the peer. When you want to preserve the neighbor configuration, but want to drop the BGP peer state, use this syntax.
 
-##### Authority ####
-
+##### Authority
 admin
-##### Parameters ####
-
+##### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D*  | Required | A.B.C.D | Peer IPv4 address |
 | **no** | Optional | Literal | Deletes the neighbor state of the peer |
 
-##### Examples ####
-
+##### Examples
 ```
 s1(config)# router bgp 6001
 s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 shutdown
 ```
-#### neighbor peer-group ###
-
-##### Syntax ####
-
+#### neighbor Peer-Group
+##### Syntax
 ```
 [no] neighbor <A.B.C.D> peer-group <name>
 ```
-##### Description ####
-
+##### Description
 This command assigns a neighbor to a peer-group.
 
-##### Authority ####
-
+##### Authority
 admin
-##### Parameters ####
-
+##### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D*  | Required | A.B.C.D | Peer IPv4 address |
 | *name*  | Required | String of maximum length of 80 chars | Peer-Group name |
 | **no** | Optional | Literal |Removes the neighbor from the peer-group |
-##### Examples ####
-
+##### Examples
 ```
 s1(config)# router bgp 6001
 s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 peer-group pg1
 ```
-#### neighbor route-map ###
-
-##### Syntax ####
-
+#### neighbor route-map
+##### Syntax
 ```
 [no] neighbor <A.B.C.D> route-map <name> in|out
 ```
-##### Description ####
-
+##### Description
 This command applies a route-map on the neighbor for the direction given (in or out).
 
-##### Authority ####
-
+##### Authority
 admin
-##### Parameters ####
-
+##### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D*  | Required | A.B.C.D | Peer IPv4 address |
 | *name*  | Required | String of maximum length of 80 chars | Route-map name |
 | **no** | Optional | Literal |Removes the route-map for this neighbor |
 
-##### Examples ####
-
+##### Examples
 ```
 s1(config)# router bgp 6001
 s1(config-router)# neighbor 9.0.0.2 remote-as 6002
 s1(config-router)# neighbor 9.0.0.2 route-map rm1 in
 ```
-### neighbor peer-group ###
-
-#### Syntax ####
-
+### BGP peer-group
+#### Syntax
 ```
 [no] neighbor <word> peer-group
 ```
-#### Description ####
-
+#### Description
 This command creates a new peer-group.
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *name*  | Required | String of maximum length of 80 chars | Peer-group name |
 | **no** | Optional | Literal |Deletes a peer-group |
 
-#### Examples ####
-
+#### Examples
 ```
 s1(config)# router bgp 6001
 s1(config-router)# neighbor pg1 peer-group
 ```
 
-## Route Map Configuration Commands ##
-### route-map ###
+## Route Map Configuration Commands
 
-#### Syntax ####
+### route-map
 
+#### Syntax
 ```
 [no] route-map <name> <deny | permit> <order>
 ```
-#### Description ####
-
+#### Description
 This command configures the order of the entry in the route-map name with the ‘Match Policy’ of either permit or deny.
 
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *name*  | Required | String of maximum length of 80 chars | Route-map name |
@@ -586,116 +515,97 @@ admin
 | **permit** | Required | Literal | Permits the order of the entry |
 | **no** | Optional | Literal |Deletes the route-map |
 
-#### Examples ####
-
+#### Examples
 ```
 s1(config)# route-map rm1 deny 1
 ```
 
-### Route Map Match ###
-
-#### Syntax ####
-
+### Route Map Match
+#### Syntax
 ```
 Route-map Command: match ip address prefix-list <name>
 ```
-#### Description ####
-
+#### Description
 This command configures a match clause for route map.
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *name*  | Required | String of maximum length of 80 chars | IP prefix-list name |
 | **no** | Optional | Literal |Deletes match clause for route-map |
 
-#### Examples ####
-
+#### Examples
 ```
 s1(config)# route-map RMAP1 deny 1
 s1(config-route-map)# match ip address prefix-list PLIST1
 ```
-### Route Map Set ###
-
-#### Syntax ####
-
+### Route Map Set
+#### Syntax
 
 ```
 Route-map Command: [no] set community <AA:NN> [additive]
 Route-map Command: [no] set metric <val>
 ```
 
-#### Description ####
-
+#### Description
 Use the `set community` command to set the BGP community attribute. Use the `set metric` command to set the BGP attribute MED.
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *AA:NN*  | Required | AS1:AS2 where AS is 1 - 4294967295 | Sets BGP community attribute |
 | *val*  | Required |0-4294967295  | Sets metric value |
 | **no** | Optional | Literal |Clears community attribute |
 
-#### Examples ####
-
+#### Examples
 ```
 s1(config)# route-map RMAP1 deny 1
 s1(config-route-map)# set community 6001:7002 additive
 s1(config-route-map)# set metric 100
 s1(config-route-map)# no set metric 100
 ```
-### Route Map Description ###
+### Route Map Description
 
-#### Syntax ####
-
+#### Syntax
 ```
 Route-map Command: [no] description <text>
 ```
-#### Description ####
-
+#### Description
 Sets Route-map description.
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *text*  | Required | String of maximum length of 80 chars | Route-map description |
 | **no** | Optional | Literal |Clears description for route-map |
 
-#### Examples ####
-
+#### Examples
 ```
 s1(config)# route-map RMAP1 deny 1
 s1(config-route-map)# description rmap-mcast
 ```
 
-## IP Prefix-list Configuration Commands ##
-###  IP prefix-list ###
-#### Syntax ####
+## IP Prefix-list Configuration Commands
+
+###  IP prefix-list
+
+#### Syntax
 
 ```
 [no] ip prefix-list <name> seq <num> deny|permit <A.B.C.D/M|any>
 no ip prefix-list <name>
 ```
-#### Description ####
-
+#### Description
 The `ip prefix-list` command provides a powerful prefix-based filtering mechanism. It has prefix length range  and sequential number specifications. You can add or delete prefix-based filters to arbitrary points of a prefix-list by using a sequential number specification. If `no ip prefix-list` is specified, it acts as permit. If `ip prefix-list` is defined, and no match is found, the default deny is applied.
 
-#### Authority ####
-
+#### Authority
 admin
 
-#### Parameters ####
-
+#### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *name*  | Required | String of maximum length of 80 chars | IP prefix-list name |
@@ -703,44 +613,36 @@ admin
 | *A.B.C.D/M*  | Required | A.B.C.D/M | IPv4 prefix |
 | **no** | Optional | Literal |Deletes IP prefix-list |
 
-#### Examples ####
-
+#### Examples
 ```
 s1(config)# ip prefix-list PLIST1 seq 5 deny 11.0.0.0/8
 s1(config)# ip prefix-list PLIST2 seq 10 permit 10.0.0.0/8
 s1(config)# no ip prefix-list PLIST1 seq 5 deny 11.0.0.0/8
 s1(config)# no ip prefix-list PLIST2
 ```
-##Display Commands ##
-
-### show ip bgp ###
-
+##Display Commands
+### show ip bgp
 
 
-#### Syntax ####
-
+#### Syntax
 
 
 ```
 show ip bgp [A.B.C.D][A.B.C.D/M]
 ```
 
-#### Description ####
-
+#### Description
 
 This command displays BGP routes from the BGP Route table. When no route is specified, all IPv4 routes are displayed.
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *A.B.C.D*  | Optional | A.B.C.D | IPv4 prefix |
 | *A.B.C.D/M*  | Optional | A.B.C.D/M | IPv4 prefix with prefix length |
 
-#### Examples ####
-
+#### Examples
 ```ditaa
 s1# show ip bgp
 Status codes: s suppressed, d damped, h history, * valid, > best, = multipath,
@@ -755,25 +657,19 @@ Local router-id 9.0.0.1
 *  12.0.0.0/8       30.30.30.2               0      0      0 4 5 i
 Total number of entries 4
 ```
-### show ip bgp summary ###
-
-#### Syntax ####
-
+### show ip bgp summary
+#### Syntax
 ```
 show ip bgp summary
 ```
-#### Description ####
-
+#### Description
 The command provides a summary of the BGP neighbor status.
 
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 None
-#### Examples ####
-
+#### Examples
 ```ditaa
 s1# show ip bgp summary
 BGP router identifier 9.0.0.1, local AS number 1
@@ -783,24 +679,20 @@ Peers 1
 Neighbor             AS MsgRcvd MsgSent Up/Down  State
 9.0.0.2               2       4       5 00:00:28 Established
 ```
-###  show bgp neighbors ###
-#### Syntax ####
+###  show bgp neighbors
 
+#### Syntax
 ```
 show bgp neighbors
 ```
 
-#### Description ####
-
+#### Description
 This command displays detailed information about BGP neighbor connections.
-#### Authority ####
-
+#### Authority
 admin
-#### Parameters ####
-
+#### Parameters
 None
-#### Examples ####
-
+#### Examples
 ```ditaa
 s1# show bgp neighbors
   name: 9.0.0.2, remote-as: 6002
