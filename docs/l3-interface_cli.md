@@ -6,6 +6,8 @@
 	- [vrf attach](#vrf-attach)
 	- [ip address](#ip-address)
 	- [ipv6 address](#ipv6-address)
+	- [interface vlan](#interface-vlan)
+	- [interface](#interface)
 - [Display commands](#display-commands)
 	- [show interface](#show-interface)
 
@@ -19,13 +21,16 @@ Under the interface context.
 `[no] routing`
 
 ##### Description
-Enable/disable routing for the interface.
+This command enables routing for the interface.
 
 ##### Authority
 Admin.
 
 ##### Parameters
-None.
+| Parameter | Status   | Syntax |	Description          |
+|-----------|----------|----------------------|
+| **no** | Optional | Literal | Disables routing for the interface. |
+
 
 ##### Example
 ```
@@ -41,7 +46,7 @@ Under the interface context.
 `[no] vrf attach <vrf-name>`
 
 ##### Description
-Attach/detach an interface to/from a VRF.
+This command attaches an interface to a VRF. This command is not yet supported.
 
 ##### Authority
 Admin.
@@ -50,6 +55,7 @@ Admin.
 | Parameter | Status   | Syntax | Description          |
 |-----------|----------|--------|------------------------|
 | *vrf-name*  | Required | String |  The name of the VRF. |
+| **no** | Optional | Literal | Detach an interface from a VRF. |
 
 ##### Example
 Attach an interface to a VRF (interface: 1, VRF: myVRF)
@@ -67,7 +73,7 @@ Under the interface context.
 `[no] ip address <address/mask> [secondary]`
 
 ##### Description
-Configures an IPv4 address to the specified interface.
+This command configures an IPv4 address to the specified interface.
 
 ##### Authority
 Admin.
@@ -77,6 +83,7 @@ Admin.
 |-----------|----------|--------|------------------------|
 | *address/mask*  | Required |A.B.C.D/M | The address and mask. |
 | **secondary**  | Optional | Literal | Configures a secondary address.|
+| **no** | Optional | Literal | Removes the IPv4 address from the specified interface. |
 
 
 ##### Example
@@ -95,7 +102,7 @@ Under the interface context.
 `[no] ipv6 address <address/prefix> [secondary]`
 
 ##### Description
-Configures an IPv6 address to the specified interface.
+This command configures an IPv6 address to the specified interface.
 
 ##### Authority
 Admin.
@@ -105,6 +112,7 @@ Admin.
 |-----------|----------|--------|------------------------|
 | *address/prefix*  | Required |X:X::X:X/P | The address and prefix length.|
 | **secondary**  | Optional | Literal | Configures a secondary address.|
+| **no** | Optional | Literal | Removes the IPv6 address from the specified interface. |
 
 
 ##### Example
@@ -113,6 +121,59 @@ Configures an IPv6 address on the interface.
 hostname(config)# interface 1
 hostname(config-if)# ipv6 address fd00:5708::f02d:4df6/64
 hostname(config-if)#
+```
+
+###  interface vlan
+
+##### Syntax
+Under the config context.
+
+`[no] interface vlan <vlan-id>`
+
+##### Description
+This command lets you create and configure a L3 VLAN interface corresponding to the specified VLAN ID.
+
+##### Authority
+Admin
+
+##### Parameters
+| Parameter | Status   | Syntax |	Description          |
+|-----------|----------|----------------------|
+| *vlan-id*  | Required. |1-4094 |	The VLAN ID |
+| **no** | Optional | Literal | Removes the L3 VLAN interface corresponding to the specified VLAN ID. |
+
+##### Example
+
+```
+hostname(config)# interface vlan 101
+hostname(config-if-vlan)#
+```
+
+###  interface
+
+##### Syntax
+
+Under the config context
+
+`[no] interface <vlan-name>`
+
+##### Description
+This command lets you create and configure a L3 VLAN interface corresponding to the specified VLAN name.
+
+##### Authority
+Admin
+
+##### Parameters
+| Parameter | Status   | Syntax |	Description          |
+|-----------|----------|----------------------|
+| *vlan-name*  | Required. |String. |	The VLAN name |
+| **no** | Optional | Literal | Removes the L3 VLAN interface corresponding to the specified VLAN name. |
+
+##### Example
+
+```
+hostname(config)# interface vlan101
+hostname(config-if-vlan)#
 ```
 
 ## Display commands
@@ -125,7 +186,7 @@ Under privileged mode.
 `show interface [brief | mgmt]`
 
 #### Description
-Displays information for the interfaces including statistics, configuration and interface state.
+This command displays information for the interfaces including statistics, configuration and interface state.
 
 #### Authority
 Operator.
@@ -159,7 +220,7 @@ Under privileged mode.
 `show interface <interface> [brief]`
 
 #### Description
-Displays information for the specific interface including statistics, configuration and interface state.
+This command displays information for the specific interface including statistics, configuration and interface state.
 
 #### Authority
 Operator.
@@ -202,4 +263,32 @@ Ethernet      VLAN    Type Mode   Status  Reason                   Speed     Por
 Interface                                                          (Mb/s)    Ch#
 --------------------------------------------------------------------------------
  1            --      eth  --     up                               1000     --
+```
+
+### show interface
+
+##### Syntax
+Under privileged mode.
+
+`show interface <vlan-name>`
+
+#### Description
+This command displays the interface VLAN configuration.
+
+#### Authority
+Operator
+
+##### Parameters
+| Parameter | Status   | Syntax |	Description          |
+|-----------|----------|----------------------|
+| *vlan-name*  | Required. |String. |	The VLAN name. |
+
+##### Example
+The following example displays the VLAN interface configuration for VLAN vlan101:
+```
+hostname# show interface vlan101
+
+Interface vlan101 is down (Administratively down)
+ Admin state is down
+ Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
 ```
