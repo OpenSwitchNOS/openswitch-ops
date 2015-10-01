@@ -646,6 +646,7 @@ Interface 1
 .............
 .............
 ```
+
 ### Show interface running configuration
 #### Syntax
 `show running-config interface <interface>`
