@@ -2,12 +2,12 @@
 <!--  See the https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for additional information about markdown text.
 Here are a few suggestions in regards to style and grammar:
 * Use active voice. With active voice, the subject is the doer of the action. Tell the reader what
-to do by using the imperative mood, for example, Press Enter to view the next screen. See https://en.wikipedia.org/wiki/Active_voice for more information about the active voice. 
-* Use present tense. See https://en.wikipedia.org/wiki/Present_tense for more information about using the present tense. 
-* Avoid the use of I or third person. Address your instructions to the user. In text, refer to the reader as you (second person) rather than as the user (third person). The exception to not using the third-person is when the documentation is for an administrator. In that case, *the user* is someone the reader interacts with, for example, teach your users how to back up their laptop. 
+to do by using the imperative mood, for example, Press Enter to view the next screen. See https://en.wikipedia.org/wiki/Active_voice for more information about the active voice.
+* Use present tense. See https://en.wikipedia.org/wiki/Present_tense for more information about using the present tense.
+* Avoid the use of I or third person. Address your instructions to the user. In text, refer to the reader as you (second person) rather than as the user (third person). The exception to not using the third-person is when the documentation is for an administrator. In that case, *the user* is someone the reader interacts with, for example, teach your users how to back up their laptop.
 * See https://en.wikipedia.org/wiki/Wikipedia%3aManual_of_Style for an online style guide.
 Note regarding anchors:
---StackEdit automatically creates an anchor tag based off of each heading.  Spaces and other nonconforming characters are substituted by other characters in the anchor when the file is converted to HTML. 
+--StackEdit automatically creates an anchor tag based off of each heading.  Spaces and other nonconforming characters are substituted by other characters in the anchor when the file is converted to HTML.
  -->
 
 # logrotate Commands #
