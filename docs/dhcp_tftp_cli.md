@@ -38,9 +38,9 @@ In vtysh, every command belongs to a particular context. All dhcp server configu
 #### Description
 This command changes vtysh context to dhcp server. This command works in config context.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Examples
 ```
 ops-as5712# configure terminal
@@ -53,7 +53,7 @@ ops-as5712(config-dhcp-server)#
 #### Description
 This command works in the dhcp-server context and sets DHCP dynamic configuration values for the DHCP server. The parameters netmask and broadcast should not be set for IPv6 and prefix-len should not be set for IPv4. The parameter end-ip-address must be set before setting netmask. The parameter netmask must be set before broadcast. The parameter static should be specified only for static IP address allocation within the range set. The parameters netmask, broadcast, match tags, set tags, perfix-len, lease-duration and static are optional. The default value of prefix-len is 64 and the default value of lease-duration is 60 minutes. The parameter match tags can have multiple tags and the parameter set tag should be single tag.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -78,7 +78,7 @@ ops-as5712(config-dhcp-server)# range dynamic start-ip-address 10.0.0.1 end-ip-a
 #### Description
 This command works in the dhcp-server context and deletes DHCP dynamic configuration values.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -103,7 +103,7 @@ ops-as5712(config-dhcp-server)# no range dynamic start-ip-address 10.0.0.1 end-i
 #### Description
 This command works in the dhcp-server context and sets DHCP static configuration values for the DHCP server. Parameters match-mac-addresses, match-client-hostname, and match-cliend-id are optional but at least one of the three must be specified. Multiple MAC addresses can be specified for the parameter match-mac-addresses and multiple tags can be specified for the parameter set tags. Parameters set tags and lease-duration are optional and the default value of lease-duration is 60 minutes.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -126,7 +126,7 @@ ops-as5712(config-dhcp-server)#static 10.0.0.25 match-mac-addresses 36:d4:1b:12:
 #### Description
 This command works in the dhcp-server context and removes DHCP static configuration values for the DHCP server.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -149,7 +149,7 @@ ops-as5712(config-dhcp-server)#no static 10.0.0.25 match-mac-addresses 36:d4:1b:
 #### Description
 This command works in the dhcp-server context and sets DHCP option configuration values for the DHCP server by specifying an option name. The parameter match-tags is optional and multiple tags can be specified for the parameter match-tags. The optional parameter IPv6 specifies whether the options are IPv6 options or not.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -168,7 +168,7 @@ ops-as5712(config-dhcp-server)#option set option-name Router option-value 10.0.0
 #### Description
 This command works in the dhcp-server context and removes DHCP option configuration values by specifying an option name.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -186,7 +186,7 @@ ops-as5712(config-dhcp-server)# no option set option-name Router option-value 10
 `option set option-number <option_number> option-value <option_value>  match tags <match_tag_names> ipv6`#### Description
 This command works in the dhcp-server context and sets DHCP option configuration values for the DHCP server by specifying an option number. The parameter match-tags is optional and multiple tags can be specified for the parameter match-tags. The optional parameter IPv6 specifies whether the options are IPv6 options or not.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -205,7 +205,7 @@ ops-as5712(config-dhcp-server)#option set option-number 3 option-value 10.0.0.1 
 #### Description
 This command works in the dhcp-server context and removes DHCP option configuration values by specifying an option number.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -224,7 +224,7 @@ ops-as5712(config-dhcp-server)# no option set option-number 3 option-value 10.0.
 #### Description
 This command works in the dhcp-server context. The parameter option-value is optional, and if the option-value is not specified, this command sets the tag if the client sends a DHCP option of the given name. If the option-value is specified, then the tag would be set only if the option is sent and matches the value.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -243,7 +243,7 @@ ops-as5712(config-dhcp-server)# match set tag tag1 match-option-name Router matc
 #### Description
 This command works in the dhcp-server context and removes the dhcp match configuration.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -261,7 +261,7 @@ ops-as5712(config-dhcp-server)# no match set tag tag1 match-option-name Router m
 #### Description
 This command works in the dhcp-server context. The parameter option-value is optional and if an option-value is not specified, this command sets the tag if the client sends a DHCP option of the given number. If the option-value is specified, then the tag would be set only if the option is sent and matches the value.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -280,7 +280,7 @@ ops-as5712(config-dhcp-server)# match set tag tag1 match-option-number 3 match-o
 #### Description
 This command works in the dhcp-server context and removes the dhcp match configuration.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -299,7 +299,7 @@ ops-as5712(config-dhcp-server)#no match set tag tag1 match-option-number 3 match
 #### Description
 This command works in the dhcp-server context and sets the BOOTP options to be returned by the DHCP server.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -317,7 +317,7 @@ ops-as5712(config-dhcp-server)# boot set file /tmp/tftp_file match tag tag1
 #### Description
 This command works in the dhcp-server context and removes the BOOTP options.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Syntax | Description                                |
 |:-----------|:----------------:|:---------------------------------------|
@@ -335,9 +335,9 @@ ops-as5712(config-dhcp-server)# no boot set file /tmp/tftp_file match tag tag1
 #### Description
 This commmand changes vtysh context to the tftp server and works in a config context.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Examples
 ```
 ops-as5712# configure terminal
@@ -350,9 +350,9 @@ ops-as5712(config-tftp-server)#
 #### Description
 This command works in the tftp-server context and enables the TFTP Server.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Examples
 ```
 ops-as5712# configure terminal
@@ -365,9 +365,9 @@ ops-as5712(config-tftp-server)# enable
 #### Description
 This command works in the tftp-server context and disables the TFTP Server.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Examples
 ```
 ops-as5712# configure terminal
@@ -380,9 +380,9 @@ ops-as5712(config-tftp-server)# no enable
 #### Description
 This command works in the tftp-server context and enables the TFTP server secure mode.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Examples
 ```
 ops-as5712# configure terminal
@@ -395,9 +395,9 @@ ops-as5712(config-tftp-server)# secure-mode
 #### Description
 This command works in the tftp-server context and disables the TFTP server secure mode.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Examples
 ```
 ops-as5712# configure terminal
@@ -410,7 +410,7 @@ ops-as5712(config-tftp-server)# no secure-mode
 #### Description
 This command works in the tftp-server context and sets the tftp root path location.
 #### Authority
-All users.
+All users
 #### Parameters
 | Parameter | Description |
 |:-----------|:---------------------------------------|
@@ -428,9 +428,9 @@ ops-as5712(config-tftp-server)# path /tmp/
 #### Description
 This command displays various DHCP server configurations. The configurations include the DHCP Dynamic configuration, the DHCP Static Configuration, the DHCP Options configuration, the DHCP Match configuration, and the DHCP BOOT configuration.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Example
 ```
 ops-as5712# show dhcp-server
@@ -478,9 +478,9 @@ tag1              /tmp/tftp_file
 #### Description
 This command displays DHCP server leases configurations. The configurations contain the IP address, MAC address, lease expiry time, the client hostname, and the client id. The configurations are updated by the DHCP server after it assigns an IP address to the client.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Example
 ```
 ops-as5712# show dhcp-server leases
@@ -496,9 +496,9 @@ Wed Sep 23 22:05:10 2015  36:d4:1b:12:ea:52  10.0.0.25   95_h2            *
 #### Description
 This command displays TFTP server configurations.
 #### Authority
-All users.
+All users
 #### Parameters
-No parameters.
+No parameters
 #### Example
 ```
 ops-as5712# show tftp-server
