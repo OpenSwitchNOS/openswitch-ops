@@ -1,16 +1,45 @@
 Pluggable modules
 =================
 
-[TOC]
 
-## Overview ##
+## Contents
+
+- [Overview ](#overview-)
+- [How to setup and configure pluggable modules ](#how-to-setup-and-configure-pluggable-modules-)
+	- [Setting up the basic configuration](#setting-up-the-basic-configuration)
+	- [Configuring split interfaces](#configuring-split-interfaces)
+	- [Verifying the configuration](#verifying-the-configuration)
+	- [Troubleshooting](#troubleshooting)
+		- [The SFP, SFP+, or QSFP+ is not detected.](#the-sfp-sfp-or-qsfp-is-not-detected)
+			- [The module may not be properly seated in the receptacle.](#the-module-may-not-be-properly-seated-in-the-receptacle)
+				- [Remedy](#remedy)
+			- [The module is not inserted in the correct slot.](#the-module-is-not-inserted-in-the-correct-slot)
+				- [Remedy](#remedy)
+		- [The interface does not establish link.](#the-interface-does-not-establish-link)
+			- [The interface is not configured properly.](#the-interface-is-not-configured-properly)
+				- [Remedy](#remedy)
+			- [The module is not present or is not fully inserted.](#the-module-is-not-present-or-is-not-fully-inserted)
+				- [Remedy](#remedy)
+			- [The cable (optical or copper) is not attached to the module.](#the-cable-optical-or-copper-is-not-attached-to-the-module)
+				- [Remedy](#remedy)
+			- [The remote end of the cable or module is not properly connected to the remote device.](#the-remote-end-of-the-cable-or-module-is-not-properly-connected-to-the-remote-device)
+				- [Remedy](#remedy)
+			- [The remote device is not configured to establish link.](#the-remote-device-is-not-configured-to-establish-link)
+				- [Remedy](#remedy)
+			- [The remote module is not the same variant (incompatible technologies).](#the-remote-module-is-not-the-same-variant-incompatible-technologies)
+				- [Remedy](#remedy)
+- [CLI ](#cli-)
+- [Related features ](#related-features-)
+- [External references ](#external-references-)
+
+## Overview
 Pluggable modules, including SFP, SFP+, and QSFP+ transceiver modules, allow a network designer to select from several physical transports instead of having fixed copper or optical transceivers. Direct Attach Copper cables (DACs) may be used to connect two SFP+ (or QSFP+) ports without dedicated transceivers over relatively short distances (typically 1 to 7 meters for passive cables), while optical transceivers may support distances of multiple kilometers.
 
 SFP modules support speeds up to 1 Gb, while SFP+ modules support 10-Gb line rate.
 
 QSFP+ modules include 40-Gb DAC modules, 40-Gb optical transceivers, and 10-Gb 4X transceivers (which split the four lanes of a QSFP+ module into individual interfaces).
 
-## How to setup and configure pluggable modules ##
+## How to setup and configure pluggable modules
 
 ###Setting up the basic configuration
 
@@ -86,13 +115,13 @@ Configure the remote device to enable an interface.
 ###### Remedy
 Only use compatible module types at either end of a network connection.
 
-## CLI ##
+## CLI
 Click [here](https://www.openswitch.net/documents/user/interface_cli) for the CLI commands related to interfaces and pluggable modules.
 
-## Related features ##
+## Related features
 See also the [Interface User Guide](https://www.openswitch.net/documents/user/interface_user_guide0 for information on configuring physical interfaces.
 
-## External references ##
-[Small Formfactor Pluggable](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver "Wikipedia")
-[Direct Attach](https://en.wikipedia.org/wiki/10_Gigabit_Ethernet#SFP.2B_Direct_Attach "Wikipedia")
-[Quad Small Formfactor Pluggable](https://en.wikipedia.org/wiki/QSFP "Wikipedia")
+## External references 
+- [Small Formfactor Pluggable](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver "Wikipedia")
+- [Direct Attach](https://en.wikipedia.org/wiki/10_Gigabit_Ethernet#SFP.2B_Direct_Attach "Wikipedia")
+- [Quad Small Formfactor Pluggable](https://en.wikipedia.org/wiki/QSFP "Wikipedia")
