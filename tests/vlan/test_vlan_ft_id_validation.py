@@ -87,7 +87,8 @@ def cleanUp(dut):
 
 def tryInvalidVlan(dut):
     LogOutput('info', "Try adding invalid vlan ")
-    AddVlan(deviceObj=dut, vlanId=4095)
+    if AddVlan(deviceObj=dut, vlanId=4095) != 3:
+        return 1
     # Verify invalid vlan was not configured
     if verifyInvalidVlan(dut, 4095) != 0:
         return 1

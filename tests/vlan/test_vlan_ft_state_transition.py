@@ -59,13 +59,14 @@ def verifyVlanState(dut, pStatus, numberToFind=1):
     else:
         return 1
 
+
 def cleanUp(dut):
     LogOutput('info', "############################################")
     LogOutput('info', "Step 6- Clean up ")
     LogOutput('info', "############################################")
     if AddVlan(deviceObj=dut, vlanId=2,
                config=False).returnCode() != 0:
-        LogOutput('error', "Failed to delete vlan " + str(2)
+        LogOutput('error', "Failed to delete vlan " + str(2))
     else:
         LogOutput('info', "Passed vlan " + str(2) + " deleted")
 
