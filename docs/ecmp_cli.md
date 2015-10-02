@@ -1,9 +1,13 @@
 # ECMP
 
 ## Contents
+
 - [Configuration commands](#configuration-commands)
 	- [ip ecmp disable](#ip-ecmp-disable)
-	- [ip ecmp load-balance](#ip-ecmp-load-balance)
+	- [ip ecmp load-balance dst-ip disable](#ip-ecmp-load-balance-dst-ip-disable)
+	- [ip ecmp load-balance src-ip disable](#ip-ecmp-load-balance-src-ip-disable)
+	- [ip ecmp load-balance dst-port disable](#ip-ecmp-load-balance-dst-port-disable)
+	- [ip ecmp load-balance src-port disable](#ip-ecmp-load-balance-src-port-disable)
 - [Display commands](#display-commands)
 	- [show ip ecmp](#show-ip-ecmp)
 
@@ -122,7 +126,7 @@ hostname(config)#
 
 ### show ip ecmp
 
-##### Syntax
+#### Syntax
 Under privileged mode.
 
 `show ip ecmp`
@@ -133,10 +137,10 @@ Displays the ECMP configuration.
 #### Authority
 Operator.
 
-##### Parameters
+#### Parameters
 None.
 
-##### Example
+#### Example
 ```
 hostname# show ip ecmp
 
