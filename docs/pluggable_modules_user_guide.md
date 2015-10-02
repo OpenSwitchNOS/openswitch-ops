@@ -1,11 +1,16 @@
+
 # Pluggable modules
 
+## Contents
+
 - [Overview](#overview)
-- [How to setup and configure pluggable modules](#how-to-setup-and-configure-pluggable-modules)
+- [How to set up and configure pluggable modules](#how-to-set-up-and-configure-pluggable-modules)
 	- [Setting up the basic configuration](#setting-up-the-basic-configuration)
 	- [Configuring split interfaces](#configuring-split-interfaces)
 	- [Verifying the configuration](#verifying-the-configuration)
-	- [Troubleshooting](#troubleshooting)
+- [Troubleshooting](#troubleshooting)
+	- [The SFP, SFP+, or QSFP+ is not detected.](#the-sfp-sfp-or-qsfp-is-not-detected)
+	- [The interface does not establish link.](#the-interface-does-not-establish-link)
 - [CLI](#cli)
 - [Related features](#related-features)
 - [External references](#external-references)
@@ -17,7 +22,7 @@ SFP modules support speeds up to 1 Gb, while SFP+ modules support 10-Gb line rat
 
 QSFP+ modules include 40-Gb DAC modules, 40-Gb optical transceivers, and 10-Gb 4X transceivers (which split the four lanes of a QSFP+ module into individual interfaces).
 
-## How to setup and configure pluggable modules
+## How to set up and configure pluggable modules
 
 ### Setting up the basic configuration
 
@@ -58,7 +63,7 @@ ops-xxxx(config)# interface 49
 ops-xxxx(config-if)# no split
 ```
 
-## Verifying the configuration
+### Verifying the configuration
 
 Display the pluggable module information using the `show interface transceiver` command. See the [show interface transceiver](https://www.openswitch.net/documents/user/interface_cli#showalltransintf) command reference for more information.
 
@@ -67,13 +72,13 @@ Display the split operation configuration (and other configuration) for an inter
 ## Troubleshooting
 
 ### The SFP, SFP+, or QSFP+ is not detected.
-#### The module may not be properly seated in the receptacle.
+#### The module might not be properly seated in the receptacle.
 ##### Remedy
 Check that the module is inserted with the correct orientation and has established good mechanical interlock with the receptacle.
 #### The module is not inserted in the correct slot.
 ##### Remedy
 Verify that the module is inserted in the correct receptacle.
-### The interface does not establish link.
+### The interface does not establish a link.
 #### The interface is not configured properly.
 ##### Remedy
 Refer to interface documentation.
@@ -97,7 +102,7 @@ Only use compatible module types at either end of a network connection.
 Click [here](https://www.openswitch.net/documents/user/interface_cli) for the CLI commands related to interfaces and pluggable modules.
 
 ## Related features
-See also the [Interface User Guide](https://www.openswitch.net/documents/user/interface_user_guide0 for information on configuring physical interfaces.
+See also the [Interface User Guide](https://www.openswitch.net/documents/user/interface_user_guide) for information on configuring physical interfaces.
 
 ## External references
 [Small Formfactor Pluggable](https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver "Wikipedia")
