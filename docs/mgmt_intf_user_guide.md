@@ -11,6 +11,7 @@
 - [CLI](#cli)
 - [Related features](#related-features)
 
+
 ## Overview
 The primary goal of the management module is to facilitate the management of the device. It provides the following:
 

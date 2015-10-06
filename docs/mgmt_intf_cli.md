@@ -49,9 +49,9 @@ This command is executed in the management interface context.
 The user can configure all valid IPv4 and IPv6 addresses. Reserved IP, Multicast IP, Broadcast IP, and loopback addresses are not allowed. However, only one IP address can be configured per address family.
 #### Examples
 ```
-	as5712(config-if-mgmt)#ip static 192.168.1.10/16
+	switch(config-if-mgmt)#ip static 192.168.1.10/16
 
-	as5712(config-if-mgmt)#ip static 2001:db8:0:1::129/64
+	switch(config-if-mgmt)#ip static 2001:db8:0:1::129/64
 ```
 ### DHCP mode configuration
 This command configures the management interface mode as DHCP.
@@ -67,7 +67,7 @@ Admin
 None
 #### Examples
 ```
-	as5712(config-if-mgmt)#ip dhcp
+	switch(config-if-mgmt)#ip dhcp
 ```
 ### Default gateway configuration
 This command configures the IPv4 and IPv6 default gateway.
@@ -88,10 +88,10 @@ However, only one IP can be configured per address family.
 When “no” is specified, the default gateway is removed. If the user tries to remove a default gateway that was not configured, an error message is displayed.
 #### Examples
 ```
-	as5712(config-if-mgmt)#default-gateway 192.168.1.5
-	as5712(config-if-mgmt)#default-gateway 2001:db8:0:1::128
-	as5712(config-if-mgmt)#no default-gateway 192.168.1.5
-	as5712(config-if-mgmt)#no default-gateway 2001:db8:0:1::128
+	switch(config-if-mgmt)#default-gateway 192.168.1.5
+	switch(config-if-mgmt)#default-gateway 2001:db8:0:1::128
+	switch(config-if-mgmt)#no default-gateway 192.168.1.5
+	switch(config-if-mgmt)#no default-gateway 2001:db8:0:1::128
 ```
 ### Nameserver configuration
 This command configures the nameserver.
@@ -113,12 +113,12 @@ Address-1 is configured as the primary nameserver and Address-2 (if specified) i
 When "no" is specified the namserver targeted is removed. If the user tries to remove a nameserver that is not configured, an error message is displayed. It is not possible to remove the secondary nameserver without removing the primary nameserver.
 #### Examples
 ```
-	as5712(config-if-mgmt)#nameserver 192.168.1.1
-	as5712(config-if-mgmt)#nameserver 192.168.1.2 192.168.1.3
-	as5712(config-if-mgmt)#nameserver 2001:db8:0:1::100
-	as5712(config-if-mgmt)#nameserver 2001:db8:0:2::100 2001:db8:0:3::150
-	as5712(config-if-mgmt)#no nameserver 192.168.1.2 192.168.1.3
-	as5712(config-if-mgmt)#no nameserver 2001:db8:0:2::100 2001:db8:0:3::150
+	switch(config-if-mgmt)#nameserver 192.168.1.1
+	switch(config-if-mgmt)#nameserver 192.168.1.2 192.168.1.3
+	switch(config-if-mgmt)#nameserver 2001:db8:0:1::100
+	switch(config-if-mgmt)#nameserver 2001:db8:0:2::100 2001:db8:0:3::150
+	switch(config-if-mgmt)#no nameserver 192.168.1.2 192.168.1.3
+	switch(config-if-mgmt)#no nameserver 2001:db8:0:2::100 2001:db8:0:3::150
 ```
 ## Management interface show commands
 ### show command
@@ -134,7 +134,7 @@ all users
 None
 #### Examples
 ```
-	as5712#show interface mgmt
+	switch#show interface mgmt
 	  Address Mode                      : static
 	  IPv4 address/subnet-mask          : 192.168.1.100/16
 	  Default gateway IPv4              : 192.168.1.5
@@ -158,7 +158,7 @@ None
 #### Examples
 The example shows the management interface information in the `show running-config` output.
 ```
-	as5712# show running-config
+	switch# show running-config
 	Current configuration:
 	!
 	hostname "new-name"
@@ -184,7 +184,7 @@ None
 #### Examples
 
 ```
-	as5712# show running-config interface mgmt
+	switch# show running-config interface mgmt
 	Current configuration:
 	!
 	interface mgmt
