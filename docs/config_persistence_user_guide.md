@@ -14,7 +14,6 @@
 - [Related features](#related-features)
 
 ## Overview
- <!--Provide an overview here. This overview should give the reader an introduction of when, where and why they would use the feature. -->
 There are two types of configurations: the current running configuration and the startup configuration. The running configuration is not persistent across reboots but the startup configuration is persistent across reboots. While there are currently no provisions to facilitate rollbacks or local preservation of old configurations, these functions are being investigated as further enhancements.
 
 ## How to use the feature
