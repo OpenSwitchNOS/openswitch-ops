@@ -27,6 +27,7 @@ Verify whether DHCP server is correctly configured.
 - Provisioning script does not contain the line `OPS-PROVISIONING`.
 
 Please verify the provisioning script.
+
 ## CLI ##
 Click the [Autoprovision CLI-TBL](TO be linked) for the CLI commands related to the named feature.
 
