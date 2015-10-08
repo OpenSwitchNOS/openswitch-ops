@@ -52,8 +52,6 @@ def verifyVlanState(dut, status, numberToFind=1):
     devRetStruct = ShowVlan(deviceObj=dut)
     returnData = devRetStruct.valueGet(key=None)
     for dictionary in returnData:
-        print "VLAN STATE dictionary"
-        print dictionary
         if dictionary['Status'] == status:
             cont = cont + 1
     if cont == numberToFind:
@@ -68,14 +66,13 @@ def verifyVlanReason(dut, pReason, numberToFind=1):
     devRetStruct = ShowVlan(deviceObj=dut)
     returnData = devRetStruct.valueGet(key=None)
     for dictionary in returnData:
-        print "VLAN REASON dictionary"
-        print dictionary
         if dictionary['Reason'] == pReason:
             cont = cont + 1
     if cont == numberToFind:
         return 0
     else:
         return 1
+
 
 def cleanUp(dut):
     LogOutput('info', "############################################")
@@ -87,13 +84,13 @@ def cleanUp(dut):
         LogOutput('error', "Failed to delete vlan " + str(2))
     else:
         LogOutput('info', "Passed delete vlan " + str(2))
-    # Delete vlan 3 
+    # Delete vlan 3
     if AddVlan(deviceObj=dut, vlanId=3,
                config=False).returnCode() != 0:
         LogOutput('error', "Failed to delete vlan " + str(3))
     else:
         LogOutput('info', "Passed delete vlan " + str(3))
-    # Delete vlan 4  
+    # Delete vlan 4
     if AddVlan(deviceObj=dut, vlanId=4,
                config=False).returnCode() != 0:
         LogOutput('error', "Failed to delete vlan " + str(4))
@@ -238,5 +235,3 @@ class Test_vlan_state_reason_transition:
             assert(False)
         else:
             LogOutput('info', "Passed verifying vlan")
-
-
