@@ -1046,7 +1046,7 @@
       </column>
       <column name="exitpolicy">
         Rather than normal exiting, route map can continue on processing next route map,
-        or goto N route map and continue on processing.
+        or goto N route map and continue on processing. The default is exit.
       </column>
       <column name="goto_target">
         If exitpolicy is goto, nextpref is the route map to jump to.
