@@ -571,5 +571,5 @@ The following list summarizes the purpose of each of the tables and their corres
 * [Archtecture](http://www.openswitch.net/documents/user/architecture)
 * [Quagga](http://www.nongnu.org/quagga/docs.html)
 * [BGP](https://www.ietf.org/rfc/rfc4271.txt)
-* [Interface](http://www.openswitch.net/documents/dev/ops-intfd/DESIGN)
 * [OpenSwitch](http://www.openswitch.net/documents/dev/ops-openvswitch/DESIGN)
+* [Interface](http://www.openswitch.net/documents/dev/ops-intfd/DESIGN)
