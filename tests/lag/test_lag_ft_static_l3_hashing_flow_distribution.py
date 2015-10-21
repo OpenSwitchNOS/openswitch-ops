@@ -562,7 +562,7 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
         highBandError = packetsCounter + \
             math.ceil(float(packetsCounter) * marginError)
 
-        if lowBandError > raw2Tx or  raw2Tx > highBandError \
+        if lowBandError > raw2Tx or raw2Tx > highBandError \
                 or lowBandError > raw1Tx or raw1Tx > highBandError:
             LogOutput('error', "Traffic not was evenly distributed ")
             assert(False)
