@@ -289,6 +289,7 @@ def lldp_wait_hold(**kwargs):
     assert (lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()=="", "Case Failed, Neighbor present for SW2"
     LogOutput('info',"\nNo Neighbour is present for SW2, case passed")
 
+@pytest.mark.timeout(1000)
 class Test_lldp_configuration:
     def setup_class (cls):
         # Test object will parse command line and formulate the env

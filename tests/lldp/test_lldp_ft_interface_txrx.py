@@ -622,6 +622,7 @@ def lldp_interface_txrx(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "Unable to disable interface"
 
+@pytest.mark.timeout(1000)
 class Test_lldp_configuration:
     def setup_class (cls):
         # Test object will parse command line and formulate the env
