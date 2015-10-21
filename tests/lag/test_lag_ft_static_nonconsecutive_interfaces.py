@@ -20,7 +20,7 @@
 # Objective:   To a static LAG can be created with non-consecutive interfaces
 #
 # Author:      Pablo Araya M.
-#	           Adapted from: StaticLagConvertToDynamic by Jose Pablo Hernandez
+#           Adapted from: StaticLagConvertToDynamic by Jose Pablo Hernandez
 #
 # Topology:
 #              Client 1 <-> OpenSwitch_1
@@ -43,7 +43,7 @@ topoDict = {"topoExecution": 3000,
                             dut02:system-category:switch,\
                             wrkston01:system-category:workstation,\
                             wrkston02:system-category:workstation",
-            "topoLinkFilter": 	"lnk01:dut01:interface:2,\
+            "topoLinkFilter": "lnk01:dut01:interface:2,\
                                 lnk02:dut01:interface:1,\
                                 lnk02:dut02:interface:1,\
                                 lnk03:dut01:interface:3,\

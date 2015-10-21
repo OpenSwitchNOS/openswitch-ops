@@ -53,7 +53,7 @@ def clean_up(dut01, dut02, wrkston01, wrkston02, wrkston03):
         LogOutput('info', "Passed Switch Reboot ")
 
 
-class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
+class Test_ft_LAG_Static_L2_Hashing_Flow_Distribution:
 
     listDut = None
     listWrkston = None
@@ -73,10 +73,10 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
     def setup_class(cls):
 
         # Create Topology object and connect to devices
-        Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution.testObj \
+        Test_ft_LAG_Static_L2_Hashing_Flow_Distribution.testObj \
             = testEnviron(topoDict=topoDict)
-        Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution.topoObj = \
-            Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution. \
+        Test_ft_LAG_Static_L2_Hashing_Flow_Distribution.topoObj = \
+            Test_ft_LAG_Static_L2_Hashing_Flow_Distribution. \
             testObj.topoObjGet()
 
         # Global definition
@@ -116,7 +116,7 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
     def teardown_class(cls):
         # Terminate all nodes
         clean_up(dut01Obj, dut02Obj, wrkston01Obj, wrkston02Obj, wrkston03Obj)
-        Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution.topoObj. \
+        Test_ft_LAG_Static_L2_Hashing_Flow_Distribution.topoObj. \
             terminate_nodes()
 
     ##########################################################################
@@ -160,35 +160,13 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
                 LogOutput('info', "Passed lag configured ")
 
     ##########################################################################
-    # Step 3 - Enable dynamic Lag
-    ##########################################################################
-
-    def test_enable_dynamic_lag(self):
-
-        LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 3 - Enable dynamic Lag ")
-        LogOutput('info', "###############################################")
-
-        for currentDut in listDut:
-            devLagDinRetStruct = lagMode(
-                deviceObj=currentDut,
-                lagId=lagId,
-                lacpMode="active")
-
-            if devLagDinRetStruct.returnCode() != 0:
-                LogOutput('error', "Failed to enable dynamic lag")
-                assert(False)
-            else:
-                LogOutput('info', "Enable dynamic lag")
-
-    ##########################################################################
-    # Step 4 - Configured vlan
+    # Step 3 - Configured vlan
     ##########################################################################
 
     def test_configure_vlan(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 4 - Configure vlan  in the switch")
+        LogOutput('info', "# Step 3 - Configure vlan  in the switch")
         LogOutput('info', "###############################################")
 
         for currentDut in listDut:
@@ -210,19 +188,19 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
                 status=True)
 
             if devLagRetStruct1.returnCode() != 0:
-                LogOutput('error', "Failed to create vlan in the switches")
+                LogOutput('error', "Failed to create vlan in the switchs")
                 assert(False)
             else:
                 LogOutput('info', "Vlan Enable")
 
     ##########################################################################
-    # Step 5 - Add ports to vlan
+    # Step 4 - Add ports to vlan
     ##########################################################################
 
     def test_interface_vlan(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 5 - Add ports to vlan")
+        LogOutput('info', "# Step 4 - Add ports to vlan")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk01']
@@ -272,13 +250,13 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
                 LogOutput('info', "Passed interface vlan configured")
 
     ##########################################################################
-    # Step 6 - Add ports to lag
+    # Step 5 - Add ports to lag
     ##########################################################################
 
     def test_configure_interface_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 6 - Configure lag id in the interface")
+        LogOutput('info', "# Step 5 - Configure lag id in the interface")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk02']
@@ -315,13 +293,13 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
                 LogOutput('info', "Passed interface lag id configured ")
 
     ##########################################################################
-    # Step 7 - Configure Workstation
+    # Step 6 - Configure Workstation
     ##########################################################################
 
     def test_configure_workstations(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 7 - Configure Workstations")
+        LogOutput('info', "# Step 6 - Configure Workstations")
         LogOutput('info', "###############################################")
 
         indexIpAddrWrk = 0
@@ -346,13 +324,13 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
             LogOutput('info', "Complete workstation configuration")
 
     ##########################################################################
-    # Step 8 - Enable switch ports
+    # Step 7 - Enable switch ports
     ##########################################################################
 
     def test_enable_switch_interfaces(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 8 - Enable all the switchs interfaces")
+        LogOutput('info', "# Step 7 - Enable all the switchs interfaces")
         LogOutput('info', "###############################################")
 
         switch1Interface1 = dut01Obj.linkPortMapping['lnk01']
@@ -398,18 +376,16 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
         LogOutput('info', "All ports in switches are enable")
 
     ##########################################################################
-    # Step 9 - Send and validated traffic
+    # Step 8 - Send and validated traffic
     ##########################################################################
 
     def test_send_validated_traffic(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 9 - Send and validate traffic")
+        LogOutput('info', "# Step 8 - Send and validated traffic")
         LogOutput('info', "###############################################")
 
         # Check ports for delta
-
-        packetsCounter = 25
 
         interfaceLag1 = dut01Obj.linkPortMapping['lnk02']
         interfaceLag2 = dut01Obj.linkPortMapping['lnk03']
@@ -423,8 +399,8 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
 
         if retTxIntStruct1.returnCode() != 0 \
                 or retTxIntStruct2.returnCode() != 0:
-            LogOutput('error', "Can't show interface information")
-            assert(False)
+            LogOutput('error', "Can show interface information")
+            assert(false)
 
         tx1Delta = retTxIntStruct1.valueGet(key='TX')
         tx1Delta = tx1Delta['outputPackets']
@@ -439,7 +415,7 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
         # Ping to the firts device
 
         retStructValid = wrkston01Obj.Ping(ipAddr=l2IpAddress[1],
-                                           packetCount=packetsCounter,
+                                           packetCount=25,
                                            packetSize=1024)
 
         if retStructValid.returnCode() != 0:
@@ -456,7 +432,7 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
 
         if retTxIntStruct1.returnCode() != 0 \
                 or retTxIntStruct2.returnCode() != 0:
-            LogOutput('error', "Can't show interface information")
+            LogOutput('error', "Can show interface information")
             assert(False)
 
         tx1Firts = retTxIntStruct1.valueGet(key='TX')
@@ -465,16 +441,15 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
         tx2Firts = retTxIntStruct2.valueGet(key='TX')
         tx2Firts = tx2Firts['outputPackets']
 
-        LogOutput('info', "Values fot the first ping :")
+        LogOutput('info', "Values fot the firts ping :")
         LogOutput('info', "Interface clean is : " + str(tx1Firts))
         LogOutput('info', "Interface clean is : " + str(tx2Firts))
 
         # Ping to the second device
 
-        retStructValid = wrkston01Obj.Ping(
-            ipAddr=l2IpAddress[2],
-            packetCount=packetsCounter,
-            packetSize=1024)
+        retStructValid = wrkston01Obj.Ping(ipAddr=l2IpAddress[2],
+                                           packetCount=25,
+                                           packetSize=1024)
 
         if retStructValid.returnCode() != 0:
             LogOutput('error',
@@ -490,7 +465,7 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
 
         if retTxIntStruct1.returnCode() != 0 \
                 or retTxIntStruct2.returnCode() != 0:
-            LogOutput('error', "Can't show interface information")
+            LogOutput('error', "Can show interface information")
             assert(False)
 
         tx1Second = retTxIntStruct1.valueGet(key='TX')
@@ -515,7 +490,7 @@ class Test_ft_LAG_Dynamic_L2_Hashing_Flow_Distribution:
         highBandError = packetsCounter + \
             math.ceil(float(packetsCounter) * marginError)
 
-        if lowBandError > raw2Tx or  raw2Tx > highBandError \
+        if lowBandError > raw2Tx or raw2Tx > highBandError \
                 or lowBandError > raw1Tx or raw1Tx > highBandError:
             LogOutput('error', "Traffic not was evenly distributed ")
             assert(False)
