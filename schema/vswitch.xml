@@ -1274,6 +1274,40 @@
    </group>
   </table>
 
+  <table name="Recursive_Nexthop" title="Next hop resolution">
+    <p>
+      Recursive next hop resolution table. When BGP, for example, have a
+      new protocol next hop and unknown reachability, it creates
+      a new table entry. Zebra resolves the next hop and fills up the
+      nh_ip, metric, and ports information. When next hop type is IPv4,
+      Zebra only fills nh_ip. When next hop is of type IPv4_IFINDEX,
+      both nh_ip and ports will be filled by Zebra. When next hop is of
+      type IFINDEX or IFNAME, only ports will be filled by Zebra.
+    </p>
+    <group title="Next hop resolution">
+      <column name="vrf">
+        Reference to the VRF to which this entry belongs.
+      </column>
+      <column name="rnh_ip">
+          IPv4 or IPv6 recursive next hop address to be resolved.
+          format. Example 192.168.0.2
+      </column>
+      <column name="from">
+          Indicate which protocols requested this recursive next hop resolution.
+      </column>
+      <column name="nh_ip">
+          IPv4 or IPv6 next hop address
+          format. Example 12.1.0.2
+      </column>
+      <column name="metric">
+          The cost to reach this nexthop
+      </column>
+      <column name="ports">
+          Next hop interface index.
+      </column>
+   </group>
+  </table>
+
   <table name="BGP_Route" title="BGP Routes Information Base">
     <p>
       BGP local RIB.
