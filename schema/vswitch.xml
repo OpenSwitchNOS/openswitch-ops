@@ -1046,7 +1046,7 @@
       </column>
       <column name="exitpolicy">
         Rather than normal exiting, route map can continue on processing next route map,
-        or goto N route map and continue on processing.
+        or go to N route map and continue on processing. The default is exit.
       </column>
       <column name="goto_target">
         If exitpolicy is goto, nextpref is the route map to jump to.
@@ -1270,6 +1270,31 @@
       <column name="other_config">
       </column>
       <column name="external_ids">
+      </column>
+   </group>
+  </table>
+
+  <table name="Recursive_Nexthop_Resolution" title="Next hop resolution">
+    <p>
+      BGP Nexthop resolution.
+    </p>
+    <group title="BGP nh resolution">
+      <column name="vrf">
+        Reference to the VRF to which this route belongs.
+      </column>
+      <column name="rnh_ip">
+          IPv4 or IPv6 next hop address to be resolved.
+          format. Example 192.168.0.2
+      </column>
+      <column name="nh_ip">
+          IPv4 or IPv6 next hop address
+          format. Example 12.1.0.2
+      </column>
+      <column name="metric">
+          The cost to reach this nexthop
+      </column>
+      <column name="ports">
+          Next hop interface information
       </column>
    </group>
   </table>
