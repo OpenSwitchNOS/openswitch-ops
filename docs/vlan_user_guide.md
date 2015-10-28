@@ -122,14 +122,6 @@ switch(config-if)#vlan trunk native tag
 ```
 switch(config-lag-if)#vlan trunk native tag
 ```
-### Setting up an optional configuration
-1. ++ Set the description to the VLAN  ++
-The optional 'description' command lets the user give a description to the VLAN.
-```
-switch# config terminal
-switch(config)# vlan 12
-switch(config-vlan)#description testvlan
-```
 ###Verifying the configuration
 1. ++ Viewing a VLAN summary ++
 The 'show vlan summary' displays a VLAN summary. The following summary displays a list of configured VLANs:
@@ -140,16 +132,12 @@ Current configuration:
 vlan 3003
 vlan 1
     no shutdown
-    description test1\
 vlan 1212
     no shutdown
-    description test1212
 vlan 33
     no shutdown
-    description test33
 vlan 2
    no shutdown
-    description test2
 interface bridge_normal
   no routing
 ```
@@ -168,16 +156,12 @@ Current configuration:
 vlan 3003
 vlan 1
     no shutdown
-    description test1
 vlan 1212
     no shutdown
-    description test1212
 vlan 33
     no shutdown
-    description test33
 vlan 2
    no shutdown
-    description test2
 interface bridge_normal
   no routing
 interface 2
