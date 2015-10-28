@@ -1274,6 +1274,38 @@
    </group>
   </table>
 
+  <table name="Recursive_Nexthop" title="Next hop resolution">
+    <p>
+      Recursive next hop resolution. When a protocol has a
+      new recursive next hop and its reachability is unknown,
+      the protocol requests the recursive next hop to be resolved.
+      The result is represented as nh_ip, nh_metric, and nh_port.
+    </p>
+    <group title="Next hop resolution">
+      <column name="vrf">
+        Reference to the VRF to which this entry belongs.
+      </column>
+      <column name="rnh_ip">
+          IPv4 or IPv6 recursive next hop address to be resolved.
+          Example 192.168.0.2
+      </column>
+      <column name="rnh_from">
+          This indicates from which protocol the request comes.
+      </column>
+      <column name="nh_ip">
+          IPv4 or IPv6 forwarding next hop address that the recursive next
+          hop is resolved to.
+          Example 12.1.0.2
+      </column>
+      <column name="nh_metric">
+          The cost to reach the forwarding nexthop.
+      </column>
+      <column name="nh_port">
+          The port information of the forwarding next hop.
+      </column>
+   </group>
+  </table>
+
   <table name="BGP_Route" title="BGP Routes Information Base">
     <p>
       BGP local RIB.
