@@ -9,7 +9,7 @@
 	- [Setting up optional configurations](#setting-up-optional-configurations)
 	- [Verifying the configuration](#verifying-the-configuration)
 		- [Viewing interface information](#viewing-interface-information)
-		- [Viewing snapshot of active configurations.](#viewing-snapshot-of-active-configurations)
+		- [Viewing snapshot of active configurations](#viewing-snapshot-of-active-configurations)
 	- [Troubleshooting the configuration](#troubleshooting-the-configuration)
 		- [Condition](#condition)
 		- [Cause](#cause)
@@ -216,7 +216,7 @@ Interface                                                          (Mb/s)    Ch#
 ....................................................................................................
   1          ..    eth     ..      down    Administratively down    auto     ..
 ```
-##### Viewing snapshot of active configurations.
+##### Viewing snapshot of active configurations
 The `show running-config interface` and `show running-config interface` *`interface`* commands are used to see a snapshot of active configurations for all interfaces and if used with the interface name (*`interface`*), active configurations for a particular interface are displayed.
 ```
 ops-as5712# show running-config interface
@@ -247,7 +247,7 @@ The interface may be configured as an L2.
 Configure the interface as an L3 using the `routing` command. See the Command Reference for more information.
 
 ## CLI
-Click [here](https://openswitch.net/cli_feat.html#cli_command_anchor) to access the CLI commands related to the Physical interface.
+Click [here](http://www.openswitch.net/documents/user/interface_cli) to access the CLI commands related to the Physical interface.
 
 ## Related features
 No related features.
