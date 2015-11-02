@@ -2293,7 +2293,9 @@
                 "set",
                 [
                   "system",
-                  "internal"
+                  "internal",
+                  "vlansubint",
+                  "loopback"
                 ]
               ]
             }
@@ -2373,6 +2375,15 @@
             },
             "min": 0,
             "max": 4
+          }
+        },
+        "l3_subinterfaces": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
           }
         },
         "lldp_neighbor_info": {

@@ -2047,6 +2047,19 @@
           ``local interface.''  It does not make sense to bond an internal
           interface, so the terms ``port'' and ``interface'' are often used
           imprecisely for internal interfaces.</dd>
+
+          <dt><code>vlansubint</code></dt>
+          <dd>A sub-interface created for a physical interface,
+          e.g. <code>eth0.1</code> on Linux. Sub-interfaces are used for
+          router-on-stick configurations and to allow to separate traffic on a
+          particular VLAN to a separate port, and to selectively apply
+          policies on them.</dd>
+
+          <dt><code>loopback</code></dt>
+          <dd>A loopback interface is a virtual interface, supporting
+          IPv4/IPv6 address configuration, that remains up until it is
+          disabled by administrator. Loopback interface IP address is used
+          as router-id and source address by many protocols.</dd>
        </dl>
       </column>
     </group>
@@ -2710,6 +2723,14 @@
     </column>
     <column name="split_children">
       For a split parent interface, this is the reference to the list of children <ref table="Interface"/>s.
+    </column>
+    <column name="l3_subinterfaces">
+      The subinterfaces created for this port. Each subinterface created for a
+      port will have IP address and dot1q encapsulation vlan id configured.
+      l3_subinterface column is the key-value pair of the list of subinterfaces
+      where key is vlan id, and the value is the uuid of the subinterface
+      port entry created. It will be used only for the parent interface table
+      entry.
     </column>
     </group>
 
