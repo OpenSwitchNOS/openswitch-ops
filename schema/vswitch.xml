@@ -1761,6 +1761,14 @@
       default the port is up.
     </column>
 
+    <column name="l3_subinterfaces">
+      The subinterfaces created for this port. Each subinterface creted for a
+      port will have IP address and dot1q encapsulation vlan id configured.
+      l3_subinterface column is the key-value pair of the list of subinterfaces
+      where key is vlan id, and the value is the uuid of the subinterface
+      port entry created. It will be used only for parent port table entry.
+    </column>
+
     <group title="Hardware Port Configuration">
       <p>
         The following fields are not meant to be configured by the user,
