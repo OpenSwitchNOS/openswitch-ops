@@ -139,7 +139,8 @@ def lldp_enable_disable(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "Failed to show neighbour info"
 
-    LogOutput('info', "CLI_Switch1")
+    LogOutput('info', "CLI_Switch1 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch1 Return Structure")
     retStruct.printValueString()
     lnk01PrtStats = retStruct.valueGet(key='portStats')
     LogOutput('info', "\nExpected Neighbor Port ID: "
@@ -162,7 +163,8 @@ def lldp_enable_disable(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "Failed to show neighour info"
 
-    LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch2 Return Structure")
     retStruct.printValueString()
     lnk01PrtStats = retStruct.valueGet(key='portStats')
     LogOutput('info', "\nExpected Neighbor Port ID: "
@@ -193,7 +195,8 @@ def lldp_enable_disable(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "Failed to show neighbor info"
 
-    LogOutput('info', "CLI_Switch1")
+    LogOutput('info', "CLI_Switch1 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch1 Return Structure")
     retStruct.printValueString()
 
     lnk01PrtStats = retStruct.valueGet(key='portStats')
@@ -212,7 +215,8 @@ def lldp_enable_disable(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "\nFailed to show neighbor info"
     lnk01PrtStats = retStruct.valueGet(key='portStats')
-    LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch2 Return Structure")
     retStruct.printValueString()
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
     assert (lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()=="", "Case Failed, Neighbor present for SW2"

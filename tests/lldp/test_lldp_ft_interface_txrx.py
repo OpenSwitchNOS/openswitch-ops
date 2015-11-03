@@ -430,7 +430,8 @@ def lldp_interface_txrx(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "\nFailed to show neighbor info"
 
-    LogOutput('info', "CLI_Switch1Link1")
+    LogOutput('info', "CLI_Switch1Link1 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch1Link1 Return Structure")
     retStruct.printValueString()
     lnk01PrtStats = retStruct.valueGet(key='portStats')
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
@@ -447,7 +448,8 @@ def lldp_interface_txrx(**kwargs):
     assert retCode==0, "\nFailed to show neighbor info"
     lnk01PrtStats = retStruct.valueGet(key='portStats')
 
-    LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch2 Return Structure")
     retStruct.printValueString()
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
     #assert int((lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())==1, "Case Failed, No Neighbor is present for SW2 on link 1"
@@ -468,7 +470,8 @@ def lldp_interface_txrx(**kwargs):
     assert retCode==0, "\nFailed to show neighbor info"
     lnk02PrtStats = retStruct.valueGet(key='portStats')
 
-    LogOutput('info', "CLI_Switch1")
+    LogOutput('info', "CLI_Switch1 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch1 Return Structure")
     retStruct.printValueString()
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk02PrtStats[device1.linkPortMapping['lnk02']]['Neighbor_portID']).rstrip())
     #assert int((lnk02PrtStats[device1.linkPortMapping['lnk02']]['Neighbor_portID']).rstrip())==2, "Case Failed, No Neighbor present for SW1 on Link 2"
@@ -486,8 +489,8 @@ def lldp_interface_txrx(**kwargs):
     assert retCode==0, "\nFailed to show neighbor info"
     lnk02PrtStats = retStruct.valueGet(key='portStats')
 
-
-    LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch2 Return Structure")
     retStruct.printValueString()
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk02PrtStats[device2.linkPortMapping['lnk02']]['Neighbor_portID']).rstrip())
     assert (lnk02PrtStats[device2.linkPortMapping['lnk02']]['Neighbor_portID']).rstrip()=="", "Case Failed, Neighbor is present for SW2 Link 2"    
@@ -512,7 +515,8 @@ def lldp_interface_txrx(**kwargs):
 
     lnk03PrtStats = retStruct.valueGet(key='portStats')
 
-    LogOutput('info', "CLI_Switch1")
+    LogOutput('info', "CLI_Switch1 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch1 Return Structure")
     retStruct.printValueString()
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk03PrtStats[device1.linkPortMapping['lnk03']]['Neighbor_portID']).rstrip())
     assert (lnk03PrtStats[device1.linkPortMapping['lnk03']]['Neighbor_portID']).rstrip()=="", "Case Failed, Neighbor present for SW1 Link 3"
@@ -531,7 +535,8 @@ def lldp_interface_txrx(**kwargs):
     assert retCode==0, "\nFailed to show neighbor info"
     lnk03PrtStats = retStruct.valueGet(key='portStats')
 
-    LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch2 Return Structure")
     retStruct.printValueString()
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk03PrtStats[device2.linkPortMapping['lnk03']]['Neighbor_portID']).rstrip())
     #assert int((lnk03PrtStats[device2.linkPortMapping['lnk03']]['Neighbor_portID']).rstrip())==3, "Case Passed, No Neighbor is present for SW2 on Link 3"
@@ -553,7 +558,8 @@ def lldp_interface_txrx(**kwargs):
     assert retCode==0, "\nFailed to show neighbor info"
 
 
-    LogOutput('info', "CLI_Switch1")
+    LogOutput('info', "CLI_Switch1 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch1 Return Structure")
     retStruct.printValueString()
 
     lnk04PrtStats = retStruct.valueGet(key='portStats')
@@ -572,7 +578,8 @@ def lldp_interface_txrx(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "Failed to show neighbor info"
     lnk04PrtStats = retStruct.valueGet(key='portStats')
-    LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output:\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch2 Return Structure")
     retStruct.printValueString()
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk04PrtStats[device2.linkPortMapping['lnk04']]['Neighbor_portID']).rstrip())
     assert (lnk04PrtStats[device2.linkPortMapping['lnk04']]['Neighbor_portID']).rstrip()=="", "Case Failed, Neighbor is present for SW1 on Link 4"

@@ -189,7 +189,8 @@ def lldp_wait_hold(**kwargs):
     # End configure no routing on switch 2 port over lnk01
 
     #Waiting for LLDP message exchange
-    time.sleep(15)
+    #time.sleep(15)
+    time.sleep(20)
 
     #Parsing neighbour info for SW1
 
@@ -198,7 +199,9 @@ def lldp_wait_hold(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "Failed to show neighbour info"
 
-    LogOutput('info', "CLI_Switch1")
+    #LogOutput('info', "CLI_Switch1")
+    LogOutput('info', "CLI_Switch1 Output\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch1 Return Structure")
     retStruct.printValueString()
     lnk01PrtStats = retStruct.valueGet(key='portStats')
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
@@ -219,7 +222,9 @@ def lldp_wait_hold(**kwargs):
     retCode =retStruct.returnCode()
     assert retCode==0, "Failed to show neighbour info"
 
-    LogOutput('info', "CLI_Switch2")
+    #LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output\n" + str(retStruct.buffer()))
+    LogOutput('info', "CLI_Switch2 Return Structure")
     retStruct.printValueString()
     lnk01PrtStats = retStruct.valueGet(key='portStats')
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
@@ -265,14 +270,16 @@ def lldp_wait_hold(**kwargs):
 
 
     #Waiting for neighbour entry to ageout in (2*5 = 10 seconds)
-    time.sleep(15)
+    #time.sleep(15)
+    time.sleep(20)
 
     LogOutput('info', "\nShowing Lldp neighbourship on SW1")
     retStruct = ShowLldpNeighborInfo(deviceObj=device1, port=device1.linkPortMapping['lnk01'])
     retCode = retStruct.returnCode()
     assert retCode==0, "Failed to show neighbor info"
 
-    LogOutput('info', "CLI_Switch1Link1")
+    #LogOutput('info', "CLI_Switch1Link1")
+    LogOutput('info', "CLI_Switch1 Output\n" + str(retStruct.buffer()))
     lnk01PrtStats = retStruct.valueGet(key='portStats')
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
     assert (lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()=="" ,"Case Failed, Neighbor present for SW1"
@@ -283,7 +290,8 @@ def lldp_wait_hold(**kwargs):
     retStruct.returnCode()
     assert retCode==0, "Failed to show neighbour info"
 
-    LogOutput('info', "CLI_Switch2")
+    #LogOutput('info', "CLI_Switch2")
+    LogOutput('info', "CLI_Switch2 Output\n" + str(retStruct.buffer()))
     lnk01PrtStats = retStruct.valueGet(key='portStats')
     LogOutput('info', "\nExpected Neighbor Port ID: "+str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
     assert (lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()=="", "Case Failed, Neighbor present for SW2"
