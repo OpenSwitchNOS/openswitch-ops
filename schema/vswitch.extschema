@@ -226,6 +226,24 @@
           },
           "ephemeral": true
         },
+        "sub_intf": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "sub_intf_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "mgmt_intf": {
           "category": "configuration",
           "type": {
@@ -2223,6 +2241,26 @@
           },
           "ephemeral": true
         },
+        "admin_state": {
+          "category": "status",
+          "type": {
+	     "key": "string",
+	     "value": "string",
+             "min": 0,
+             "max": 1
+            },
+          "ephemeral": true
+        },
+        "operational_state": {
+          "category": "status",
+          "type": {
+	     "key": "string",
+	     "value": "string",
+             "min": 0,
+             "max": 1
+            },
+          "ephemeral": true
+          },
         "lacp_status": {
           "category": "status",
           "type": {
