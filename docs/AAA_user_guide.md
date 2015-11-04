@@ -1,6 +1,44 @@
 # AAA feature
-# Tabe of contents
-[TOC]
+# Table of contents
+
+- [Overview](#Overview)
+- [How to use the feature](#How-to-use-the-feature)
+	- [Scenario 1](#Scenario-1)
+	- [Setting up the basic configuration](#Setting-up-the-basic-configuration)
+	- [Setting up the optional configuration](#Setting-up-the-optional-configuration)
+	- [Verifying the configuration](#Verifying-the-configuration)
+	- [Troubleshooting the configuration](#Troubleshooting-the-configuration)
+	- [Case 1](#Case-1)
+		- [Condition](#Condition)
+		- [Possible causes](#Possible-causes)
+		- [Remedies](#Remedies)
+	- [Case 2](#Case-2)
+		- [Condition](#Condition)
+		- [Possible causes](#Possible-causes)
+		- [Remedies](#Remedies)
+	- [Scenario 2](#Scenario-2)
+	- [Setting up the basic configuration](#Setting-up-the-basic-configuration)
+	- [Setting up the optional configuration](#Setting-up-the-optional-configuration)
+	- [Verifying the configuration](#Verifying-the-configuration)
+	- [Troubleshooting the configuration](#Troubleshooting-the-configuration)
+		- [Condition](#Condition)
+		- [Possible causes](#Possible-causes)
+		- [Remedies](#Remedies)
+	- [Scenario 3](#Scenario-3)
+	- [Setting up the basic configuration](#Setting-up-the-basic-configuration)
+	- [Setting up the optional configuration](#Setting-up-the-optional-configuration)
+	- [Verifying the configuration](#Verifying-the-configuration)
+	- [Troubleshooting the configuration](#Troubleshooting-the-configuration)
+	- [Case 1](#Case-1)
+		- [Condition](#Condition)
+		- [Possible causes](#Possible-causes)
+		- [Remedies](#Remedies)
+	- [Case 1](#Case-1)
+		- [Condition](#Condition)
+		- [Possible causes](#Possible-causes)
+		- [Remedies](#Remedies)
+- [CLI](#CLI)
+- [Related features](#Related-features)
 
 ## Overview ##
 The AAA feature is used for authenticating users who access the switch management interface using console, SSH or REST. The AAA feature supports the following:
