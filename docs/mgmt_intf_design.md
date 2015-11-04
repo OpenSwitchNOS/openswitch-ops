@@ -16,5 +16,5 @@ The device is configured or monitored through the management interface. All mana
 
 ##References
 
-* [Management Interface Design Document - TBL](/docs/mgmt-intf)
-* [Management Interface User guide - TBL](/docs/mgmt-intf)
+* [Management Interface Design Document](/documents/dev/ops-mgmt-intf/DESIGN)
+* [Management Interface User guide](/documents/user/mgmt_intf_user_guide)
