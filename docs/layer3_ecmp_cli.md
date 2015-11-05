@@ -30,6 +30,8 @@ hostname(config)# ip ecmp disable
 hostname(config)#
 ```
 
+## ip ecmp load-balance
+
 ###  ip ecmp load-balance dst-ip disable
 
 ##### Syntax
@@ -118,6 +120,28 @@ hostname(config)# ip ecmp load-balance src-port disable
 hostname(config)#
 ```
 
+###  ip ecmp load-balance resilient
+
+##### Syntax
+Under the config context.
+
+`[no] ip ecmp load-balance resilient`
+
+##### Description
+Disable resilient hashing for load balancing. When enabled, preserves in-flight traffic flows when ECMP group membership changes. Use the 'no' variant to disable.
+
+##### Authority
+Admin.
+
+##### Parameters
+None.
+
+##### Example
+```
+hostname(config)# ip ecmp load-balance resilient
+hostname(config)#
+```
+
 ## Display commands
 
 ### show ip ecmp
@@ -144,6 +168,7 @@ ECMP Configuration
 ---------------------
 
 ECMP Status        : Enabled
+Resilient Hashing  : Disabled
 
 ECMP Load Balancing by
 ------------------------
