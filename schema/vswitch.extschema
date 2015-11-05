@@ -108,6 +108,25 @@
             "max": "unlimited"
           }
         },
+        "features": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "ospfv2"
+                ]
+              ]
+            },
+            "value": {
+              "type": "integer"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "next_cfg": {
           "type": "integer"
         },
@@ -580,6 +599,23 @@
             "max": "unlimited"
           }
         },
+        "ospf_routers": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 65535
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "OSPF_Router"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "dhcp_server":{
           "category": "configuration",
           "relationship": "1:m",
@@ -988,7 +1024,8 @@
                 [
                   "connected",
                   "static",
-                  "BGP"
+                  "BGP",
+                  "ospf"
                 ]
               ]
             }
@@ -1259,12 +1296,13 @@
                 "set",
                 [
                   "connected",
-                  "static"
+                  "static",
+                  "ospf"
                 ]
               ]
             },
             "min": 0,
-            "max": 2
+            "max": 3
           }
         },
         "always_compare_med": {
@@ -2232,6 +2270,18 @@
             "max": "unlimited"
           },
           "ephemeral": true
+        },
+        "ospf_if_config": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Interface_Config"
+            },
+            "min": 0,
+            "max": 1
+          }
         },
         "statistics": {
           "category": "statistics",
@@ -3473,20 +3523,20 @@
          "ip_address"
        ]
      ]
-     },
-     "DHCPSrv_Option":{
+    },
+    "DHCPSrv_Option":{
       "columns":{
-       "match_tags":{
-         "category":"configuration",
-         "type":{
-           "key":{
-             "type":"string"
-           },
-           "min":0,
-           "max":"unlimited"
-         }
-       },
-       "option_number":{
+        "match_tags":{
+          "category":"configuration",
+          "type":{
+            "key":{
+              "type":"string"
+            },
+            "min":0,
+            "max":"unlimited"
+          }
+        },
+        "option_number":{
          "category":"configuration",
          "type":{
            "key":{
@@ -3495,8 +3545,8 @@
            "min":0,
            "max":1
          }
-       },
-       "option_name":{
+        },
+        "option_name":{
          "category":"configuration",
          "type":{
            "key":{
@@ -3505,8 +3555,8 @@
            "min":0,
            "max":1
          }
-       },
-       "option_value":{
+        },
+        "option_value":{
          "category":"configuration",
          "type":{
            "key":{
@@ -3515,7 +3565,7 @@
            "min":0,
            "max":1
          }
-       },
+        },
        "ipv6":{
          "category":"configuration",
          "type":{
@@ -3526,8 +3576,8 @@
            "max":1
            }
         }
-     }
-   },
+      }
+    },
    "DHCPSrv_Match":{
       "columns":{
        "set_tag":{
@@ -3569,6 +3619,1014 @@
          }
        }
      }
+    },
+    "OSPF_Interface_Config":{
+      "columns":{
+        "ospf_if_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+         "passive_interface": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "default",
+                  "passive",
+                  "no_passive"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "auth_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "nbma_nbr_config": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 4294967295
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "OSPF_NBMA_Neighbor_Config"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      }
+    },
+    "OSPF_Router":{
+      "columns":{
+        "enable_instance": {
+          "category": "configuration",
+          "type": "boolean"
+        },
+        "router_id": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "areas": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "OSPF_Area"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "distance": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "default_information": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "redistribute": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "connected",
+                  "static",
+                  "bgp"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 3
+          }
+        },
+        "stub_router_config": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "admin",
+                  "startup",
+                  "startup_waitbgp",
+                  "include_stub",
+                  "ext_lsa",
+                  "summary_lsa"
+                ]
+              ]
+            },
+            "value": {
+              "type": "integer"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "passive_interface_default": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "SPF_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "summary_addresses": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Summary_Address"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "restart_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "router_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "lsa_timers_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "router_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "as_ext_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "opaque_as_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ospf_routes_ext": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Route"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      }
+    },
+    "OSPF_Area": {
+      "columns": {
+        "ospf_interfaces": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 32
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "OSPF_Interface"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "area_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "vlinks": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 4294967295
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "OSPF_Vlink"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "area_range_addresses": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Summary_Address"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "filter_list": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "in",
+                  "out"
+                ]
+              ]
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "Prefix_List"
+            },
+            "min": 0,
+            "max": 2
+          }
+        },
+        "auth_config": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "null",
+                  "text",
+                  "md5"
+                ]
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "router_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "network_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "abr_summary_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "asbr_summary_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "as_nssa_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "opaque_area_lsas": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_LSA"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "opaque_link_lsas":{
+          "category": "status",
+          "relationship":"1:m",
+          "type":{
+            "key":{
+              "type":"uuid",
+              "refTable":"OSPF_LSA"
+            },
+            "min":0,
+            "max":"unlimited"
+          }
+        },
+        "area_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ospf_routes_intra_area": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Route"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ospf_routes_inter_area": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Route"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ospf_routes_router": {
+          "category": "status",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Route"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "area_statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      }
+    },
+    "OSPF_Summary_Address": {
+      "columns": {
+        "prefix": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      }
+    },
+    "OSPF_Interface": {
+      "columns": {
+        "name": {
+          "category": "configuration",
+          "type":{
+            "key":{
+              "type":"string",
+              "maxLength":32
+            }
+          },
+          "mutable": false
+        },
+        "port": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "vlink": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_Vlink",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ifsm_state": {
+          "category": "status",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "depend_upon",
+                  "down",
+                  "loopback",
+                  "waiting",
+                  "point_to_point",
+                  "dr_other",
+                  "backup_dr",
+                  "dr"
+                ]
+              ]
+            }
+          }
+        },
+        "neighbors":{
+          "category": "status",
+          "relationship":"1:m",
+          "type":{
+            "key":{
+              "type":"uuid",
+              "refTable":"OSPF_Neighbor"
+            },
+            "min":0,
+            "max":"unlimited"
+          }
+        },
+        "if_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "if_statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ]
+    },
+    "OSPF_Neighbor": {
+      "columns": {
+        "nbr_router_id": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 4294967295
+            }
+          }
+        },
+        "nbr_if_addr": {
+          "category": "configuration",
+		  "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "dr": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "bdr": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "nbr_options": {
+          "category": "status",
+          "type": "integer"
+        },
+        "nfsm_state": {
+          "category": "status",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "depend_upon",
+                  "down",
+                  "deleted",
+                  "attempt",
+                  "init",
+                  "two_way",
+                  "ex_start",
+                  "exchange",
+                  "loading",
+                  "full"
+                ]
+              ]
+            }
+          }
+        },
+        "priority": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 255
+            }
+          }
+        },
+        "nbr_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "nbr_statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "nbma_nbr": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "OSPF_NBMA_Neighbor_Config",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": 1
+          }
+        }
+      }
+    },
+   "OSPF_NBMA_Neighbor_Config":{
+      "columns":{
+        "interface_name": {
+          "category": "configuration",
+          "type":{
+            "key":{
+              "type":"string",
+              "maxLength":32
+            }
+          },
+          "mutable": false
+        },
+        "nbr_router_id": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 4294967295
+            }
+          },
+          "mutable": false
+        },
+        "nbma_nbr_conf": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "nbma_nbr_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      }
+    },
+   "OSPF_Vlink":{
+      "columns":{
+        "name": {
+          "category": "configuration",
+          "type":{
+            "key":{
+              "type":"string",
+              "maxLength":32
+            }
+          },
+          "mutable": false
+        },
+        "peer_router_id": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 4294967295
+            }
+          }
+        },
+        "area_id": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 4294967295
+            }
+          }
+        },
+        "vlink_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "auth_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      }
+    },
+    "OSPF_Route": {
+      "columns": {
+        "prefix": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "path_type": {
+          "category": "status",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "intra_area",
+                  "inter_area",
+                  "external"
+                ]
+              ]
+            }
+          }
+        },
+        "paths": {
+          "category": "status",
+          "type": "string"
+        },
+        "route_info": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "flags": {
+          "category": "status",
+          "type": "integer"
+        }
+      }
+    },
+    "OSPF_LSA": {
+      "columns": {
+        "area_id": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            }
+          }
+        },
+        "ls_age": {
+          "category": "status",
+          "type": "string"
+        },
+        "ls_id": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            }
+          }
+        },
+        "adv_router": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            }
+          }
+        },
+        "lsa_type": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "type1_router_lsa",
+                  "type2_network_lsa",
+                  "type3_abr_summary_lsa",
+                  "type4_asbr_summary_lsa",
+                  "type5_as_external_lsa",
+                  "type6_multicast_lsa",
+                  "type7_nssa_lsa",
+                  "type8_external_attributes_lsa",
+                  "type9_opaque_link_lsa",
+                  "type10_opaque_area_lsa",
+                  "type11_opaque_as_lsa"
+                ]
+              ]
+            }
+          }
+        },
+        "ls_seq_num": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            }
+          }
+        },
+        "options": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 255
+            }
+          }
+        },
+        "flags": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 255
+            }
+          }
+        },
+        "chksum": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 65535
+            }
+          }
+        },
+        "length": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 65535
+            }
+          }
+        },
+        "num_router_links": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 65535
+            }
+          }
+        },
+        "prefix": {
+          "category": "status",
+          "type": "string"
+        },
+        "lsa_data": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 1,
+            "max": "unlimited"
+          }
+        }
+      }
     }
   }
 }
