@@ -3292,8 +3292,15 @@
         Matching incoming DHCP options.
       </column>
 
-      <column name="bootp">
-        BOOTP options for the network boot of DHCP clients.
+      <column name="bootp" key="match tag">
+       <p>
+        Specifies BOOTP options for the network boot of DHCP clients.
+       </p>
+
+       <p>
+        The filename is keyed by match tag. If no key is specified, default
+        key is no_matching_tag.
+       </p>
       </column>
     </group>
 
