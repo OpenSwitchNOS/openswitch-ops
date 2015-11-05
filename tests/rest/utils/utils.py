@@ -25,7 +25,7 @@ PORT_DATA = {"configuration": {
         "name": "Port1",
         "interfaces": ["/rest/v1/system/interfaces/1"],
         "trunks": [413],
-        "ip4_address_secondary": ["192.168.0.1"],
+        "ip4_address_secondary": ["192.168.1.1"],
         "lacp": "active",
         "bond_mode": "l2-src-dst-hash",
         "tag": 654,
@@ -50,6 +50,36 @@ def create_test_port (ip):
     path = "/rest/v1/system/ports"
     status_code, response_data = execute_request(path, "POST", json.dumps(PORT_DATA), ip)
     return status_code
+
+def update_test_port(switch_ip, path, field, new_value):
+    """
+    Update field from existing port:
+        - Perform a GET request to an existing path defined in path
+        - Retrieve Configuration section
+        - Update field with new_value
+        - Perform a PUT request
+    """
+    status_code, response_data = execute_request(path, "GET", None, switch_ip)
+
+    assert status_code is httplib.OK, "Wrong status code, received: %s\n" % status_code
+    assert response_data is not "", "Response data received: %s\n" % response_data
+
+    json_data = {}
+
+    try:
+        json_data = json.loads(response_data)
+    except:
+        assert False, "Malformed JSON"
+
+    port_info = {}
+    port_info["configuration"] = json_data["configuration"]
+
+    #update value
+    port_info["configuration"][field] = new_value
+
+    status_code, response_data = execute_request(path, "PUT", json.dumps(port_info), switch_ip)
+    assert status_code == httplib.OK, "Wrong status code, received: %s\n" % status_code
+    assert response_data is "", "Response data received: %s\n" % response_data
 
 def compare_dict(dict1, dict2):
     if dict1 == None or dict2 == None:
