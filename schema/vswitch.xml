@@ -1975,6 +1975,10 @@
       <column name="status">
         Key-value pairs that report port status.
       </column>
+      <column name="status" key="error">
+        Key-value pairs that reports "error: no_internal_vlan" if vlan
+        cannot be attached to an interface.
+      </column>
       <column name="status" key="bond_hw_handle">
         Unique identifier of the LAG from the data path's perspective.
         This key value should be treated as opaque handle by application
