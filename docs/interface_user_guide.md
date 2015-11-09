@@ -247,7 +247,7 @@ The interface may be configured as an L2.
 Configure the interface as an L3 using the `routing` command. See the Command Reference for more information.
 
 ## CLI
-Click [here](https://openswitch.net/cli_feat.html#cli_command_anchor) to access the CLI commands related to the Physical interface.
+Click [here](http://www.openswitch.net/documents/user/layer3_user_guide#layer3-Interfaces) to access the CLI commands related to the Physical interface.
 
 ## Related features
 No related features.
