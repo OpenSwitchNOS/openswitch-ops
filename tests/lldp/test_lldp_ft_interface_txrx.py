@@ -633,7 +633,9 @@ def lldp_interface_txrx(**kwargs):
 class Test_lldp_configuration:
     def setup_class (cls):
         # Test object will parse command line and formulate the env
-        Test_lldp_configuration.testObj = testEnviron(topoDict=topoDict)
+        Test_lldp_configuration.testObj = testEnviron(topoDict=topoDict,
+                                                      defSwitchContext=\
+                                                        "vtyShell")
         #    Get topology object
         Test_lldp_configuration.topoObj = Test_lldp_configuration.testObj.topoObjGet()
 
