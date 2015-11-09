@@ -1383,9 +1383,12 @@
       Default is 180 seconds.
       </column>
       <column name="redistribute">
-      Allows redistribution of routes from various protocols.
-      For example: static, connected. Enabling of redistribution protocols is not mutually
-      exclusive.
+      This column is a map of string-string pairs and allows redistribution of
+      routes from various protocols. The keys are protocol names or kind of
+      routes (for example - rip, ospf, static, connected, kernel, isis, babel)
+      and values are the name of route maps using which routes are filtered. If
+      no route maps are specified, then value would be string "none" matching
+      all routes of the protocol or kind.
       </column>
       <column name="always_compare_med">
       Compares MED (Multi-Exit Discriminitor) from different neighbors.
@@ -1403,6 +1406,31 @@
       <column name="bgp_neighbors" keyname="ip_or_group_name">
         BGP neighbors or neighbor groups, keyed by IP for the former or any
 	string name for the latter.
+      </column>
+      <column name="bestpath_compare_routerid">
+        To compare identical routes received from different external peers
+        during the best path selection process.
+        Default is false.
+      </column>
+      <column name="fast_external_failover">
+        To enable fast external failover for BGP directly connected peering sessions.
+        Default is false.
+      </column>
+      <column name="log_neighbor_changes">
+        To enable logging of BGP neighbor status changes.
+        Default is false.
+      </column>
+      <column name="network_import_check">
+        To enable advertising of the BGP network in IGP.
+        Default is false.
+      </column>
+      <column name="address_family">
+        Represents the address family for this entry.
+        Default value is <code>ipv4</code>.
+      </column>
+      <column name="sub_address_family">
+        Represents more information regarding this entry.
+        Default is <code>unicast</code>.
       </column>
     </group>
    <group title="Status">
@@ -1482,6 +1510,73 @@
 
       <column name="advertisement_interval">
       Minimum interval between sending BGP routing updates. Range: 0-600 seconds.
+       Default value is 30 seconds.
+      </column>
+
+      <column name="interface_name">
+      This column is used to specify interface name when connecting to a BGP peer
+      over an IPv6 link-local address.
+      This command  may be deprecated in future releases
+      </column>
+
+      <column name="strict_capability_match">
+      This column strictly sets/unsets comparison of remote capabilities and local
+      capabilities with specified BGP peer.
+      If capabilities are different, Unsupported Capability error is sent and connection is reset.
+      </column>
+
+      <column name="activate">
+      This column handles activation of specified neighboring peer to facilitate multicast routing updates.
+      </column>
+
+      <column name="capability_dynamic">
+      This column facilitates support of negotiation of capabilities (sending new capabilities or
+      removing previously negotiated capabilities) without performing a hard clear of the BGP session,
+      the capability data field includes a list of capabilities that can be dynamically negotiated.
+      </column>
+
+      <column name="capability_orf_prefix_list">
+      This column facilitates support of cooperative route filtering to install a BGP speakers
+      inbound route filter as an outbound route filter on the peer.
+      Installs the filter (any inbound prefix list or distribute list) as an outbound prefix list.
+      Possible values: both, send or receive
+      </column>
+
+      <column name="dont_capability_negotiate">
+      This column suppresses sending of capability negotiation as OPEN message optional parameter
+      to the peer.
+      </column>
+
+      <column name="ebgp_multihop">
+      This column stores ttl values when attempts to establish BGP connections with external AS
+      routers that are not directly connected are made.
+      Possible values:  1 - 255
+      </column>
+
+      <column name="send_community">
+      This command allows us to specify that a communities attribute should be sent to a BGP neighbor.
+      POssible values: both, standard or extended.
+      </column>
+
+      <column name="prefix_list">
+      This column handles prefix-list defined on the neighbor to filter updates to and from
+      the neighbor.
+      </column>
+
+      <column name="prefix_list_direction">
+      This column handles the direction in which prefix list configured using above command should be
+      applied.
+      Possible values: in or out
+      </column>
+
+      <column name="ttl_security_hops">
+      This column specifies the maximum number of hops to the BGP peer.
+      Possible values: 1 -254
+      </column>
+
+      <column name="update_source">
+      This column specifies the source-address to establish BGP connections to the neighbors sourced
+      from the interface IP address stored in the column.
       </column>
 
       <column name="maximum_prefix_limit">
