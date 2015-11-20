@@ -2759,18 +2759,23 @@
   <table name="LED" title="LEDs on various subsystems">
     <group title="Configuration">
       <column name="id">
+        Logical name of the LED, including the subsystem name.
       </column>
       <column name="state">
+        State of the LED, e.g. ON/OFF/FLASHING.
       </column>
     </group>
    <group title="Status">
       <column name="status" >
+        Status of the LED, e.g. OK/FAULT/UNINITIALIZED.
       </column>
    </group>
    <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
 
+      <column name="hw_config">
+      </column>
       <column name="other_config">
       </column>
       <column name="external_ids">
