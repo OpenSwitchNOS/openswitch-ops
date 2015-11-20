@@ -99,6 +99,11 @@
       <column name="dns_servers">
       </column>
 
+      <column name="features">
+      <p>
+      This is global level knob disable or enable selected features on the system.
+      </p>
+      </column>
       <column name="asset_tag_number">
       </column>
 
@@ -975,6 +980,9 @@
       <column name="bgp_routers" keyname="asn">
         BGP routers keyed by ASN value.
       </column>
+      <column name="ospf_routers" keyname="instance_tag">
+        OSPF Routers keyed by instance_tag. Valid instance_tag values must be in range of 1 to 65535.
+      </column>
       <column name="dhcp_server">
         DHCP Server in the VRF.
       </column>
@@ -1138,8 +1146,9 @@
       <column name="from">
           Protocol that is responsible for this entry. The value is
           <code>BGP</code> if BGP created this entry, <code>static</code>
-          when the user configures a static route and <code>connected</code>
-          if it is a directly connected device.
+          when the user configures a static route, <code>connected</code>
+          if it is a directly connected device and <code>OSPF</code> if OSPF
+          created this entry.
       </column>
       <column name="protocol_private">
           Indicates that this row is a protocol specific route entry.
@@ -1384,7 +1393,7 @@
       </column>
       <column name="redistribute">
       Allows redistribution of routes from various protocols.
-      For example: static, connected. Enabling of redistribution protocols is not mutually
+      For example: static, connected, ospf. Enabling of redistribution protocols is not mutually
       exclusive.
       </column>
       <column name="always_compare_med">
@@ -1955,6 +1964,9 @@
        <column name="ip6_address_secondary">
         This is a list of secondary IPv6 addresses and subnet mask
         in the address/mask format.
+      </column>
+      <column name="ospf_if_config">
+      Port level ospf routing configuration. This is the reference to <ref table="OSPF_Interface_Config"/>.
       </column>
    </group>
 
@@ -3492,4 +3504,800 @@
 
   </table>
 
+
+ <table name="OSPF_Interface_Config" title="OSPF configurations related to port">
+     <p>
+     This table is for all port level OSPFv2 Routing Configurations.
+     </p>
+     <group title="Configuration">
+         <column name="ospf_if_config" key="transmit_delay"
+           type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+          The estimated time in seconds to transmit an LSA to a neighbor. The
+          transmit_delay timer increments the age of LSAs in update
+         packets to accommodate transmission and propagation delays
+         for the interface. The timer is more important on very low
+         speed links where the transmission delay is more significant.
+          Valid values must be in the range of 1 to 65535.
+         Default value is 1 second.
+         </column>
+         <column name="ospf_if_config" key="retransmit_interval"
+           type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+          The number of seconds between LSA retransmissions, for adjacencies
+          belonging to this interface. Also used when retransmitting Database
+          Description and Link State Request Packets.
+          Valid values must be in the range of 1 to 65535.
+          Default value is 5 seconds.
+         </column>
+         <column name="ospf_if_config" key="hello_interval"
+          type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+          Hello packet will be sent every hello_interval timer value seconds
+          on the specified interface. This value must be the same for all
+          routers attached to a common network.
+          Valid values must be in the range of 1 to 65535.
+          The default value is 10 seconds.
+         </column>
+         <column name="ospf_if_config" key="dead_interval"
+          type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+          The time that a neighbor waits for a Hello packet before declaring the local
+          router as dead and tearing down adjacencies.
+          Valid values must be in the range of 1 to 65535.
+          The default value is 4 times hello_interval seconds, that is 40 seconds.
+         </column>
+         <column name="ospf_if_config" key="if_out_cost"
+          type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+          The output cost assigned to an OSPF interface. The cost value is set to
+          router-LSA's metric field and used for SPF calculation.
+          Valid values must be in the range of 1 to 65535.
+          Default value depends on the interface bandwidth and on the auto-cost
+          reference bandwidth.
+         </column>
+         <column name="ospf_if_config" key="priority"
+          type='{"type": "integer", "minInteger": 0, "maxInteger": 255}'>
+          The router with the highest priority will be more eligible to become
+          Designated Router. Setting the value to 0, makes the router
+          ineligible to become Designated Router.
+          Valid values must be in the range of 1 to 255.
+          The default value is 1.
+         </column>
+         <column name="ospf_if_config" key="intf_type"
+          type='{"type": "string", "enum": ["set", ["ospf_iftype_none",
+                     "ospf_iftype_pointopoint", "ospf_iftype_broadcast",
+                     "ospf_iftype_nbma","ospf_iftype_pointomultipoint",
+                    "ospf_iftype_virtuallink", "ospf_iftype_loopback"]]}'>
+          The type of the OSPFv2 network interface.
+         </column>
+        <column name="ospf_if_config" key="mtu_ignore" type='{"type": "boolean"}'>
+          Determines whether OSPFv2 is to ignore any IP MTU mismatch with a neighbor.
+          The default is to not establish adjacency if the neighbor MTU does not
+          match the local interface MTU.
+          Valid values must be either true or false.
+          Default value is false.
+        </column>
+         <column name="passive_interface"
+          type='{"type": "string", "enum": ["set", ["default",
+                     "passive", "no_passive"]]}'>
+          Do not speak OSPF interface on the given interface, but do advertise
+          the interface as a stub link in the router-LSA (Link State Advertisement)
+          for this router. This allows one to advertise addresses on such connected
+          interfaces without having to originate AS-External/Type-5 LSAs (which
+          have global flooding scope) - as would occur if connected addresses were
+          redistributed into OSPF. This is the only way to advertise non-OSPF links
+          into stub areas. This interface context configuration overrides router context
+          configuration.
+          Default value is "default", which is to follow the configuration under
+          router context.
+         </column>
+         <column name="auth_config" key="auth_type"
+          type='{"type": "string", "enum": ["set", ["null", "text", "md5"]]}'>
+          The type of OSPF authentication on the OSPF interface.
+         </column>
+        <column name="auth_config" key="auth_key" type='{"type": "string"}'>
+          This column contains the authentication key if "auth_type" column contains values "text" or "md5".
+        </column>
+        <column name="nbma_nbr_config" keyname="nbr_router_id" type='{"type": "integer"}'>
+          This column references to "OSPF_NBMA_Neighbor_Config" table which contains the OSPF configurations
+          related to non-broadcast multi-access networks configured on this interface.
+          Valid values for the key must be in the range 1 to 4294967295.
+       </column>
+    </group>
+  </table>
+
+<table name="OSPF_Router" title="OSPF router related configurations">
+     <group title="Configuration">
+        <column name="enable_instance" type='{"type": "boolean"}'>
+        Determines if this instance is enabled or not.
+        </column>
+         <column name="router_id"  key="router_id_static" type='{"type": "boolean"}'>
+            Determines whether the router-id is configured statically or selected by OSPF dynamically.
+            Default is false.
+         </column>
+         <column name="router_id"  key="router_id_val" type='{"type": "integer"}'>
+            Contains the OSPF router identifier. The router-ID of the OSPF process or instance.
+            The router-ID may be an IP address of the router, but need not be - it can be any
+            arbitrary 32bit number. However it MUST be unique within the entire OSPF domain.
+            Valid values for the key must be in the range 1 to 4294967295.
+         </column>
+         <column name="areas"  keyname="area_id" type='{"type": "integer"}'>
+         This column references to "OSPF_Area" table which contains the OSPF area related
+         configurations. The key to the column is the area id.
+         </column>
+         <column name="distance">
+         <p>
+         The administrative distance for OSPFv2 all types of routes.
+         Valid values for the key must be in the range 1 to 255.
+         Default is 110.
+         </p>
+         </column>
+         <column name="distance"  key="all" type='{"type": "integer"}'>
+         Administrative distance applies to all types of routes if not configured specifically for certain types.
+         </column>
+         <column name="distance"  key="external" type='{"type": "integer"}'>
+          Administrative distance applies to routes of type external.
+         </column>
+         <column name="distance"  key="intra_area" type='{"type": "integer"}'>
+         Administrative distance applies to routes of type intra-area.
+         </column>
+         <column name="distance"  key="inter_area" type='{"type": "integer"}'>
+         Administrative distance applies to routes of type inter-area.
+         </column>
+         <column name="default_information"  type='{"type": "string" "value": "string"}'>
+           <p>
+            Configuration related to the default routes advertisement.
+            Originate an AS-External (type-5) LSA describing a default route into all
+            external-routing capable areas.
+            If the "always" keyword is given then the default is always advertised,
+            even when there is no default present in the routing table.
+           </p>
+         </column>
+         <column name="default_information"  key="default_info_originate" type='{"type": "boolean"}'>
+            Default routes must be advertised.
+            Default value is false.
+         </column>
+         <column name="default_information"  key="always" type='{"type": "boolean"}'>
+            Default routes must be advertised always, even if  the default route doesn't exist in the local system or VRF RIB.
+            Default value is false.
+         </column>
+         <column name="redistribute"  key="connected">
+            Redistributes the connected routes into OSPFv2 network.
+            .
+         </column>
+          <column name="redistribute"  key="static">
+            Redistributes the static routes into OSPFv2 network.
+            .
+         </column>
+          <column name="redistribute"  key="bgp">
+            Redistributes the routes learnt from BGP protocol into OSPFv2 network.
+            .
+         </column>
+         <column name="stub_router_config"  key="admin_set"  type='{"type": "boolean"}'>
+         Determines whether the stub router router_lsa advertisement is set administratively.
+         By default this is disabled (value is FALSE).
+         </column>
+         <column name="stub_router_config"  key="startup"  type='{"type": "integer"}'>
+         Determines whether the delay is configured during startup. Allowed range is 0 to 86400 in seconds.
+         By default this is disabled (value is 0).
+         </column>
+         <column name="stub_router_config"  key="startup_waitbgp"  type='{"type": "boolean"}'>
+         Determines whether to wait on startup for bgp to be configured. Value is 1 when set.
+         By default this is disabled (value is FALSE).
+         </column>
+         <column name="stub_router_config"  key="include_stub"  type='{"type": "boolean"}'>
+         Determines whether to include stub. Value is 1 when set.
+         By default this is disabled (value is FALSE).
+         </column>
+         <column name="stub_router_config"  key="ext_lsa"  type='{"type": "integer"}'>
+         Determines whether external lsa is configured.
+         Non-zero value is max metric value for ext lsa and allowed range is 1 to 16777214.
+         By default this is disabled (value is 0).
+         </column>
+         <column name="stub_router_config"  key="summary_lsa"  type='{"type": "integer"}'>
+         Determines whether summary lsa is configured.
+         Non-zero Value is max metric value for ext lsa, allowed range is 1 to 16777214.
+         By default this is disabled (value is 0).
+         </column>
+        <column name="passive_interface_default" type='{"type": "boolean"}'>
+            Determines whether all interfaces should be set to passive by default.
+            Default is false.
+        </column>
+         <column name="spf_config" key="spf_delay" type='{"type": "integer", "minInteger": 0, "maxInteger": 600000}'>
+            This specifies the initial delay time for SPF calculation schedule.
+            Allowed range is 0 to 600000 milliseconds.
+            Default is 200 milliseconds.
+         </column>
+         <column name="spf_config"  key="spf_holdtime" type='{"type": "integer", "minInteger": 0, "maxInteger": 600000}'>
+            This specifies the configured  minimum hold time between the SPF calculation schedules.
+            SPF hold time itself will be adaptive and increasing and bounded by max wait time.
+            Allowed range is 0 to 600000 milliseconds.
+            Default is 1000 milliseconds.
+         </column>
+         <column name="spf_config"  key="spf_max_wait" type='{"type": "integer", "minInteger": 0, "maxInteger": 600000}'>
+            This specifies the maximum wait time or hold time between the SPF calculation schedules.
+            Allowed range is 0 to 600000 milliseconds.
+            Default is 10000 milliseconds.
+         </column>
+         <column name="summary_addresses">
+            This column references to <ref table="OSPF_Summary_Address"/> which contains the OSPF summary address
+            related configurations. This column is used to summarizes routes only from other routing protocols
+            that are being redistributed into OSPF.
+         </column>
+         <column name="restart_config"  key="enable_graceful_restart" type='{"type": "boolean"}'>
+            Determines whether  graceful restart functionality is enabled or not.
+            Default is false .
+         </column>
+         <column name="restart_config"  key="restart_helper_disable" type='{"type": "boolean"}'>
+            Determines whether  helper mode is disabled on the local OSPFv2 instance. If this flag is set, OSPFv2 does not
+            participate in the graceful restart of a neighbor.
+            Default is true.
+         </column>
+         <column name="restart_config"  key="restart_planned_only" type='{"type": "boolean"}'>
+            If this flag is set, OSPFv2 will support graceful restart only in the event of a planned restart.
+            Default is false.
+         </column>
+         <column name="restart_config"  key="restart_interval" type='{"type": "integer", "minInteger": 5, "maxInteger": 1800}'>
+            Specifies the grace period that indicates how long neighbors should wait after a graceful restart has started
+            before tearing down adjacencies.
+            Default is 60 seconds.
+         </column>
+         <column name="restart_config"  key="restart_strict_lsa_checking" type='{"type": "boolean"}'>
+            Strict LSA checking can be disabled to prevent the termination of graceful restart by a helping router.
+            This option may be configured for interoperability with other vendor devices. The OSPF graceful restart
+            helper capability must be enabled if the strict LSA checking is disabled.
+            By default, LSA checking is enabled.
+         </column>
+
+         <column name="router_config"  key="default_metric" type='{"type": "integer", "minInteger": 0, "maxInteger": 16777214}'>
+            The default cost metric for the redistributed routes.
+            Default is 20.
+         </column>
+         <column name="router_config"  key="auto_cost_ref_bw" type='{"type": "integer", "minInteger": 1, "maxInteger": 4000000}'>
+            Specifies the reference bandwidth for cost calculations, where this bandwidth is considered
+            equivalent to an OSPF cost of 1, specified in Mbits/s.
+            Allowed range is 1 to 4000000, that is 1 Mbps to 4000 Gbps.
+            Default is 40000 Mbps, that is 40 Gbps.
+         </column>
+         <column name="router_config"  key="maxpaths" type='{"type": "integer", "minInteger": 1, "maxInteger": 64}'>
+            The maximum number of equal cost OSPFv2 paths to a destination in the route table.
+            Default is 8.
+         </column>
+         <column name="router_config"  key="log_adjacency_changes" type='{"type": "boolean"}'>
+            Determines whether to log changes in adjacency or not.
+            Default is false.
+         </column>
+         <column name="router_config"  key="log_adjacency_details" type='{"type": "boolean"}'>
+            Determines whether to log changes in adjacency in detail or not.
+            If the flag is not set then only changes to full or regressions are shown.
+            Default is false.
+         </column>
+         <column name="router_config"  key="ospf_rfc1583_compatible" type='{"type": "boolean"}'>
+            Determines whether RFC1583 compatibility mode is enabled or not.
+            If value is false then the path preference algorithm is calculated as per RFC 2328.
+            Default is false.
+         </column>
+         <column name="router_config"  key="enable_ospf_opaque_lsa" type='{"type": "boolean"}'>
+            This is used to turn ON or OFF OSPFv2 Opaque LSA capability
+            Default is  false.
+         </column>
+         <column name="lsa_timers_config"  key="lsa_arrival_interval" type='{"type": "integer", "minInteger": 10, "maxInteger": 600000}'>
+            The minimum interval in milliseconds between accepting the same LSA.
+            Allowed range is 10 to 600000 in milliseconds.
+            Default is 1000 milliseconds.
+         </column>
+         <column name="lsa_timers_config"  key="lsa_group_pacing" type='{"type": "integer", "minInteger": 1, "maxInteger": 1800}'>
+            The LSA group pacing timer. This is the interval between group of LSA being refreshed or maxaged, in seconds.
+            Allowed range is 1 to 1800 in seconds.
+            Default is 10 milliseconds.
+         </column>
+         <column name="lsa_timers_config"  key="throttle_lsa_start_time" type='{"type": "integer", "minInteger": 0, "maxInteger": 5000}'>
+            This is the delay to generate first occurrence of LSA, in milliseconds.
+            Allowed range is 0 to 5000 in milliseconds.
+            Default is 1000 milliseconds.
+         </column>
+         <column name="lsa_timers_config"  key="throttle_lsa_hold_interval" type='{"type": "integer", "minInteger": 50, "maxInteger": 30000}'>
+            This is the minimum delay between originating the same LSA, in milliseconds.
+            The hold time itself will be adaptive and increasing and bounded by max delay.
+            Allowed range is 50 to 30000 in milliseconds.
+            Default is 5000 milliseconds.
+         </column>
+         <column name="lsa_timers_config"  key="throttle_lsa_max_delay" type='{"type": "integer", "minInteger": 50, "maxInteger": 30000}'>
+            This is the maximum delay between originating the same LSA, in milliseconds.
+            Allowed range is 50 to 30000 in milliseconds.
+            Default is 5000 milliseconds.
+         </column>
+    </group>
+    <group title="Status">
+         <column name="router_status"  key="abr" type='{"type": "boolean"}'>
+            Router is OSPFv2 Area Border Router (ABR).
+         </column>
+         <column name="router_status"  key="asbr" type='{"type": "boolean"}'>
+            Router is OSPFv2 Autonomus System Boundary Router (ASBR).
+         </column>
+         <column name="router_status"  key="spf_hold_multiplier" type='{"type": "integer"}'>
+            This is current value of adaptive multiplier of the initial-holdtime and used in determining the hold time.
+         </column>
+         <column name="router_status" key="ospf_restart_status"
+            type='{"type": "string", "enum": ["set", ["not_restarting", "planned_restart","unplanned_restart"]]}'>
+            This is the status of the Graceful Restart.
+         </column>
+         <column name="router_status"  key="ospf_restart_age" type='{"type": "integer"}'>
+            Remaining time in current OSPF graceful restart interval.
+         </column>
+         <column name="router_status" key="ospf_restart_exit_reason"
+            type='{"type": "string", "enum": ["set", ["none", "in_progress","completed",
+            "timed_out","topology_changed"]]}'>
+            Describes the outcome of the last attempt at a graceful restart. If the value is "none", no
+            restart has yet been attempted. If the value is "inProgress", a restart attempt is currently
+            underway. There are other statuses like "completed", "timed-out" or "topology-changed", which are
+            self-explanatory.
+         </column>
+         <column name="router_status"  key="ospf_rfc1583_compatibility" type='{"type": "boolean"}'>
+            Describes if the device has support for rfc1583 compatibility.
+         </column>
+         <column name="router_status"  key="capability_opaque" type='{"type": "boolean"}'>
+            Describes if the device has support for Opaque lsa capability.
+         </column>
+         <column name="router_status"  key="stub_router_support" type='{"type": "boolean"}'>
+            Describes if the device has support for stub router advertisement as per RFC 3137.
+         </column>
+         <column name="router_status"  key="capability_restart" type='{"type": "boolean"}'>
+            Describes if the device has support for Graceful OSPFv2 Restart.
+         </column>
+         <column name="router_status"  key="opaque_status" type='{"type": "integer"}'>
+            Describes if the device has support for Opaque LSA and other related details.
+         </column>
+         <column name="router_status" key="as_ext_lsas_sum_cksum" type='{"type": "integer"}'>
+             This is sum of checksum of list of AS External LSAs.
+         </column>
+         <column name="router_status" key="opaque_as_lsas_sum_cksum" type='{"type": "integer"}'>
+             This is sum of checksum of list of AS scope Opaque LSAs.
+         </column>
+         <column name="as_ext_lsas">
+            This is list of AS External LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="opaque_as_lsas">
+            This is list of AS scope Opaque_LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="ospf_routes_ext">
+            This is list of ospf external routes. This is reference to <ref table="OSPF_Route"/>.
+         </column>
+    </group>
+  </table>
+
+  <table name="OSPF_Area" title="OSPF Area level configurations">
+  <p>
+    This Table holds configurations and other details of and OSPFv2 Area entity.
+  </p>
+     <group title="Configuration">
+         <column name="ospf_interfaces"  type='{"type": "string"}'>
+            This column references to <ref table="OSPF_Interface"/> which contains the OSPF
+            interfaces configured under this area. The key to the column is the interface
+            name and the size of the key should not be more than 32 characters long.
+         </column>
+         <column name="area_config" key="area_type"
+            type='{"type": "string", "enum": ["set", ["default", "stub","nssa"]]}'>
+            This defines how the external routing for this area will be handled or treated.
+         </column>
+         <column name="area_config"  key="no_summary" type='{"type": "boolean"}'>
+            Determines whether the area blocks all summary route updates or not.
+            When the flag is set all summary route updates are blocked, this is also
+            known as "totally stubby area" as well.
+         </column>
+         <column name="area_config"  key="stub_default_cost" type='{"type": "integer"}'>
+          The cost metric for the default summary route sent into the stub area.
+         </column>
+         <column name="area_config" key="NSSA_translator_role"
+            type='{"type": "string", "enum": ["set", ["never", "candidate","always"]]}'>
+            If value is set to "always", then NSSA always translates NSSA External (type 5) LSAs to AS External (type 7) LSAs.
+            If value is set to "never", then NSSA will not translate NSSA External (type 5) LSAs to AS External (type 7) LSAs.
+            If value is set to "candidate", then  this router participates in the translator election to determine if it will
+            perform the translation duties. If this NSSA router is not a border router, then this option has no effect.
+            Default is "candidate".
+         </column>
+         <column name="vlinks"  type='{"type": "integer"}'>
+            This column references to <ref table="OSPF_Vlink"/> which contains the OSPF Virtual link related configurations.
+            The key to the column is the peer router id.
+         </column>
+         <column name="area_range_addresses">
+            This column references to <ref table="OSPF_Summary_Address"/> which contains the OSPF summary address
+            related configurations for the area. If area range addresses are configured, then area may advertise summarized
+            prefixes to other areas or backbone.
+         </column>
+         <column name="filter_list"  type='{"type": "string"}'>
+            This is reference to <ref table="Prefix_List"/>.
+            Filtering Type-3 summary-LSAs to or from area using route_maps. This command makes sense in ABR only.
+            The key to the column is "IN" or "OUT".
+         </column>
+         <column name="auth_config" key="auth_type"
+            type='{"type": "string", "enum": ["set", ["null", "md5","text"]]}'>
+            The value indicates the type of authentication to be done in the area.
+            OSPFv2 supports clear text and message-digest MD5 authentication methods.
+         </column>
+         <column name="auth_config" key="auth_key" type='{"type": "string"}'>
+            This column contains the authentication key if "auth_type" column contains values ""text" or "md5".
+         </column>
+    </group>
+     <group title="status">
+         <column name="router_lsas">
+         This is list of Router LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="network_lsas">
+         This is list of Network LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="abr_summary_lsas">
+         This is list of Type 3 ABR Summary LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="asbr_summary_lsas">
+         This is list of Type 4 ASBR Summary LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="as_nssa_lsas">
+         This is list of Type 7 NSSA External LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="opaque_area_lsas">
+         This is list of Area scope Opaque LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+         <column name="opaque_link_lsas">
+         This is list of Link scope Opaque LSAs. This is reference to <ref table="OSPF_LSA"/>.
+         </column>
+
+         <column name="area_status" key="spf_last_run_timestamp" type='{"type": "string"}'>
+         Describe the time when the last time SPF algorithm had run for this area.
+         </column>
+         <column name="area_status" key="stub_router_state_active" type='{"type": "boolean"}'>
+         Describe the status of the stub_router.
+         </column>
+         <column name="area_status" key="stub_router_admin_set" type='{"type": "boolean"}'>
+         Describe the status of the stub_router if it is set administratively.
+         </column>
+         <column name="area_status" key="stub_router_startup" type='{"type": "boolean"}'>
+         Describe the status of the stub_router if it is set "startup".
+         </column>
+         <column name="area_status" key="NSSA translator role"
+         type='{"type": "string", "enum": ["set", ["enable", "disable"]]}'>
+         Describe the NSSA translator state.
+         </column>
+         <column name="area_status" key="transit_capability"
+         type='{"type": "string", "enum": ["set", ["enable", "disable"]]}'>
+         Describes the transit capability for virtual links.
+         </column>
+         <column name="area_status" key="active_interfaces" type='{"type": "integer"}'>
+         Specifies the number of active OSPFv2 interfaces.
+         </column>
+         <column name="area_status" key="full_nbrs" type='{"type": "integer"}'>
+         Specifies the number of neighbors with full adjacency.
+         </column>
+         <column name="area_status" key="full_virtual_nbrs" type='{"type": "integer"}'>
+         Specifies the number of neighbors with virtual link and have established full adjacency.
+         </column>
+         <column name="area_status" key="router_lsas_sum_cksum" type='{"type": "integer"}'>
+         This is sum of checksum of list of Router LSAs.
+         </column>
+         <column name="area_status" key="network_lsas_sum_cksum" type='{"type": "integer"}'>
+         This is sum of checksum of list of Network LSAs.
+         </column>
+         <column name="area_status" key="abr_summary_lsas_sum_cksum" type='{"type": "integer"}'>
+         This is sum of checksum of list of Type 3 ABR Summary LSAs.
+         </column>
+         <column name="area_status" key="asbr_summary_lsas_sum_cksum" type='{"type": "integer"}'>
+         This is sum of checksum of list of Type 4 ASBR Summary LSAs.
+         </column>
+         <column name="area_status" key="as_nssa_lsas_sum_cksum" type='{"type": "integer"}'>
+         This is sum of checksum of list of Type 7 NSSA External LSAs.
+         </column>
+         <column name="area_status" key="opaque_area_lsas_sum_cksum" type='{"type": "integer"}'>
+         This is sum of checksum of list of  Area scope Opaque LSAs.
+         </column>
+         <column name="area_status" key="opaque_link_lsas_sum_cksum" type='{"type": "integer"}'>
+         This is sum of checksum of list of Link scope Opaque LSAs.
+         </column>
+    </group>
+    <group title="statistics">
+         <column name="area_statistics" key="spf_calc" type='{"type": "integer"}'>
+         Specifies the number of SPF calculations.
+         </column>
+         <column name="area_statistics" key="abr_count" type='{"type": "integer"}'>
+         Specifies the number of Area Border Routers (ABR) in the area.
+         </column>
+         <column name="area_statistics" key="asbr_count" type='{"type": "integer"}'>
+         Specifies the number of autonomous system border routers (ASBR) in the area.
+         </column>
+    </group>
+  </table>
+
+    <table name="OSPF_Summary_Address" title="OSPF summarization related configurations">
+     <group title="Configuration">
+         <column name="prefix" key="address" type='{"type": "integer"}'>
+         Specifies the prefix address.
+         </column>
+         <column name="prefix" key="mask_len" type='{"type": "integer"}'>
+         Specifies the subnet mask length of the prefix.
+         </column>
+         <column name="config" key="cost" type='{"type": "integer", "minInteger": 1, "maxInteger": 16777214}'>
+         Specifies the cost of the summary address.
+         </column>
+         <column name="config"  key="tag" type='{"type": "string", "maxLength": 64}'>
+         Specifies the tag for the summarized prefix.
+         </column>
+         <column name="config"  key="advertise" type='{"type": "boolean"}'>
+         Determines whether to advertise the summary address or not. If value is false then
+         the OSPFv2 router does not advertise this summary address in a Network Summary.
+         Default is true.
+         </column>
+    </group>
+  </table>
+
+  <table name="OSPF_Interface" title="OSPF Interface related configurations">
+   <group title="Configuration">
+       <column name="name">
+        OSPF Interface name. Should be alphanumeric and not more than 32 bytes long.
+       </column>
+       <column name="port">
+       This is reference to <ref table="Port"/>.
+       </column>
+       <column name="vlink">
+       This is reference to <ref table="OSPF_Vlink"/> which contains configuration related to virtual links.
+       This is valid for the interface of type "virtual link".
+       </column>
+  </group>
+
+  <group title="status">
+    <column name="ifsm_state"
+      type='{"type": "string", "enum": ["set", ["depend_upon", "down", "loopback", "waiting",
+                 "point_to_point","dr_other","dr_backup", "dr"]]}'>
+      OSPF Interface FSM states.
+    </column>
+       <column name="neighbors">
+       List of ospf neighbors on this interface. This is reference to <ref table="OSPF_Neighbor"/>.
+       </column>
+       <column name="if_status" key="active" type='{"type": "integer"}'>
+       Specifies whether the interface is active.
+       </column>
+       <column name="if_status" key="if_out_cost" type='{"type": "integer"}'>
+       Specifies interface out cost. By default, if not configured,  this is calculated
+       as per the auto cost bandwidth reference and port speed.
+       </column>
+       <column name="if_status" key="hello_due_at" type='{"type": "string"}'>
+       Specifies hello is due on the interface in seconds.
+       </column>
+  </group>
+   <group title="statistics">
+       <column name="if_statistics" key="hello_rcvd" type='{"type": "integer"}'>
+       Total number of hello packets received on the interface.
+       </column>
+       <column name="if_statistics" key="hello_sent" type='{"type": "integer"}'>
+       Total number of hello packets sent on the interface.
+       </column>
+       <column name="if_statistics" key="db_desc_rcvd" type='{"type": "integer"}'>
+       Total number of DataBase Description packets received on the interface.
+       </column>
+       <column name="if_statistics" key="db_desc_sent" type='{"type": "integer"}'>
+       Total number of DataBase Description packets sent on the interface.
+       </column>
+       <column name="if_statistics" key="ls_req_rcvd" type='{"type": "integer"}'>
+       Total number of Link State Request packets received on the interface.
+       </column>
+       <column name="if_statistics" key="ls_req_sent" type='{"type": "integer"}'>
+       Total number of Link State Request packets sent on the interface.
+       </column>
+       <column name="if_statistics" key="ls_upd_rcvd" type='{"type": "integer"}'>
+       Total number of Link State Update packets received on the interface.
+       </column>
+       <column name="if_statistics" key="ls_upd_sent" type='{"type": "integer"}'>
+       Total number of Link State Update packets sent on the interface.
+       </column>
+       <column name="if_statistics" key="ls_ack_rcvd" type='{"type": "integer"}'>
+       Total number of Link State Ack packets received on the interface.
+       </column>
+       <column name="if_statistics" key="ls_ack_sent" type='{"type": "integer"}'>
+       Total number of Link State Ack packets sent on the interface.
+       </column>
+       <column name="if_statistics" key="discarded_input_pkt" type='{"type": "integer"}'>
+       Total number of  received packets discarded on the interface.
+       </column>
+       <column name="if_statistics" key="state_changes" type='{"type": "integer"}'>
+       Total number of state changes on the interface.
+       </column>
+    </group>
+  </table>
+    <table name="OSPF_Neighbor" title="OSPF Neighbor information">
+     <group title="Configuration">
+         <column name="nbr_router_id"  type='{"type": "integer"}'>
+        This column is used to identify the neighbor.
+         </column>
+         <column name="nbr_if_addr"  type='{"type": "integer"}'>
+        This column specifies the interface address of the neighbor.
+         </column>
+         <column name="nbma_nbr">
+        Configuration for NBMA Neighbor. This is valid in case of NBMA Neighbor only.
+         This is reference to <ref table="OSPF_NBMA_Neighbor_Conf"/>.
+         </column>
+    </group>
+     <group title="status">
+         <column name="dr"  type='{"type": "integer"}'>
+          This column is used to specify the router id of the Designated Router,
+          reported by the neighbor.
+         </column>
+         <column name="bdr"  type='{"type": "integer"}'>
+        This column is used to specify the router id of the Backup Designated Router,
+        reported by the neighbor.
+         </column>
+         <column name="nbr_options"  type='{"type": "integer"}'>
+         This column is used to specify the neighbor options like Opaque LSA capability,
+          Demand Circuit, External Attribute LSA capability, etc.
+         </column>
+      <column name="nfsm_state"
+        type='{"type": "string", "enum": ["set", ["depend_upon", "down", "deleted", "attempt",
+                   "init","two_way","ex_start", "exchange","loading","full"]]}'>
+        Interface FSM states.
+      </column>
+         <column name="priority"  type='{"type": "integer"}'>
+        This column is used to specify the priority of the neighbor.
+         </column>
+         <column name="nbr_status" key="dead_timer_due" type='{"type": "string"}'>
+
+        This column is used to specify the time left for the dead timer of the neighbor to expire.
+         </column>
+    </group>
+     <group title="statistics">
+         <column name="nbr_statistics" key="db_summary_count" type='{"type": "integer"}'>
+         The total number of DataBase summary reports.
+         </column>
+         <column name="nbr_statistics" key="ls_request_count" type='{"type": "integer"}'>
+        The total number of link state request packets.
+         </column>
+         <column name="nbr_statistics" key="ls_retransmit_count" type='{"type": "integer"}'>
+        The total number of link state packets retransmitted.
+         </column>
+         <column name="nbr_statistics" key="state_changes_count" type='{"type": "integer"}'>
+         The total number of state change events on this interface.
+         </column>
+    </group>
+  </table>
+    <table name="OSPF_NBMA_Neighbor_Config" title="OSPF NBMA Neighbor information">
+     <group title="Configuration">
+         <column name="interface_name" type='{"type": "string", "maxLength": 32}'>
+         The name of the interface on which the NBMA Neighbor is configured.
+         </column>
+         <column name="nbr_router_id" type='{"type": "integer", "minInteger": 1, "maxInteger": 4294967295}'>
+         The router id of the neighbor.
+         </column>
+         <column name="nbma_nbr_conf" key="address" type='{"type": "integer"}'>
+         The IP address of the NMBA neighbor.
+         </column>
+         <column name="nbma_nbr_conf" key="priority" type='{"type": "integer", "minInteger": 0, "maxInteger": 255}'>
+         The priority of the NMBA neighbor.
+         Default is 0.
+         </column>
+         <column name="nbma_nbr_conf" key="poll_interval" type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+         The poll interval of the NMBA neighbor.
+         Default is 60.
+         </column>
+    </group>
+     <group title="status">
+         <column name="nbma_nbr_status" key="poll_timer_due" type='{"type": "integer"}'>
+         The poll timer due in seconds for the NMBA neighbor.
+         </column>
+         <column name="nbma_nbr_status" key="state_changes_count" type='{"type": "integer"}'>
+        The total number of state change events.
+         </column>
+    </group>
+  </table>
+    <table name="OSPF_Vlink" title="OSPF virtual link information">
+     <group title="Configuration">
+         <column name="name">
+         Virtual link identifier. It should not more than 32 characters long.
+         </column>
+         <column name="peer_router_id"  type='{"type": "integer", "minInteger":1, "maxInteger": 4294967295}'>
+         This column is used to specify the peer router id.
+         </column>
+         <column name="area_id"  type='{"type": "integer", "minInteger": 1, "maxInteger": 4294967295}'>
+         This column is used to specify the area id of the virtual link. Backbone area cannot have virtual link.
+         </column>
+         <column name="vlink_config" key="hello_interval" type='{"type": "integer"}'>
+        The time between successive Hello packets.
+         </column>
+         <column name="vlink_config" key="dead_interval" type='{"type": "integer"}'>
+         The time that a neighbor waits for a Hello packet before tearing adjacency with local route.
+         </column>
+         <column name="vlink_config" key="retransmit_interval" type='{"type": "integer"}'>
+         The estimated time between successive LSAs.
+         </column>
+         <column name="vlink_config" key="transmit_delay" type='{"type": "integer"}'>
+         The estimated time to transmit an LSA to a neighbor.
+         </column>
+
+         <column name="auth_config" key="auth_type"
+            type='{"type": "string", "enum": ["set", ["null", "md5","text"]]}'>
+            The value indicates the type of authentication to be done in the area.
+            OSPFv2 supports clear text and MD5 authentication methods.
+         </column>
+         <column name="auth_config" key="auth_key" type='{"type": "string"}'>
+            This column contains the authentication key if "auth_type" column contains values "text" or "md5".
+         </column>
+         <column name="auth_config" key="key_id" type='{"type": "string"}'>
+            This column contains the authentication key id.
+         </column>
+    </group>
+  </table>
+  <table name="OSPF_Route" title="OSPF Route related information">
+   <group title="status">
+       <column name="prefix" key="address" type='{"type": "integer"}'>
+       Specifies the prefix address.
+       </column>
+       <column name="prefix" key="mask_len" type='{"type": "integer"}'>
+       Specifies the subnet mask length of the prefix.
+       </column>
+
+       <column name="path_type"
+          type='{"type": "string", "enum": ["set", ["intra_area", "inter_area","external"]]}'>
+          The value indicates whether the path type is inter-area, intra-area or exterior.
+       </column>
+       <column name="paths" type='{"type": "string"}'>
+       This column contains the list of paths.
+       </column>
+       <column name="route_info" key="area_id" type='{"type": "integer"}'>
+       The area id of the route.
+       </column>
+       <column name="route_info" key="area_type" type='{"type": "string"}'>
+       The area type. ABR or ASBR.
+       </column>
+       <column name="route_info" key="ext_type" type='{"type": "string"}'>
+       External Type 1 or Type 2 Route. For External routes only.
+       </column>
+       <column name="route_info" key="type2_cost" type='{"type": "integer"}'>
+       The cost External Type 2 routes.
+       </column>
+       <column name="route_info" key="ext_tag" type='{"type": "string"}'>
+       The tag of the route.
+       </column>
+       <column name="route_info" key="asbr_router_id" type='{"type": "integer"}'>
+      The ASBR router id.
+       </column>
+       <column name="flags" type='{"type": "integer"}'>
+       Specifies the flags like whether the route is installed in global or VRF RIB.
+       </column>
+    </group>
+  </table>
+
+  <table name="OSPF_LSA" title="OSPF link state related information">
+   <group title="status">
+       <column name="area_id" type='{"type": "integer"}'>
+       OSPFv2 Area id. This is for area scope LSAs.
+       </column>
+       <column name="ls_age" type='{"type": "string"}'>
+       Age of the LSA. Will possibly have birth time of LSA for efficient implementation.
+       </column>
+       <column name="ls_id" type='{"type": "integer"}'>
+       LSA id.
+       </column>
+       <column name="adv_router" type='{"type": "integer"}'>
+       The Router ID of the advertising router.
+       </column>
+       <column name="lsa_type" type='{"type": "string", "enum"}'>
+       The LSA type. Type-1 to Type-11 LSAs.
+       </column>
+       <column name="ls_seq_num" type='{"type": "integer"}'>
+       Sequence number of LSA.
+       </column>
+       <column name="options" type='{"type": "integer"}'>
+       Options in the LSA.
+       </column>
+       <column name="flags" type='{"type": "integer"}'>
+       Flags in the LSA.
+       </column>
+       <column name="chksum" type='{"type": "integer"}'>
+       checksum in the LSA.
+       </column>
+       <column name="length" type='{"type": "integer"}'>
+       Length of the LSA in bytes.
+       </column>
+       <column name="num_router_links" type='{"type": "integer"}'>
+       Total number of router links. For Router LSAs.
+       </column>
+       <column name="prefix" type='{"type": "string"}'>
+       prefix for type 3 and 4 Summary LSAs.
+       </column>
+       <column name="lsa_data" type='{"type": "string"}'>
+       LSA specific data.
+       </column>
+    </group>
+  </table>
 </database>
