@@ -888,6 +888,11 @@
       <column name="vlans">
         VLANs included in the bridge.
       </column>
+
+      <column name="sflow">
+        sFlow(R) configuration.
+      </column>
+
     </group>
 
     <group title="Other Features">
@@ -977,6 +982,9 @@
       </column>
       <column name="dhcp_server">
         DHCP Server in the VRF.
+      </column>
+      <column name="sflow">
+        sFlow(R) configuration.
       </column>
     </group>
    <group title="Common Columns">
@@ -1965,7 +1973,10 @@
         port's actual MAC address, nor will setting it change the port's actual
         MAC address.
       </column>
-
+      <column name="other_config" key="sflow-enabled" type='{"type": "boolean"}'>
+        Determines whether sflow sampling is enabled on this port.
+        Default is true.
+      </column>
    </group>
 
     <group title="Port Status">
@@ -3200,6 +3211,52 @@
 
       <column name="external_ids"/>
     </group>
+  </table>
+
+  <table name="sFlow">
+    <p>A set of sFlow(R) configuration.  sFlow is a protocol for remote
+    monitoring of switches.</p>
+
+    <column name="name">
+      sFlow identifier. Should be alphanumeric. sFlow names must be unique.
+    </column>
+
+    <column name="enabled">
+      Specifies whether this sFlow profile is enabled.
+    </column>
+
+    <column name="agent">
+      Name of the network device whose IP address should be reported as the
+      ``agent address'' to collectors.  If not specified, the agent device is
+      figured from the first target address and the routing table. If an agent
+      IP address cannot be determined any of these ways, sFlow is disabled.
+    </column>
+
+    <column name="header">
+      Number of bytes of a sampled packet to send to the collector.
+      If not specified, the default is 128 bytes.
+    </column>
+
+    <column name="sampling">
+      sampling configuration in the form
+      <code><var>rate</var>:<var>interface-speed</var></code>.
+      which specifies the rate at which packets should be sampled and sent
+      to the collector. If not specified, rate defaults to 4096, which means
+      one out of 4096 packets, on average, will be sent to the collector.
+      The rate can be configured per interface-speed which means the rate will
+      be applied only for interfaces that match the speed. For example, 1024:10G
+      means a sampling rate of 1024 is applied to all the 10Gig interfaces on
+      the system. If interface-speed is not specified, the rate is applied
+      globally on all interfaces.
+    </column>
+
+    <column name="targets">
+      sFlow targets in the form
+      <code><var>ip</var>:<var>port</var></code>.
+      Port defaults to 6343 if not specified.
+      Can have multiple targets. Atleast one target has to be configured for
+      sflow to be enabled.
+    </column>
   </table>
 
   <table name="CLI_Alias">
