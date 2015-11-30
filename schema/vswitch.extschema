@@ -2377,9 +2377,12 @@
         },
         "lldp_neighbor_info": {
           "category": "status",
+          "relationship": "reference",
           "type": {
-            "key": "string",
-            "value": "string",
+            "key": {
+              "type": "uuid",
+              "refTable": "LLDP_Neighbor"
+            },
             "min": 0,
             "max": "unlimited"
           }
@@ -2578,6 +2581,39 @@
       "indexes": [
         [
           "name"
+        ]
+      ]
+    },
+    "LLDP_Neighbor": {
+      "columns": {
+        "iface_id": {
+          "category": "status",
+          "type": "integer"
+        },
+         "lldp_neighbor_info": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+           }
+          },
+         "chassis_id": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        }
+      },
+      "indexes": [
+        [
+          "chassis_id",
+          "iface_id"
         ]
       ]
     },
