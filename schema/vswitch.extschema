@@ -2887,15 +2887,6 @@
             "max": "unlimited"
           }
         },
-        "lldp_neighbor_info": {
-          "category": "status",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          }
-        },
         "admin_state": {
           "category": "status",
           "type": {
@@ -3092,6 +3083,46 @@
           "name"
         ]
       ]
+    },
+    "LLDP_Neighbor": {
+       "columns": {
+        "interface": {
+          "category": "status",
+          "relationship": "m:1",
+           "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Interface",
+              "refType": "weak"
+            }
+          }
+        },
+        "port_id": {
+          "category": "status",
+          "type": "string"
+        },
+        "chassis_id": {
+          "category": "status",
+          "type": "string"
+        },
+        "neighbor_info": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+           }
+          }
+      },
+      "indexes": [
+        [
+          "interface",
+          "chassis_id",
+          "port_id"
+        ]
+      ],
+      "isRoot": true
     },
     "Fan": {
       "columns": {
