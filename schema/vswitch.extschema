@@ -2653,15 +2653,6 @@
             "max": "unlimited"
           }
         },
-        "lldp_neighbor_info": {
-          "category": "status",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          }
-        },
         "admin_state": {
           "category": "status",
           "type": {
@@ -2856,6 +2847,44 @@
       "indexes": [
         [
           "name"
+        ]
+      ]
+    },
+    "LLDP_Neighbor": {
+       "columns": {
+        "interfaces": {
+           "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Interface"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "port_id": {
+          "category": "status",
+          "type": "string"
+        },
+        "chassis_id": {
+          "category": "status",
+          "type": "string"
+        },
+        "lldp_neighbor_info": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+           }
+          }
+      },
+      "indexes": [
+        [
+          "interface",
+          "port_id",
+          "chassis_id"
         ]
       ]
     },
