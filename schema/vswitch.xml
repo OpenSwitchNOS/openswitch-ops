@@ -581,6 +581,12 @@
         are true or false based on the user request for authentication. If
         fallback=true, fall to local authentication if radius server is not reachable.
       </column>
+      <column name="aaa" key="sftp_server_enable" type='{"type": "string"}'>
+        This column used for AAA feature. The valid values for the key 'sftp_server_enable'
+        are true or false based on the user reuest for sftp server. If
+        sftp_server_enable=enable, sftp server is enabled. By default
+        sftp server is disabled.
+       </column>
       <column name="manager_options">
         Database clients to which the OpenSwitch database server should
         connect or to which it should listen, along with options for how these
