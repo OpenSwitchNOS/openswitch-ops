@@ -162,6 +162,19 @@
         </column>
       </group>
 
+    <group title="Source IP Selection Configurations">
+        <column name="other_config" key="source_ip_tftp"
+                type='{"type": "string"}'>
+          Set this value to <code>source_ip_tftp</code> to assign source IP to tftp protocol
+          and set to <code>N/A</code> to disable the source IP.
+        </column>
+
+        <column name="other_config" key="source_ip_all"
+                type='{"type": "string"}'>
+          Set this value to <code>source_ip_all</code> to assign source IP to all the protocols
+          and set to <code>N/A</code> to disable the source IP.
+        </column>
+      </group>
 
     <group title="LACP Configurations">
       <column name="lacp_config" key="lacp-system-id">
