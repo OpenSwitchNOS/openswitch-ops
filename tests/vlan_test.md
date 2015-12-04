@@ -1,12 +1,26 @@
 
 VLAN Test Cases
 =
+##Contents
 
- [TOC]
 
-## VLAN_Id_Validation ##
+* [test_ft_vlan_id_validation](#testftvlanidvalidation)
+* [test_ft_vlan_state_transition](#testftvlanstatetransition)
+* [test_ft_vlan_state_reason_transition](#testftvlanstatereasontransition)
+* [test_ft_vlan_removed_from_end_of_table](#testftvlanremovedfromendoftable)
+* [test_ft_vlan_removed_from_middle_of_table](#testftvlanremovedfrommiddleoftable)
+* [test_ft_vlan_tagged_frames_access_port](#testftvlantaggedframesaccessport)
+* [test_ft_vlan_untagged_frames_on_trunk_port](#testftvlanuntaggedframesontrunkport)
+* [test_ft_vlan_delete_existing_non_existing_vlan](#testftvlandeleteexistingnonexistingvlan)
+* [test_ft_vlan_initial_state](#testftvlaninitialstate)
+* [test_ft_vlan_admin_down](#testftvlanadmindown)
+* [test_ft_vlan_trunk](#testftvlantrunk)
+* [test_ft_vlan_no_member_port](#testftvlannomemberport)
+
+
+## test_ft_vlan_id_validation ##
 ### **Objective**  ##
-Verify that a VID out of the 802.1Q range, in the Rerserved VID range or prexisting VID can not be created.
+Verify that a VID out of the 802.1Q range or reserved VID cannot be set and also verifies that a VID which already exists cannot not be set again.
 ### Requirements ###
 The requirements for this test case are:
 
@@ -31,11 +45,11 @@ DUT must be running OpenSwitch OS to execute this test, should be by default con
 ### Test Result Criteria ###
 
 #### Test Pass Criteria ####
-VLANs described in the objective should not be set.
+Vlan out of range and repeated not configured
 #### Test Fail Criteria ####
-User is able to create an invalid VLAN.
+Vlan out of range or repeated were configured
 
-##  VLAN_state_transition ##
+##  test_ft_vlan_state_transition ##
 ### Objective ###
 Verify the status of the VLAN change from up to down correctly. The status of a VLAN is changed from down to up when a port is added to the VLAN and the VLAN has been brought up with the respective command.
 ### Requirements ###
@@ -61,13 +75,13 @@ The requirements for this test case are:
 DUT must be running OpenSwitch OS to execute this test, should be by default configured and in the login or bash-shell context.
 ### Test Result Criteria ###
 #### Test Pass Criteria ####
-VLANs status is correctly verifyed and validated in every scenario of configuration
+Vlans status is correctly verifyed in every scenario
 #### Test Fail Criteria ####
-If VLAN status is wrong showed in one of the scenarios
+If vlan status is wrong showed in one of the scenarios
 
-##  VLAN_state_reason_transition ##
+##  test_ft_vlan_state_reason_transition ##
 ### Objective ###
-With several VLANs configured, bring one VLAN up and confirm its state, witch one port assigned to it verify its the VLAN Reason state for that VLAN transitions from no_member_port  ok.  Then administratively disable the VLAN and note the VLAN Status state transition from up to down. State changes should only occur on the VLAN being modified.
+With several vlans configured, bring one vlan up and confirm its state, witch one port assigned to it verify its Reason to ok, then issue the command to set the vlan down and confirm its state. Only one vlan should see a change in its state.
 
 ### Requirements ###
 The requirements for this test case are:
@@ -92,19 +106,19 @@ The requirements for this test case are:
 DUT must be running OpenSwitch OS to execute this test, should be by default configured and in the login or bash-shell context.
 ### Test Result Criteria ###
 #### Test Pass Criteria ####
-The reason and status state should only change for the VLAN being modified
+Just one of the vlans get the configuration perfomed
 #### Test Fail Criteria ####
-If more than one VLAN was configured with same options or the VLAN being modified changes to an incorrect state.
+If more than one vlan was configured with same options
 
-##  VLAN_removed_from_end_of_table ##
+##  test_ft_vlan_removed_from_end_of_table ##
 ### Objective ###
-Verify the functionality of deleting a VLAN and reasigned port to another VLAN. The VLAN will be deleted from the end of the VLAN list table. Traffic on unmodified VLANs should continue to forward traffic without any loss.
+Verify the functionality of deleting a VLAN and reasigned port to another vlan. The Vlan will be deleted from the end of the VLAN list table. No traffic should pass through other vlans.
 
 ### Requirements ###
 The requirements for this test case are:
 
  - OpenSwitch OS
- - Ubuntu or CentOS for workStations with nmap installed
+ - WorkStations must have nmap installed
 
 ### Setup ###
 
@@ -132,19 +146,19 @@ The requirements for this test case are:
 DUT must be running OpenSwitch OS to execute this test, should be by default configured and in the login or bash-shell context. In the other hand workStations must have nmap installed.
 ### Test Result Criteria ###
 #### Test Pass Criteria ####
-VLAN is correctly deleted without affecting the other ones, and traffic is correctly sent.
+Vlans is correctly delete it without affecting the others
 #### Test Fail Criteria ####
-Other VLAN were affected with traffic sent and or target VLAN was not correctly deleted.
+If other vlans are affected
 
-##  VLAN_removed_from_middle_of_table ##
+##  test_ft_vlan_removed_from_middle_of_table ##
 ### Objective ###
-Verify the functionality of deleting a VLAN and reasigned port to another VLAN. The VLAN will be deleted from middle of the VLAN list or the VLAN not with the highest or lowest VID. No traffic should pass through other VLANs.
+Verify the functionality of deleting a VLAN and reasigned port to another vlan. The Vlan will be deleted from the middle of the VLAN list or the VLAN not with the highest or lowest VID. No traffic should pass through other vlans.
 
 ### Requirements ###
 The requirements for this test case are:
 
  - OpenSwitch OS
- - Ubuntu or CentOS for workStations with nmap installed
+ - Ubuntu workStations with nmap installed
 
 ### Setup ###
 
@@ -174,9 +188,105 @@ DUT must be running OpenSwitch OS to execute this test, should be by default con
 #### Test Pass Criteria ####
 VLAN is correctly deleted without affecting the other ones, and traffic is correctly sent.
 #### Test Fail Criteria ####
-Other VLAN were affected with traffic sent and or target VLAN was not correctly deleted.
+If other vlans are affected
 
-##  VLAN_initial_state##
+##  test_ft_vlan_tagged_frames_access_port ##
+### Objective ###
+Verify a switch port ability to handle tagged frames received on an access port.
+
+### Requirements ###
+The requirements for this test case are:
+
+ - OpenSwitch OS
+
+### Setup ###
+
+#### Topology Diagram ####
+```ditaa
+
+    +-------+     +---------+     +-------+
+    |       |     |         |     |       |
+    |wrkSton+----->   DUT   <-----+wrkSton|
+    |       |     |         |     |       |
+    +-------+     +----^----+     +-------+
+
+```
+#### Test Setup ####
+- 1 DUT in standalone
+- 2 workStations
+### Description ###
+DUT must be running OpenSwitch OS to execute this test, should be by default configured and in the login or bash-shell context.
+### Test Result Criteria ###
+#### Test Pass Criteria ####
+Vlan forward traffic correctly and drop it if necessary
+#### Test Fail Criteria ####
+Vlan is not forwarding traffic propertly
+
+##  test_ft_vlan_untagged_frames_on_trunk_port ##
+### Objective ###
+Verify a switch port ability to handle untagged frames received on trunk port.
+
+### Requirements ###
+The requirements for this test case are:
+
+ - OpenSwitch OS
+
+### Setup ###
+
+#### Topology Diagram ####
+```ditaa
+
+    +-------+     +---------+     +-------+
+    |       |     |         |     |       |
+    |wrkSton+----->   DUT   <-----+wrkSton|
+    |       |     |         |     |       |
+    +-------+     +----^----+     +-------+
+
+```
+#### Test Setup ####
+- 1 DUT in standalone
+- 2 workStations
+### Description ###
+DUT must be running OpenSwitch OS to execute this test, should be by default configured and in the login or bash-shell context.
+### Test Result Criteria ###
+#### Test Pass Criteria ####
+Vlan forward traffic correctly and drop it if necessary
+#### Test Fail Criteria ####
+Vlan is not forwarding traffic propertly
+
+##  test_ft_vlan_delete_existing_non_existing_vlan ##
+### Objective ###
+Verify the functionality of deleting an existent and non existent VLAN with ports/no ports configured within the VLAN
+
+### Requirements ###
+The requirements for this test case are:
+
+ - OpenSwitch OS
+ - WorkStations must have nmap installed
+### Setup ###
+
+#### Topology Diagram ####
+```ditaa
+
+    +-------+     +---------+     +-------+
+    |       |     |         |     |       |
+    |wrkSton+----->   DUT   <-----+wrkSton|
+    |       |     |         |     |       |
+    +-------+     +----^----+     +-------+
+
+```
+#### Test Setup ####
+- 1 DUT in standalone
+- 2 workStations
+### Description ###
+DUT must be running OpenSwitch OS to execute this test, should be by default configured and in the login or bash-shell context.
+### Test Result Criteria ###
+#### Test Pass Criteria ####
+Vlans is correctly delete it with ports member and no ports
+#### Test Fail Criteria ####
+If vlan is not correctly deleted
+
+## test_ft_vlan_initial_state ##
 ### Objective ###
 Verify the initial state of VLANs when they are created.
 ### Requirements ###
@@ -205,7 +315,7 @@ VLAN 30 is created and shows up with a status of down in the 'show vlan' output
 #### Test Fail Criteria ####
 VLAN status is other than down
 
-##  VLAN_admin_down ##
+## test_ft_vlan_admin_down ##
 ### Objective ###
  Verify state of a VLAN with ports ports assigned and  administratively shut down.
 ### Requirements ###
@@ -234,44 +344,49 @@ VLAN 30 is created with ports assigned to it and shows up with a status of down 
 #### Test Fail Criteria ####
 VLAN status or reason value is other than down and admin_down.
 
-##  VLAN_description##
+##  test_ft_vlan_trunk ##
 ### Objective ###
-Verify that a VLAN description can be added to the switch and it can be modified correctly.
+Verify trunk link can carry multiple vlan traffic.
 ### Requirements ###
 The requirements for this test case are:
 
- - Single switch with OpenSwitch OS
+ - 2 Switches with OpenSwitch OS
+ - 4 Workstations
 ### Setup ###
 DUT must be running OpenSwitch OS and started from a clean setup.
 #### Topology Diagram ####
 ```ditaa
 
-    +-------+
-    |       |
-    |  DUT  |
-    |       |
-    +-------+
+ +-----------+     +----------+
+ |  DUT1     |     |   DUT2   |
+ |           +-----+          |
+ +-----------+     +----------+
+    |     |           |      |
+    |     |           |      |
+ +----+ +-----+     +----+ +----+
+ |Wrks| |Wrks |     |Wrks| |Wrks|
+ +----+ +-----+     +----+ +----+
 
 ```
 #### Test Setup ####
-Standalone switch
+Configure trunking between the two DUTs.
+Assign ports to vlans on both DUTs.
+
 ### Description ###
-a. Add new VLANs to the switch and add a description.
-b. Rename the new VLAN with another description.
+A trunk link is used to connect switches and it should be able to carry traffic from multiple VLANs.
 
 ### Test Result Criteria ###
 
-#### Test Pass Criteria ####
-Vlan description is added and changed successfully.
-#### Test Fail Criteria ####
-Unable to add or modify vlan description.
+#### Test Pass Criteria ####
+Connectivity exists in all Vlans in the system.
+#### Test Fail Criteria ####
+Connectivity Failed.
 
-##  VLAN_no_port_member ##
+##  test_ft_vlan_no_member_port ##
 ### Objective ###
  Create three different VLANs and set admin state 'up' for one of them. Verify the state is down and no_member_port in the reason value for one of them.
 ### Requirements ###
 The requirements for this test case are:
-
  - Single switch with OpenSwitch OS
 ### Setup ###
 DUT must be running OpenSwitch OS and started from a clean setup.
