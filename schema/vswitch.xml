@@ -581,6 +581,20 @@
         are true or false based on the user request for authentication. If
         fallback=true, fall to local authentication if radius server is not reachable.
       </column>
+      <column name="aaa" key="ssh_passkeyauthentication" type='{"type": "string"}'>
+        This column used for AAA feature. The valid values for the key
+        'ssh_passkeyauthentication' are enable or disable based on the user request
+        for ssh authentication method. If ssh_passkeyauthentication=enabled,
+        ssh login with password authentication is enabled. By default ssh password
+        authentication is enabled.
+      </column>
+      <column name="aaa" key="ssh_publickeyauthentication" type='{"type": "string"}'>
+        This column used for AAA feature. The valid values for the key
+        'ssh_publickeyauthentication' are enable or disable based on the user request
+        for ssh authentication method. If ssh_publickeyauthentication=enabled,
+        ssh login with public key authentication is enabled. By default ssh
+        public key authentication is enabled.
+      </column>
       <column name="manager_options">
         Database clients to which the OpenSwitch database server should
         connect or to which it should listen, along with options for how these
