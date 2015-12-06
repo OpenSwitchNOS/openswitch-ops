@@ -17,7 +17,7 @@
 
 import pytest
 import re
-from  opstestfw import *
+from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.switch import *
 
@@ -130,12 +130,54 @@ def lldp_enable_disable(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode == 0, "Failed to exit vtysh prompt"
     # End section of disable routing on a port
+
+    # Figure out interface to do tcpdump on
+    device1.setDefaultContext(context="linux")
+    device1_interface_out = device1.cmd("ip netns exec swns tcpdump -D")
+    # Parse out the output to match the inteface associated with link 1
+    for line in str(device1_interface_out).split("\r\n"):
+        tcpDumpIntLine = re.match("^(\d+)\.(\d+)\s+\[.*\]\s*$", line)
+        if tcpDumpIntLine:
+            portNumber = tcpDumpIntLine.group(2)
+            if portNumber == device1.linkPortMapping['lnk01']:
+                device1_tcpdump_portnum = tcpDumpIntLine.group(1)
+                opstestfw.LogOutput('info', "dut01 tcpdump port "
+                                    + str(device1_tcpdump_portnum))
+                break
+
+    device2.setDefaultContext(context="linux")
+    device2_interface_out = device2.cmd("ip netns exec swns tcpdump -D")
+    # Parse out the output to match the inteface associated with link 1
+    for line in str(device2_interface_out).split("\r\n"):
+        tcpDumpIntLine = re.match("^(\d+)\.(\d+)\s+\[.*\]\s*$", line)
+        if tcpDumpIntLine:
+            portNumber = tcpDumpIntLine.group(2)
+            if portNumber == device2.linkPortMapping['lnk01']:
+                device2_tcpdump_portnum = tcpDumpIntLine.group(1)
+                opstestfw.LogOutput('info', "dut02 tcpdump port "
+                                    + str(device2_tcpdump_portnum))
+                break
+
+    # Enabling tcpdump on device
+    device1.cmd("rm /tmp/lnk01port.dmp")
+    device1_tcpdump_cmd = "ip netns exec swns tcpdump -U -i "\
+        + str(device1_tcpdump_portnum) + " -w /tmp/lnk01port.dmp &"
+    device1.cmd(device1_tcpdump_cmd)
+
+    # Enabling tcpdump on device
+    device2.cmd("rm /tmp/lnk01port.dmp")
+    device2_tcpdump_cmd = "ip netns exec swns tcpdump -U -i "\
+        + str(device2_tcpdump_portnum) + " -w /tmp/lnk01port.dmp &"
+    device2.cmd(device2_tcpdump_cmd)
+
     # Waiting for neighbour entry to flood
     Sleep(seconds=30, message="\nWaiting")
 
     # Set my default context to linux temporarily
     device1.setDefaultContext(context="linux")
+
     # Start loop
+    hit_error_state = 0
     for retry in range(1, 3):
         # Parsing neighbour info for SW1
         LogOutput('info', "\nShowing Lldp neighbourship on SW1")
@@ -149,42 +191,86 @@ def lldp_enable_disable(**kwargs):
         retStruct.printValueString()
         lnk01PrtStats = retStruct.valueGet(key='portStats')
         LogOutput('info', "\nExpected Neighbor Port ID: "
-                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
-        neiPortId = str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()
+                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']).rstrip())
+        neiPortId = str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']).rstrip()
         if neiPortId.isdigit() is True:
             break
         else:
+            hit_error_state = 1
             device1.setDefaultContext(context="linux")
             # Dump out the ovs-vsctl interface information
-            LogOutput('info', "Didn't receive integer value for "
+            LogOutput('info', "Didn't receive integer value for dut01: "
                       "Neightbor_portID, dumping ovs-vsctl interface stats...")
             devCmd = "ovs-vsctl list interface "\
                 + str(device1.linkPortMapping['lnk01'])
             neighbor_output = device1.cmd(devCmd)
-            opstestfw.LogOutput('info', "ovs-vsctl list interface output:\n"
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut01:\n"
                                 + str(neighbor_output))
             devCmd = "ip netns exec swns ifconfig "\
                 + str(device1.linkPortMapping['lnk01'])
             ifconfig_output = device1.cmd(devCmd)
-            opstestfw.LogOutput('info', devCmd + " output\n"
+            opstestfw.LogOutput('info', devCmd + " dut01 output\n"
                                 + str(ifconfig_output))
+
+            # Do this on the peer
+            device2.setDefaultContext(context="linux")
+            # Dump out the ovs-vsctl interface information
+            LogOutput('info', "Didn't receive integer value for dut02: "
+                      "Neightbor_portID, dumping ovs-vsctl interface stats...")
+            devCmd = "ovs-vsctl list interface "\
+                + str(device2.linkPortMapping['lnk01'])
+            neighbor_output = device2.cmd(devCmd)
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut02:\n"
+                                + str(neighbor_output))
+            devCmd = "ip netns exec swns ifconfig "\
+                + str(device2.linkPortMapping['lnk01'])
+            ifconfig_output = device2.cmd(devCmd)
+            opstestfw.LogOutput('info', devCmd + " dut02 output\n"
+                                + str(ifconfig_output))
+            device2.setDefaultContext(context="vtyShell")
             Sleep(seconds=10, message="Delay")
     # end loop
+    if hit_error_state == 1:
+        # We hit the error state, lets dump out tcpdump
+        device1.setDefaultContext(context="linux")
+        device1.cmd("fg %%\r\r\003\r")
+        device1_tcprd_cmd =\
+            "ip netns exec swns tcpdump -vv -r /tmp/lnk01port.dmp"
+        device1_tcpdump_out = device1.cmd(device1_tcprd_cmd)
+        opstestfw.LogOutput('info', "TCPDump output dut01\n"
+                            + str(device1_tcpdump_out))
+        device1.cmd("rm /tmp/lnk01port.dmp")
+    else:
+        # No need for dump anymore, stop and cleanup
+        device1.setDefaultContext(context="linux")
+        device1.cmd("fg %%\r\003")
+        device1.cmd("rm /tmp/lnk01port.dmp")
     # Set my default context to linux temporarily
     device1.setDefaultContext(context="vtyShell")
-    assert int((lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()) == int(device2.linkPortMapping['lnk01']), "Case Failed, No Neighbor present for SW1"
+    dev1_val = int((lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                    ['Neighbor_portID']).rstrip())
+    dev2_val = int(device2.linkPortMapping['lnk01'])
+    assert dev1_val == dev2_val, "Case Failed, No Neighbor present for SW1"
     if (lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']):
         LogOutput('info', "\nCase Passed, Neighborship established by SW1")
         LogOutput('info', "\nPort of SW1 neighbor is :"
-                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']))
+                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']))
         LogOutput('info', "\nChassie Capabilities available : "
-                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Chassis_Capabilities_Available']))
+                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                        ['Chassis_Capabilities_Available']))
         LogOutput('info', "\nChassis Capabilities Enabled : "
-                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Chassis_Capabilities_Enabled']))
+                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                        ['Chassis_Capabilities_Enabled']))
     # Parsing neighbour info for SW2
 
     # Loop for switch 2
     device2.setDefaultContext(context="linux")
+    hit_error_state = 0
     for retry in range(1, 3):
         LogOutput('info', "\nShowing Lldp neighborship on SW2")
         retStruct = ShowLldpNeighborInfo(deviceObj=device2,
@@ -198,35 +284,79 @@ def lldp_enable_disable(**kwargs):
         retStruct.printValueString()
         lnk01PrtStats = retStruct.valueGet(key='portStats')
         LogOutput('info', "\nExpected Neighbor Port ID: "
-                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
-        neiPortId = str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()
+                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']).rstrip())
+        neiPortId = str(lnk01PrtStats[device2.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']).rstrip()
         if neiPortId.isdigit() is True:
             break
         else:
+            hit_error_state = 1
             # Dump out the ovs-vsctl interface information
             device2.setDefaultContext(context="linux")
-            LogOutput('info', "Didn't receive integer value for Neightbor_portID, dumping ovs-vsctl interface stats...")
+            LogOutput('info', "Didn't receive integer value for dut02: "
+                      "Neightbor_portID, dumping ovs-vsctl interface stats...")
             devCmd = "ovs-vsctl list interface "\
                 + str(device2.linkPortMapping['lnk01'])
             neighbor_output = device2.cmd(devCmd)
-            opstestfw.LogOutput('info', "ovs-vsctl list interface output:\n"
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut02:\n"
                                 + str(neighbor_output))
             devCmd = "ip netns exec swns ifconfig "\
                 + str(device2.linkPortMapping['lnk01'])
             ifconfig_output = device2.cmd(devCmd)
-            opstestfw.LogOutput('info', devCmd + " output\n"
+            opstestfw.LogOutput('info', devCmd + " dut02: output\n"
                                 + str(ifconfig_output))
+
+            # Dump out the ovs-vsctl interface information
+            device1.setDefaultContext(context="linux")
+            LogOutput('info', "Didn't receive integer value for dut01: "
+                      "Neightbor_portID, dumping ovs-vsctl interface stats...")
+            devCmd = "ovs-vsctl list interface "\
+                + str(device1.linkPortMapping['lnk01'])
+            neighbor_output = device1.cmd(devCmd)
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut01:\n"
+                                + str(neighbor_output))
+            devCmd = "ip netns exec swns ifconfig "\
+                + str(device1.linkPortMapping['lnk01'])
+            ifconfig_output = device1.cmd(devCmd)
+            opstestfw.LogOutput('info', devCmd + " dut01: output\n"
+                                + str(ifconfig_output))
+            device1.setDefaultContext(context="vtyShell")
             Sleep(seconds=10, message="Delay")
+
+    if hit_error_state == 1:
+        # We hit the error state, lets dump out tcpdump
+        device2.setDefaultContext(context="linux")
+        device2.cmd("fg %%\r\r\003\r")
+        device2_tcprd_cmd =\
+            "ip netns exec swns tcpdump -v -r /tmp/lnk01port.dmp"
+        device2_tcpdump_out = device2.cmd(device2_tcprd_cmd)
+        opstestfw.LogOutput('info', "TCPDump output dut01\n"
+                            + str(device2_tcpdump_out))
+        device2.cmd("rm /tmp/lnk01port.dmp")
+    else:
+        # No need for dump anymore, stop and cleanup
+        device2.setDefaultContext(context="linux")
+        device2.cmd("fg %%\r\003")
+        device2.cmd("rm /tmp/lnk01port.dmp")
     device2.setDefaultContext(context="vtyShell")
-    assert int((lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip()) == int(device1.linkPortMapping['lnk01']), "Case Failed, No Neighbor present for SW2"
+    dev2_val = int((lnk01PrtStats[device2.linkPortMapping['lnk01']]
+                    ['Neighbor_portID']).rstrip())
+    dev1_val = int(device1.linkPortMapping['lnk01'])
+    assert dev2_val == dev1_val, "Case Failed, No Neighbor present for SW2"
     if (lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']):
         LogOutput('info', "\nCase Passed, Neighborship established by SW2")
         LogOutput('info', "\nPort of SW2 neighbor is :"
-                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']))
+                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']))
         LogOutput('info', "\nChassie Capablities available : "
-                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Chassis_Capabilities_Available']))
+                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]
+                        ['Chassis_Capabilities_Available']))
         LogOutput('info', "\nChassis Capabilities Enabled : "
-                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Chassis_Capabilities_Enabled']))
+                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]
+                        ['Chassis_Capabilities_Enabled']))
 
     LogOutput('info', "\nDisabling lldp on SW1")
     retStruct = LldpConfig(deviceObj=device1, enable=False)
@@ -255,31 +385,55 @@ def lldp_enable_disable(**kwargs):
 
         lnk01PrtStats = retStruct.valueGet(key='portStats')
         LogOutput('info', "\nExpected Neighbor Port ID: "
-                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
-        if str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip() == "":
+                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']).rstrip())
+        if str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+               ['Neighbor_portID']).rstrip() == "":
             break
         else:
             # Dump out the ovs-vsctl interface information
             device1.setDefaultContext(context="linux")
-            LogOutput('info', "Didn't receive integer value for "
+            LogOutput('info', "Didn't receive integer value for dut01: "
                       "Neightbor_portID, dumping ovs-vsctl interface stats...")
             devCmd = "ovs-vsctl list interface "\
                 + str(device1.linkPortMapping['lnk01'])
             neighbor_output = device1.cmd(devCmd)
-            opstestfw.LogOutput('info', "ovs-vsctl list interface output:\n"
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut01:\n"
                                 + str(neighbor_output))
             devCmd = "ip netns exec swns ifconfig "\
                 + str(device1.linkPortMapping['lnk01'])
             ifconfig_output = device1.cmd(devCmd)
-            opstestfw.LogOutput('info', devCmd + " output\n"
+            opstestfw.LogOutput('info', devCmd + " dut01 output\n"
                                 + str(ifconfig_output))
+
+            # Dump out the ovs-vsctl interface information
+            device2.setDefaultContext(context="linux")
+            LogOutput('info', "Didn't receive integer value for dut02: "
+                      "Neightbor_portID, dumping ovs-vsctl interface stats...")
+            devCmd = "ovs-vsctl list interface "\
+                + str(device2.linkPortMapping['lnk01'])
+            neighbor_output = device2.cmd(devCmd)
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut02:\n"
+                                + str(neighbor_output))
+            devCmd = "ip netns exec swns ifconfig "\
+                + str(device2.linkPortMapping['lnk01'])
+            ifconfig_output = device2.cmd(devCmd)
+            opstestfw.LogOutput('info', devCmd + " dut02 output\n"
+                                + str(ifconfig_output))
+            device2.setDefaultContext(context="vtyShell")
             Sleep(seconds=10, message="Delay")
     device1.setDefaultContext(context="vtyShell")
-    assert (lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip() == "", "Case Failed, Neighbor present for SW1"
+    dev1_val = (lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                ['Neighbor_portID']).rstrip()
+    assert dev1_val == "", "Case Failed, Neighbor present for SW1"
     if (lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']):
         LogOutput('info', "\nCase Failed, Neighborship still present on SW1")
         LogOutput('info',
-                  "\nPort of SW1 neighbor is :" + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']))
+                  "\nPort of SW1 neighbor is :"
+                  + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']))
     else:
         LogOutput('info', "\nCase Passed, No Neighbor is present for SW1")
 
@@ -287,7 +441,8 @@ def lldp_enable_disable(**kwargs):
     device2.setDefaultContext(context="linux")
     for retry in range(1, 3):
         LogOutput('info', "\nShowing Lldp neighborship on SW2")
-        retStruct = ShowLldpNeighborInfo(deviceObj=device2, port=device2.linkPortMapping['lnk01'])
+        retStruct = ShowLldpNeighborInfo(deviceObj=device2,
+                                         port=device2.linkPortMapping['lnk01'])
         retCode = retStruct.returnCode()
         assert retCode == 0, "\nFailed to show neighbor info"
         lnk01PrtStats = retStruct.valueGet(key='portStats')
@@ -295,24 +450,44 @@ def lldp_enable_disable(**kwargs):
         LogOutput('info', "CLI_Switch2 Return Structure")
         retStruct.printValueString()
         LogOutput('info', "\nExpected Neighbor Port ID: "
-                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())
-        if str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip() == "":
+                  + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]
+                        ['Neighbor_portID']).rstrip())
+        if str(lnk01PrtStats[device2.linkPortMapping['lnk01']]
+               ['Neighbor_portID']).rstrip() == "":
             break
         else:
             # Dump out the ovs-vsctl interface information
             device2.setDefaultContext(context="linux")
-            LogOutput('info', "Didn't receive integer value for "
+            LogOutput('info', "Didn't receive integer value for dut02: "
                       "Neightbor_portID, dumping ovs-vsctl interface stats...")
             devCmd = "ovs-vsctl list interface "\
                 + str(device2.linkPortMapping['lnk01'])
             neighbor_output = device2.cmd(devCmd)
-            opstestfw.LogOutput('info', "ovs-vsctl list interface output:\n"
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut02:\n"
                                 + str(neighbor_output))
             devCmd = "ip netns exec swns ifconfig "\
                 + str(device2.linkPortMapping['lnk01'])
             ifconfig_output = device2.cmd(devCmd)
-            opstestfw.LogOutput('info', devCmd + " output\n"
+            opstestfw.LogOutput('info', devCmd + " dut02 output\n"
                                 + str(ifconfig_output))
+
+            # Dump out the ovs-vsctl interface information
+            device1.setDefaultContext(context="linux")
+            LogOutput('info', "Didn't receive integer value for dut01: "
+                      "Neightbor_portID, dumping ovs-vsctl interface stats...")
+            devCmd = "ovs-vsctl list interface "\
+                + str(device1.linkPortMapping['lnk01'])
+            neighbor_output = device1.cmd(devCmd)
+            opstestfw.LogOutput('info',
+                                "ovs-vsctl list interface output dut01:\n"
+                                + str(neighbor_output))
+            devCmd = "ip netns exec swns ifconfig "\
+                + str(device1.linkPortMapping['lnk01'])
+            ifconfig_output = device1.cmd(devCmd)
+            opstestfw.LogOutput('info', devCmd + " dut01 output\n"
+                                + str(ifconfig_output))
+            device1.setDefaultContext(context="vtyShell")
             Sleep(seconds=10, message="Delay")
     device2.setDefaultContext(context="vtyShell")
     nid = lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']
@@ -324,17 +499,17 @@ def lldp_enable_disable(**kwargs):
         LogOutput('info', "Case Passed, No Neighbor is present for SW2")
 
     # Down the interfaces
-    LogOutput('info', "Disabling interface on SW1")
-    retStruct = InterfaceEnable(deviceObj=device1, enable=False,
-                                interface=device1.linkPortMapping['lnk01'])
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Unable to disable interface"
-
-    LogOutput('info', "Disabling interface on SW2")
-    retStruct = InterfaceEnable(deviceObj=device2, enable=False,
-                                interface=device2.linkPortMapping['lnk01'])
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Unable to disable interface"
+#     LogOutput('info', "Disabling interface on SW1")
+#     retStruct = InterfaceEnable(deviceObj=device1, enable=False,
+#                                 interface=device1.linkPortMapping['lnk01'])
+#     retCode = retStruct.returnCode()
+#     assert retCode == 0, "Unable to disable interface"
+#
+#     LogOutput('info', "Disabling interface on SW2")
+#     retStruct = InterfaceEnable(deviceObj=device2, enable=False,
+#                                 interface=device2.linkPortMapping['lnk01'])
+#     retCode = retStruct.returnCode()
+#     assert retCode == 0, "Unable to disable interface"
 
 
 @pytest.mark.timeout(1000)
