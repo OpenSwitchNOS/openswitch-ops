@@ -1,5 +1,11 @@
 # Authentication, Authorization, and Accounting (AAA) feature
-[TOC]
+
+- [High level design of ops-aaa-utils(Authentication, Authorization, Accounting)](#high-level-design-of-ops-aaa-util-s-(-authentication-authorization-accounting-)
+	- [Design choices](#design-choices)
+	- [Participating modules](#participating-modules)
+	- [OVSDB-Schema](#ovsdb-schema)
+	- [References](#references)
+
 #High level design of ops-aaa-utils(Authentication, Authorization, Accounting)
 
 The Authentication, Authorization, and Accounting (AAA) feature leverages Linux PAM (Pluggable Authentication Modules) to provide authentication for user based login access to services (SSH,Console,REST)running on the switch. The `pam_unix.so `and `pam_radius_auth.so` are used for local and Radius based authentication respectively for users added on the device. Refer to `AAA_Component_Design.md `for more details on PAM.
@@ -38,10 +44,10 @@ When there is a choice between Linux PAM(http://www.linux-pam.org/) and `openPAM
 ```
 
 ##OVSDB-Schema
-For information about the OVSDB schema, refer to `ops-aaa-utils Design.md`.
+For information about the OVSDB schema, refer [here](documents/dev/ops-aaa-utils/design).
 
 ##References
 
-* [Reference 1]`ops-aaa-utils Design.md`
-* [Reference 2]`AAA_user_guide.md`
-* [Reference 3]`AAA_cli.md`
+* Click [here](documents/dev/ops-aaa-utils/design) for AAA Design.
+* Click [here](documents/user/aaa_user_guide) for AAA user guide.
+* Click [here](documents/user/AAA_cli) for AAA CLI guide.
