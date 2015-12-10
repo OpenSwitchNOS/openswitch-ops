@@ -74,27 +74,31 @@ class QueryInterfaceDepthTest(OpsVsiTest):
 
         return True
 
-    def validate_keys_inner_object(self, json_data, expected_data):
+    def validate_keys_inner_object(self, json_data, json_expected_data):
         assert json_data["split_parent"] is not None, \
             "split_parent key is not present"
         assert json_data["split_children"] is not None, \
             "split_children key is not present"
         info("### split_parent, split_children keys present ###\n")
-        assert json_data == INTERFACE_DATA["configuration"], \
+        assert json_data == json_expected_data, \
             "Configuration data is not equal that posted data"
         info("### Configuration data validated ###\n")
 
-        assert json_data["split_parent"][0] == expected_data, \
-            "URI is not received\n"
+        assert json_data["split_parent"][0] == \
+            json_expected_data["split_parent"][0], "URI is not received\n"
         info("### URI present in second level received ###\n")
 
         return True
 
     def test_recursive_get_depth_first_level(self):
-        expected_data = self.PATH + "/50"
+        to_compare_path = self.PATH + "/50-1"
         new_path = self.PATH + "?depth=1;name=50-1"
+        status_code, expected_data = execute_request(to_compare_path,
+                                                     "GET", None,
+                                                     self.SWITCH_IP)
         status_code, response_data = execute_request(new_path, "GET", None,
                                                      self.SWITCH_IP)
+        json_expected_data = self.get_json(expected_data)
         json_data = self.get_json(response_data)[0]
 
         info("\n########## Test to Validate recursive GET Interface 50-1 "
@@ -106,38 +110,24 @@ class QueryInterfaceDepthTest(OpsVsiTest):
         assert self.validate_keys_complete_object(json_data)
         info("### Validated first level of depth ###\n")
 
+#        print json_expected_data["configuration"]
+        json_expected_data = json_expected_data["configuration"]
         json_data = json_data["configuration"]
+#        print json_data
 
-        assert self.validate_keys_inner_object(json_data, expected_data)
+        assert self.validate_keys_inner_object(json_data, json_expected_data)
         info("########## End Test to Validate recursive GET Interface 50-1 "
              "depth=1 request ##########\n")
 
     def test_recursive_get_depth_second_level(self):
-        expected_data = \
-            {
-                "configuration":
-                {
-                    "split_parent": [],
-                    "subintf_parent" : [],
-                    "name": "50",
-                    "other_config": {},
-                    "user_config": {},
-                    "split_children": [
-                        self.PATH + "/50-1",
-                        self.PATH + "/50-2",
-                        self.PATH + "/50-3",
-                        self.PATH + "/50-4"
-                    ],
-                    "external_ids": {},
-                    "type": "system",
-                    "options": {}
-                }
-            }
+        to_compare_path = self.PATH + "/50"
         new_path = self.PATH + "?depth=2;name=50-1"
-        status_code, response_data = execute_request(new_path,
-                                                     "GET",
-                                                     None,
+        status_code, expected_data = execute_request(to_compare_path,
+                                                     "GET", None,
                                                      self.SWITCH_IP)
+        status_code, response_data = execute_request(new_path, "GET", None,
+                                                     self.SWITCH_IP)
+        json_expected_data = self.get_json(expected_data)
         json_data = self.get_json(response_data)[0]
 
         info("\n########## Test to Validate recursive GET Interface 50-1 "
@@ -155,10 +145,10 @@ class QueryInterfaceDepthTest(OpsVsiTest):
         info("### Validated second level of depth###\n")
 
         assert len(set(json_data["configuration"]) &
-                   set(expected_data["configuration"])) > 0, \
+                   set(json_expected_data["configuration"])) > 0, \
             "Configuration data is not equal that posted data\n"
-        assert json_data["configuration"]["split_children"].sort() == \
-            expected_data["configuration"]["split_children"].sort(), \
+        assert json_data["configuration"]["split_children"] == \
+            json_expected_data["configuration"]["split_children"], \
             "Response data is not equal that expected data\n"
         info("### Data for the third level received ###\n")
 
@@ -195,15 +185,15 @@ class QueryInterfaceDepthTest(OpsVsiTest):
         info("########## End Test to Validate recursive GET Interface 50-1 "
              "depth=<string> request ##########\n")
 
-    def test_all_interfaces_with_depth_zero(self):
+    def test_recursive_get_validate_with_depth_zero(self):
         expected_data = self.PATH + "/50"
         new_path = self.PATH + "?depth=0"
         status_code, response_data = execute_request(new_path, "GET", None,
                                                      self.SWITCH_IP)
         json_data = self.get_json(response_data)
 
-        info("\n########## Test to Validate first GET all Interfaces "
-             "request ##########\n")
+        info("\n########## Test to Validate recursive GET interfaces "
+             "with depth=0 request ##########\n")
 
         assert status_code == httplib.OK, "Wrong status code %s " % status_code
         info("### Status code is OK ###\n")
@@ -215,8 +205,8 @@ class QueryInterfaceDepthTest(OpsVsiTest):
             "Expected URI not present in response data"
         info("### There is at least one interface  ###\n")
 
-        info("########## End Test to Validate first GET all Interfaces "
-             "request ##########\n")
+        info("########## End Test to Validate recursive GET interfaces "
+             "with depth=0 request ##########\n")
 
     def test_all_interfaces_no_depth_parameter(self):
         expected_data = self.PATH + "/50"
@@ -241,10 +231,14 @@ class QueryInterfaceDepthTest(OpsVsiTest):
              "no depth parameter request ##########\n")
 
     def test_recursive_get_depth_first_level_specific_uri(self):
-        expected_data = self.PATH + "/50"
+        to_compare_path = self.PATH + "?depth=1;name=50-1"
         new_path = self.PATH + "/50-1?depth=1"
+        status_code, expected_data = execute_request(to_compare_path,
+                                                     "GET", None,
+                                                     self.SWITCH_IP)
         status_code, response_data = execute_request(new_path, "GET", None,
                                                      self.SWITCH_IP)
+        json_expected_data = self.get_json(expected_data)[0]
         json_data = self.get_json(response_data)
 
         info("\n########## Test to Validate recursive GET Interface 50-1 "
@@ -256,29 +250,22 @@ class QueryInterfaceDepthTest(OpsVsiTest):
         assert self.validate_keys_complete_object(json_data)
         info("### Validated first level of depth ###\n")
 
+        json_expected_data = json_expected_data["configuration"]
         json_data = json_data["configuration"]
 
-        assert self.validate_keys_inner_object(json_data, expected_data)
+        assert self.validate_keys_inner_object(json_data, json_expected_data)
         info("########## End Test to Validate recursive GET Interface 50-1 "
-             "depth=1 request ##########\n")
+             "depth=1 specific uri request ##########\n")
 
     def test_recursive_get_depth_second_level_specific_uri(self):
-        expected_data = \
-            {
-                "configuration":
-                {
-                    "split_children": [
-                        self.PATH + "/50-1",
-                        self.PATH + "/50-2",
-                        self.PATH + "/50-3",
-                        self.PATH + "/50-4"
-                    ]
-                }
-            }
-
+        to_compare_path = self.PATH + "?depth=2;name=50-1"
         new_path = self.PATH + "/50-1?depth=2"
+        status_code, expected_data = execute_request(to_compare_path,
+                                                     "GET", None,
+                                                     self.SWITCH_IP)
         status_code, response_data = execute_request(new_path, "GET", None,
                                                      self.SWITCH_IP)
+        json_expected_data = self.get_json(expected_data)[0]
         json_data = self.get_json(response_data)
 
         info("\n########## Test to Validate recursive GET Interface 50-1 "
@@ -291,23 +278,22 @@ class QueryInterfaceDepthTest(OpsVsiTest):
         info("### Validated first level of depth###\n")
 
         json_data = json_data["configuration"]["split_parent"][0]
-        response_value = json_data["configuration"]["split_children"].sort()
-        expected_value = \
-            expected_data["configuration"]["split_children"].sort()
+        json_expected_data = \
+            json_expected_data["configuration"]["split_parent"][0]
 
         assert self.validate_keys_complete_object(json_data)
         info("### Validated second level of depth###\n")
 
         assert len(set(json_data["configuration"]) &
-                   set(expected_data["configuration"])) > 0, \
+                   set(json_expected_data["configuration"])) > 0, \
             "Configuration data is  not equal that posted data\n"
 
-        assert response_value == expected_value, \
+        assert json_data == json_expected_data, \
             "Response data is not equal that expected data\n"
         info("### Data for the third level received ###\n")
 
         info("########## End Test to Validate recursive GET Interface 50-1 "
-             "depth=2 request ##########\n")
+             "depth=2 specific uri request ##########\n")
 
     def test_recursive_get_with_negative_depth_value_specific_uri(self):
         new_path = self.PATH + "/50-1?depth=-1"
@@ -340,10 +326,14 @@ class QueryInterfaceDepthTest(OpsVsiTest):
              "depth=<string> specific uri request\n")
 
     def test_recursive_get_specific_uri_with_depth_zero(self):
-        expected_data = self.PATH + "/50"
+        to_compare_path = self.PATH + "?depth=1;name=50-1"
         new_path = self.PATH + "/50-1?depth=0"
+        status_code, expected_data = execute_request(to_compare_path,
+                                                     "GET", None,
+                                                     self.SWITCH_IP)
         status_code, response_data = execute_request(new_path, "GET", None,
                                                      self.SWITCH_IP)
+        json_expected_data = self.get_json(expected_data)[0]
         json_data = self.get_json(response_data)
 
         info("\n########## Test to Validate GET specific Interface with "
@@ -358,16 +348,21 @@ class QueryInterfaceDepthTest(OpsVsiTest):
         info("### Validated first level of depth ###\n")
 
         json_data = json_data["configuration"]
+        json_expected_data = json_expected_data["configuration"]
 
-        assert self.validate_keys_inner_object(json_data, expected_data)
+        assert self.validate_keys_inner_object(json_data, json_expected_data)
         info("########## End Test to Validate GET specific Interface with "
              "depth=0 request ##########\n")
 
     def test_recursive_get_specific_uri_no_depth_parameter(self):
-        expected_data = self.PATH + "/50"
+        to_compare_path = self.PATH + "?depth=1;name=50-1"
         new_path = self.PATH + "/50-1"
+        status_code, expected_data = execute_request(to_compare_path,
+                                                     "GET", None,
+                                                     self.SWITCH_IP)
         status_code, response_data = execute_request(new_path, "GET", None,
                                                      self.SWITCH_IP)
+        json_expected_data = self.get_json(expected_data)[0]
         json_data = self.get_json(response_data)
 
         info("\n########## Test to Validate GET specific Interface with "
@@ -382,8 +377,9 @@ class QueryInterfaceDepthTest(OpsVsiTest):
         info("### Validated first level of depth ###\n")
 
         json_data = json_data["configuration"]
+        json_expected_data = json_expected_data["configuration"]
 
-        assert self.validate_keys_inner_object(json_data, expected_data)
+        assert self.validate_keys_inner_object(json_data, json_expected_data)
         info("########## End Test to Validate GET specific Interface with "
              "no depth request ##########\n")
 
