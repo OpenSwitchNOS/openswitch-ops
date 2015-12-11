@@ -64,6 +64,7 @@ class myTopo(Topo):
 
 class configTest(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.fake_bridge = "fake_bridge"
 
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,

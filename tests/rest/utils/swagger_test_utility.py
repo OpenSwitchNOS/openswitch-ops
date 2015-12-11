@@ -33,7 +33,7 @@ def get_json_file(switch_ip):
         search_ip = re.search(r'[\d.]+', line)
         if search_ip is None:
             continue
-        print "search_ip %s" % search_ip
+        switch_ip = switch_ip.split("\r\n")[0]
         ip_addr = search_ip.group()
         if ip_addr == switch_ip:
             break
