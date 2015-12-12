@@ -47,8 +47,10 @@ PORT_DATA = {
 
 
 def get_switch_ip(switch):
-    return switch.cmd("python -c \"import socket;\
+    switch_ip = switch.cmd("python -c \"import socket;\
                       print socket.gethostbyname(socket.gethostname())\"")
+    print "switch ip in get_switch_ip %s" % switch_ip
+    return switch_ip.strip()
 
 
 def create_test_port(ip):
