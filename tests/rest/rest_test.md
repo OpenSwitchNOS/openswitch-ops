@@ -19,6 +19,7 @@ REST API Test Cases
 - [Query port with pagination](#query-port-with-pagination)
 - [Sort ports by field](#sort-ports-by-field)
 - [Sort ports by field combination](#sort-ports-by-field-combination)
+- [Custom validators](#custom-validators)
 
 ##  REST API put, get methods for URL "/rest/v1/system"
 ### Objective
@@ -1846,3 +1847,67 @@ The test fails when:
 - The HTTP response is not 200 OK.
 - The response doesn't have 10 ports
 - The result is not sorted ascending/descending by the combination of fields
+
+
+##  Custom validators
+### Objective
+The test case verifies that the custom validation framework is able to invoke an implemented custom validator upon a POST request and return any issues.
+
+### Requirements
+
+- Physical or virtual switches are required for this test.
+- The `bgp_router.py` custom validator exists in the `opsplugins` directory of the `ops-quagga` repository. The `validate_create` function must be overridden and checks for the number of BGP routers and returns an error when attempting to create more than one.
+
+### Setup
+#### Topology diagram
+
+```ditaa
+    +----------------+         +----------------+
+    |                |         |                |
+    |                |         |                |
+    |      Host      +---------+     Switch     |
+    |                |         |                |
+    |                |         |                |
+    +----------------+         +----------------+
+```
+
+#### Test Setup
+Two BGP configurations are used for verifying the custom validation framework. The first BGP router configuration is used for the valid test case, and the second BGP router configuration is used for the invalid test case.
+
+**BGP Router 1 Configuration**
+
+```
+{
+    "configuration": {
+        "always_compare_med": True,
+        "asn": 6001
+    }
+}
+```
+
+**BGP Router 2 Configuration**
+
+```
+{
+    "configuration": {
+        "always_compare_med": True,
+        "asn": 6002
+    }
+}
+```
+
+### Description
+To verify that the custom validation framework invokes the custom validator for the BGP router resource, the BGP router validator responsible for checking the number of BGP routers will return an error response that also includes an error code. For the BGP router table, only one BGP router is permitted. The following steps verify the custom validation framework:
+
+1. Create a BGP router by sending BGP router 1 configurations as data in a POST request to the path `/rest/v1/system/vrfs/vrf_default/bgp_routers`.
+2. Verify that the request was successful by confirming that the return code is equal to `201` indicating a successful creation of the BGP router.
+3. Confirm the validator works by attempting to create another BGP router with a different ASN using BGP router 2 configurations as data in another POST request to the path `/rest/v1/system/vrfs/vrf_default/bgp_routers`.
+4. Verify that the request was not successful by confirming that the return code is not equal to `201`.
+5. To verify that the error response was triggered by the custom validator, verify from the response data that it contains an `error` field and a `code` inside of `error`.
+
+### Test result criteria
+#### Test pass criteria
+The test case is considered passing if the request for creating the first BGP router is successful and fails the attempt to create a second BGP router with a different ASN. The response data must include an `error` field and an associated `code`.
+
+#### Test fail criteria
+The test is considered failing if the second request to create another BGP router is successful. A successful response indicates the custom validation framework did not invoke the custom validator for BGP router resource properly.
