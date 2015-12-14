@@ -11,6 +11,8 @@ REST API Test Cases
 - [REST API put method with invalid data for URLs](#rest-api-put-method-with-invalid-data-for-urls)
 - [REST API login authentication](#rest-api-login-authentication)
 - [REST API startup config verify](#rest-api-startup-config-verify)
+- [REST API get method for URL "/rest/v1/system/users"](#rest-api-get-method-for-url-restv1systemusers)
+- [REST API delete method for URL "/rest/v1/system/users/{id}"](#rest-api-delete-method-for-url-restv1systemusersid)
 - [Query port](#query-port)
 - [Create a port](#create-a-port)
 - [Update a port](#update-a-port)
@@ -353,6 +355,150 @@ Verify that the REST API startup configuration works.
 #### Test fail criteria
 - The first test fails if the standard REST API PUT method does not return HTTP code 200 for the URI "/rest/v1/system".
 - The second test fails if the standard REST API GET method does not return HTTP code 200 for the URI "/rest/v1/system" or the returned data is not identical to the data used for PUT.
+
+##  REST API get method for URL "/rest/v1/system/users"
+
+### Objective
+The objective of the test case is to validate the "/rest/v1/system/users" through the standard RESTAPI GET method.
+
+### Requirements
+The requirements for this test case are:
+
+- OpenSwitch
+- Ubuntu Workstation
+
+### Setup
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+
+|                |         |                |
+|                |         |                |
+|    Local Host  +---------+    Switch 1    |
+|                |         |                |
+|                |         |                |
++----------------+         +----------------+
+```
+
+### Description
+The test case validates the "/rest/v1/system/users" through the standard RESTAPI GET method.
+
+1. Verify if returns a json object with a list of users by creating 100 new users that are part of ovsdb_users group.
+- a. Execute the GET request over /rest/v1/system/users.
+- b. Verify if the HTTP response is 200 OK.
+- c. Confirm that the returned user list has the expected data.
+
+2. Verify if returns a json object with a list of users by creating 11 new users and only 10 are part of ovsdb_users group.
+- a. Execute the GET request over /rest/v1/system/users.
+- b. Verify if the HTTP response is 200 OK.
+- c. Confirm that the returned user list has the expected data.
+
+3. Verify if returns a json object with a list of users by creating 10 new users that are part of ovsdb_users group and have extra arguments in the creation command.
+- a. Execute the GET request over /rest/v1/system/users.
+- b. Verify if the HTTP response is 200 OK.
+- c. Confirm that the returned user list has the expected data.
+
+4. Verify if returns a json object with the default user.
+- a. Execute the GET request over /rest/v1/system/users.
+- b. Verify if the HTTP response is 200 OK.
+- c. Confirm that the returned user list has the expected data.
+
+
+### Test result criteria
+#### Test pass criteria
+
+This tests passes by meeting the following criteria:
+
+- A 200 OK HTTP response.
+- The correct data is returned.
+
+#### Test fail criteria
+
+- A 400 BAD REQUEST HTTP response.
+- The incorrect data is returned.
+
+##  REST API delete method for URL "/rest/v1/system/users/{id}"
+
+### Objective
+The objective of the test case is to validate the "/rest/v1/system/users/{id}" through the standard RESTAPI DELETE method.
+
+### Requirements
+The requirements for this test case are:
+- OpenSwitch
+- Ubuntu Workstation
+
+### Setup
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+
+|                |         |                |
+|                |         |                |
+|    Local Host  +---------+    Switch 1    |
+|                |         |                |
+|                |         |                |
++----------------+         +----------------+
+```
+
+### Description
+The test case validates the "/rest/v1/system/users/{id}" through the standard RESTAPI DELETE method.
+
+1. Verify if request pass when trying to delete a new user who is part of ovsdb_users group and is not logged.
+- a. Execute the DELETE request over /rest/v1/system/users/{id}.
+- b. Verify if the HTTP response is 204 NO CONTENT.
+- c. Confirm that the returned user list has the expected data.
+
+2. Verify if request fails when trying to delete a new user who is part of ovsdb_users group and is logged in.
+- a. Execute the DELETE request over /rest/v1/system/users/{id}.
+- b. Verify if the HTTP response is 400 BAD REQUEST.
+- c. Confirm that the returned user list has the expected data.
+
+3. Verify if request fails when trying to delete the current logged in user.
+- a. Execute the DELETE request over /rest/v1/system/users/{id}.
+- b. Verify if the HTTP response is 400 BAD REQUEST.
+- c. Confirm that the returned user list has the expected data.
+
+4. Verify if request fails after trying to delete a nonexistent user.
+- a. Execute the DELETE request over /rest/v1/system/users/{id}.
+- b. Verify if the HTTP response is 400 BAD REQUEST.
+
+5. Verify if request fails after trying to delete a new user who is not part of ovsdb_users group.
+- a. Execute the DELETE request over /rest/v1/system/users/{id}.
+- b. Verify if the HTTP response is 400 BAD REQUEST.
+- c. Confirm that the returned user list has the expected data.
+
+### Test result criteria
+#### Test pass criteria
+
+This test passes by meeting the following criteria:
+
+- Deleting a valid user currently not logged:
+ - A 204 NO CONTENT HTTP response.
+
+- Deleting a valid user currently logged in:
+ - A 400 BAD REQUEST HTTP response.
+
+- Deleting a nonexistent user:
+ - A 400 BAD REQUEST HTTP response.
+
+- Deleting a user who is not part of ovsdb_users group:
+ - A 400 BAD REQUEST HTTP response.
+
+#### Test fail criteria
+
+This test fails when:
+
+- Deleting a valid user currently not logged:
+ - A 400 BAD REQUEST HTTP response or anything other than 204 NO CONTENT HTTP response.
+
+- Deleting a valid user currently logged in:
+ - A 204 NO CONTENT HTTP response or anything other than 400 BAD REQUEST HTTP response.
+
+- Deleting a nonexistent user:
+ - Anything other than 400 BAD REQUEST HTTP response.
+
+- Deleting a user who is not part of ovsdb_users group:
+ - A 204 NO CONTENT HTTP response or anything other than 400 BAD REQUEST HTTP response.
 
 REST API ports Resource test cases
 ==================================
