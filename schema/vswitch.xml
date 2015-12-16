@@ -993,6 +993,12 @@
       <column name="dhcp_server">
         DHCP Server in the VRF.
       </column>
+      <column name="ntp_associations">
+        Reference to the NTP associations table, which contains the NTP
+        mobilized associations (e.g. unicast upstream time servers,
+        multicast, or broadcast, time references, and hardware clocks)
+        as explained in <code>https://www.ietf.org/rfc/rfc5907.txt</code>.
+      </column>
     </group>
    <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
@@ -3570,6 +3576,87 @@
       If the value is not specified, then the tag
       would be set for any value of the option.
     </column>
+
+  </table>
+
+  <table name="NTP_Association">
+
+    <p>
+      The table of currently mobilized associations (e.g. unicast upstream
+      time servers, multicast, or broadcast, time references, and hardware
+      clocks) as explained in <code>https://www.ietf.org/rfc/rfc5907.txt</code>.
+    </p>
+
+    <group title="Configuration">
+
+      <column name="name">
+        The hostname or other descriptive name for the association.
+      </column>
+
+      <column name="ref_clock_id">
+        The refclock driver ID, if available.  a refclock driver ID like
+        "127.127.1.0" for non uni/multi/broadcast associations
+      </column>
+
+    </group>
+
+    <group title="Status">
+
+      <column name="id" type='{"type":"integer", "minInteger":1,
+                               "maxInteger":99999}'>
+        The association ID.  This is an internal, unique ID.
+      </column>
+
+      <column name="address_family"
+              type='{"type":"string",
+                     "enum": ["set", ["ipv4", "ipv6", "ipv4z", "ipv6z"]]}'>
+        The type of address of the association.  Can be either IPv4 or
+        IPv6 (both with or without zone index) and contains the type of
+        address for unicast, multicast, and broadcast associations.
+      </column>
+
+      <column name="ip_address" type='{"type":"string", "maxLength":57}'>
+        The IP address (IPv4 or IPv6, with or without zone index) of
+        the association.  The type and size depends on the
+        ntpAssocAddressType object.  Represents the IP address of a
+        uni/multi/broadcast association.  In the case of ipv4z as well as
+        ipv6z types, the zone index will be limited to 32bit integer and
+        represented in unsigned integer with ":" as the concatenator, e.g.
+        <code>fe80::1:4294967295</code>, as <code>4294967295</code> zone
+        index.
+      </column>
+
+      <column name="time_offset">
+        The time offset to the association as a string.
+        including unit, e.g., "0.032 ms" or "1.232 s
+      </column>
+
+      <column name="stratum" type='{"type":"integer", "minInteger":1,
+                                    "maxInteger":16}'>
+        The association stratum value.
+      </column>
+
+      <column name="jitter">
+        The jitter in milliseconds as a string.
+      </column>
+
+      <column name="network_delay">
+        The network delay in milliseconds as a string.
+      </column>
+
+      <column name="root_dispersion">
+        The root dispersion of the association.  e.g., "6.927"
+      </column>
+
+    </group>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="other_config"/>
+      <column name="external_ids"/>
+    </group>
 
   </table>
 
