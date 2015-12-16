@@ -148,7 +148,7 @@ All users.
 #### Examples
 ```
 ops-as5712# configure terminal
-ops-as5712(config)# no sflow collector 10.0.0.1 port 6343 vrf vrf1
+ops-as5712(config)# no sflow collector 10.0.0.1 port 6343 vrf vrf2
 ```
 ### Set sFlow agent interface name and family
 #### Syntax
@@ -291,11 +291,11 @@ ops-as5712# show sflow
  SFLOW configuration
  --------------------------------------------------------------------
  sflow                                  enabled
- collector_ip : port : vrf              10.0.0.1 : 6343 : vrf_default
-                                        10.0.0.2 : 6343 : vrf_default
+ collector_ip : port : vrf              10.0.0.1/6343/vrf_default
+                                        10.0.0.2/6343/vrf_default
  agent_interface                        1
  agent_address_family                   IPv4
- sampling_rate : interface_speed        1024
+ sampling_rate                          1024
                                         2048
  polling interval                       30
  header_size                            64
