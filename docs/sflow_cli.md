@@ -74,7 +74,7 @@ ops-as5712(config)# sflow sampling 1000
 #### Syntax
 `no sflow sampling`
 #### Description
-This command removes the current sampling rate for sflow and sets it back to default of 4096 globally. A sampling rate of 4056 means that one in 4096 packets are sampled.
+This command removes the current sampling rate for sflow and sets it back to default of 4096 globally. A sampling rate of 4096 means that one in 4096 packets are sampled.
 #### Authority
 All users.
 #### Parameters
@@ -148,7 +148,7 @@ All users.
 #### Examples
 ```
 ops-as5712# configure terminal
-ops-as5712(config)# no sflow collector 10.0.0.1 port 6343 vrf vrf1
+ops-as5712(config)# no sflow collector 10.0.0.1 port 6343 vrf vrf2
 ```
 ### Set sFlow agent interface name and family
 #### Syntax
@@ -288,19 +288,19 @@ no parameters
 #### Examples
 ```
 ops-as5712# show sflow
- SFLOW configuration
+ sFlow Configuration
  --------------------------------------------------------------------
- sflow                                  enabled
- collector_ip : port : vrf              10.0.0.1 : 6343 : vrf_default
-                                        10.0.0.2 : 6343 : vrf_default
- agent_interface                        1
- agent_address_family                   IPv4
- sampling_rate : interface_speed        1024
+ sFlow                                  Enabled
+ collector_ip : port : vrf              10.0.0.1/6343/vrf_default
+                                        10.0.0.2/6343/vrf_default
+ Agent Interface                        1
+ Agent Address Family                   IPv4
+ Sampling Rate                          1024
                                         2048
- polling interval                       30
- header_size                            64
- max_datagram_size                      1400
- total_number_of_packets_sent           50
+ Polling Interval                       30
+ Header Size                            128
+ Max Datagram Size                      1400
+ Number of Samples                      0
  ```
 
 ### Show sFlow configuration interface
@@ -320,6 +320,7 @@ ops-as5712# show sflow 1
  SFLOW configuration : interface 1
  --------------------------------------------------------------------
  sflow                                  enabled
- sampling_rate                          1024
- total_number_of_packets_sent           50
+ Sampling Rate                          1024
+ Number of Samples                      0
+
 ```
