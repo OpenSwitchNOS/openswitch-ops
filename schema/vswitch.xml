@@ -78,6 +78,9 @@
       <column name="vrfs">
       </column>
 
+      <column name="management_vrf">
+      </column>
+
       <column name="management_mac">
         Ethernet MAC address for the management interface port for this system.
       </column>
@@ -1339,6 +1342,8 @@
           IPv4 or IPv6 destination prefix and mask in the address/mask
           format. Example 192.168.0.0/16
       </column>
+      <column name="peer">
+      </column>
       <column name="address_family">
         Represents the address family for this entry.
         Default value is <code>ipv4</code>.
@@ -1907,6 +1912,9 @@
         </ul>
       </column>
 
+      <column name="vlan_options">
+      </column>
+
       <column name="tag">
         <p>
           For an access port, the port's implicitly tagged VLAN.  For a
@@ -1945,6 +1953,9 @@
               Defaults to <code>l3-src-dst-hash</code> if not assigned.  </p>
       </column>
 
+      <column name="bond_options">
+      </column>
+
       <group title="LACP Configuration">
         <p>
           LACP, the Link Aggregation Control Protocol, is an IEEE standard that
@@ -1963,6 +1974,9 @@
           initiate such negotiations themselves.  If LACP is enabled on a port
           whose partner switch does not support LACP, the bond will be
           disabled. Defaults to <code>off</code> if unset.
+        </column>
+
+        <column name="bond_active_slave">
         </column>
 
         <column name="other_config" key="lacp-system-id">
@@ -2055,6 +2069,8 @@
         is controlled by <ref column="other_config"
         key="stats-update-interval"/> in the <ref table="System"/> table.
       </p>
+      <column name="statistics">
+      </column>
     </group>
 
     <group title="Common Columns">
@@ -2135,6 +2151,10 @@
         description in human readable form.  Otherwise, OpenSwitch clears
         this column.
       </column>
+
+      <column name="options">
+      </column>
+
       <column name="mac_in_use">
         The MAC address in use by this <ref table="Interface"/>.
       </column>
@@ -2814,6 +2834,10 @@
       </column>
       <column name="status" >
       </column>
+      <column name="hw_config" >
+      </column>
+      <column name="other_config" >
+      </column>
     </group>
     <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
@@ -2833,6 +2857,8 @@
       </column>
       <column name="state">
         State of the LED controls the lighting behavior.
+      </column>
+      <column name="hw_config">
       </column>
     </group>
    <group title="Status">
@@ -2890,6 +2916,8 @@
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
 
+      <column name="hw_config">
+      </column>
       <column name="other_config">
       </column>
       <column name="external_ids">
@@ -2908,6 +2936,8 @@
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
 
+      <column name="hw_config">
+      </column>
       <column name="other_config">
       </column>
       <column name="external_ids">
@@ -3300,6 +3330,7 @@
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
 
+      <column name="other_config"/>
       <column name="external_ids"/>
     </group>
   </table>
@@ -3363,6 +3394,9 @@
 
       <column name="matches">
         Matching incoming DHCP options.
+      </column>
+
+      <column name="other_config">
       </column>
 
       <group title="BOOTP Options Configuration">
