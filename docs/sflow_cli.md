@@ -148,7 +148,7 @@ All users.
 #### Examples
 ```
 ops-as5712# configure terminal
-ops-as5712(config)# no sflow collector 10.0.0.1 port 6343 vrf vrf1
+ops-as5712(config)# no sflow collector 10.0.0.1 port 6343 vrf vrf2
 ```
 ### Set sFlow agent interface name and family
 #### Syntax
