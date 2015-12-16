@@ -592,6 +592,18 @@
             "max": 1
           }
         },
+        "ntp_associations": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "NTP_Association"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "other_config": {
           "category": "configuration",
           "type": {
@@ -1900,7 +1912,7 @@
           "type": {
             "key": {
               "type": "string",
-              "maxLength": 45
+              "maxLength": 57
             }
           }
         },
@@ -3674,6 +3686,141 @@
          }
        }
      }
+    },
+    "NTP_Association": {
+      "columns": {
+        "id":{
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 99999
+            }
+          },
+          "mutable": false
+        },
+        "name": {
+          "category": "configuration",
+          "type": "string",
+          "mutable": false
+        },
+        "ref_clock_id": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          },
+          "mutable": false
+        },
+        "other_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "external_ids": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "address_family": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "ipv4",
+                  "ipv6",
+                  "ipv4z",
+                  "ipv6z"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "ip_address": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 45
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "time_offset": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "stratum": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 16
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "jitter": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "network_delay": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "root_dispersion": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ]
     }
   }
 }
