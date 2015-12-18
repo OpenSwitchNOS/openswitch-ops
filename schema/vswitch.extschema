@@ -50,6 +50,36 @@
             "max": 1
           }
         },
+        "mstp_inst_info": {
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Mstp_inst_info"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "mstp_cist_info": {
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Mstp_cist_info"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "mstp_inst_port_info": {
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Mstp_inst_port_info"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "management_mac": {
           "category": "status",
           "type": {
@@ -190,6 +220,15 @@
           }
         },
         "lacp_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "stp_options" : {
           "category": "configuration",
           "type": {
             "key": "string",
@@ -616,6 +655,514 @@
           "name"
         ]
       ]
+    },
+    "Mstp_inst_info": {
+       "columns": {
+          "instid" : {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 64
+            },
+            "min": 0,
+            "max": 1
+            }
+          },
+          "vlans" : {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VLAN"
+            },
+            "min": 0,
+            "max": 4094
+            }
+         },
+         "priority" : {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 61440
+            },
+            "min": 0,
+            "max": 1
+          }
+         },
+         "port_priority" : {
+             "category": "configuration",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 0,
+                     "maxInteger": 224
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "cost" : {
+             "category": "configuration",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 1,
+                     "maxInteger": 200000000
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "hardware_grp_id" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "designated_root" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "string",
+                     "maxLength": 45
+                 }
+             }
+         },
+         "root_port" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "string",
+                     "maxLength": 45
+                 }
+             }
+         },
+         "root_path_cost" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 1,
+                     "maxInteger": 200000000
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "root_priority" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 0,
+                     "maxInteger": 224
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "remaining_hops" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 0,
+                     "maxInteger": 40
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "time_since_top_change" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "string"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "top_change_cnt" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "oper_hello_time" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 2,
+                     "maxInteger": 10
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "oper_forward_delay" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 4,
+                     "maxInteger": 30
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "oper_max_age" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 6,
+                     "maxInteger": 40
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "oper_tx_hold_count" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer",
+                     "minInteger": 1,
+                     "maxInteger": 10
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "hello_expiry_time" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "forward_delay_expiry_time" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "messageage_expiry_time" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "topology_change_expiry_time" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         },
+         "hold_timer_expiry_time" : {
+             "category": "status",
+             "type": {
+                 "key": {
+                     "type": "integer"
+                 },
+                 "min": 0,
+                 "max": 1
+             }
+         }
+       },
+       "indexes": [
+           [
+           "instid"
+           ]
+           ]
+    },
+    "Mstp_inst_port_info": {
+        "columns": {
+            "instid" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 1,
+                        "maxInteger": 4094
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "port" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "uuid",
+                        "refTable": "Port",
+                        "refType" : "weak"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "priority" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 0,
+                        "maxInteger": 61440
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "path_cost" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 1,
+                        "maxInteger": 20000000000
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "role" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "string",
+                        "enum": [
+                            "set",
+                        [
+                            "root_port",
+                        "designated_port",
+                        "alternate_port",
+                        "backup_port",
+                        "disabled_port"
+                            ]
+                            ]
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "state" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "string",
+                        "enum": [
+                            "set",
+                        [
+                            "Blocking",
+                        "Learning",
+                        "Forwarding",
+                        "Disabled"
+                            ]
+                            ]
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "tx_count" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "integer"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "designated_root" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "designated_root_priority" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 0,
+                        "maxInteger": 224
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "designated_cost" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 1,
+                        "maxInteger": 20000000000
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "designated_bridge" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "designated_bridge_priority" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 0,
+                        "maxInteger": 61440
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "designated_port" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 1,
+                        "maxInteger": 4094
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "link_type" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "string",
+                        "enum": [
+                            "set",
+                        [
+                            "point_to_point",
+                        "shared"
+                            ]
+                            ]
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "MST_BPDUs_Tx" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "integer"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "MST_BPDUs_Rx" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "integer"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            }
+        },
+        "indexes": [
+            [
+            "instid"
+            ]
+            ]
+    },
+    "Mstp_cist_info": {
+        "columns": {
+            "regional_root" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "bridge_identifier" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "priority": {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 0,
+                        "maxInteger": 64
+                    }
+                }
+            },
+            "cost" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "integer",
+                        "minInteger": 1,
+                        "maxInteger": 200000000
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            }
+        }
     },
     "Daemon": {
       "columns": {
@@ -2319,6 +2866,26 @@
           },
           "ephemeral": true
         },
+        "stp_options": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "stp_state": {
+          "category": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port_stp_state"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "statistics": {
           "category": "statistics",
           "type": {
@@ -2788,6 +3355,35 @@
           "name"
         ]
       ]
+    },
+    "Port_stp_state": {
+        "columns": {
+            "vlan_id": {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "minInteger": 1,
+                        "maxInteger": 4094,
+                        "type": "integer"
+                    }
+                }
+            },
+            "stp_port_state": {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "minInteger": 0,
+                        "maxInteger": 4,
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "indexes": [
+            [
+            "vlan_id"
+            ]
+            ]
     },
     "LED": {
       "columns": {
