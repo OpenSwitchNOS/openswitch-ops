@@ -899,7 +899,92 @@
       <column name="vlans">
         VLANs included in the bridge.
       </column>
+      
+      <column name="mstp_instances">
+        MSTP configuration for individual instance.
+      </column>
+
+      <column name="mstp_common_instance">
+        MSTP configuration for CIST(Common Instance Spanning Tree).
+      </column>
+
     </group>
+    
+    <group title="MSTP Configurations">
+      <p>
+        MSTP global configurations for all MSTIs.
+      </p>
+      <column name="other_config" key="mstp_spanning_tree_admin_status" type='{"type": "boolean"}'>
+        Set this value to <code>enable</code> to enable spanning tree
+        or to <code>disable</code> to disable it.
+        Default value is <code>disable</code>.
+      </column>
+      <column name="other_config" key="mstp_hello_time">
+        Set this value to configure hello-time (interval between the generation of configuration
+        messages by the root bridge for all instances on the device), in seconds.
+        Default value is 2 seconds.
+      </column>
+      <column name="other_config" key="mstp_forward_delay">
+        Set this value to specify forward-delay (the number of seconds that a port waits before
+        changing from its spanning tree blocking and learning states to the forwarding state), in seconds.
+        Default value is 15 seconds.
+      </column>
+      <column name="other_config" key="mstp_max_age">
+        Set this value to specify the maximum-aging time(The time a device waits without receiving
+        spanning tree BPDUs before attempting a reconfiguration), in seconds for all MSTP instances.
+        Default value is 20 seconds.
+      </column>
+      <column name="other_config" key="mstp_maximum_hop_count">
+        Set this value to specify the number of hops in a region before the BPDU is
+        discarded and the information held for a port is aged.
+        Default value is 20 hops.
+      </column>
+      <column name="other_config" key="mstp_bpdu_filter" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable BPDU filter(to suppress
+        sending and receiving BPDUs on the port) or to <code>false</code> to disable it.
+        Default value is <code>false</code>.
+      </column>
+      <column name="other_config" key="mstp_loop_guard" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable looop guard(to block
+        ending and receiving BPDUs on the port) or to <code>false</code> to disable it.
+        Default value is <code>false</code>.
+      </column>
+      <column name="other_config" key="mstp_mst_config_name">
+        Set this value to specify the MSTP configuration name.
+        Default value is system MAC address.
+      </column>
+      <column name="other_config" key="mstp_config_revision">
+        Set this value to specify the configuration revision number.
+        Default value is 0.
+      </column>
+      <column name="other_config" key="mstp_priority">
+        Set this value to specify the priority value used along with the switch MAC
+        address to determine which device is root. This is set as a multiple of 4096.
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="other_config" key="mstp_port_priority">
+        Set this value to specify port-priority in multiples of 32.
+        Default value is 128.
+      </column>
+      <column name="other_config" key="mstp_port_cost">
+        Set this value to specify the port-cost.
+        Default value is determined from the interface speed.
+        Bandwidth           Port cost
+        10 Mbps             2,000,000
+        100 Mbps            200,000
+        1 Gigabit Ethernet  20,000
+      </column>
+      <column name="other_config" key="mstp_bpdu_guard" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable BPDU Guard(to shut down the
+        port if that port receives a BPDU) or to <code>false</code> to disable it.
+        Default is <code>false</code>.
+      </column>
+      <column name="other_config" key="mstp_instances_configured">
+        Number of instances configured.
+        Default value is 0.
+      </column>
+   </group>
 
     <group title="Other Features">
       <column name="datapath_type">
@@ -999,6 +1084,280 @@
       <column name="external_ids">
       </column>
    </group>
+  </table>
+
+  <table name="MSTP_Instance" title="MSTP instance info">
+    <p>
+        Each row in the table represents information regarding a Bridge's
+        Bridge Protocol entity for the specified Spanning Tree instance.
+    </p>
+    <group title="Configurations">
+      <column name="vlans">
+        VLANs included in the MSTP instance.
+      </column>
+      <column name="priority">
+        Set this value to specify the priority value, configured as a multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="port_priority">
+        Set this value to specify the port-priority.
+        configurable in increments of 32.
+        Default value is 128.
+      </column>
+      <column name="cost">
+        Set this value to specify the port-cost
+        Default value is determined from the interface speed.
+        Bandwidth           Port cost
+        10 Mbps             2,000,000
+        100 Mbps            200,000
+        1 Gigabit Ethernet  20,000
+      </column>    
+    </group>
+    <group title="Status">
+     <p>
+        These are status parameters for a particular MSTP instance.
+        These values will be calculated at the time of protocol initialisation.
+     </p>
+      <column name="hardware_grp_id">
+      Specifies hardware spanning tree group ID.
+      Default value is 0.
+      </column>
+      <column name="designated_root">
+        Specifies the root bridge name for a MSTP instance.
+      </column>
+      <column name="root_port">
+        Specifies the root port name for a MSTP instance.
+      </column>
+      <column name="root_path_cost">
+        The path cost from the transmitting Bridge to the Root Bridge for the MSTI.
+      </column>
+      <column name="root_priority">
+        Specifies the root bridge priority.
+        The lower a priority value, the higher the priority.
+      </column>
+      <column name="remaining_hops">
+        Specifies the hop count after which this instance MSTP BPDU will be discarded.
+        Default value is 20
+      </column>
+      <column name="time_since_top_change">
+        The time last topology change happened for this instance.
+        The format for this is number of seconds from epoch.
+      </column>
+      <column name="top_change_cnt">
+        The total number of topology changes that have occurred for this instance.
+      </column>
+      <column name="oper_hello_time">
+        The operating hello timer value for this instance.
+      </column>
+      <column name="oper_forward_delay">
+        The forward delay timer value for this instance.
+      </column>
+      <column name="oper_max_age">
+        Set this value to specify the maximum-aging time(The time a device waits without receiving
+        spanning tree configuration messages before attempting a reconfiguration) for all MST instances.
+      </column>
+      <column name="oper_tx_hold_count">
+        Specifies the maximum transmission rate per port in packets/sec.
+      </column>
+      <column name="hello_expiry_time">
+        Specifies the epoch time in seconds to resend the hello packets.
+      </column>
+      <column name="forward_delay_expiry_time">
+        Specifies the epoch time in seconds for forward delay to expire.
+      </column>
+      <column name="messageage_expiry_time">
+        Specifies the epoch time in seconds for the BPDUs to expire.
+      </column>
+      <column name="topology_change_expiry_time">
+        Specifies the epoch time in seconds after which the spanning tree will be recalculated for the topology.
+      </column>
+      <column name="hold_timer_expiry_time">
+        Specifies the epoch time in seconds for the hold timer to expire, after which txCount will be reintialised.
+      </column>
+      <column name="mstp_instance_ports">
+        MSTP configuration for port.
+      </column>
+    </group>
+  </table>
+
+  <table name="MSTP_Common_Instance" title="MSTP common instance info">
+    <p>
+        Each row in the table represents information regarding a Bridge's Bridge Protocol entity for the CIST..
+    </p>
+    <group title="Configurations">
+      <column name="bridge_identifier">
+        Specifies the root bridge ID for CIST.
+        Default value 64 bit string(4 bit priority + 12 bit Instance ID + 48bit system MAC address)
+      </column>
+      <column name="priority">
+        Set this value to specify the priority value, configured as a multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="cost">
+        Specifies the port cost for CIST.
+        Default value is determined from the interface speed.
+        Bandwidth           Port cost
+        10 Mbps             2,000,000
+        100 Mbps            200,000
+        1 Gigabit Ethernet  20,000
+      </column>
+      <column name="mstp_common_instance_ports">
+        CIST configurations for port.
+      </column>
+    </group>
+    <group title="Status">
+      <column name="regional_root">
+        Specifies the regional root for the CIST.
+      </column>
+    </group>
+  </table>
+
+  <table name="MSTP_Common_Instance_Port" title="MSTP common instance port info">
+    <p>
+        Each row in the Table represents information regarding a specific Port
+        within the Bridge's Bridge Protocol entity, for the CIST.
+    </p>
+    <group title="Configurations">
+      <column name="port">
+      Specifies port for the CIST instance.
+      </column>
+      <column name="admin_path_cost">
+        The path cost for the port to reach spanning-tree root.
+      </column>
+      <column name="admin_edge_port" type='{"type": "boolean"}'>
+        Set this value to <code>false</code> to make the port as edge
+        (not to participate in root election).
+        or to <code>true</code> to disable it.
+        Default is <code>true</code>.
+      </column>
+      <column name="restricted_port_role" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable restiricted role
+        (not to be selected as Root Port for the CIST or any MSTI).
+        or to <code>false</code> to disable it.
+        Default is <code>false</code>.
+      </column>
+      <column name="restricted_port_tcn" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable restiricted port tcn
+        (not to propagate topology changes to other ports).
+        or to <code>false</code> to disable it.
+        Default is <code>false</code>.
+      </column>
+      <column name="enable_BPDUs_Rx"  type='{"type": "boolean"}'>
+        Set this value to <code>false</code> to ignore the received BPDUs
+        or to <code>true</code> to process it.
+        Default is <code>true</code>.
+      </column>
+      <column name="enable_BPDUs_Tx"  type='{"type": "boolean"}'>
+        Set this value to <code>false</code> not to transmit the BPDUs
+        or to <code>true</code> to transmit it.
+        Default is <code>true</code>.
+      </column>
+    </group>
+    <group title="Status">
+    <p>
+        These are status parameters for the common instance.
+        These values will be calculated at the time of protocol initialisation.
+    </p>
+      <column name="designated_root">
+        The designated root ID for the port.
+      </column>
+      <column name="oper_edge_port" type='{"type": "boolean"}'>
+        The operational port type as edge port or not for the CIST.
+      </column>
+      <column name="port_role">
+        The role of port in the CIST.
+      </column>
+      <column name="cist_regional_root_id">
+        The regional root Id for the CIST.
+      </column>
+      <column name="path_cost">
+        The path cost for this port.
+        Default value is determined from the interface speed.
+        Bandwidth           Port cost
+        10 Mbps             2,000,000
+        100 Mbps            200,000
+        1 Gigabit Ethernet  20,000
+      </column>
+    </group>
+    <group title="Statistics">
+      <column name="MST_BPDUs_Tx">
+        The transmitted BPDU count.
+      </column>
+      <column name="MST_BPDUs_Rx">
+        The received BPDU count.
+      </column>
+    </group>
+  </table>
+  
+  <table name="MSTP_Instance_Port" title="MSTP instance info per port">
+    <p>
+       Each row in the Table represents information regarding a specific Port within
+       The Bridge's Bridge Protocol Entity, for a given MSTI.
+    </p>
+    <group title="Configurations">
+      <column name="port">
+      Specifies port for the MSTP instance.
+      </column>
+      <column name="priority">
+        Set this value to specify the priority value used along with the switch MAC
+        address to determine which device is root. Configured as a multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="path_cost">
+        Specifies cost to reach root port.
+        Default value is determined from the interface speed.
+        Bandwidth           Port cost
+        10 Mbps             2,000,000
+        100 Mbps            200,000
+        1 Gigabit Ethernet  20,000
+      </column>
+    </group>
+    
+    <group title="Status">
+      <p>
+        These are status parameters for the port.
+        These values will be calculated at the time of protocol initialisation.
+      </p>
+      <column name="role">
+        Specifies role of port in the active MSTP topology
+      </column>
+      <column name="state">
+        The state of the port in the active topology
+        Default value is Blocking.
+      </column>
+      <column name="designated_root">
+        The root bridge name for a MSTP instance.
+      </column>
+      <column name="designated_root_priority">
+        The priority value for designated port.
+      </column>
+      <column name="designated_cost">
+        The path cost for designated bridge.
+      </column>
+      <column name="designated_bridge">
+        The designated bridge for this port.
+      </column>
+      <column name="designated_bridge_priority">
+        The designated bridge priority at this port.
+      </column>
+      <column name="designated_port">
+        The designated port ID.
+      </column>
+      <column name="link_type">
+        Specifies the link type.
+      </column>
+    </group>
+    <group title="Statistics">
+      <column name="MST_BPDUs_Tx">
+        The transmitted BPDU count.
+      </column>
+      <column name="MST_BPDUs_Rx">
+        The received BPDU count.
+      </column>
+    </group>
   </table>
 
   <table name="Daemon" title="Daemon Information">
@@ -1451,7 +1810,7 @@
       </column>
       <column name="bgp_neighbors" keyname="ip_or_group_name">
         BGP neighbors or neighbor groups, keyed by IP for the former or any
-	string name for the latter.
+    string name for the latter.
       </column>
     </group>
    <group title="Status">
@@ -2042,6 +2401,41 @@
       </column>
       <column name="lacp_status" key="bond_status_reason">
         String identifying the reason why the bond_status is "down".
+      </column>
+    </group>
+    <group title="mstp_global_config">
+      <p>
+        MSTP global configuration specific to port for all the instances.
+      </p>
+      <column name="other_config" key="mstp_priority">
+        Specifies priority of the port to break ties among ports with the same cost.
+        The lower a priority value, the higher the priority.
+        configurable in increments of 32.
+        Default value is 128.
+      </column>
+      <column name="other_config" key="mstp_cost">
+        Specifies path cost for the port.
+        The port with lowest path cost will be the forwarding port.
+        Default value is determined from the interface speed.
+        Bandwidth           Port cost
+        10 Mbps             2,000,000
+        100 Mbps            200,000
+        1 Gigabit Ethernet  20,000
+      </column>
+      <column name="other_config" key="mstp_port_type">
+        Specifies the type of port(admin or edge).
+        Default value is admin port.
+      </column>
+      <column name="other_config" key="mstp_bpdufilter" type='{"type": "boolean"}'>
+        BPDU filter status for the port. To restict filtered BPDUs.
+        Default value is false.
+      </column>
+      <column name="other_config" key="mstp_guard_type">
+        Loop or Root Guard.
+      </column>
+      <column name="other_config" key="mstp_bpduguard" type='{"type": "boolean"}'>
+        BPDU guard status.
+        Default value is false.
       </column>
     </group>
 
