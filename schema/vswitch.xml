@@ -78,6 +78,18 @@
       <column name="vrfs">
       </column>
 
+      <column name="mstp_inst_info">
+        MSTP instance related infomrmation.
+      </column>
+
+      <column name="mstp_cist_info">
+        MSTP global configuration for CIST.
+      </column>
+
+      <column name="mstp_inst_port_info">
+        MSTP instance information per port.
+      </column>
+
       <column name="management_mac">
         Ethernet MAC address for the management interface port for this system.
       </column>
@@ -186,6 +198,82 @@
         The LACP system priority of this <ref table="Bridge"/>.  In LACP
         negotiations, link status decisions are made by the system with the
         numerically lower priority. Defaults to 65534.
+      </column>
+   </group>
+
+    <group title="STP Configurations">
+      <column name="stp_config" key="spanning_tree_admin_status" type='{"type": "boolean"}'>
+        Set this value to <code>enable</code> to enable spanning tree
+        or to <code>disable</code> to disable it.
+        Default value is <code>disable</code>.
+      </column>
+      <column name="stp_config" key="hello_time"
+            type='{"type": "integer", "minInteger": 1, "maxInteger": 10}'>
+        Set this value to configure hello-time (interval between the generation of configuration
+        messages by the root bridge for all instances on the device)
+        Default value is 2 seconds.
+      </column>
+      <column name="stp_config" key="forward_delay"
+            type='{"type": "integer", "minInteger": 4, "maxInteger": 30}'>
+        Set this value to specify forward-delay (the number of seconds that a interface waits before
+        changing from its spanning tree blocking and learning states to the forwarding state)
+        Default value is 15 seconds.
+      </column>
+      <column name="stp_config" key="max_age"
+            type='{"type": "integer", "minInteger": 6, "maxInteger": 40}'>
+        Set this value to specify the maximum-aging time(The time a device waits without receiving
+        spanning tree BPDUs before attempting a reconfiguration) for all MSTP instances.
+        Default value is 20 seconds.
+      </column>
+      <column name="stp_config" key="maximum_hop_count"
+            type='{"type": "integer", "minInteger": 1, "maxInteger": 255}'>
+        Set this value to specify the number of hops in a region before the BPDU is
+        discarded and the information held for a interface is aged
+        Default value is 20 hops.
+      </column>
+      <column name="stp_config" key="bpdu_filter" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable BPDU filter(to suppress
+        sending and receiving BPDUs on the interface) or to <code>false</code> to disable it.
+        Default value is <code>false</code>.
+      </column>
+      <column name="stp_config" key="loop_guard" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable looop guard
+        or to <code>false</code> to disable it.
+        Default value is <code>false</code>.
+      </column>
+      <column name="stp_config" key="mst_config_name" type='{"type": "string" , "maxLength":32}'>
+        Set this value to specify the instance name.
+      </column>
+      <column name="stp_config" key="mst_config_revision"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 65535}'>
+        Set this value to specify the configuration revision number.
+      </column>
+      <column name="stp_config" key="priority"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 32768}'>
+        Set this value to specify the priority value used along with the switch MAC
+        address to determine which device is root. This is set as multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="stp_config" key="interface_priority"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 224}'>
+        Set this value to specify the interface-priority.
+        configurable in increments of 32.
+        Default value is 128.
+      </column>
+      <column name="stp_config" key="interface_cost"
+            type='{"type": "integer", "minInteger": 1, "maxInteger": 2000000}'>
+        Set this value to specify the port-cost
+        Default value is determined from the media speed.
+      </column>
+      <column name="stp_config" key="bpdu_guard" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable BPDU Guard(to shut down the
+        port if that port receives a BPDU) or to <code>false</code> to disable it.
+        Default is <code></code>.
+      </column>
+      <column name="stp_config" key="mstp_instances_configured"
+            type='{"type": "integer", "minInteger":0 , "maxInteger":64 }'>
+        number of instances configured.
       </column>
    </group>
 
@@ -1001,6 +1089,183 @@
    </group>
   </table>
 
+  <table name="Mstp_inst_info" title="MSTP instance info">
+    <p>
+        Each entry in this table represents a single Spanning tree instance(MSTI).
+    </p>
+      <column name="instid"
+            type='{"type": "integer", "minInteger": 1, "maxInteger": 64}'>
+        Instance Id for the MSTP instance.
+      </column>
+      <column name="vlans">
+        VLANs included in the MSTP instance.
+      </column>
+      <column name="priority"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 61440}'>
+        Set this value to specify the priority value, configured as multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="interface_priority"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 224}'>
+        Set this value to specify the port-priority.
+        configurable in increments of 32.
+        Default value is 128.
+      </column>
+      <column name="cost"
+            type='{"type": "integer", "minInteger": 1, "maxInteger": 2000000}'>
+        Set this value to specify the port-cost
+        Default value is determined from the media speed.
+      </column>
+      <column name="hardware_grp_id">
+      Specifies hardware spanning tree group ID.
+      </column>
+      <column name="designated_root">
+        Specifies the root bridge name for a MSTP instance.
+      </column>
+      <column name="root_port">
+        Specifies the root port name for a MSTP instance.
+      </column>
+      <column name="root_path_cost"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 4094}'>
+        Specifies the port path cost for root bridge.
+      </column>
+      <column name="root_priority"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 4094}'>
+        Specifies the root bridge priority.
+      </column>
+      <column name="remaining_hops"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 40}'>
+        Specifies the hop count after which this insatnce MSTP BPDU will be discarded.
+        Default value is 20
+      </column>
+      <column name="time_since_top_change" type='{"type": "string"}'>
+        Spcifies the time last topology change happened for this instance.
+      </column>
+      <column name="top_change_cnt">
+        Specifies total number of topology changes happened for this instance.
+      </column>
+      <column name="oper_hello_time"
+            type='{"type": "integer", "minInteger": 2, "maxInteger": 10}'>
+        Specifies the operating hello timer value for this instance.
+        Default value is 2.
+      </column>
+      <column name="oper_forward_delay"
+            type='{"type": "integer", "minInteger": 4, "maxInteger": 30}'>
+        Specifies the forward delay timer value for this instance.
+        Default value is 15.
+      </column>
+      <column name="oper_max_age"
+            type='{"type": "integer", "minInteger": 6, "maxInteger": 40}'>
+        Set this value to specify the maximum-aging time(The time a device waits without receiving
+        spanning tree configuration messages before attempting a reconfiguration) for all MST instances.
+        Default value is 20.
+      </column>
+      <column name="oper_tx_hold_count">
+      Specifies the maximum transmission rate per port.
+      </column>
+      <column name="hello_expiry_time">
+      Specifies the ramining time in seconds to resend the hello packets.
+      </column>
+      <column name="forward_delay_expiry_time">
+      Specifies the remaining time in seconds for forward delay to be expired.
+      </column>
+      <column name="messageage_expiry_time">
+      Specifies the remaining time for the messages to be expired.
+      </column>
+      <column name="topology_change_expiry_time">
+      Specifies the remaining time for topology to be recalculated.
+      </column>
+      <column name="notification_expiry_time">
+      Specifies the remaining time notification to be expired.
+      </column>
+      <column name="hold_timer_expiry_time">
+      Specifies the remaining time for the hold timer to be expired, after this txCount will be reintialised.
+      </column>
+  </table>
+
+  <table name="Mstp_cist_info" title="MSTP common instance info">
+    <p>
+        This table represents the common Spanning tree instance.
+    </p>
+      <column name="regional_root">
+        Specifies the regional root for the CIST.
+      </column>
+      <column name="bridge_identifier">
+        Specifies the root bridge ID for CIST.
+      </column>
+      <column name="priority">
+        Set this value to specify the priority value, configured as multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="cost" type='{"type": "integer", "minInteger": 1, "maxInteger": 2000000}'>
+        Specifies the port cost for CIST.
+        Default value is determined from the media speed.
+      </column>
+  </table>
+
+  <table name="Mstp_inst_port_info" title="MSTP instance info per port">
+    <p>
+        Each entry in this table represents a MSTP info for each port.
+    </p>
+      <column name="instid"
+            type='{"type": "integer", "minInteger": 1, "maxInteger": 4094}'>
+        Instance Id for the MSTP instance.
+      </column>
+      <column name="port">
+      Specifies port for the MSTP instance.
+      </column>
+      <column name="priority"
+            type='{"type": "integer", "minInteger": 0, "maxInteger": 61440}'>
+        Set this value to specify the priority value used along with the switch MAC
+        address to determine which device is root. configured as multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="path_cost">
+      Specifies cost to reach root port.
+      </column>
+      <column name="role">
+      Specifies role of port in the active MSTP topology
+      (Root port, Designated port, Alternate port, Backup port, Disabled port).
+      </column>
+      <column name="state">
+      Specifies state of the port in the active topology
+      (Blocking, Learning, Forwarding, Disabled)
+      Default value is Blocking.
+      </column>
+      <column name="tx_count">
+       Specifies the number of BPDUs transmitted on the port.
+      </column>
+      <column name="designated_root">
+       Specifies the root bridge name for a MSTP instance.
+      </column>
+      <column name="designated_root_priority">
+       Specifies the priority value for root port.
+      </column>
+      <column name="designated_cost">
+       Specifies the path cost for root bridge.
+      </column>
+      <column name="designated_bridge">
+       Specifies the root bridge name for a MSTP instance.
+      </column>
+      <column name="designated_bridge_priority">
+       Specifies the priority value for root bridge.
+      </column>
+      <column name="designated_port">
+      </column>
+      <column name="link_type">
+       Specifies the link type (Point-to-point or shared).
+      </column>
+      <column name="MST_BPDUs_Tx">
+       Specifies the transmitted BPDU count.
+      </column>
+      <column name="MST_BPDUs_Rx">
+       Specifies the received BPDU count.
+      </column>
+  </table>
+
   <table name="Daemon" title="Daemon Information">
     Each entry in this table represents a single system daemon and contains
     information about that specific daemon. One use is to identify those
@@ -1451,7 +1716,7 @@
       </column>
       <column name="bgp_neighbors" keyname="ip_or_group_name">
         BGP neighbors or neighbor groups, keyed by IP for the former or any
-	string name for the latter.
+    string name for the latter.
       </column>
     </group>
    <group title="Status">
@@ -2042,6 +2307,30 @@
       </column>
       <column name="lacp_status" key="bond_status_reason">
         String identifying the reason why the bond_status is "down".
+      </column>
+      <column name="stp_config" key="priority">
+        Priority of the port.
+      </column>
+      <column name="stp_config" key="cost">
+        Path cost for the port.
+      </column>
+      <column name="stp_config" key="port_type">
+        Type of port(admin or edge).
+      </column>
+      <column name="stp_config" key="bpdufilter">
+        BPDU filter status for the port.
+      </column>
+      <column name="stp_config" key="guard_type">
+        Guard type (Loop or root).
+      </column>
+      <column name="stp_config" key="bpduguard">
+        BPDU guard status.
+      </column>
+      <column name="stp_state" key="vlan_id">
+        VLAN ID.
+      </column>
+      <column name="stp_state" key="stp_port_state">
+        status of the port corresponding to vlan.
       </column>
     </group>
 
