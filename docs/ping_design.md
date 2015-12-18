@@ -5,7 +5,7 @@
    - [Design choices](#design-choices)
    - [Internal structure](#internal-structure)
        - [CLI Daemon](#cli-daemon)
-   - [References]
+   - [References](#references)
 
 ##High level design of ping
 
@@ -63,4 +63,5 @@ The information below is stored in a structure and maintained in the CLI Daemon.
 
 ##References
 Inetutils Package (http://www.gnu.org/software/inetutils/)
+
 Linux Ping Man page (http://linux.die.net/man/8/ping)

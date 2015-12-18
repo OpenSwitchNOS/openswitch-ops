@@ -24,15 +24,15 @@ tells you if the host received the ping and the amount of time it took to return
 
 •   Hostname - Hostname of the destination node being pinged.
 
-•   Repetitions <1-10000> - Number of ping packets sent to the destination address.The default value is 5.
+•   Repetitions <1-10000> - Number of ping packets sent to the destination address. The default value is 5.
 
-•   Timeout <1-60> - Timeout interval in seconds,the ECHO REPLY must be received before this time interval expires for the Ping to be successful.The default value is 2 seconds.
+•   Timeout <1-60> - Timeout interval in seconds, the ECHO REPLY must be received before this time interval expires for the Ping to be successful. The default value is 2 seconds.
 
-•   Interval <1-60> - Interval seconds between sending each packet.The default value is 1 second.
+•   Interval <1-60> - Interval seconds between sending each packet. The default value is 1 second.
 
-•   Datagram-size - Size of packet sent to the destination.The default value is 100 bytes.
+•   Datagram-size - Size of packet sent to the destination. The default value is 100 bytes.
 
-•   Data-fill -  Hexadecimal pattern to be filled in the packet.
+•   Data-fill -  Hexadecimal pattern to be filled in the packet. Only first 16 characters are considered for data-fill.
 
 •   Ip-options - This prompt offers more selection of any one option from the list below.
 
@@ -40,7 +40,7 @@ tells you if the host received the ping and the amount of time it took to return
     o   Include-timestamp-and-address - Displays roundtrip time to particular hosts as well as address.
     o   Record-route - Displays the address(es) of the hops the packet goes through.
 
-•   Tos <0-255> - Specifies the Type of Service (ToS).The requested ToS is placed in each probe.It is the Internet service quality selection.
+•   TOS <0-255> - Specifies the Type of Service (TOS). The requested TOS is placed in each probe. It is the Internet service quality selection.
 
 ##How to use the feature
 
@@ -86,6 +86,7 @@ tells you if the host received the ping and the amount of time it took to return
 ####Data-fill
     ping data-fill WORD
     Ping data fill string, example 'ab'
+    Maximum pattern length is 16.
 
 ####Datagram-size
     ping datagram-size <100-65399>

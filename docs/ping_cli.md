@@ -41,7 +41,7 @@ Root user.
 #### Parameters
 | Parameter | Status | Syntax | Description |
 |-----------|--------|--------|-------------|
-| *hostname* | Required | String | Hostname to ping.Length must be less than 256 characters.|
+| *hostname* | Required | String | Hostname to ping. Length must be less than 256 characters.|
 #### Examples
 ```
 switch# ping localhost
@@ -66,7 +66,7 @@ Root user.
 #### Parameters
 | Parameter | Status | Syntax | Description |
 |-----------|--------|--------|-------------|
-| *pattern* | Optional | String | Set the hexadecimal pattern to be filled in the packet.|
+| *pattern* | Optional | String | Set the hexadecimal pattern to be filled in the packet. Pattern length should be less than 16.|
 #### Examples
 ```
 switch# ping 10.0.3.1 data-fill ab
@@ -85,7 +85,7 @@ PING 10.0.3.1 (10.0.3.1): 100 data bytes
 #### Syntax
 `ping ( <IPv4-address> | <hostname> ) datagram-size <size>`
 #### Description
-This command sets the size of the packet to be sent.The default value is 100 bytes.
+This command sets the size of the packet to be sent. The default value is 100 bytes.
 #### Authority
 Root user.
 #### Parameters
@@ -110,7 +110,7 @@ PING 10.0.3.1 (10.0.3.1): 200 data bytes
 #### Syntax
 `ping ( <IPv4-address> | <hostname> ) interval <time>`
 #### Description
-This command sets the interval seconds between sending each packet.The default value is 1 second.
+This command sets the interval seconds between sending each packet. The default value is 1 second.
 #### Authority
 Root user.
 #### Parameters
@@ -135,7 +135,7 @@ PING 10.0.3.1 (10.0.3.1): 100 data bytes
 #### Syntax
 `ping ( <IPv4-address> | <hostname> ) repetitions <number>`
 #### Description
-This command sets the number of packets to be sent to the destination address.The default value is 5.
+This command sets the number of packets to be sent to the destination address. The default value is 5.
 #### Authority
 Root user.
 #### Parameters
@@ -157,7 +157,7 @@ PING 10.0.3.1 (10.0.3.1): 100 data bytes
 #### Syntax
 `ping ( <IPv4-address> | <hostname> ) timeout <time>`
 #### Description
-This command sets the time to wait for a response in seconds from the receiver.The default value is 2 seconds.
+This command sets the time to wait for a response in seconds from the receiver. The default value is 2 seconds.
 #### Authority
 Root user.
 #### Parameters
@@ -182,7 +182,7 @@ PING 10.0.3.1 (10.0.3.1): 100 data bytes
 #### Syntax
 `ping ( <IPv4-address> | <hostname> ) tos <number>`
 #### Description
-This command sets Type of Service(TOS) related bits in ICMP datagrams.
+This command sets Type of Service (TOS) related bits in ICMP datagrams.
 #### Authority
 Root user.
 #### Parameters
@@ -339,7 +339,7 @@ Root user.
 #### Parameters
 | Parameter | Status | Syntax | Description |
 |-----------|--------|--------|-------------|
-| *hostname* | Required | String | Hostname to ping.Length must be less than 256 characters.|
+| *hostname* | Required | String | Hostname to ping. Length must be less than 256 characters.|
 #### Examples
 ```
 switch# ping6 localhost
@@ -364,7 +364,7 @@ Root user.
 #### Parameters
 | Parameter | Status | Syntax | Description |
 |-----------|--------|--------|-------------|
-| *pattern* | Optional | String | Set the hexadecimal pattern to be filled in the packet.|
+| *pattern* | Optional | String | Set the hexadecimal pattern to be filled in the packet. Pattern length should be less than 16.|
 #### Examples
 ```
 switch# ping6 2000::1 data-fill ab
@@ -408,7 +408,7 @@ PING 2000::1 (2000::1): 200 data bytes
 #### Syntax
 `ping6 ( <IPv6-address> | <hostname> ) interval <time>`
 #### Description
-This command sets the interval seconds between sending each packet.The default value is 1 second.
+This command sets the interval seconds between sending each packet. The default value is 1 second.
 #### Authority
 Root user.
 #### Parameters
@@ -433,7 +433,7 @@ PING 2000::1 (2000::1): 100 data bytes
 #### Syntax
 `ping6 ( <IPv6-address> | <hostname> ) repetitions <number>`
 #### Description
-This command sets the number of packets to be sent to the destination address.The default value is 5.
+This command sets the number of packets to be sent to the destination address. The default value is 5.
 #### Authority
 Root user.
 #### Parameters
