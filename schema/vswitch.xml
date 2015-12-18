@@ -899,7 +899,35 @@
       <column name="vlans">
         VLANs included in the bridge.
       </column>
+      
+      <column name="mstp_instances">
+        MSTP configuration for individual instance.
+      </column>
+
+      <column name="mstp_common_instance">
+        MSTP configuration for CIST(Common Instance Spanning Tree).
+      </column>
+
     </group>
+    
+    <group title="MSTP Configurations">
+      <p>
+        MSTP global configurations for all MSTIs.
+      </p>
+      <column name="other_config" key="mstp_spanning_tree_admin_status" type='{"type": "boolean"}'>
+        Set this value to <code>enable</code> to enable spanning tree
+        or to <code>disable</code> to disable it.
+        Default value is <code>disable</code>.
+      </column>
+      <column name="other_config" key="mstp_mst_config_name">
+        Set this value to specify the MSTP configuration name.
+        Default value is system MAC address.
+      </column>
+      <column name="other_config" key="mstp_config_revision">
+        Set this value to specify the configuration revision number.
+        Default value is 0.
+      </column>
+   </group>
 
     <group title="Other Features">
       <column name="datapath_type">
@@ -999,6 +1027,336 @@
       <column name="external_ids">
       </column>
    </group>
+  </table>
+
+  <table name="MSTP_Instance" title="MSTP instance info">
+    <p>
+        Each row in the table represents information regarding a Bridge's
+        Bridge Protocol entity for the specified Spanning Tree instance.
+    </p>
+    <group title="Configurations">
+      <column name="vlans">
+        VLANs included in the MSTP instance.
+      </column>
+      <column name="priority">
+        Set this value to specify the priority value, configured as a multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="bridge_identifier">
+        The root bridge ID for CIST.
+        Default value 64 bit string(4 bit priority + 12 bit Instance ID + 48bit system MAC address)
+      </column> 
+      <column name="mstp_instance_ports">
+        MSTP configuration for port.
+      </column>
+    </group>
+    <group title="Status">
+     <p>
+        These are status parameters for a particular MSTP instance.
+        These values will be calculated at the time of protocol initialisation.
+     </p>
+      <column name="hardware_grp_id">
+      The hardware spanning tree group ID.
+      Default value is 0.
+      </column>
+      <column name="designated_root">
+        The root bridge name for a MSTP instance.
+      </column>
+      <column name="root_path_cost">
+        The path cost from the transmitting Bridge to the Root Bridge for the MSTI.
+      </column>
+      <column name="root_priority">
+        The root bridge priority.
+        The lower a priority value, the higher the priority.
+      </column>
+      <column name="root_port">
+        Specifies the root port name for a MSTP instance.
+      </column>
+      <column name="time_since_top_change">
+        The time last topology change happened for this instance.
+        The format for this is number of seconds from epoch.
+      </column>
+      <column name="top_change_cnt">
+        The total number of topology changes that have occurred for this instance.
+      </column>
+      <column name="topology_change">
+        Set this value to <code>true</code> to indicate the topology has changed
+        or to <code>false</code> to indicate no change in topology it.
+        Default is <code>false</code>.
+      </column>
+    </group>
+  </table>
+
+  <table name="MSTP_Common_Instance" title="MSTP common instance info">
+    <p>
+        Each row in the table represents information regarding a Bridge's Bridge Protocol entity for the CIST..
+    </p>
+    <group title="Configurations">
+      <column name="vlans">
+        VLANs included in the CIST instance.
+      </column>
+      <column name="priority">
+        Set this value to specify the priority value, configured as a multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="bridge_identifier">
+        The root bridge ID for CIST.
+        Default value 64 bit string(4 bit priority + 12 bit Instance ID + 48bit system MAC address)
+      </column>
+      <column name="hello_time">
+        The operating hello timer value for this instance.
+      </column>
+      <column name="forward_delay">
+        The forward delay timer value for this instance.
+      </column>
+      <column name="max_age">
+        Set this value to specify the maximum-aging time(The time a device waits without receiving
+        spanning tree configuration messages before attempting a reconfiguration) for all MST instances.
+      </column>
+      <column name="mstp_common_instance_ports">
+        CIST configurations for port.
+      </column>
+    </group>
+    <group title="Status">
+      <column name="hardware_grp_id">
+        The hardware spanning tree group ID.
+        Default value is 0.
+      </column>
+      <column name="designated_root">
+        The root bridge name for a CIST instance.
+      </column>
+      <column name="root_path_cost">
+        The path cost from the transmitting Bridge to the Root Bridge for the MSTI.
+      </column>
+      <column name="root_priority">
+        The root bridge priority.
+        The lower a priority value, the higher the priority.
+      </column>
+      <column name="root_port">
+        The root port name for a CIST instance.
+      </column>
+      <column name="regional_root">
+        The regional root for the CIST.
+      </column>
+      <column name="cist_path_cost">
+        The path cost from the transmitting bridge to the CIST regional root.
+      </column>
+      <column name="remaining_hops">
+        The hop count after which this instance MSTP BPDU will be discarded.
+        Default value is 20
+      </column>
+      <column name="oper_hello_time">
+        The operating hello timer value for this instance.
+      </column>
+      <column name="oper_forward_delay">
+        The forward delay timer value for this instance.
+      </column>
+      <column name="oper_max_age">
+        Set this value to specify the maximum-aging time(The time a device waits without receiving
+        spanning tree configuration messages before attempting a reconfiguration) for all MST instances.
+      </column>
+      <column name="hello_expiry_time">
+        The epoch time in seconds to resend the hello packets.
+      </column>
+      <column name="forward_delay_expiry_time">
+        The epoch time in seconds for forward delay to expire.
+      </column>
+      <column name="time_since_top_change">
+        The time last topology change happened for this instance.
+        The format for this is number of seconds from epoch.
+      </column>
+      <column name="oper_tx_hold_count">
+        The value used by the Port transmit state machine to limit the maximum
+		transmission rate of MST BPDUs within the hello interval.
+      </column>
+      <column name="top_change_cnt">
+        The total number of topology changes that have occurred for this instance.
+      </column>
+    </group>
+  </table>
+
+  <table name="MSTP_Common_Instance_Port" title="MSTP common instance port info">
+    <p>
+        Each row in the Table represents information regarding a specific Port
+        within the Bridge's Bridge Protocol entity, for the CIST.
+    </p>
+    <group title="Configurations">
+      <column name="port">
+        Specifies port for the CIST instance.
+      </column>
+      <column name="port_priority">
+        Set this value to specify the port-priority.
+        configurable in increments of 32.
+        Default value is 128.
+      </column>
+      <column name="admin_path_cost">
+        The path cost for the port to reach spanning-tree root.
+      </column>
+      <column name="admin_edge_port" type='{"type": "boolean"}'>
+        Set this value to <code>false</code> to make the port as edge
+        (not to participate in root election).
+        or to <code>true</code> to disable it.
+        Default is <code>true</code>.
+      </column>
+      <column name="enable_BPDUs_Rx"  type='{"type": "boolean"}'>
+        Set this value to <code>false</code> to ignore the received BPDUs
+        or to <code>true</code> to process it.
+        Default is <code>true</code>.
+      </column>
+      <column name="enable_BPDUs_Tx"  type='{"type": "boolean"}'>
+        Set this value to <code>false</code> not to transmit the BPDUs
+        or to <code>true</code> to transmit it.
+        Default is <code>true</code>.
+      </column>
+      <column name="restricted_port_role" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable restiricted role
+        (not to be selected as Root Port for the CIST or any MSTI).
+        or to <code>false</code> to disable it.
+        Default is <code>false</code>.
+      </column>
+      <column name="restricted_port_tcn" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable restiricted port tcn
+        (not to propagate topology changes to other ports).
+        or to <code>false</code> to disable it.
+        Default is <code>false</code>.
+      </column>
+      <column name="bpdu_guard" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable BPDU Guard(to shut down the
+        port if that port receives a BPDU) or to <code>false</code> to disable it.
+        Default is <code>false</code>.
+      </column>
+      <column name="loop_guard" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable loop guard(to block
+        sending and receiving BPDUs on the port) or to <code>false</code> to disable it.
+        Default value is <code>false</code>.
+      </column>
+      <column name="root_guard" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable root guard(to participate in STP as long
+        as the device does not try to become the root) or to <code>false</code> to disable it.
+        Default value is <code>false</code>.
+      </column>
+      <column name="bpdu_filter" type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable BPDU filter(to suppress
+        sending and receiving BPDUs on the port) or to <code>false</code> to disable it.
+        Default value is <code>false</code>.
+      </column>
+    </group>
+    <group title="Status">
+    <p>
+        These are status parameters for the common instance.
+        These values will be calculated at the time of protocol initialisation.
+    </p>
+      <column name="port_role">
+        The role of port in the active MSTP topology
+      </column>
+      <column name="port_state">
+        The state of the port in the active topology
+        Default value is Blocking.
+      </column>
+      <column name="designated_root">
+        The designated root ID for the port.
+      </column>
+      <column name="link_type">
+        Specifies the link type.
+      </column>
+      <column name="oper_edge_port" type='{"type": "boolean"}'>
+        The operational port type as edge port or not for the CIST.
+      </column>
+      <column name="cist_regional_root_id">
+        The regional root Id for the CIST.
+      </column>
+      <column name="cist_path_cost">
+        The CIST path cost from the transmitting bridge to the CIST regional root.
+      </column>
+      <column name="port_path_cost">
+        The operational value of the path cost.
+      </column>
+      <column name="designated_path_cost">
+        The path cost for this port.
+      </column>
+      <column name="designated_bridge">
+        The designated bridge identifier component of the port's MSTI port priority vector.
+      </column>
+      <column name="designated_port">
+        The designated port identifier component of the port's MSTI port priority vector.
+      </column>
+      <column name="port_hello_time">
+        The port's Hello Time timer parameter value, for the CIST.
+      </column>
+      <column name="protocol_migration">
+        Set this value to <code>true</code> to switch the STP working mode
+        or to <code>false</code> to explicitly disable it.
+        Default is <code>disable</code>.
+      </column>
+    </group>
+    <group title="Statistics">
+      <column name="MST_BPDUs_Tx">
+        The transmitted BPDU count.
+      </column>
+      <column name="MST_BPDUs_Rx">
+        The received BPDU count.
+      </column>
+    </group>
+  </table>
+  
+  <table name="MSTP_Instance_Port" title="MSTP instance info per port">
+    <p>
+       Each row in the Table represents information regarding a specific Port within
+       The Bridge's Bridge Protocol Entity, for a given MSTI.
+    </p>
+    <group title="Configurations">
+      <column name="port">
+      Specifies port for the MSTP instance.
+      </column>
+      <column name="port_priority">
+        Set this value to specify the priority value used along with the switch MAC
+        address to determine which device is root. Configured as a multiple of 4096
+        The lower a priority value, the higher the priority.
+        Default value is 32768.
+      </column>
+      <column name="admin_path_cost">
+        The cost to reach root port.
+        Default value is determined from the interface speed.
+        Bandwidth           Port cost
+        10 Mbps             2,000,000
+        100 Mbps            200,000
+        1 Gigabit Ethernet  20,000
+      </column>
+    </group>
+    
+    <group title="Status">
+      <p>
+        These are status parameters for the port.
+        These values will be calculated at the time of protocol initialisation.
+      </p>
+      <column name="port_role">
+        The role of port in the active MSTP topology
+      </column>
+      <column name="port_state">
+        The state of the port in the active topology
+        Default value is Blocking.
+      </column>
+      <column name="designated_root">
+        The root bridge name for a MSTP instance.
+      </column>
+      <column name="designated_root_priority">
+        The priority value for designated port.
+      </column>
+      <column name="designated_cost">
+        The path cost for designated bridge.
+      </column>
+      <column name="designated_bridge">
+        The designated bridge for this port.
+      </column>
+      <column name="designated_bridge_priority">
+        The designated bridge priority at this port.
+      </column>
+      <column name="designated_port">
+        The designated port ID.
+      </column>
+    </group>
   </table>
 
   <table name="Daemon" title="Daemon Information">
@@ -1451,7 +1809,7 @@
       </column>
       <column name="bgp_neighbors" keyname="ip_or_group_name">
         BGP neighbors or neighbor groups, keyed by IP for the former or any
-	string name for the latter.
+    string name for the latter.
       </column>
     </group>
    <group title="Status">
@@ -1765,9 +2123,12 @@
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
 
-      <column name="other_config">
-      </column>
       <column name="external_ids">
+      </column>
+   </group>
+   <group title="MSTP instance ID">
+      <column name="other_config" key="mstp_instid">
+	    The MSTP instance ID for this vlan.
       </column>
    </group>
   </table>

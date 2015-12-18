@@ -1,0 +1,4228 @@
+{
+    "cksum": "1214388126 136635",
+    "name": "OpenSwitch",
+    "tables": {
+        "BGP_Neighbor": {
+            "columns": {
+                "advertisement_interval": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 600,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "allow_as_in": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 10,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bgp_peer_group": {
+                    "type": {
+                        "key": {
+                            "refTable": "BGP_Neighbor",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "capability": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "dynamic",
+                                    "orf"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "description": {
+                    "type": {
+                        "key": {
+                            "maxLength": 80,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "inbound_soft_reconfiguration": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "is_peer_group": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "local_as": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "local_interface": {
+                    "type": {
+                        "key": {
+                            "refTable": "Interface",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "maximum_prefix_limit": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "override_capability": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "passive": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "password": {
+                    "type": {
+                        "key": {
+                            "maxLength": 80,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "remote_as": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "remove_private_as": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "route_maps": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "in",
+                                    "out"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 2,
+                        "min": 0,
+                        "value": {
+                            "refTable": "Route_Map",
+                            "type": "uuid"
+                        }
+                    }
+                },
+                "shutdown": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "statistics": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "integer"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "strict_capability_match": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "tcp_port_number": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 65535,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "timers": {
+                    "type": {
+                        "key": "string",
+                        "max": 2,
+                        "min": 0,
+                        "value": "integer"
+                    }
+                },
+                "weight": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 65535,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "BGP_Nexthop": {
+            "columns": {
+                "ip_address": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "type": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "unicast"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "BGP_Route": {
+            "columns": {
+                "address_family": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "ipv4",
+                                    "ipv6"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bgp_nexthops": {
+                    "type": {
+                        "key": {
+                            "refTable": "BGP_Nexthop",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "distance": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxInteger": 255,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "metric": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "path_attributes": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "peer": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "prefix": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxLength": 49,
+                            "type": "string"
+                        }
+                    }
+                },
+                "sub_address_family": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "unicast",
+                                    "multicast",
+                                    "vpn"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "vrf": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "refTable": "VRF",
+                            "refType": "weak",
+                            "type": "uuid"
+                        }
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "vrf",
+                    "prefix",
+                    "peer"
+                ]
+            ],
+            "isRoot": true
+        },
+        "BGP_Router": {
+            "columns": {
+                "always_compare_med": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bgp_neighbors": {
+                    "type": {
+                        "key": {
+                            "maxLength": 80,
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": {
+                            "refTable": "BGP_Neighbor",
+                            "type": "uuid"
+                        }
+                    }
+                },
+                "deterministic_med": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "gr_stale_timer": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 3600,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "maximum_paths": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 255,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "networks": {
+                    "type": {
+                        "key": {
+                            "maxLength": 49,
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "redistribute": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "connected",
+                                    "static"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 2,
+                        "min": 0
+                    }
+                },
+                "router_id": {
+                    "type": {
+                        "key": {
+                            "maxLength": 15,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "timers": {
+                    "type": {
+                        "key": "string",
+                        "max": 2,
+                        "min": 0,
+                        "value": "integer"
+                    }
+                }
+            }
+        },
+        "Bridge": {
+            "columns": {
+                "datapath_id": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "datapath_type": {
+                    "type": "string"
+                },
+                "datapath_version": {
+                    "type": "string"
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "mstp_common_instance": {
+                    "type": {
+                        "key": {
+                            "refTable": "MSTP_Common_Instance",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "mstp_instances": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 64,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 64,
+                        "min": 0,
+                        "value": {
+                            "refTable": "MSTP_Instance",
+                            "type": "uuid"
+                        }
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "ports": {
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "vlans": {
+                    "type": {
+                        "key": {
+                            "refTable": "VLAN",
+                            "type": "uuid"
+                        },
+                        "max": 4094,
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "CLI_Alias": {
+            "columns": {
+                "alias_definition": {
+                    "type": "string"
+                },
+                "alias_name": {
+                    "type": "string"
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "alias_name"
+                ]
+            ],
+            "isRoot": true
+        },
+        "DHCPSrv_Match": {
+            "columns": {
+                "option_name": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "option_number": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "option_value": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "set_tag": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "DHCPSrv_Option": {
+            "columns": {
+                "ipv6": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "match_tags": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "option_name": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "option_number": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "option_value": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "DHCPSrv_Range": {
+            "columns": {
+                "broadcast": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "constructor": {
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "refType": "weak",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "end_ip_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "is_static": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "lease_duration": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "match_tags": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "netmask": {
+                    "type": {
+                        "key": {
+                            "maxLength": 15,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "prefix_len": {
+                    "type": {
+                        "key": {
+                            "minInteger": 64,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "set_tag": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "start_ip_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "DHCPSrv_Static_Host": {
+            "columns": {
+                "client_hostname": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "client_id": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "ip_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "lease_duration": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "mac_addresses": {
+                    "type": {
+                        "key": {
+                            "maxLength": 17,
+                            "minLength": 17,
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "set_tags": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "ip_address"
+                ]
+            ]
+        },
+        "DHCP_Server": {
+            "columns": {
+                "bootp": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "dhcp_options": {
+                    "type": {
+                        "key": {
+                            "refTable": "DHCPSrv_Option",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "matches": {
+                    "type": {
+                        "key": {
+                            "refTable": "DHCPSrv_Match",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "ranges": {
+                    "type": {
+                        "key": {
+                            "refTable": "DHCPSrv_Range",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "static_hosts": {
+                    "type": {
+                        "key": {
+                            "refTable": "DHCPSrv_Static_Host",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "Daemon": {
+            "columns": {
+                "cur_hw": {
+                    "type": "integer"
+                },
+                "is_hw_handler": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "Fan": {
+            "columns": {
+                "direction": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "b2f",
+                                    "f2b"
+                                ]
+                            ],
+                            "type": "string"
+                        }
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "rpm": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "speed": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "slow",
+                                    "normal",
+                                    "medium",
+                                    "fast",
+                                    "max"
+                                ]
+                            ],
+                            "type": "string"
+                        }
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "uninitialized",
+                                    "ok",
+                                    "fault"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "Interface": {
+            "columns": {
+                "admin_state": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "up",
+                                    "down"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "duplex": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "half",
+                                    "full"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "error": {
+                    "type": {
+                        "key": "string",
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_bond_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_intf_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_intf_info": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "lacp_current": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "lacp_status": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "link_resets": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "link_speed": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "integer",
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "link_state": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "up",
+                                    "down"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "lldp_neighbor_info": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "lldp_statistics": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "integer"
+                    }
+                },
+                "mac_in_use": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "mtu": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "integer",
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "options": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "pause": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "none",
+                                    "rx",
+                                    "tx",
+                                    "rxtx"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "pm_info": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "split_children": {
+                    "type": {
+                        "key": {
+                            "refTable": "Interface",
+                            "type": "uuid"
+                        },
+                        "max": 4,
+                        "min": 0
+                    }
+                },
+                "split_parent": {
+                    "type": {
+                        "key": {
+                            "refTable": "Interface",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "statistics": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "integer"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "subintf_parent": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4094,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": {
+                            "refTable": "Interface",
+                            "type": "uuid"
+                        }
+                    }
+                },
+                "type": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "system",
+                                    "internal",
+                                    "vlansubint",
+                                    "loopback"
+                                ]
+                            ],
+                            "type": "string"
+                        }
+                    }
+                },
+                "user_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "LED": {
+            "columns": {
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "id": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "state": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "off",
+                                    "on",
+                                    "flashing"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "uninitialized",
+                                    "ok",
+                                    "fault"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "id"
+                ]
+            ]
+        },
+        "MSTP_Common_Instance": {
+            "columns": {
+                "bridge_identifier": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "cist_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 200000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_root": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "forward_delay": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 30,
+                            "minInteger": 4,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "forward_delay_expiry_time": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "hardware_grp_id": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "hello_expiry_time": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "hello_time": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 10,
+                            "minInteger": 2,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "max_age": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 40,
+                            "minInteger": 6,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "max_hop_count": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 40,
+                            "minInteger": 6,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "mstp_common_instance_ports": {
+                    "type": {
+                        "key": {
+                            "refTable": "MSTP_Common_Instance_Port",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "oper_forward_delay": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 30,
+                            "minInteger": 4,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "oper_hello_time": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 10,
+                            "minInteger": 2,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "oper_max_age": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 40,
+                            "minInteger": 6,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "oper_tx_hold_count": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 10,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 61440,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "regional_root": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "remaining_hops": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 40,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "root_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 200000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "root_port": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "root_priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 224,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "time_since_top_change": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "top_change_cnt": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "vlans": {
+                    "type": {
+                        "key": {
+                            "refTable": "VLAN",
+                            "refType": "weak",
+                            "type": "uuid"
+                        },
+                        "max": 4094,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "MSTP_Common_Instance_Port": {
+            "columns": {
+                "MST_BPDUs_Rx": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "MST_BPDUs_Tx": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "admin_edge_port": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "admin_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 200000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bpdu_filter": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bpdu_guard": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "cist_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 200000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "cist_regional_root_id": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_bridge": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "designated_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 200000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_port": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4094,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_root": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "enable_BPDUs_Rx": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "enable_BPDUs_Tx": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "link_type": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "point_to_point",
+                                    "shared"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "loop_guard": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "oper_edge_port": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port": {
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "refType": "weak",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port_hello_time": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 10,
+                            "minInteger": 2,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 200000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port_priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 224,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port_role": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "root_port",
+                                    "designated_port",
+                                    "alternate_port",
+                                    "backup_port",
+                                    "disabled_port"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port_state": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "Blocking",
+                                    "Learning",
+                                    "Forwarding",
+                                    "Disabled"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "protocol_migration": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "restricted_port_role": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "restricted_port_tcn": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "root_guard": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "MSTP_Instance": {
+            "columns": {
+                "bridge_identifier": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_root": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "hardware_grp_id": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "mstp_instance_ports": {
+                    "type": {
+                        "key": {
+                            "refTable": "MSTP_Instance_Port",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 61440,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "root_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 200000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "root_port": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "root_priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 224,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "time_since_top_change": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "top_change_cnt": {
+                    "type": {
+                        "key": {
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "topology_change": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "enable",
+                                    "disable"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "vlans": {
+                    "type": {
+                        "key": {
+                            "refTable": "VLAN",
+                            "refType": "weak",
+                            "type": "uuid"
+                        },
+                        "max": 4094,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "MSTP_Instance_Port": {
+            "columns": {
+                "admin_path_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 20000000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_bridge": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_bridge_priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 61440,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_cost": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 20000000000,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_port": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4094,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_root": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "designated_root_priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 224,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port": {
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "refType": "weak",
+                            "type": "uuid"
+                        }
+                    }
+                },
+                "port_priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 61440,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port_role": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "root_port",
+                                    "designated_port",
+                                    "alternate_port",
+                                    "backup_port",
+                                    "disabled_port"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port_state": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "Blocking",
+                                    "Learning",
+                                    "Forwarding",
+                                    "Disabled"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "Manager": {
+            "columns": {
+                "connection_mode": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "in-band",
+                                    "out-of-band"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "inactivity_probe": {
+                    "type": {
+                        "key": "integer",
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "is_connected": {
+                    "ephemeral": true,
+                    "type": "boolean"
+                },
+                "max_backoff": {
+                    "type": {
+                        "key": {
+                            "minInteger": 1000,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "target": {
+                    "type": "string"
+                }
+            },
+            "indexes": [
+                [
+                    "target"
+                ]
+            ]
+        },
+        "Neighbor": {
+            "columns": {
+                "address_family": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "ipv4",
+                                    "ipv6"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "ip_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        }
+                    }
+                },
+                "mac": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "port": {
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "refType": "weak",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "state": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "reachable",
+                                    "stale",
+                                    "incomplete",
+                                    "failed",
+                                    "permanent"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "vrf": {
+                    "type": {
+                        "key": {
+                            "refTable": "VRF",
+                            "refType": "weak",
+                            "type": "uuid"
+                        }
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "vrf",
+                    "ip_address"
+                ]
+            ],
+            "isRoot": true
+        },
+        "Nexthop": {
+            "columns": {
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "ip_address": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxLength": 45,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "ports": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "refType": "weak",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "selected": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "type": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "unicast"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "weight": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            }
+        },
+        "Port": {
+            "columns": {
+                "admin": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "up",
+                                    "down"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bond_active_slave": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bond_mode": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "l2-src-dst-hash",
+                                    "l3-src-dst-hash"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "bond_options": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "interfaces": {
+                    "type": {
+                        "key": {
+                            "refTable": "Interface",
+                            "type": "uuid"
+                        },
+                        "max": 8,
+                        "min": 0
+                    }
+                },
+                "ip4_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 18,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "ip4_address_secondary": {
+                    "type": {
+                        "key": {
+                            "maxLength": 18,
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "ip6_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 49,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "ip6_address_secondary": {
+                    "type": {
+                        "key": {
+                            "maxLength": 49,
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "lacp": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "active",
+                                    "passive",
+                                    "off"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "lacp_status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "mac": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "statistics": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "integer"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "tag": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4094,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "trunks": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4094,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 4096,
+                        "min": 0
+                    }
+                },
+                "vlan_mode": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "trunk",
+                                    "access",
+                                    "native-tagged",
+                                    "native-untagged"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "vlan_options": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "Power_supply": {
+            "columns": {
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "ok",
+                                    "fault_absent",
+                                    "fault_input",
+                                    "fault_output",
+                                    "unknown"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "Prefix_List": {
+            "columns": {
+                "description": {
+                    "type": {
+                        "key": {
+                            "maxLength": 80,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "name": {
+                    "type": {
+                        "key": {
+                            "maxLength": 80,
+                            "type": "string"
+                        }
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "prefix_list_entries": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": {
+                            "refTable": "Prefix_List_Entry",
+                            "type": "uuid"
+                        }
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ],
+            "isRoot": true
+        },
+        "Prefix_List_Entry": {
+            "columns": {
+                "action": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "permit",
+                                    "deny"
+                                ]
+                            ],
+                            "type": "string"
+                        }
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "ge": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 32,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "le": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 32,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "prefix": {
+                    "type": {
+                        "key": {
+                            "maxLength": 43,
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "Radius_Server": {
+            "columns": {
+                "ip_address": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "passkey": {
+                    "type": {
+                        "key": {
+                            "maxLength": 32,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "priority": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 64,
+                            "minInteger": 0,
+                            "type": "integer"
+                        }
+                    }
+                },
+                "retries": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 5,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "timeout": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 60,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "udp_port": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 65535,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "ip_address"
+                ]
+            ]
+        },
+        "Recursive_Nexthop": {
+            "columns": {
+                "nh_ips": {
+                    "type": {
+                        "key": {
+                            "maxLength": 49,
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "nh_metric": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "nh_ports": {
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "refType": "weak",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "rnh_from": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "bgp",
+                                    "ldp"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "rnh_ip": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxLength": 49,
+                            "type": "string"
+                        }
+                    }
+                },
+                "vrf": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "refTable": "VRF",
+                            "refType": "weak",
+                            "type": "uuid"
+                        }
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "vrf",
+                    "rnh_ip"
+                ]
+            ],
+            "isRoot": true
+        },
+        "Route": {
+            "columns": {
+                "address_family": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "ipv4",
+                                    "ipv6"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "distance": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxInteger": 255,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "from": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "connected",
+                                    "static",
+                                    "BGP"
+                                ]
+                            ],
+                            "type": "string"
+                        }
+                    }
+                },
+                "metric": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "nexthops": {
+                    "type": {
+                        "key": {
+                            "refTable": "Nexthop",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "prefix": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxLength": 49,
+                            "type": "string"
+                        }
+                    }
+                },
+                "protocol_private": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "protocol_specific": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "selected": {
+                    "type": {
+                        "key": {
+                            "type": "boolean"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "sub_address_family": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "unicast",
+                                    "multicast",
+                                    "vpn"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "vrf": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "refTable": "VRF",
+                            "refType": "weak",
+                            "type": "uuid"
+                        }
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "vrf",
+                    "from",
+                    "prefix"
+                ]
+            ],
+            "isRoot": true
+        },
+        "Route_Map": {
+            "columns": {
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "name": {
+                    "type": {
+                        "key": {
+                            "maxLength": 80,
+                            "type": "string"
+                        }
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "route_map_entries": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": {
+                            "refTable": "Route_Map_Entry",
+                            "type": "uuid"
+                        }
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ],
+            "isRoot": true
+        },
+        "Route_Map_Entry": {
+            "columns": {
+                "action": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "permit",
+                                    "deny"
+                                ]
+                            ],
+                            "type": "string"
+                        }
+                    }
+                },
+                "call": {
+                    "type": {
+                        "key": {
+                            "refTable": "Route_Map_Entry",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "description": {
+                    "type": {
+                        "key": {
+                            "maxLength": 80,
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "exitpolicy": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "goto",
+                                    "next"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "goto_target": {
+                    "type": {
+                        "key": {
+                            "refTable": "Route_Map_Entry",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "match": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "set": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                }
+            }
+        },
+        "SSL": {
+            "columns": {
+                "bootstrap_ca_cert": {
+                    "type": "boolean"
+                },
+                "ca_cert": {
+                    "type": "string"
+                },
+                "certificate": {
+                    "type": "string"
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "private_key": {
+                    "type": "string"
+                }
+            },
+            "maxRows": 1
+        },
+        "Subsystem": {
+            "columns": {
+                "asset_tag_number": {
+                    "type": "string"
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "fans": {
+                    "type": {
+                        "key": {
+                            "refTable": "Fan",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "hw_desc_dir": {
+                    "type": "string"
+                },
+                "interfaces": {
+                    "type": {
+                        "key": {
+                            "refTable": "Interface",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "leds": {
+                    "type": {
+                        "key": {
+                            "refTable": "LED",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "macs_remaining": {
+                    "type": "integer"
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "next_mac_address": {
+                    "type": {
+                        "key": {
+                            "maxLength": 17,
+                            "minLength": 17,
+                            "type": "string"
+                        }
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "other_info": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "power_supplies": {
+                    "type": {
+                        "key": {
+                            "refTable": "Power_supply",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "temp_sensors": {
+                    "type": {
+                        "key": {
+                            "refTable": "Temp_sensor",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "type": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "uninitialized",
+                                    "system",
+                                    "chassis",
+                                    "line_card",
+                                    "mezz_card"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "System": {
+            "columns": {
+                "aaa": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "asset_tag_number": {
+                    "type": "string"
+                },
+                "auto_provisioning_status": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "boot_time": {
+                    "type": "integer"
+                },
+                "bridges": {
+                    "type": {
+                        "key": {
+                            "refTable": "Bridge",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "bufmon_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "bufmon_info": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "cur_cfg": {
+                    "type": "integer"
+                },
+                "cur_hw": {
+                    "type": "integer"
+                },
+                "daemons": {
+                    "type": {
+                        "key": {
+                            "refTable": "Daemon",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "db_version": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "dns_servers": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "ecmp_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hostname": {
+                    "type": "string"
+                },
+                "lacp_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "lldp_statistics": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "logrotate_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "management_mac": {
+                    "type": {
+                        "key": {
+                            "maxLength": 17,
+                            "minLength": 17,
+                            "type": "string"
+                        }
+                    }
+                },
+                "management_vrf": {
+                    "type": {
+                        "key": {
+                            "refTable": "VRF",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "manager_options": {
+                    "type": {
+                        "key": {
+                            "refTable": "Manager",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "mgmt_intf": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "mgmt_intf_status": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "next_cfg": {
+                    "type": "integer"
+                },
+                "next_hw": {
+                    "type": "integer"
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "radius_servers": {
+                    "type": {
+                        "key": {
+                            "refTable": "Radius_Server",
+                            "type": "uuid"
+                        },
+                        "max": 64,
+                        "min": 0
+                    }
+                },
+                "software_info": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "ssl": {
+                    "type": {
+                        "key": {
+                            "refTable": "SSL",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "statistics": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "subsystems": {
+                    "type": {
+                        "key": {
+                            "refTable": "Subsystem",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                },
+                "switch_version": {
+                    "type": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "system_mac": {
+                    "type": {
+                        "key": {
+                            "maxLength": 17,
+                            "minLength": 17,
+                            "type": "string"
+                        }
+                    }
+                },
+                "vrfs": {
+                    "type": {
+                        "key": {
+                            "refTable": "VRF",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                }
+            },
+            "isRoot": true,
+            "maxRows": 1
+        },
+        "Temp_sensor": {
+            "columns": {
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "fan_state": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "normal",
+                                    "medium",
+                                    "fast",
+                                    "max"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "hw_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "location": {
+                    "type": "string"
+                },
+                "max": {
+                    "type": "integer"
+                },
+                "min": {
+                    "type": "integer"
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "status": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "uninitialized",
+                                    "normal",
+                                    "min",
+                                    "max",
+                                    "low_critical",
+                                    "critical",
+                                    "fault",
+                                    "emergency"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "temperature": {
+                    "type": "integer"
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "VLAN": {
+            "columns": {
+                "admin": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "up",
+                                    "down"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "description": {
+                    "type": {
+                        "key": "string",
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "hw_vlan_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "id": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxInteger": 4094,
+                            "minInteger": 1,
+                            "type": "integer"
+                        }
+                    }
+                },
+                "internal_usage": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": "string"
+                },
+                "oper_state": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "unknown",
+                                    "up",
+                                    "down"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "oper_state_reason": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "unknown",
+                                    "ok",
+                                    "admin_down",
+                                    "no_member_port"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "VRF": {
+            "columns": {
+                "bgp_routers": {
+                    "type": {
+                        "key": {
+                            "maxInteger": 4294967295,
+                            "minInteger": 1,
+                            "type": "integer"
+                        },
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": {
+                            "refTable": "BGP_Router",
+                            "type": "uuid"
+                        }
+                    }
+                },
+                "dhcp_server": {
+                    "type": {
+                        "key": {
+                            "refTable": "DHCP_Server",
+                            "type": "uuid"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "external_ids": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "name": {
+                    "mutable": false,
+                    "type": {
+                        "key": {
+                            "maxLength": 32,
+                            "type": "string"
+                        }
+                    }
+                },
+                "other_config": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "ports": {
+                    "type": {
+                        "key": {
+                            "refTable": "Port",
+                            "type": "uuid"
+                        },
+                        "max": "unlimited",
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "name"
+                ]
+            ]
+        },
+        "bufmon": {
+            "columns": {
+                "counter_value": {
+                    "ephemeral": true,
+                    "type": {
+                        "key": {
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "counter_vendor_specific_info": {
+                    "type": {
+                        "key": "string",
+                        "max": "unlimited",
+                        "min": 0,
+                        "value": "string"
+                    }
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "hw_unit_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": {
+                        "key": {
+                            "enum": [
+                                "set",
+                                [
+                                    "ok",
+                                    "not-properly-configured",
+                                    "triggered"
+                                ]
+                            ],
+                            "type": "string"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                },
+                "trigger_threshold": {
+                    "type": {
+                        "key": {
+                            "minInteger": 0,
+                            "type": "integer"
+                        },
+                        "max": 1,
+                        "min": 0
+                    }
+                }
+            },
+            "indexes": [
+                [
+                    "hw_unit_id",
+                    "name"
+                ]
+            ],
+            "isRoot": true
+        }
+    },
+    "version": "0.1.8"
+}
