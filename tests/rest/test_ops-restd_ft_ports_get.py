@@ -115,6 +115,7 @@ class QueryPortTest (OpsVsiTest):
 
         info("\n########## End Test to Validate first GET Non-existent Port request ##########\n")
 
+@pytest.mark.skipif(True, reason="PING fails intermittently.")
 class Test_QueryPort:
     def setup (self):
         pass

@@ -367,7 +367,7 @@ class QueryPortPaginationTest(OpsVsiTest):
         info("\n########## End Test to Validate pagination of GET request" +
              " results ##########\n")
 
-
+@pytest.mark.skipif(True, reason="PING fails intermittently.")
 class Test_QueryPortPagination:
     def setup(self):
         pass

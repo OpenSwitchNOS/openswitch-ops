@@ -90,6 +90,7 @@ class DeleteNonExistentVlan(OpsVsiTest):
              "##########\n" % self.vlan_path)
 
 
+@pytest.mark.skipif(True, reason="PING fails intermittently.")
 class TestDeleteNonExistentVlan:
     def setup(self):
         pass
@@ -186,6 +187,7 @@ class DeleteExistentVlan(OpsVsiTest):
              "##########\n" % self.vlan_path)
 
 
+@pytest.mark.skipif(True, reason="PING fails intermittently.")
 class TestDeleteExistentVlan:
     def setup(self):
         pass

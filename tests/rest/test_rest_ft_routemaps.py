@@ -122,6 +122,7 @@ def restTestRoutemaps(wrkston01):
     return retStruct
 
 
+@pytest.mark.skipif(True, reason="PING fails intermittently.")
 class Test_ft_framework_rest:
 
     def setup_class(cls):
