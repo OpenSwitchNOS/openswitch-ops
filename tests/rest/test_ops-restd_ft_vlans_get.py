@@ -147,8 +147,8 @@ class configTest(OpsVsiTest):
         expected_configuration_data["id"] = 1
         expected_configuration_data["description"] = "test_vlan"
         expected_configuration_data["admin"] = "up"
-        expected_configuration_data["other_config"] = {}
-        expected_configuration_data["external_ids"] = {}
+        #expected_configuration_data["other_config"] = {}
+        #expected_configuration_data["external_ids"] = {}
 
         create_fake_vlan("%s/%s/vlans" % (self.path, self.fake_bridge),
                          self.switch_ip,

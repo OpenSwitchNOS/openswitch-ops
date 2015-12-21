@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#usr/bin/env python
 #
 # Copyright (C) 2015 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
@@ -33,12 +33,10 @@ PORT_DATA = {
         "vlan_mode": "trunk",
         "ip6_address": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
         "external_ids": {"extid1key": "extid1value"},
-        "bond_options": {},
         "mac": "01:23:45:67:89:ab",
         "other_config": {"cfg-1key": "cfg1val"},
         "bond_active_slave": "null",
         "ip6_address_secondary": ["01:23:45:67:89:ab"],
-        "vlan_options": {},
         "ip4_address": "192.168.0.1",
         "admin": "up"
     },
@@ -192,6 +190,7 @@ def execute_request(path, http_method, data, ip, full_response=False,
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     if xtra_header:
         headers.update(xtra_header)
+
     conn = httplib.HTTPConnection(ip, 8091)
     conn.request(http_method, url, data, headers)
     response = conn.getresponse()

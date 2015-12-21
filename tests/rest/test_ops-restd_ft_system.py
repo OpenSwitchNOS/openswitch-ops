@@ -108,27 +108,17 @@ class systemTest(OpsVsiTest):
         info("\n########## Executing PUT request on %s ##########\n" % self.PATH)
 
         # # Get initial data
-
         # Perform GET until all required status keys are present in the reply
         mgmt_intf = {}
-        while not mgmt_intf:
+        response, pre_put_json_string = execute_request(self.PATH, "GET", None, self.SWITCH_IP, True)
+        assert response.status == httplib.OK, "PUT: initial GET request failed: {0} {1}".format(response.status, response.reason)
+        pre_put_get_data = {}
 
-            response, pre_put_json_string = execute_request(self.PATH, "GET", None, self.SWITCH_IP, True)
-
-            assert response.status == httplib.OK, "PUT: initial GET request failed: {0} {1}".format(response.status, response.reason)
-
-            pre_put_get_data = {}
-
-            try:
-                # A malformed json should throw an exception here
-                pre_put_get_data = json.loads(pre_put_json_string)
-            except:
-                assert False, "PUT: Malformed JSON in response body for initial GET request"
-
-            if not ('ip' not in pre_put_get_data['status']['mgmt_intf_status'] or
-                    'subnet_mask' not in pre_put_get_data['status']['mgmt_intf_status'] or
-                    'default_gateway' not in pre_put_get_data['status']['mgmt_intf_status']):
-                mgmt_intf = pre_put_get_data['status']['mgmt_intf_status']
+        try:
+            # A malformed json should throw an exception here
+            pre_put_get_data = json.loads(pre_put_json_string)
+        except:
+            assert False, "PUT: Malformed JSON in response body for initial GET request"
 
         # # Execute PUT request
 
@@ -136,16 +126,16 @@ class systemTest(OpsVsiTest):
 
         # Modify config keys
         put_data['hostname'] = 'switch'
-        put_data['dns_servers'].append("8.8.8.8")
+        put_data['dns_servers'] = ["8.8.8.8"]
         put_data['asset_tag_number'] = "1"
 
-        put_data['other_config'].update({
+        put_data['other_config'] = {
             'stats-update-interval': "5001",
             'min_internal_vlan': "1024",
             'internal_vlan_policy': 'ascending',
             'max_internal_vlan': "4094",
             'enable-statistics': "false"
-        })
+        }
 
         put_data['external_ids'] = {"id1": "value1"}
 
@@ -153,33 +143,23 @@ class systemTest(OpsVsiTest):
         # but they are required in the request data in order
         # for it to be validated by the rest daemon
 
-        mgmt_intf = pre_put_get_data['status']['mgmt_intf_status']
-
-        if 'hostname' in mgmt_intf:
-            del mgmt_intf['hostname']
-        if 'link_state' in mgmt_intf:
-            del mgmt_intf['link_state']
-        if 'ipv6_linklocal' in mgmt_intf:
-            del mgmt_intf['ipv6_linklocal']
-
-        put_data['mgmt_intf'].update(mgmt_intf)
-        put_data['mgmt_intf'].update({
+        put_data['mgmt_intf'] = {
             'default_gateway_v6': '',
             'dns_server_2': '',
             'mode': 'dhcp',
             'ipv6': '',
             'dns_server_1': ''
-        })
+        }
 
-        put_data['ecmp_config'].update({
+        put_data['ecmp_config'] = {
             'hash_srcip_enabled': "false",
             'hash_srcport_enabled': "false",
             'hash_dstip_enabled': "false",
             'enabled': "false",
             'hash_dstport_enabled': "false"
-        })
+        }
 
-        put_data['bufmon_config'].update({
+        put_data['bufmon_config'] = {
             'collection_period': "5",
             'threshold_trigger_rate_limit': "60",
             'periodic_collection_enabled': "false",
@@ -187,13 +167,13 @@ class systemTest(OpsVsiTest):
             'enabled': "false",
             'snapshot_on_threshold_trigger': "false",
             'threshold_trigger_collection_enabled': "false"
-        })
+        }
 
-        put_data['logrotate_config'].update({
+        put_data['logrotate_config'] = {
             'maxsize': "10",
             'period': 'daily',
             'target': ''
-        })
+        }
 
         # FIXME these should be re-added once they are in the schema
         if 'ssh_publickeyauthentication' in put_data['aaa']:
