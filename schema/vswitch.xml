@@ -146,6 +146,17 @@
         </p>
       </column>
 
+      <column name="other_config" key="cli_session_timeout"
+              type='{"type": "integer", "minInteger": 0, "maxInteger": 43200}'>
+        <p>
+            This key specifies cli idle session timeout in minutes.
+        </p>
+        <p>
+            Default value is 30.
+        </p>
+      </column>
+
+
       <group title="TFTP Server Configurations">
         <column name="other_config" key="tftp_server_enable"
                 type='{"type": "boolean"}'>
