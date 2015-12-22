@@ -21,6 +21,8 @@ REST API Test Cases
 - [Query port with pagination](#query-port-with-pagination)
 - [Sort ports by field](#sort-ports-by-field)
 - [Sort ports by field combination](#sort-ports-by-field-combination)
+- [Declarative configuration schema validations](#declarative-configuration-schema-validations)
+- [Custom validators](#custom-validators)
 
 ##  REST API put, get methods for system
 ### Objective
@@ -2005,3 +2007,315 @@ The test fails when:
 - The response doesn't have 10 ports
 - The result is not sorted ascending/descending by the combination of fields
 
+
+##  Declarative configuration schema validations
+### Objective
+The test case verifies that the schema validations for the declarative configuration including incorrect data type, out of range, missing mandatory field, and invalid reference checking prevents invalid configurations from reaching the database.
+
+### Requirements
+
+Physical or virtual switches are required for this test.
+
+### Setup
+#### Topology diagram
+
+```ditaa
+    +----------------+         +----------------+
+    |                |         |                |
+    |                |         |                |
+    |      Host      +---------+     Switch     |
+    |                |         |                |
+    |                |         |                |
+    +----------------+         +----------------+
+```
+
+#### Test Setup
+Two configurations are used for verifying that the schema validations are preventing invalid configurations.
+
+**Valid Configuration**
+
+```
+{
+    "Interface": {
+        "49": {
+            "name": "49",
+            "type": "system"
+        }
+    },
+    "Port": {
+        "p1": {
+            "admin": "up",
+            "name": "p1",
+            "vlan_mode": "trunk",
+            "trunks": [1]
+        }
+    },
+    "System": {
+        "aaa": {
+            "fallback": "false",
+            "radius": "false"
+        },
+        "asset_tag_number": "",
+        "bridges": {
+            "bridge_normal": {
+                "datapath_type": "",
+                "name": "bridge_normal",
+                "ports": [
+                    "p1"
+                ]
+            }
+        },
+        "hostname": "ops",
+        "subsystems": {
+            "base": {
+                "asset_tag_number": "Open Switch asset tag 222"
+            }
+        },
+        "vrfs": {
+            "vrf_default": {
+                "name": "vrf_default"
+            }
+        }
+    }
+}
+```
+
+**Invalid Configuration**
+
+```
+{
+    "Interface": {
+        "49": {
+            "name": 1,
+            "type": "system"
+        }
+    },
+    "Port": {
+        "p1": {
+            "admin": "up",
+            "name": "p1",
+            "vlan_mode": "trunk",
+            "trunks": [0]
+        }
+    },
+    "System": {
+        "aaa": {
+            "fallback": "false",
+            "radius": "false"
+        },
+        "asset_tag_number": "",
+        "bridges": {
+            "bridge_normal": {
+                "datapath_type": "",
+                "name": "bridge_normal",
+                "ports": [
+                    "p2"
+                ]
+            }
+        },
+        "subsystems": {
+            "base": {
+                "asset_tag_number": "Open Switch asset tag 222"
+            }
+        },
+        "vrfs": {
+            "vrf_default": {
+                "name": "vrf_default"
+            }
+        }
+    }
+}
+```
+
+### Description
+The valid configuration confirms that the schema validations aren't returning false positives. The invalid configuration is a modified version of the valid configuration for confirming that the different types of validations detect issues including incorrect data types, out of range values, missing mandatory fields, and invalid references. Schema validations are verified by the following steps:
+
+1. Send a PUT request with the valid configurations to path `/rest/v1/system/full-configuration?type=running`.
+2. Verify that the request was successful by confirming that the return code is equal to `200`.
+3. Confirm the schema validations are verifying the data by attempting to send a PUT request to path `/rest/v1/system/full-configuration?type=running` using the invalid data. The invalid data removes the mandatory field `hostname` from `System`, setting an invalid reference in `bridge_normal` to `p2`, changes the type of the `name` field in interface `49`, and sets an out-of-range value for `trunks` for port `p1`.
+4. Verify that the request was not successful by confirming that the return code is not equal to `200`.
+5. To verify that the error response was triggered by the schema validations, verify from the response data that it contains an error message for each field with an invalid value.
+
+### Test result criteria
+#### Test pass criteria
+The test case is considered passing if the PUT request using the valid data is successful and fails the second PUT request attempt using the invalid data. The response data must include an `error` field and an associated error message for each field.
+
+#### Test fail criteria
+The test is considered failing if the PUT request using the invalid data is successful. A successful response indicates the schema validations did not detect errors in the data.
+
+##  Custom validators
+### Objective
+The test case verifies that the custom validation framework is able to invoke an implemented custom validator upon a POST request and return any issues.
+
+### Requirements
+
+- Physical or virtual switches are required for this test.
+- The `bgp_router.py` custom validator exists in the `opsplugins` directory of the `ops-quagga` repository. The `validate_create` function must be overridden and checks for the number of BGP routers and returns an error when attempting to create more than one.
+
+### Setup
+#### Topology diagram
+
+```ditaa
+    +----------------+         +----------------+
+    |                |         |                |
+    |                |         |                |
+    |      Host      +---------+     Switch     |
+    |                |         |                |
+    |                |         |                |
+    +----------------+         +----------------+
+```
+
+#### Test Setup
+Two BGP configurations are used for verifying the REST custom validations. The first BGP router configuration is used for the valid test case, and the second BGP router configuration is used for the invalid test case. The following are the configurations used for testing REST custom validators:
+
+**BGP Router 1 Configuration**
+
+```
+{
+    "configuration": {
+        "always_compare_med": True,
+        "asn": 6001
+    }
+}
+```
+
+**BGP Router 2 Configuration**
+
+```
+{
+    "configuration": {
+        "always_compare_med": True,
+        "asn": 6002
+    }
+}
+```
+
+Two configurations are used for verifying the declarative configuration custom validations. The first configuration is a full valid configuration, and the second configuration includes an invalid amount of BGP routers. Similar to the REST custom validation test, the DC test also tests BGP router configurations. The following configurations were used in the valid and invalid test cases:
+
+**Valid Declarative Configuration**
+
+```
+{
+    "Interface": {
+        "49": {
+            "name": "49",
+            "type": "system"
+        }
+    },
+    "Port": {
+        "p1": {
+            "admin": "up",
+            "name": "p1",
+            "vlan_mode": "trunk",
+            "trunks": [1]
+        }
+    },
+    "System": {
+        "aaa": {
+            "fallback": "false",
+            "radius": "false"
+        },
+        "asset_tag_number": "",
+        "bridges": {
+            "bridge_normal": {
+                "datapath_type": "",
+                "name": "bridge_normal",
+                "ports": [
+                    "p1"
+                ]
+            }
+        },
+        "hostname": "ops",
+        "subsystems": {
+            "base": {
+                "asset_tag_number": "Open Switch asset tag 222"
+            }
+        },
+        "vrfs": {
+            "vrf_default": {
+                "name": "vrf_default"
+            }
+        }
+    }
+}
+```
+
+**Invalid Declarative Configuration**
+
+```
+{
+    "Interface": {
+        "49": {
+            "name": "49",
+            "type": "system"
+        }
+    },
+    "Port": {
+        "p1": {
+            "admin": "up",
+            "name": "p1",
+            "vlan_mode": "trunk",
+            "trunks": [1]
+        }
+    },
+    "System": {
+        "aaa": {
+            "fallback": "false",
+            "radius": "false"
+        },
+        "asset_tag_number": "",
+        "bridges": {
+            "bridge_normal": {
+                "datapath_type": "",
+                "name": "bridge_normal",
+                "ports": [
+                    "p1"
+                ]
+            }
+        },
+        "hostname": "ops",
+        "subsystems": {
+            "base": {
+                "asset_tag_number": "Open Switch asset tag 222"
+            }
+        },
+        "vrfs": {
+            "vrf_default": {
+                "bgp_routers": {
+                    "6001": {
+                        "always_compare_med": True
+                    },
+                    "6002": {
+                        "always_compare_med": True
+                    }
+                },
+                "name": "vrf_default"
+            }
+        }
+    }
+}
+```
+
+### Description
+To verify that the custom validation framework invokes the custom validator for the BGP router resource, the BGP router validator responsible for checking the number of BGP routers will return an error response that also includes an error code. For the BGP router table, only one BGP router is permitted. The following steps verify the custom validation framework using REST:
+
+1. Create a BGP router by sending BGP router 1 configurations as data in a POST request to the path `/rest/v1/system/vrfs/vrf_default/bgp_routers`.
+2. Verify that the request was successful by confirming that the return code is equal to `201` indicating a successful creation of the BGP router.
+3. Confirm the validator works by attempting to create another BGP router with a different ASN using BGP router 2 configurations as data in another POST request to the path `/rest/v1/system/vrfs/vrf_default/bgp_routers`.
+4. Verify that the request was not successful by confirming that the return code is not equal to `201`.
+5. To verify that the error response was triggered by the custom validator, verify from the response data that it contains a `code` field.
+
+The declarative custom validation is verified by the following steps:
+
+1. Send a PUT request using the valid DC configuration to the path `/rest/v1/system/full-configuration?type=running`.
+2. Verify that the request was successful by confirming that the return code is equal to `200`.
+3. Confirm the validator works by attempting to configure two BGP routers in the declarative configuration using the invalid configuration.
+4. Verify that the request was not successful by confirming that the return code is not equal to `200`.
+5. To verify that the error response was triggered by the custom validator, verify from the response data that it contains a `code` field.
+
+### Test result criteria
+#### Test pass criteria
+The test case is considered passing, for REST, if the request for creating the first BGP router is successful and fails the attempt to create a second BGP router with a different ASN. The response data must include an `error` field and an associated `code`. For declarative configuration, the test is considered passing when the configuration includes two BGP routers, but fails to successfully configure.
+
+#### Test fail criteria
+The test is considered failing, for REST, if the second request to create another BGP router is successful. A successful response indicates the custom validation framework did not invoke the custom validator for BGP router resource properly. Similarly, for declarative configuration, the test case is considered passing if a successful response is received when configuring the invalid configuration.
