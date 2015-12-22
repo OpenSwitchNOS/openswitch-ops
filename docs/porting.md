@@ -1,11 +1,15 @@
 Porting OpenSwitch
 ==================
-
 OpenSwitch was designed to be highly portable to new forwarding ASICs and encompassing platforms.
 Below is a high level description of steps to be taken when approaching either of these tasks.
 
-Porting to a different ASIC
----------------------------
+## Contents
+- [Contents](#contents)
+- [Porting to a different ASIC](#porting_to_a_different_asic)
+- [Porting to a different platform](#porting_to_a_different_platform)
+
+# Porting to a different ASIC
+------------------------------
 As further explained in [OpenSwitch Architecture](/documents/user/architecture),
 ops-switchd is conceptually constructed out of three layers -
 SDK independent layer, SDK specific plugin and ASIC SDK itself.
@@ -56,8 +60,8 @@ If specific ASIC provides capabilities, which are not expected to be covered by 
 then the best choice would be to implement and maintain a new plugin.
 Such a plugin might either address a specific ASIC family or a set of ASIC families that agree to provide common SDK API.
 
-Porting to a different platform
--------------------------------
+## Porting to a different platform
+----------------------------------
 Aside from basic choice of ASIC, major platform differences are in the port counts/configurations and peripherals
 management - temperature, power supplies, LEDs.
 OpenSwitch design attempts to abstract those differences into a set of YAML files that explain the specific configuration,
