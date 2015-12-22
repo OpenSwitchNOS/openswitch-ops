@@ -553,6 +553,15 @@
         </p>
       </column>
 
+      <column name="software_info" key="name" type='{"type": "string"}'>
+        <p>
+          This column is used for the software info. The value of the key
+	  'name' will identify the system software's name, e.g.  OpenSwitch.
+	  This information will be available through the versioning UIs,
+	  e.g. <code>show version</code> CLI.
+        </p>
+      </column>
+
       <column name="software_info" key="bios_release_date">
       </column>
 
