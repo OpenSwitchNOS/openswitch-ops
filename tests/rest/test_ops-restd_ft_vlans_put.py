@@ -167,8 +167,8 @@ class UpdateVlanInvalidName(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_name = "fake_vlan"
         self.vlan_id = 1
+        self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
@@ -264,8 +264,8 @@ class UpdateVlanInvalidId(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_name = "fake_vlan"
         self.vlan_id = 1
+        self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
@@ -361,8 +361,8 @@ class UpdateVlanInvalidDescription(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_name = "fake_vlan"
         self.vlan_id = 1
+        self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
@@ -458,8 +458,8 @@ class UpdateVlanInvalidAdmin(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_name = "fake_vlan"
         self.vlan_id = 1
+        self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
@@ -555,8 +555,8 @@ class UpdateVlanInvalidOtherConfig(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_name = "fake_vlan"
         self.vlan_id = 1
+        self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
@@ -586,7 +586,7 @@ class UpdateVlanInvalidOtherConfig(OpsVsiTest):
                  "%s\n" % (field, value))
 
             response_status, response_data = execute_request(self.vlan,
-                                                             "POST",
+                                                             "PUT",
                                                              json.dumps(value),
                                                              self.switch_ip)
 
@@ -652,8 +652,8 @@ class UpdateVlanInvalidExternalIds(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_name = "fake_vlan"
         self.vlan_id = 1
+        self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
@@ -716,6 +716,96 @@ class TestPutVlanInvalidExternalIds:
 
     def teardown_class(cls):
         TestPutVlanInvalidExternalIds.test_var.net.stop()
+
+    def setup_method(self, method):
+        pass
+
+    def teardown_method(self, method):
+        pass
+
+    def __del__(self):
+        del self.test_var
+
+    def test_run(self):
+        self.test_var.test()
+
+
+###############################################################################
+#                                                                             #
+#   Update VLAN to bridge_normal with missing fields                          #
+#                                                                             #
+###############################################################################
+class UpdateVlanMissingFields(OpsVsiTest):
+    def setupNet(self):
+        self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
+                                       sws=NUM_OF_SWITCHES,
+                                       hopts=self.getHostOpts(),
+                                       sopts=self.getSwitchOpts()),
+                           switch=VsiOpenSwitch,
+                           host=None,
+                           link=None,
+                           controller=None,
+                           build=True)
+
+        self.path = "/rest/v1/system/bridges"
+        self.switch_ip = get_switch_ip(self.net.switches[0])
+        self.vlan_id = 1
+        self.vlan_name = "fake_vlan"
+        self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.vlan = "%s/%s/vlans/%s" % (self.path,
+                                        DEFAULT_BRIDGE,
+                                        self.vlan_name)
+
+    def test(self):
+        data = {}
+        data["name"] = deepcopy(base_vlan_data)
+        data["id"] = deepcopy(base_vlan_data)
+
+        data["name"]["configuration"].pop("name")
+        data["id"]["configuration"].pop("id")
+
+        info("\n########## Executing PUT test with missing fields "
+             "##########\n")
+        info("Testing Path: %s\n" % self.vlan_path)
+
+        for field, value in data.iteritems():
+            info("Testing missing field \"%s\" with value: %s\n" % (field,
+                                                                    value))
+
+            response_status, response_data = execute_request(self.vlan,
+                                                             "PUT",
+                                                             json.dumps(value),
+                                                             self.switch_ip)
+
+            assert response_status == httplib.BAD_REQUEST, \
+                "Response status received: %s\n" % response_status
+            info("Response status received: \"%s\"\n" % response_status)
+
+            assert response_data is not "", \
+                "Response data received: %s\n" % response_data
+            info("Response data received: %s\n" % response_data)
+
+        info("########## Executing PUT test with missing fields DONE "
+             "##########\n")
+
+
+class TestPutVlanMissingFields:
+    def setup(self):
+        pass
+
+    def teardown(self):
+        pass
+
+    def setup_class(cls):
+        TestPutVlanMissingFields.test_var = UpdateVlanMissingFields()
+
+        create_fake_vlan(TestPutVlanInvalidDescription.test_var.vlan_path,
+                         TestPutVlanInvalidDescription.test_var.switch_ip,
+                         TestPutVlanInvalidDescription.test_var.vlan_name,
+                         TestPutVlanInvalidDescription.test_var.vlan_id)
+
+    def teardown_class(cls):
+        TestPutVlanMissingFields.test_var.net.stop()
 
     def setup_method(self, method):
         pass
