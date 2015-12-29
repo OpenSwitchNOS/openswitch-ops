@@ -421,25 +421,20 @@ C - Collecting    D - Distributing
 X - State m/c expired              E - Default neighbor state
 .
 Actor details of all interfaces
-\-------------------------------------------
-Intf-name    Key    Priority   State
-\-------------------------------------------
-Aggregate-name : lag100
-1                            500
-Aggregate-name : lag200
-3
-4
-2
+\------------------------------------------------------------------------------
+Intf Aggregate Port    Port     Key  State   System-id         System   Aggr
+     name      id      Priority                                Priority Key
+\------------------------------------------------------------------------------
+1    lag100    16      1        1    ALFNCDE 70:72:cf:59:97:06 65534    100
+3    lag200    70      1        2    ALFOCX  70:72:cf:59:97:06 65534    200
+2    lag200    13      1        2    ALFNCDE 70:72:cf:59:97:06 65534    200
 .
 Partner details of all interfaces
-\-------------------------------------------------
-Intf-name    Partner  Key    Priority   State
-                     port-id
-\-------------------------------------------------
-Aggregate-name : lag100
-1                      500
-Aggregate-name : lag200
-3
-4
-2
+\------------------------------------------------------------------------------
+Intf Aggregate Partner Port     Key  State   System-id         System   Aggr
+     name      Port-id Priority                                Priority Key
+\------------------------------------------------------------------------------
+1    lag100    0       0        0    PLFNCD  00:00:00:00:00:00 0        100
+3    lag200    0       0        0    PSFO    00:00:00:00:00:00 0        200
+2    lag200    0       0        0    PLFNCD  00:00:00:00:00:00 0        200
 ```
