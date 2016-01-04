@@ -15,6 +15,17 @@ This feature provides two major functionalities:
 
 This feature is included in the switch image build and is enabled by default. This feature cannot be turned off through CLI. You do not need to do anything other than basic network connectivity to the switch to use this feature.
 
+
+###Conditional Request Support
+
+The REST API service engine supports conditional requests, more precisely, it supports If-Match and If-None-Match precondition Header fields.
+
+When performing a conditional PUT/DELETE request using If-Match header, REST client should specify the category (statistics, status, configuration) they require by using the selector parameter in the URI.
+
+```ditaa
+    http://management_interface_ip_address-or-switch_name:8091/rest/v1/system/ports?selector=configuration
+```
+
 ###Troubleshooting the configuration
 
 #### Condition
