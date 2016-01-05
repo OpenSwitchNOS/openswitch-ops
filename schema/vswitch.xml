@@ -1074,7 +1074,19 @@
       </column>
    </group>
   </table>
-
+  <table name="Filter_List" title="Filter List">
+    <group title="IP AS Path filter List Configuration">
+      <column name="name">
+        Name of the filter list.
+      </column>
+      <column name="action">
+        Action to either "permit" or "deny".
+      </column>
+      <column name="match">
+      Specify POSIX regex expression to match.
+      </column>
+    </group>
+  </table>
   <table name="Prefix_List" title="Prefix List">
     <group title="Global IP Address Prefix List Configuration">
       <column name="name">
@@ -1118,7 +1130,22 @@
       </column>
    </group>
   </table>
-
+  <table name="Community_Filter" title="Community_Filter">
+   <group title="Global Community and Extended Community Configuration">
+     <column name="name">
+       Name of the list.
+     </column>
+     <column name="match">
+       Regular expression.
+     </column>
+     <column name="action">
+       There are two types, either "permit" or "deny".
+     </column>
+     <column name="type">
+       There are two types, either "extcommunity-list" or "community-list".
+     </column>
+   </group>
+  </table>
   <table name="Route" title="Routes Information Base">
     <p>
       Global routes information base within an <ref table="System"/>.
@@ -1383,9 +1410,7 @@
       Default is 180 seconds.
       </column>
       <column name="redistribute">
-      Allows redistribution of routes from various protocols.
-      For example: static, connected. Enabling of redistribution protocols is not mutually
-      exclusive.
+      Specifies which protocol rooutes should be redistributed into BGP.
       </column>
       <column name="always_compare_med">
       Compares MED (Multi-Exit Discriminitor) from different neighbors.
@@ -1484,6 +1509,19 @@
       Minimum interval between sending BGP routing updates. Range: 0-600 seconds.
       </column>
 
+      <column name="ebgp_multihop">
+      If set to "true", allows BGP connections with peers that are not directly connected.
+      Default is "false".
+      </column>
+
+      <column name="ttl_security_hops">
+      Specifies the maximum number of hops to the BGP peer.
+      </column>
+
+      <column name="update_source">
+      Specifies the source-address to establish BGP connections to neighbors.
+      </column>
+
       <column name="maximum_prefix_limit">
       Maximum number of prefixes that can be accepted on a BGP peer
       session. When the limit is exceeded, a system log message is logged.
@@ -1521,6 +1559,30 @@
 
       <column name="timers">
       BGP per neighbor timers - Connect timer/Keep-alive Interval.
+      </column>
+
+      <column name="filter_lists">
+      Name and direction of the filter lists.
+      </column>
+
+      <column name="filter_lists" key="in">
+      Filter list associated with incoming routes.
+      </column>
+
+      <column name="filter_lists" key="out">
+      Filter list associated with outbound routes.
+      </column>
+
+      <column name="prefix_lists">
+      Name and direction of the prefix lists.
+      </column>
+
+      <column name="prefix_lists" key="in">
+      Prefix list associated with incoming routes.
+      </column>
+
+      <column name="prefix_lists" key="out">
+      Prefix list associated with outbound routes.
       </column>
 
       <column name="route_maps">
