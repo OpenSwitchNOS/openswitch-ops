@@ -646,6 +646,22 @@ Interface 1
 .............
 .............
 ```
+
+```
+ops-as5712# show running-config interface
+interface bridge_normal
+   no shutdown
+   no routing
+   exit
+interface 2
+   no shutdown
+   lag 100
+   exit
+interface lag 100
+   no routing
+   lacp mode active
+```
+
 ### Show interface running configuration
 #### Syntax
 `show running-config interface <interface>`
@@ -665,4 +681,11 @@ Interface 2
    speed 40000
    autonegotiation on
    exit
+```
+
+```
+ops-as5712# do show running-config interface lag100
+interface lag 100
+   no routing
+   lacp mode active
 ```
