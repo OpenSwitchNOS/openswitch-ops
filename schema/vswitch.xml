@@ -2007,16 +2007,21 @@
         </ul>
       </column>
 
-      <column name="tag">
+      <column name="tag" keyname="vlan">
         <p>
+          VNI binding value keyed by vlan.
           For an access port, the port's implicitly tagged VLAN.  For a
           native-tagged or native-untagged port, the port's native VLAN.  Must
-          be empty if this is a trunk port.
+          be empty if this is a trunk port. Value will represent the VNI binding
+          for this port. VNI is of 24 bit and it's value can range from 0 to
+          16772215. If VNI is not binded then it's value should be -1 implying
+          no binding is present.
         </p>
       </column>
 
-      <column name="trunks">
+      <column name="trunks" keyname="vlan">
         <p>
+          VNI binding value keyed by vlan. Maximum 4096 key value pairs.
           For a trunk, native-tagged, or native-untagged port, the 802.1Q VLAN
           or VLANs that this port trunks; if it is empty, then the port trunks
           all VLANs defined in the <ref table="VLAN"/> table.  Must be empty
@@ -2026,6 +2031,11 @@
           A native-tagged or native-untagged port always trunks its native
           VLAN, regardless of whether <ref column="trunks"/> includes that
           VLAN.
+        </p>
+        <p>
+          Value will represent the VNI binding for this port. VNI is of 24 bit
+          and it's value can range from 0 to 16772215. If VNI is not binded
+          then it's value should be -1 implying no binding is present.
         </p>
       </column>
     </group>
@@ -2215,6 +2225,11 @@
           IPv4/IPv6 address configuration, that remains up until it is
           deleted by administrator. Loopback interface IP address is used
           as router-id and source address by many protocols.</dd>
+
+          <dt><code>vxlan</code></dt>
+          <dd>This is a vitual interface of type vxlan (L2 overlay over L3
+          network). This configuration will need column: options to have
+          remote_ip and key.</dd>
        </dl>
       </column>
     </group>
@@ -3760,6 +3775,62 @@
       by the client to set the configured tag for DHCP requests.
       If the value is not specified, then the tag
       would be set for any value of the option.
+    </column>
+
+  </table>
+
+  <table name="Ucast_Macs_Local">
+
+    <p>
+      Configuration for local unicast MACs.
+    </p>
+
+    <column name="MAC">
+      MAC address learnt.
+    </column>
+
+    <column name="ipaddr">
+      Specifies ip address learnt for this specific MAC entry.
+      Can accomodate both ipv4 and ipv6 addresses.
+    </column>
+
+    <column name="interface">
+      Interface <ref table="Interface"/> on which the MAC and ip address is
+      learnt.
+    </column>
+
+    <column name="status">
+      This column specifies the status of this entry in the table.
+      Ok: properly configured, invalid: invalid parameters,
+      no memory: memory exhaustion, error: unspecified error.
+    </column>
+
+  </table>
+
+  <table name="Ucast_Macs_Remote">
+
+    <p>
+      Configuration for remote unicast MACs.
+    </p>
+
+    <column name="MAC">
+      MAC address learnt/configured.
+    </column>
+
+    <column name="ipaddr">
+      Specifies ip address learnt/configured for this specific MAC entry.
+      Can accomodate both ipv4 and ipv6 addresses.
+    </column>
+
+    <column name="interface">
+      Interface <ref table="Interface"/> on which the MAC and ip address is
+      learnt/configured.
+    </column>
+
+    <column name="status">
+      This column specifies the status of this entry in the table.
+      Ok: properly configured, invalid: invalid parameters,
+      no memory: memory exhaustion, error: unspecified error.
     </column>
 
   </table>
