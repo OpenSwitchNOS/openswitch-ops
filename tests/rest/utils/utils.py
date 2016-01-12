@@ -44,6 +44,8 @@ PORT_DATA = {
         "ip4_address": "192.168.0.1",
         "admin": "up",
         "qos_config": {},
+        "q_profile": [],
+        "qos": [],
         "ospf_auth_md5_keys": {},
         "ospf_auth_text_key": "null",
         "ospf_auth_type": "null",
