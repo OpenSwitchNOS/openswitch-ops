@@ -2007,7 +2007,7 @@
         </ul>
       </column>
 
-      <column name="tag">
+      <column name="tag" keyname="vlan">
         <p>
           For an access port, the port's implicitly tagged VLAN.  For a
           native-tagged or native-untagged port, the port's native VLAN.  Must
@@ -2015,7 +2015,7 @@
         </p>
       </column>
 
-      <column name="trunks">
+      <column name="trunks" keyname="vlan">
         <p>
           For a trunk, native-tagged, or native-untagged port, the 802.1Q VLAN
           or VLANs that this port trunks; if it is empty, then the port trunks
@@ -2026,6 +2026,12 @@
           A native-tagged or native-untagged port always trunks its native
           VLAN, regardless of whether <ref column="trunks"/> includes that
           VLAN.
+        </p>
+      </column>
+      <column name="vlan_to_tunnel_key_map" keyname="vlan">
+        <p>
+          VNI binding value keyed by vlan. Maximum 4096 key value pairs.
+          If this is an access port, only one key needs to be specified.
         </p>
       </column>
     </group>
@@ -2215,6 +2221,11 @@
           IPv4/IPv6 address configuration, that remains up until it is
           deleted by administrator. Loopback interface IP address is used
           as router-id and source address by many protocols.</dd>
+
+          <dt><code>vxlan</code></dt>
+          <dd>This is a vitual interface of type vxlan (L2 overlay over L3
+          network). This configuration will need column: options to have
+          remote_ip and key.</dd>
        </dl>
       </column>
     </group>
@@ -3760,6 +3771,45 @@
       by the client to set the configured tag for DHCP requests.
       If the value is not specified, then the tag
       would be set for any value of the option.
+    </column>
+
+  </table>
+
+  <table name="Mac">
+
+    <p>
+      Configuration for consoidated Mac table which can potentially be
+      learnt or from the controller.
+    </p>
+
+    <column name="mac_addr">
+      MAC address.
+    </column>
+
+    <column name="port">
+      Specifies the port <ref table="Port"/> on which this mac address
+      is learnt or configured by the controller.
+    </column>
+
+    <column name="vlan">
+      Interface <ref table="Interface"/> on which the MAC and ip address is
+      learnt.
+    </column>
+
+    <column name="from">
+      This column specifies who has configured this entry in the database.
+      Is it the controller or self learnt.
+    </column>
+
+    <column name="tunnel_key">
+      If this mac address is learnt from Tunnel port, then the tunnel_key
+      will be populated/configured.
+    </column>
+
+    <column name="status">
+      This column specifies the status of this entry in the table.
+      Ok: properly configured, invalid: invalid parameters,
+      no memory: memory exhaustion, error: unspecified error.
     </column>
 
   </table>
