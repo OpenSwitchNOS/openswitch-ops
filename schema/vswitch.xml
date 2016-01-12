@@ -368,6 +368,16 @@
       <column name="status" key="lldp_last_clear_table_performed">
       Last time when neighbor table was cleared.
       </column>
+
+      <column name="status" key="queue_profile">
+      Contains the name of the global queue profile that is in use by the
+      system.
+      </column>
+
+      <column name="status" key="schedule_profile">
+      Contains the name of the global schedule profile that is in use by the
+      system.
+      </column>
    </group>
 
       <column name="mgmt_intf_status">
@@ -920,6 +930,14 @@
         <column name="qos_cos_map_entries">
           Contains references to each entry in the global COS map used by
           port trust mode COS.
+        </column>
+        <column name="q_profile">
+          Specifies the global queue profile. There will always be exactly one
+          global queue profile specified here.
+        </column>
+        <column name="qos">
+          Specifies the global schedule profile. There will always be exactly
+          one global schedule profile specified here.
         </column>
     </group>
 
@@ -2015,6 +2033,16 @@
         Used for customer documentation.
       </column>
     </group>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
+      </column>
+    </group>
   </table>
 
   <table name="QoS_COS_Map_Entry"
@@ -2041,6 +2069,134 @@
       </column>
       <column name="description">
         Used for customer documentation.
+      </column>
+    </group>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
+      </column>
+    </group>
+  </table>
+
+  <table name="QoS"
+         title="Quality of Service">
+    <p>
+        Used to configure scheduling disciplines.
+    </p>
+
+    <group title="Configuration">
+      <column name="name">
+        The user-defined name of the schedule profile.
+      </column>
+      <column name="queues">
+        Contains a mapping of queue number to Queue.
+      </column>
+      <column name="type">
+        The title of the scheduling discipline.
+      </column>
+    </group>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
+      </column>
+    </group>
+  </table>
+
+  <table name="Queue"
+         title="Queue">
+    <p>
+        Contains the configuration for a queue.
+    </p>
+
+    <group title="Configuration">
+      <column name="dscp">
+        Indicates the code point that is remarked on all packets using the
+        queue.
+      </column>
+      <column name="algorithm">
+        The algorithm of scheduling discipline to use. Can be either 'strict'
+        or 'wrr'.
+      </column>
+      <column name="weight">
+        The weight used by 'wrr'.
+      </column>
+    </group>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
+      </column>
+    </group>
+  </table>
+
+  <table name="Q_Profile"
+         title="Q Profile">
+    <p>
+        Contains the configuration for a queue.
+    </p>
+
+    <group title="Configuration">
+      <column name="name">
+        The user-defined name of the queue profile.
+      </column>
+      <column name="q_profile_entries">
+        Contains a mapping of queue number to Queue.
+      </column>
+    </group>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
+      </column>
+    </group>
+  </table>
+
+  <table name="Q_Profile_Entry"
+         title="Q Profile Entry">
+    <p>
+        Contains the configuration for a queue.
+    </p>
+
+    <group title="Configuration">
+      <column name="dcb_id">
+        The dcb_id.
+      </column>
+      <column name="mode">
+        The mode.
+      </column>
+      <column name="local_priorities">
+        The local priorities that are using this queue.
+      </column>
+      <column name="description">
+        Used for customer documentation.
+      </column>
+    </group>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
       </column>
     </group>
   </table>
@@ -2118,6 +2274,24 @@
           optionally remark the 802.1Q priority code point to match. If the
           key is not specified, then the configured global default value will
           be used.
+        </column>
+        <column name="qos_config" key="cos_override"
+              type='{"type": "integer", "minInteger": 0, "maxInteger": 7}'>
+          Specifies the port COS override to use. If the key is not specified,
+          then the global COS map will be used.
+        </column>
+        <column name="qos_config" key="dscp_override"
+              type='{"type": "integer", "minInteger": 0, "maxInteger": 63}'>
+          Specifies the port DSCP override to use. If the key is not specified,
+          then the global DSCP map will be used.
+        </column>
+        <column name="q_profile">
+          Specifies the port queue profile. If this is unspecified, then the
+          configured global default queue profile will be used.
+        </column>
+        <column name="qos">
+          Specifies the port schedule profile. If this is unspecified, then
+          the configured global default schedule profile will be used.
         </column>
     </group>
 
@@ -2405,6 +2579,14 @@
         Unique identifier of the LAG from the data path's perspective.
         This key value should be treated as opaque handle by application
         daemons while updating LAG member interfaces in hardware.
+      </column>
+      <column name="status" key="queue_profile">
+      Contains the name of the port-overridden queue profile that is in use
+      by this port.
+      </column>
+      <column name="status" key="schedule_profile">
+      Contains the name of the port-overridden schedule profile that is in use
+      by this port.
       </column>
       <column name="lacp_status">
         Key-value pairs that report lacp-specific port status.
