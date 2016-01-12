@@ -146,7 +146,7 @@ Root user.
 |-----------|---------|--------|-------------|
 |*IPv4-address*|Required| A.B.C.D | IPv4 address to traceroute.|
 |*hostname* |Required | string | Hostname to traceroute. Length must be less than 256 characters.|
-| *time* | Optional|<1-120> | Select time in seconds to wait for a response to a probe between 1 and 120.|
+| *time* | Optional|<1-60> | Select time in seconds to wait for a response to a probe between 1 and 60.|
 #### Examples
 ```
 switch# traceroute 10.168.1.146 timeout 5
@@ -288,7 +288,7 @@ Root user.
 |-----------|---------|--------|-------------|
 |*IPv6-address*|Required|X:X::X:X| IPv6 address to traceroute.|
 | *hostname*|Required | string | Hostname to traceroute. Length must be less than 256 characters.|
-| *time* |Optional | <1-120>| Select time in seconds to wait for a response to a probe. between 1 and 120.|
+| *time* |Optional | <1-60>| Select time in seconds to wait for a response to a probe. between 1 and 60.|
 #### Examples
 ```
 switch# traceroute6 0:0::0:1 timeout 3
