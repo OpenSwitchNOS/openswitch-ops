@@ -604,6 +604,22 @@
             "max": 1
           }
         },
+        "vrf_status": {
+          "category": "configuration",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "ready"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "other_config": {
           "category": "configuration",
           "type": {

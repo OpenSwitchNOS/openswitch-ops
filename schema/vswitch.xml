@@ -1035,6 +1035,11 @@
       <column name="dhcp_server">
         DHCP Server in the VRF.
       </column>
+      <column name="vrf_status"
+        type='{"type": "string", "enum": ["set", ["ready"]]}'>
+        The vrf_status column will be set with appropriate enum string
+        <code>ready</code> when a namespace is created for the new VRF entry.
+      </column>
     </group>
    <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
