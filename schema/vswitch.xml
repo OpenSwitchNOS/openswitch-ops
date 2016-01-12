@@ -2194,7 +2194,7 @@
         </ul>
       </column>
 
-      <column name="tag">
+      <column name="tag" keyname="vlan">
         <p>
           For an access port, the port's implicitly tagged VLAN.  For a
           native-tagged or native-untagged port, the port's native VLAN.  Must
@@ -2202,7 +2202,7 @@
         </p>
       </column>
 
-      <column name="trunks">
+      <column name="trunks" keyname="vlan">
         <p>
           For a trunk, native-tagged, or native-untagged port, the 802.1Q VLAN
           or VLANs that this port trunks; if it is empty, then the port trunks
@@ -2213,6 +2213,12 @@
           A native-tagged or native-untagged port always trunks its native
           VLAN, regardless of whether <ref column="trunks"/> includes that
           VLAN.
+        </p>
+      </column>
+      <column name="vlan_to_tunnel_key_map" keyname="vlan">
+        <p>
+          VNI binding value keyed by vlan. Maximum 4096 key value pairs.
+          If this is an access port, only one key needs to be specified.
         </p>
       </column>
     </group>
@@ -2485,7 +2491,74 @@
           IPv4/IPv6 address configuration, that remains up until it is
           deleted by administrator. Loopback interface IP address is used
           as router-id and source address by many protocols.</dd>
+
+          <dt><code>vxlan</code></dt>
+          <dd>This is a vitual interface of type vxlan (L2 overlay over L3
+          network RFC 7348). This configuration will need column: options to have
+          remote_ip and key.</dd>
        </dl>
+      </column>
+    </group>
+
+    <group title="Tunnel Options">
+      <p>
+        These options apply to interfaces with <ref column="type"/> of
+        <code>vxlan</code>.
+      </p>
+
+      <p>
+        Each tunnel must be uniquely identified by the combination of <ref
+        column="type"/>, <ref column="options" key="remote_ip"/>, <ref
+        column="options" key="local_ip"/>, and <ref column="options"
+        key="key"/>.
+      </p>
+
+      <column name="options" key="remote_ip">
+        <p>Required.  The remote tunnel endpoint, one of:</p>
+
+        <ul>
+          <li>
+            An IPv4 address (not a DNS name), e.g. <code>192.168.0.123</code>.
+            Only unicast endpoints are supported.
+          </li>
+        </ul>
+      </column>
+
+      <column name="options" key="local_ip">
+        <p>
+          The tunnel destination IP that received packets must
+          match.
+        </p>
+        <ul>
+          <li>
+            An IPv4 address (not a DNS name), e.g. <code>192.168.12.3</code>.
+          </li>
+        </ul>
+      </column>
+
+      <column name="options" key="key">
+        <p>Optional.  The key that received packets must containand set in the
+           outgoing packets, one of:</p>
+
+        <ul>
+          <li>
+            <code>0</code>.  The tunnel receives packets with no key or with a
+            key of 0.  This is equivalent to specifying no <ref column="options"
+            key="key"/> at all.
+          </li>
+          <li>
+            A positive 24-bit (VXLAN). The tunnel receives only
+            packets with the specified key and sent packets will have the
+            specified key.
+          </li>
+        </ul>
+      </column>
+
+      <column name="options" key="ttl">
+        Optional.  The TTL to be set on the encapsulating packet.  It may also
+        be the word <code>inherit</code>, in which case the TTL will be copied
+        from the inner packet if it is IPv4 or IPv6 (otherwise it will be the
+        system default, typically 64).  Default is the system default TTL.
       </column>
     </group>
 
@@ -4897,5 +4970,42 @@
         </column>
     </group>
   </table>
-</database>
 
+  <table name="Mac">
+
+    <p>
+      Configuration for consoidated Mac table which can potentially be
+      learnt or from the controller.
+    </p>
+
+    <column name="mac_addr">
+      MAC address.
+    </column>
+
+    <column name="port">
+      Specifies the port <ref table="Port"/> on which this mac address
+      is learnt or configured by the controller.
+    </column>
+
+    <column name="vlan">
+      Interface <ref table="Interface"/> on which the MAC and ip address is
+      learnt.
+    </column>
+
+    <column name="from">
+      This column specifies who has configured this entry in the database.
+      Is it the controller or self learnt.
+    </column>
+
+    <column name="tunnel_key">
+      If this mac address is learnt from Tunnel port, then the tunnel_key
+      will be populated/configured.
+    </column>
+
+    <column name="status">
+      This column specifies the status of this entry in the table.
+      Ok: properly configured, invalid: invalid parameters,
+      no memory: memory exhaustion, error: unspecified error.
+    </column>
+  </table>
+</database>
