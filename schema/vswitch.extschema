@@ -2427,7 +2427,9 @@
                 "set",
                 [
                   "l2-src-dst-hash",
-                  "l3-src-dst-hash"
+                  "l2vid-src-dst-hash",
+                  "l3-src-dst-hash",
+                  "l4-src-dst-hash"
                 ]
               ]
             },
