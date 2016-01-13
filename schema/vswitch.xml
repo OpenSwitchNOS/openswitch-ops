@@ -2042,8 +2042,15 @@
       <p>These columns apply only to bonded ports.  Their values are otherwise
           ignored.</p>
 
-      <column name="bond_mode"> <p>The type of bonding used for a bonded port.
-              Defaults to <code>l3-src-dst-hash</code> if not assigned.  </p>
+      <column name="bond_mode">
+        <p>
+          The type of bonding used for a bonded port. Bond mode can take value
+          <code>l2-src-dst-hash</code>, <code>l2vid-src-dst-hash</code>,
+          <code>l3-src-dst-hash</code> or <code>l4-src-dst-hash</code> to
+          control the selection of a interface from a group of aggregate
+          interfaces with which to transmit a frame.
+          Defaults to <code>l3-src-dst-hash</code> if not assigned.
+        </p>
       </column>
 
       <group title="LACP Configuration">
