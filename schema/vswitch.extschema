@@ -309,6 +309,25 @@
             "min": 0,
             "max": "unlimited"
           }
+        },
+        "ntp_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ntp_statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
         }
       },
       "isRoot": true,
@@ -3674,6 +3693,119 @@
          }
        }
      }
+   },
+   "NTP_Associations": {
+      "columns": {
+        "vrf": {
+          "category": "configuration",
+          "relationship": "m:1",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRF",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": "unlimited"
+          },
+          "mutable": false
+        },
+        "name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 57
+            }
+          },
+          "mutable": false
+        },
+        "key": {
+          "category": "configuration",
+          "relationship": "m:1",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 65534
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "NTP_Keys"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "association_attributes": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "association_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      },
+      "indexes": [
+        [
+          "vrf",
+          "name"
+        ]
+      ],
+      "isRoot": true
+    },
+   "NTP_Keys": {
+      "columns": {
+        "key_id": {
+          "category": "configuration",
+           "type": {
+            "key": {
+               "type": "integer",
+               "minInteger": 1,
+               "maxInteger": 65534
+            }
+          },
+          "mutable": false
+        },
+        "key_password": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 16
+            }
+          },
+          "mutable": false
+        },
+        "trust_enable":{
+          "category":"configuration",
+          "type":{
+            "key":{
+              "type":"boolean"
+            },
+            "min":0,
+            "max":1
+          }
+        }
+      },
+      "indexes": [
+        [
+          "key_id"
+        ]
+      ],
+      "isRoot": true
     }
   }
 }
