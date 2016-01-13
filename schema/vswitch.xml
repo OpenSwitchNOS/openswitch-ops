@@ -2009,13 +2009,9 @@
 
       <column name="tag" keyname="vlan">
         <p>
-          VNI binding value keyed by vlan.
           For an access port, the port's implicitly tagged VLAN.  For a
           native-tagged or native-untagged port, the port's native VLAN.  Must
-          be empty if this is a trunk port. Value will represent the VNI binding
-          for this port. VNI is of 24 bit and it's value can range from 0 to
-          16772215. If VNI is not binded then it's value should be -1 implying
-          no binding is present.
+          be empty if this is a trunk port.
         </p>
       </column>
 
@@ -2032,10 +2028,11 @@
           VLAN, regardless of whether <ref column="trunks"/> includes that
           VLAN.
         </p>
+      </column>
+      <column name="vlan_to_tunnel_key_map" keyname="vlan">
         <p>
-          Value will represent the VNI binding for this port. VNI is of 24 bit
-          and it's value can range from 0 to 16772215. If VNI is not binded
-          then it's value should be -1 implying no binding is present.
+          VNI binding value keyed by vlan. Maximum 4096 key value pairs.
+          If this is an access port, only one key needs to be specified.
         </p>
       </column>
     </group>
@@ -3779,52 +3776,35 @@
 
   </table>
 
-  <table name="Ucast_Macs_Local">
+  <table name="Mac">
 
     <p>
-      Configuration for local unicast MACs.
+      Configuration for consoidated Mac table which can potentially be
+      learnt or from the controller.
     </p>
 
-    <column name="MAC">
-      MAC address learnt.
+    <column name="mac_addr">
+      MAC address.
     </column>
 
-    <column name="ipaddr">
-      Specifies ip address learnt for this specific MAC entry.
-      Can accomodate both ipv4 and ipv6 addresses.
+    <column name="port">
+      Specifies the port <ref table="Port"/> on which this mac address
+      is learnt or configured by the controller.
     </column>
 
-    <column name="interface">
+    <column name="vlan">
       Interface <ref table="Interface"/> on which the MAC and ip address is
       learnt.
     </column>
 
-    <column name="status">
-      This column specifies the status of this entry in the table.
-      Ok: properly configured, invalid: invalid parameters,
-      no memory: memory exhaustion, error: unspecified error.
+    <column name="from">
+      This column specifies who has configured this entry in the database.
+      Is it the controller or self learnt.
     </column>
 
-  </table>
-
-  <table name="Ucast_Macs_Remote">
-
-    <p>
-      Configuration for remote unicast MACs.
-    </p>
-
-    <column name="MAC">
-      MAC address learnt/configured.
-    </column>
-
-    <column name="ipaddr">
-      Specifies ip address learnt/configured for this specific MAC entry.
-      Can accomodate both ipv4 and ipv6 addresses.
-    </column>
-
-    <column name="interface">
-      Interface <ref table="Interface"/> on which the MAC and ip address is
-      learnt/configured.
+    <column name="tunnel_key">
+      If this mac address is learnt from Tunnel port, then the tunnel_key
+      will be populated/configured.
     </column>
 
     <column name="status">
