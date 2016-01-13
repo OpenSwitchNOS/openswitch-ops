@@ -96,6 +96,10 @@
       <column name="hostname">
       </column>
 
+      <column name="domain_name">
+	Domain name to be configured through the cli.
+      </column>
+
       <column name="dns_servers">
       </column>
 
@@ -372,7 +376,15 @@
       <column name="mgmt_intf_status" key="dhcp_hostname">
         Holds hostname configured by dhcp client.
       </column>
-      <column name="next_cfg">
+      <column name="mgmt_intf_status" key="domain_name">
+        This key contains the domain name configured for the system.
+	It can be configured through the CLI or through dhcp messages.
+	If none of these are present the key itself ceases to exist.
+      </column>
+      <column name="mgmt_intf_status" key="dhcp_domain_name">
+        The value for the key is the domain name received in the dhcp messages.
+      </column>
+     <column name="next_cfg">
         Sequence number for client to increment.  When a client modifies
         any part of the database configuration and wishes to wait for
         OpenSwitch to finish applying the changes, it may increment
