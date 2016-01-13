@@ -98,6 +98,10 @@
           "category": "configuration",
           "type": "string"
         },
+        "domain_name":{
+          "category": "configuration",
+          "type": "string"
+        },
         "dns_servers": {
           "category": "configuration",
           "type": {
