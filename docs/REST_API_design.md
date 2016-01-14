@@ -49,6 +49,33 @@ The two groups of tags can be used simultaneously when the column refers to some
 
 A sanitizing Python script is run to strip the extended schema file of the two groups of tags added, so that other modules that is aware of the original OVSDB schema only can operate as usual.
 
+HTTPS Support
+-------------
+REST API shall run only on HTTPS protocol. HTTPS protocol provides authentication of REST server and additionally provides encrytion of exhanged data between the REST server and client. Authentication/encryption is done by security protocols like SSL/TLS within HTTP connection.
+
+REST server requires SSL certificate to run in HTTPS mode. Self-signed SSL certficate and private key files are pre-installed at "/etc/ssl/certs/server.crt" and "/etc/ssl/certs/server-private.key" respectively on the server. Steps to obtain a self-signed certificate is very much standard. Self-signed SSL certificate is mainly for development purpose and testing. For proper authentication, user may have to purchase a SSL certficate for a specific hostname from a trusted Certificate Authority (CA), for example Symantec.
+
+Once the SSL certificate is enrolled with a trusted CA, user shall copy the certificate file and private key file into predefined locations "/etc/ssl/certs/server.crt" and "/etc/ssl/certs/server-private.key" onto the REST server using scp. The client uses the CA certificate to verify the server authenticity when establishing HTTPS connection.
+Following is a sample client side code snippet that is compatible with python 2.7.9 to retrieve ports information from a REST server.
+```ditaa
+import ssl
+import httplib
+
+sslcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+sslcontext.verify_mode = ssl.CERT_REQUIRED
+sslcontext.check_hostname = True
+sslcontext.load_verify_locations("/etc/ssl/certs/ops.crt")
+url = '/rest/v1/system/ports'
+conn = httplib.HTTPSConnection("172.17.0.3", 443, context=sslcontext)
+conn.request('GET', url, None, headers=_headers)
+response = conn.getresponse()
+
+```
+
+Following is an example URL with https to query ports on the system from a web browser. HTTPS uses default port 443 if not specified.
+```https://172.17.0.3/rest/v1/system/ports```
+
+
 References
 ----------
 * [REST API user guide](/documents/user/REST_API_user_guide)
