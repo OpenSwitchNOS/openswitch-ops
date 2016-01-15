@@ -311,6 +311,143 @@
       </column>
    </group>
 
+   <group title="Capabilities and Capacities">
+     <column name="capabilities" key="acl_type_ipv4_ingress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports IPv4 Ingress ACLs.
+     </column>
+     <column name="capabilities" key="acl_type_ipv4_egress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports IPv4 Egress ACLs.
+     </column>
+     <column name="capabilities" key="acl_type_ipv6_ingress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports IPv6 Ingress ACLs.
+     </column>
+     <column name="capabilities" key="acl_type_ipv6_egress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports IPv6 Egress ACLs.
+     </column>
+     <column name="capabilities" key="acl_type_mac_ingress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports MAC Ingress ACLs.
+     </column>
+     <column name="capabilities" key="acl_type_mac_egress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports MAC Egress ACLs.
+     </column>
+     <column name="capabilities" key="acl_type_user_ingress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports User Ingress ACLs.
+     </column>
+     <column name="capabilities" key="acl_type_user_egress_capable"
+             type='{"type":"boolean"}'>
+       The switch supports User Egress ACLs.
+     </column>
+     <column name="capabilities" key="ace_match_filter_tcp_flags_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACEs that can filter based on TCP flags.
+     </column>
+     <column name="capabilities" key="ace_match_filter_l4_op_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACEs that can filter based on L4 operators.
+     </column>
+     <column name="capabilities" key="ace_match_filter_precedence_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACEs that can filter based on precedence.
+     </column>
+     <column name="capabilities" key="ace_match_filter_fragments_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACEs that can filter fragments.
+     </column>
+     <column name="capabilities" key="ace_match_filter_ip_options_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACEs that can filter based on IP options.
+     </column>
+     <column name="capabilities" key="acl_action_logging_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACL logging.
+     </column>
+     <column name="capabilities" key="acl_action_mirroring_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACL mirroring.
+     </column>
+     <column name="capabilities" key="acl_action_mirroring_dst_port_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACL mirroring to a port.
+     </column>
+     <column name="capabilities" key="acl_action_mirroring_dst_vlan_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACL mirroring to a VLAN.
+     </column>
+     <column name="capabilities" key="acl_action_mirroring_dst_remote_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ACL mirroring to a remote destination or tunnel.
+     </column>
+     <column name="capabilities" key="qos_capable"
+             type='{"type":"boolean"}'>
+       The switch supports QoS functionality.
+     </column>
+     <column name="capabilities" key="ecmp_capable"
+             type='{"type":"boolean"}'>
+       The switch supports ECMP functionality.
+     </column>
+     <column name="capabilities" key="ecmp_l3_src_hashing_capable"
+             type='{"type":"boolean"}'>
+       The switch supports selectively hashing on source IP information for
+       ECMP load balancing.
+     </column>
+     <column name="capabilities" key="ecmp_l3_dst_hashing_capable"
+             type='{"type":"boolean"}'>
+       The switch supports selectively hashing on destination IP information
+       for ECMP load balancing.
+     </column>
+     <column name="capabilities" key="ecmp_l4_src_hashing_capable"
+             type='{"type":"boolean"}'>
+       The switch supports selectively hashing on source TCP/UDP port
+       information for ECMP load balancing.
+     </column>
+     <column name="capabilities" key="ecmp_l4_dst_hashing_capable"
+             type='{"type":"boolean"}'>
+      The switch supports selectively hashing on destination TCP/UDP port
+      information for ECMP load balancing.
+     </column>
+     <column name="capabilities" key="ecmp_resilient_hashing_capable"
+             type='{"type":"boolean"}'>
+      The switch supports maintaining flows in flight when ECMP group
+      membership changes. If a nexthop is removed from the ECMP group,
+      flows destined to that nexthop will be assigned to other ECMP nexthops,
+      but no other flows will be affected.
+     </column>
+     <column name="capacities" key="max_routes_ipv4"
+             type='{"type": "integer", "minInteger": 1}'>
+       Maximum number of IPv4 <ref table="Routes"/> that can be programmed in
+       hardware.
+     </column>
+     <column name="capacities" key="max_routes_ipv6"
+             type='{"type": "integer", "minInteger": 1}'>
+       Maximum number of IPv6 <ref table="Routes"/> that can be programmed in
+       hardware.
+     </column>
+     <column name="capacities" key="max_acls_ipv4_ingress"
+             type='{"type": "integer", "minInteger": 1}'>
+       Maximum number of IPv4 Ingress ACLs that can be programmed in hardware.
+     </column>
+     <column name="capacities" key="max_acls_ipv4_egress"
+             type='{"type": "integer", "minInteger": 1}'>
+       Maximum number of IPv4 Egress ACLs that can be programmed in hardware.
+     </column>
+     <column name="capacities" key="max_acls_ipv6_ingress"
+             type='{"type": "integer", "minInteger": 1}'>
+       Maximum number of IPv6 Ingress ACLs that can be programmed in hardware.
+     </column>
+     <column name="capacities" key="max_acls_ipv6_egress"
+             type='{"type": "integer", "minInteger": 1}'>
+       Maximum number of IPv6 Egress ACLs that can be programmed in hardware.
+     </column>
+     <!-- TODO: Add more capacities here once we settle on None vs. 0 vs. >0 -->
+    </group>
+
    </group>
 
     <group title="Status">
@@ -790,6 +927,7 @@
     <group title="ECMP configuration">
       <p>
         Specifies the various ECMP (Equal Cost Multi-Path) configuration options.
+        <!-- TODO: This should be consolidated into the capabilities column -->
       </p>
 
         <column name="ecmp_config" key="enabled" type='{"type": "boolean"}'>
@@ -831,6 +969,8 @@
   </table>
 
   <table name="Subsystem" title="system board, daughter card, line card, etc.">
+  <!-- TODO: NKP: I *think* we can add columns here for ASIC- or subsystem-
+       specific capabilities and capacities (under "Configuration"?) -->
     <group title="Configuration">
       <column name="interfaces">
       </column>
