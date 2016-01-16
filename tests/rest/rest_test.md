@@ -5352,11 +5352,6 @@ Two configurations are used for verifying that the schema validations are preven
             }
         },
         "hostname": "ops",
-        "subsystems": {
-            "base": {
-                "asset_tag_number": "Open Switch asset tag 222"
-            }
-        },
         "vrfs": {
             "vrf_default": {
                 "name": "vrf_default"
@@ -5397,11 +5392,6 @@ Two configurations are used for verifying that the schema validations are preven
                 "ports": [
                     "p2"
                 ]
-            }
-        },
-        "subsystems": {
-            "base": {
-                "asset_tag_number": "Open Switch asset tag 222"
             }
         },
         "vrfs": {
@@ -5514,11 +5504,6 @@ Two configurations are used for verifying the declarative configuration custom v
             }
         },
         "hostname": "ops",
-        "subsystems": {
-            "base": {
-                "asset_tag_number": "Open Switch asset tag 222"
-            }
-        },
         "vrfs": {
             "vrf_default": {
                 "name": "vrf_default"
@@ -5562,11 +5547,6 @@ Two configurations are used for verifying the declarative configuration custom v
             }
         },
         "hostname": "ops",
-        "subsystems": {
-            "base": {
-                "asset_tag_number": "Open Switch asset tag 222"
-            }
-        },
         "vrfs": {
             "vrf_default": {
                 "bgp_routers": {
