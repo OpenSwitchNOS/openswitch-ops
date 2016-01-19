@@ -26,6 +26,7 @@ import httplib
 import urllib
 
 from utils.utils import *
+from utils.swagger_test_utility import *
 
 patchdisable = pytest.mark.skipif(True,
                                   reason="Disabling until PATCH " + \
@@ -33,6 +34,8 @@ patchdisable = pytest.mark.skipif(True,
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
+switch_ip = ""
+response_global = ""
 
 class myTopo(Topo):
     def build(self, hsts=0, sws=1, **_opts):
@@ -44,6 +47,7 @@ class myTopo(Topo):
 class systemTest(OpsVsiTest):
 
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -55,10 +59,13 @@ class systemTest(OpsVsiTest):
                                        build=True)
 
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.SWITCH_IP
+        switch_ip = self.SWITCH_IP
         self.SWITCH_PORT = 8091
         self.PATH = "/rest/v1/system"
 
     def test_call_system_get(self):
+        global response_global
         info("\n########## Executing GET request on %s ##########\n" % self.PATH)
 
         # # Execute GET
@@ -72,6 +79,7 @@ class systemTest(OpsVsiTest):
         try:
             # A malformed json should throw an exception here
             get_data = json.loads(json_string)
+            response_global = get_data
         except:
             assert False, "GET: Malformed JSON in response body"
 
@@ -199,6 +207,7 @@ class systemTest(OpsVsiTest):
             'target': ''
         })
 
+        response_global = {"configuration": put_data}
         response, json_string = execute_request(self.PATH, "PUT", json.dumps({'configuration': put_data}), self.SWITCH_IP, True)
 
         assert response.status == httplib.OK, "PUT request failed: {0} {1}".format(response.status, response.reason)
@@ -257,6 +266,7 @@ class Test_system:
 
     def test_run_call_sytem_get (self):
         self.test_var.test_call_system_get()
+        swagger_model_verification(switch_ip, "/system", "GET_ID", response_global)
 
     @patchdisable
     def test_run_call_sytem_options (self):
@@ -264,3 +274,4 @@ class Test_system:
 
     def test_run_call_sytem_put (self):
         self.test_var.test_call_system_put()
+        swagger_model_verification(switch_ip, "/system", "PUT", response_global)

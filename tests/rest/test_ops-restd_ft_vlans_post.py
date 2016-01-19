@@ -27,9 +27,11 @@ import urllib
 
 from utils.fakes import *
 from utils.utils import *
+from utils.swagger_test_utility import *
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
+switch_ip = ""
 
 base_vlan_data = {
     "configuration": {
@@ -74,7 +76,7 @@ class myTopo(Topo):
 ###############################################################################
 class CreateBasicVlan(OpsVsiTest):
     def setupNet(self):
-
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -88,6 +90,8 @@ class CreateBasicVlan(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
 
     def test(self):
         data = """
@@ -145,6 +149,7 @@ class TestPostBasicVlan:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -155,6 +160,7 @@ class TestPostBasicVlan:
 ###############################################################################
 class CreateVlanInvalidName(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -167,6 +173,8 @@ class CreateVlanInvalidName(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -232,6 +240,7 @@ class TestPostVlanInvalidName:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -242,6 +251,7 @@ class TestPostVlanInvalidName:
 ###############################################################################
 class CreateVlanInvalidId(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -254,6 +264,8 @@ class CreateVlanInvalidId(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -319,6 +331,7 @@ class TestPostVlanInvalidId:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -329,6 +342,7 @@ class TestPostVlanInvalidId:
 ###############################################################################
 class CreateVlanInvalidDescription(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -341,6 +355,8 @@ class CreateVlanInvalidDescription(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -407,6 +423,7 @@ class TestPostVlanInvalidDescription:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -417,6 +434,7 @@ class TestPostVlanInvalidDescription:
 ###############################################################################
 class CreateVlanInvalidAdmin(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -429,6 +447,8 @@ class CreateVlanInvalidAdmin(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -494,6 +514,7 @@ class TestPostVlanInvalidAdmin:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -504,6 +525,7 @@ class TestPostVlanInvalidAdmin:
 ###############################################################################
 class CreateVlanInvalidOtherConfig(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -516,6 +538,8 @@ class CreateVlanInvalidOtherConfig(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -582,6 +606,7 @@ class TestPostVlanInvalidOtherConfig:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -592,6 +617,7 @@ class TestPostVlanInvalidOtherConfig:
 ###############################################################################
 class CreateVlanInvalidExternalIds(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -604,6 +630,8 @@ class CreateVlanInvalidExternalIds(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -670,6 +698,7 @@ class TestPostVlanInvalidExternalIds:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -680,6 +709,7 @@ class TestPostVlanInvalidExternalIds:
 ###############################################################################
 class CreateVlanMissingFields(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -692,6 +722,8 @@ class CreateVlanMissingFields(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -750,6 +782,7 @@ class TestPostVlanMissingFields:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -760,6 +793,7 @@ class TestPostVlanMissingFields:
 ###############################################################################
 class CreateVlanDuplicated(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -772,6 +806,8 @@ class CreateVlanDuplicated(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
@@ -847,3 +883,4 @@ class TestPostDuplicated:
 
     def test_run(self):
         self.test_var.test()
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans", "POST", base_vlan_data)
