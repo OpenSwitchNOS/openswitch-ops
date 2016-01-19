@@ -130,6 +130,7 @@ def create_fake_vlan(path, switch_ip, fake_vlan_name, vlan_id):
     info("---------- Creating fake vlan (%s) DONE ----------\n" %
          fake_vlan_name)
 
+    return json.loads(data)
 
 def create_fake_bridge(path, switch_ip, fake_bridge_name):
     data = FAKE_BRIDGE_DATA % fake_bridge_name

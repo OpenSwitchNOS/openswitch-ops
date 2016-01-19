@@ -27,9 +27,11 @@ import urllib
 
 from utils.fakes import *
 from utils.utils import *
+from utils.swagger_test_utility import *
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
+switch_ip = ""
 
 base_vlan_data = {
     "configuration": {
@@ -74,6 +76,7 @@ class myTopo(Topo):
 ###############################################################################
 class UpdateExistingVlan(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -86,6 +89,8 @@ class UpdateExistingVlan(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_id = 1
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
@@ -145,6 +150,9 @@ class TestPutExistingVlan:
         del self.test_var
 
     def test_run(self):
+        global switch_ip
+        print "switch_ip in testPut %s" % switch_ip
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans/{id}", "PUT", base_vlan_data)
         self.test_var.test()
 
 

@@ -26,9 +26,12 @@ import urllib
 
 from utils.fakes import *
 from utils.utils import *
+from utils.swagger_test_utility import *
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
+switch_ip = ""
+fake_data = ""
 
 DEFAULT_BRIDGE = "bridge_normal"
 
@@ -70,10 +73,8 @@ class QueryDefaultBridgeNormal(OpsVsiTest):
     def test(self):
         expected_data = ["/rest/v1/system/bridges/%s" % DEFAULT_BRIDGE]
         path = "/rest/v1/system/bridges"
-
         info("\n########## Executing GET to /system/bridges ##########\n")
         info("Testing Path: %s\n" % path)
-
         response_status, response_data = execute_request(path,
                                                          "GET",
                                                          None,
@@ -202,6 +203,7 @@ class TestGetVlansAssociated:
 ###############################################################################
 class QueryVlanByName(OpsVsiTest):
     def setupNet(self):
+        global switch_ip
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -214,13 +216,14 @@ class QueryVlanByName(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        print "switch_ip %s" % self.switch_ip
+        switch_ip = self.switch_ip
         self.vlan_id = 1
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
 
     def test(self):
         path = "%s/%s" % (self.vlan_path, self.vlan_name)
-
         expected_configuration_data = {}
         expected_configuration_data["name"] = "%s" % self.vlan_name
         expected_configuration_data["id"] = 1
@@ -259,12 +262,13 @@ class TestGetVlanByName:
         pass
 
     def setup_class(cls):
+        global fake_data
         TestGetVlanByName.test_var = QueryVlanByName()
         rest_sanity_check(cls.test_var.switch_ip)
-        create_fake_vlan(TestGetVlanByName.test_var.vlan_path,
-                         TestGetVlanByName.test_var.switch_ip,
-                         TestGetVlanByName.test_var.vlan_name,
-                         TestGetVlanByName.test_var.vlan_id)
+        fake_data = create_fake_vlan(TestGetVlanByName.test_var.vlan_path,
+                                     TestGetVlanByName.test_var.switch_ip,
+                                     TestGetVlanByName.test_var.vlan_name,
+                                     TestGetVlanByName.test_var.vlan_id)
 
     def teardown_class(cls):
         TestGetVlanByName.test_var.net.stop()
@@ -279,6 +283,7 @@ class TestGetVlanByName:
         del self.test_var
 
     def test_run(self):
+        swagger_model_verification(switch_ip, "/system/bridges/{pid}/vlans/{id}", "GET_ID", fake_data)
         self.test_var.test()
 
 
