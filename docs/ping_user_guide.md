@@ -9,12 +9,10 @@
 The ping (Packet InterNet Groper) command is a very common method for troubleshooting the accessibility of devices.
 It uses Internet Control Message Protocol (ICMP) echo requests and ICMP echo replies to determine if another device is alive.
 It also measures the amount of time it takes to receive a reply from the specified destination.
-The ping command is mostly used to verify connectivity between your switch and a host or port. The reply packet
-tells you if the host received the ping and the amount of time it took to return the packet.
+The ping command is mostly used to verify connectivity between your switch and a host or port. The reply packet tells you if the host received the ping and the amount of time it took to return the packet.
 
 ###Syntax
-`ping <ipv4-address | hostname> [repetitions <1-10000>] [timeout <1-60>] [interval <1-60>] [datagram-size <100-65399>] [data-fill <WORD>]
-[ip-option (include-timestamp |include-timestamp-and-address |record-route)][tos <0-255>]`
+`ping <ipv4-address | hostname> [repetitions <1-10000>] [timeout <1-60>] [interval <1-60>] [datagram-size <100-65399>] [data-fill <WORD>][ip-option (include-timestamp |include-timestamp-and-address |record-route)][tos <0-255>]`
 
 `ping6 <ipv6-address | hostname> [repetitions <1-10000>] [interval <1-60>] [datagram-size <100-65468>] [data-fill <WORD>]`
 
@@ -69,27 +67,27 @@ tells you if the host received the ping and the amount of time it took to return
     Domain name of the host to ping.
 
 ####Repetitions
-    ping repetitions <1-10000>
+    ping <ipv4-address | hostname> repetitions <1-10000>
     Number of packets to send <1-10000>.
     Range: < 1 to 10000 >
 
 ####Timeout
-    ping timeout <1-60>
+    ping <ipv4-address | hostname> timeout <1-60>
     Ping timeout in seconds <1-60>.
     Range: <1 to 60>
 
 ####Interval
-    ping interval <1-60>
+    ping <ipv4-address | hostname> interval <1-60>
     Seconds between sending each packet <1-60>.
     Range: <1 to 60>
 
 ####Data-fill
-    ping data-fill WORD
+    ping <ipv4-address | hostname> data-fill WORD
     Ping data fill string, example 'ab'
     Maximum pattern length is 16 hexadecimal characters.
 
 ####Datagram-size
-    ping datagram-size <100-65399>
+    ping <ipv4-address | hostname> datagram-size <100-65399>
     Range: <100 to 65399>
 
 ###Ping6 examples
@@ -117,22 +115,22 @@ tells you if the host received the ping and the amount of time it took to return
     Domain name of the host to ping.
 
 ####Repetitions
-    ping6 repetitions <1-10000>
+    ping6 <ipv6-address | hostname> repetitions <1-10000>
     Number of packets to send <1-10000>.
     Range: <1 to 10000>
 
 ####Interval
-    ping6 interval <1-60>
+    ping6 <ipv6-address | hostname> interval <1-60>
     Seconds between sending each packet <1-60>.
     Range: <1 to 60>
 
 ####Data-fill
-    ping6 data-fill WORD
+    ping6 <ipv6-address | hostname> data-fill WORD
     Ping data fill string, example 'ab'
     Maximum pattern length is 16 hexadecimal characters.
 
 ####Datagram-size
-    ping6 datagram-size <100-65468>
+    ping6 <ipv6-address | hostname> datagram-size <100-65468>
     Range: <100 to 65468>
 
 ## Related features ##
