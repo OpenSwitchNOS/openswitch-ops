@@ -193,7 +193,7 @@ class staticRouteTest(OpsVsiTest):
         # TODO: For IPv6, we see that even after setting static routes
         # correctly, direct ping from h1 to h2 is not taking place.
         # After subsequent pings between adjacent devices,
-        # end to end ping works. We suspect that there is some learning
+        # end to end ping works.  We suspect that there is some learning
         # going on in the kernel as regards to neighbour advertisements.
         # Ping s1 from host1
         info('### Ping s1 from host1 ###\n')
