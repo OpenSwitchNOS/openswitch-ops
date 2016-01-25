@@ -63,6 +63,7 @@ REST API Test Cases
   - [Delete VLAN using If Match header with a not matching Etag](#delete-vlan-using-if-match-header-with-a-not-matching-etag)
 - [Declarative configuration schema validations](#declarative-configuration-schema-validations)
 - [Custom validators](#custom-validators)
+- [HTTPS support](#https-support)
 
 ## REST API put method for system
 ### Objective
@@ -6347,3 +6348,37 @@ For REST, the test case is considered passing if the request for creating the fi
 
 #### Test fail criteria
 For REST, the test case is considered failing if the second request to create another BGP router is successful. A successful response indicates that the custom validation framework did not invoke the custom validator for the BGP router. Similarly, for the declarative configuration, the test case is considered failing if a successful response is received when configuring the invalid configuration.
+
+## HTTPS support
+All REST APIs use HTTPS protocol to send requests to the REST server. HTTPS protocol requires SSL certificate and private key for authentication of the REST server and also provide encryption of data exchanged.
+The REST server by default uses a self-signed SSL certificate for this purpose. All the REST test scripts use the same SSL certificate for testing purpose. The above tests are all modified to send HTTPS request to the REST server. REST test scripts currently use two different test frameworks - opsvsi and opstestfw. Opstestfw creates a virtual host running a generic ubuntu image which is using python 2.7.6. Following change has been added to opstestfw to setup HTTPS connection with the REST server.
+
+```ditaa
+import ssl
+import httplib
+headers = {"Content-type": "application/json", "Accept": "text/plain"}
+url = '/rest/v1/system/ports'
+conn = httplib.HTTPSConnection(server_ip, 443, cert_file="/root/restEnv/server.crt, key_file="/root/restEnv/server.key")
+conn.request('GET', url, None, headers)
+response = conn.getresponse()
+
+```
+
+Scripts using opsvsi framework run python 2.7.9 where SSL context is being introduced. Following change is added in the library function to setup a HTTPS connection with the REST server. As this is a self-signed certificate, hostname is not being used. Hence, the check_hostname flag is set to false. For certificates obtained from a trusted Certificate Authority (CA), the check_hostname flag must be set to true.
+
+```ditaa
+import ssl
+import httplib
+headers = {"Content-type": "application/json", "Accept": "text/plain"}
+sslcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+sslcontext.verify_mode = ssl.CERT_REQUIRED
+sslcontext.check_hostname = False
+src_path = os.path.dirname(os.path.realpath(__file__))
+src_file = os.path.join(src_path, 'server.crt')
+sslcontext.load_verify_locations(src_file)
+url = '/rest/v1/system/ports'
+conn = httplib.HTTPSConnection(server_ip, 443, context=sslcontext)
+conn.request('GET', url, None, headers)
+response = conn.getresponse()
+
+```
