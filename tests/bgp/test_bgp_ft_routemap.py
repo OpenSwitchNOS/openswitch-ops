@@ -160,7 +160,7 @@ class bgpTest(OpsVsiTest):
         neighbor = self.bgpConfig1.neighbors[0]
         network = self.bgpConfig1.networks[0]
         prefixList = PrefixList("BGP%s_OUT" % self.bgpConfig1.asn, 5, "deny",
-                                network, DEFAULT_PL)
+                                network, DEFAULT_PL, 0, 0)
 
         self.bgpConfig1.prefixLists.append(prefixList)
         self.bgpConfig1.addRouteMap(neighbor, prefixList, "out",
@@ -169,7 +169,7 @@ class bgpTest(OpsVsiTest):
         # Configure so that the second route from BGP1 is permitted
         network = self.bgpConfig1.networks[1]
         prefixList = PrefixList("BGP%s_OUT" % self.bgpConfig1.asn, 10,
-                                "permit", network, DEFAULT_PL)
+                                "permit", network, DEFAULT_PL, 0, 0)
 
         self.bgpConfig1.prefixLists.append(prefixList)
 
