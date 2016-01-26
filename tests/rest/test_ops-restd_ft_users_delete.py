@@ -234,7 +234,7 @@ class DeleteUserTest(OpsVsiTest):
         info("########## End Test to Validate DELETE New User not in OVSDB "
              "Group ##########\n")
 
-
+#@pytest.mark.skipif(True, reason="Disabling until bug fix for 127 is merged into ops-restd")
 class Test_DeleteUser:
     def setup(self):
         pass
