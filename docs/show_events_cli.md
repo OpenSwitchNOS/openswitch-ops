@@ -37,13 +37,14 @@ switch# configure t
 switch(config)# lldp enable
 switch(config)# no lldp enable
 switch(config)# lldp timer 100
+switch(config)# lldp management-address 10.0.0.1
 switch(config)# end
 switch# show events
 
 ---------------------------------------------------
 show event logs
 ---------------------------------------------------
-2016-01-26:09:13:31.287757|6|ops-evt|1002|LOG_INFO|LLDP Disabled
-2016-01-26:09:14:25.097368|6|ops-evt|1001|LOG_INFO|LLDP Enabled
-2016-01-26:09:14:36.989378|6|ops-evt|1002|LOG_INFO|LLDP Disabled
-2016-01-26:09:14:48.545033|6|ops-evt|1003|LOG_INFO|Configured LLDP tx-timer with 100
+2016-01-20:14:17:15.041851|ops-lldpd|1002|LOG_INFO|LLDP Disabled
+2016-01-20:14:17:54.562838|ops-lldpd|1001|LOG_INFO|LLDP Enabled
+2016-01-20:14:18:55.397152|ops-lldpd|1003|LOG_INFO|Configured LLDP tx-timer with 100
+2016-01-20:14:20:16.715133|ops-lldpd|1007|LOG_INFO|Configured LLDP Management pattern 10.0.0.1

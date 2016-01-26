@@ -31,8 +31,8 @@ This file contains the default configuration for show events.
 
 #### Cause
 This Error could appear in the following two cases.
-1. events.yaml configuration file is missing in its path.
-2. events.yaml configuration file is wrongly configured.
+1. ops_events.yaml configuration file is missing in its path.
+2. ops_events.yaml configuration file is wrongly configured.
 
 #### Remedy
 1.Please ensure that the events.yaml file is present in its path (/etc/openswitch/supportability/ops_events.yaml).
