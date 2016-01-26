@@ -4897,5 +4897,97 @@
         </column>
     </group>
   </table>
+  <table name="Udp_Bcast_Forwarder_Server">
+    <p>
+      Udp Bcast Forwarder Server table contains the configuration entries for forwarding
+      matching UDP broadcast packets to specific server(s).
+    </p>
+    <group title="UDP Broadcast Forwarder Server Configuration">
+      <column name="address_family">
+        Represents the address family for this entry.
+        Default value is <code>ipv4</code>.
+      </column>
+      <column name="ports">
+        Port on which the configuration is made. Refers port table record.
+      </column>
+      <column name="dst_udp_port">
+        Destination udp port of the forwarding protocol.
+      </column>
+      <column name="server_ip" key="ucast_v4"
+              type='{"type": "string"}'>
+        UDP broadcast handler server's unicast IPv4 address. This key is valid only for IPv4
+        server configuration record.
+      </column>
+      <column name="server_ip" key="ucast_v6"
+              type='{"type": "string"}'>
+        UDP broadcast handler server's unicast IPv6 address. This key is valid only for IPv6
+        server configuration record.
+      </column>
+      <column name="server_ip" key="mcast_v6"
+              type='{"type": "string"}'>
+        IPv6 multicast address to reach the UDP broadcast handler servers. This key is valid
+        only for IPv6 server configuration record.
+      </column>
+      <column name="server_ip" key="bcast_v6"
+              type='{"type": "string"}'>
+        IPv6 broadcast address to reach the UDP broadcast handler servers. This key is valid
+        only for IPv6 server configuration record.
+      </column>
+      <column name="out_ports">
+        Port through which the packet needs to be sent. Refers port table record. This entry
+        exists only for IPv6 type of record.
+      </column>
+    </group>
+  </table>
+  <table name="Udp_Bcast_Forwarder_Config">
+    <p>
+      Udp Forwarder Forwarder Config table contains global configuration related to UDP
+      forwarder and DHCP relay. Options related configuration also is added to this table.
+    </p>
+    <group title="UDP Broadcast Forwarder Configuration">
+      <column name="vrf">
+        Reference to a <ref table="VRF"/>, to which the current record belongs.
+      </column>
+      <column name="address_family">
+        Represents the address family for this entry.
+        Default value is <code>ipv4</code>.
+      </column>
+      <column name="status_value" key="dhcp_relay"
+              type='{"type": "string", "enum": ["set", ["enabled", "disabled"]]}'>
+      </column>
+    </group>
+  </table>
+  <table name="Dhcp_Relay_Statistics">
+    <p>
+      Dhcp Relay Statistics table maintains the relayed packet data per interface level.
+    </p>
+    <group title="DHCP Relay Statistics">
+      <column name="ports">
+        Port on which DHCP Relay statistics are captured. Refers port table record.
+      </column>
+      <column name="ipv4_stats" key="valid_client_requests"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of valid ipv4 DHCP Relay requests processed from the client(s).
+      </column>
+      <column name="ipv4_stats" key="dropped_client_requests"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of ipv4 DHCP Relay requests dropped from the client(s).
+      </column>
+      <column name="ipv4_stats" key="valid_server_responses"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of valid ipv4 DHCP Relay responses received from the server(s).
+      </column>
+      <column name="ipv4_stats" key="dropped_server_responses"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of ipv4 DHCP Relay responses dropped from the server(s).
+      </column>
+      <column name="ipv6_stats">
+      </column>
+      <column name="ipv4_option_stats">
+      </column>
+      <column name="ipv6_option_stats">
+      </column>
+    </group>
+  </table>
 </database>
 
