@@ -19,6 +19,11 @@ import json
 import httplib
 import random
 import urllib
+import ssl
+import subprocess
+import re
+import os
+import time
 
 from copy import deepcopy
 from string import rstrip
@@ -197,7 +202,14 @@ def execute_request(path, http_method, data, ip, full_response=False,
     headers = {"Content-type": "application/json", "Accept": "text/plain"}
     if xtra_header:
         headers.update(xtra_header)
-    conn = httplib.HTTPConnection(ip, 8091)
+
+    sslcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    sslcontext.verify_mode = ssl.CERT_REQUIRED
+    sslcontext.check_hostname = False
+    src_path = os.path.dirname(os.path.realpath(__file__))
+    src_file = os.path.join(src_path, 'server.crt')
+    sslcontext.load_verify_locations(src_file)
+    conn = httplib.HTTPSConnection(ip, 443, context=sslcontext)
     conn.request(http_method, url, data, headers)
     response = conn.getresponse()
     status_code, response_data = response.status, response.read()
@@ -265,16 +277,25 @@ def random_ip6_address():
 
 
 def login(dut, user_name, user_password):
-    conn = httplib.HTTPConnection(dut.SWITCH_IP, 8091)
-    url = '/login'
 
+    sslcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    sslcontext.verify_mode = ssl.CERT_REQUIRED
+    sslcontext.check_hostname = False
+    src_path = os.path.dirname(os.path.realpath(__file__))
+    src_file = os.path.join(src_path, 'server.crt')
+    sslcontext.load_verify_locations(src_file)
+    conn = httplib.HTTPSConnection(dut.SWITCH_IP, 443, context=sslcontext)
+    url = '/login'
     body = {'username': user_name, 'password': user_password}
     headers = {"Content-type": "application/x-www-form-urlencoded",
                "Accept": "text/plain"}
     conn.request('POST', url, urllib.urlencode(body), headers)
+
     response = conn.getresponse()
     dut.HEADERS = {'Cookie': response.getheader('set-cookie')}
 
+    status_code, response_data = response.status, response.read()
+    conn.close()
     if not dut.HEADERS['Cookie'] is None:
         return True
     else:
@@ -299,3 +320,31 @@ def validate_keys_complete_object(json_data):
     assert json_data["status"] is not None, "status key is not present"
 
     return True
+
+
+def copy_from_docker(switch_ip):
+    ip_addr = ""
+    switch_ip = switch_ip.strip()
+    q = subprocess.Popen('docker ps -a -q', shell=True,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    for container_id in q.stdout.readlines():
+        container_id = container_id.split("\n")[0]
+        ip = subprocess.Popen('docker inspect ' + container_id +
+                              '| grep -i "\"IPAddress"\"', shell=True,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT)
+        line = ip.stdout.readline()
+        search_ip = re.search(r'[\d.]+', line)
+
+        if search_ip is None:
+            continue
+        ip_addr = search_ip.group()
+        if ip_addr == switch_ip:
+            break
+
+    assert ip_addr == switch_ip, "Invalid switch IP address"
+    copy_from_docker = 'docker cp ' + container_id + \
+                       ':/etc/ssl/certs/server.crt /etc/ssl/certs/server.crt'
+    subprocess.Popen(copy_from_docker, shell=True, stdout=subprocess.PIPE,
+                     stderr=subprocess.STDOUT)
