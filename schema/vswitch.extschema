@@ -899,11 +899,6 @@
           }
         }
       },
-      "indexes": [
-        [
-          "name"
-        ]
-      ],
       "isRoot": true
     },
     "Prefix_List": {
