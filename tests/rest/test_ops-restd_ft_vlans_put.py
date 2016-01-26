@@ -117,6 +117,7 @@ class UpdateExistingVlan(OpsVsiTest):
              "##########\n" % self.vlan_path)
 
 
+
 class TestPutExistingVlan:
     def setup(self):
         pass
@@ -212,6 +213,7 @@ class UpdateVlanInvalidName(OpsVsiTest):
 
         info("########## Executing POST test with bad \"name\" value DONE "
              "##########\n")
+
 
 
 class TestPutVlanInvalidName:
@@ -311,6 +313,7 @@ class UpdateVlanInvalidId(OpsVsiTest):
              "##########\n")
 
 
+
 class TestPutVlanInvalidId:
     def setup(self):
         pass
@@ -406,6 +409,7 @@ class UpdateVlanInvalidDescription(OpsVsiTest):
 
         info("########## Executing PUT test with bad \"description\" value "
              "DONE ##########\n")
+
 
 
 class TestPutVlanInvalidDescription:
@@ -505,6 +509,7 @@ class UpdateVlanInvalidAdmin(OpsVsiTest):
              "##########\n")
 
 
+
 class TestPutVlanInvalidAdmin:
     def setup(self):
         pass
@@ -602,6 +607,7 @@ class UpdateVlanInvalidOtherConfig(OpsVsiTest):
              "value DONE ##########\n")
 
 
+
 class TestPutVlanInvalidOtherConfig:
     def setup(self):
         pass
@@ -697,6 +703,7 @@ class UpdateVlanInvalidExternalIds(OpsVsiTest):
 
         info("########## Executing PUT test with bad \"external_ids\" value "
              "DONE ##########\n")
+
 
 
 class TestPutVlanInvalidExternalIds:

@@ -202,7 +202,6 @@ class UpdateUserTest(OpsVsiTest):
         info("########## End Test to Validate UPDATE Valid User and login with"
              " old password ##########\n")
 
-
 class Test_UpdateUser:
     def setup(self):
         pass

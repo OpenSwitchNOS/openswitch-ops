@@ -89,6 +89,7 @@ class QueryDefaultBridgeNormal(OpsVsiTest):
         info("########## Executing GET to /system/bridges DONE ##########\n")
 
 
+
 class TestGetDefaultBridgeNormal:
     def setup(self):
         pass
@@ -294,8 +295,8 @@ class QueryVlanByName(OpsVsiTest):
         expected_configuration_data["id"] = 1
         expected_configuration_data["description"] = "test_vlan"
         expected_configuration_data["admin"] = "up"
-        expected_configuration_data["other_config"] = {}
-        expected_configuration_data["external_ids"] = {}
+        #expected_configuration_data["other_config"] = {}
+        #expected_configuration_data["external_ids"] = {}
 
         info("\n########## Executing GET to /system/bridges/{id}/vlans/ "
              "{id} ##########\n")

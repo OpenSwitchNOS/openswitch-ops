@@ -235,6 +235,7 @@ class DeleteUserTest(OpsVsiTest):
              "Group ##########\n")
 
 
+
 class Test_DeleteUser:
     def setup(self):
         pass

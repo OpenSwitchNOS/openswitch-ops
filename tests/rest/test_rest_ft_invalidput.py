@@ -189,6 +189,7 @@ def restTestInvalidputmethod(wrkston01):
     return retStruct
 
 
+
 class Test_ft_framework_rest:
 
     def setup_class(cls):

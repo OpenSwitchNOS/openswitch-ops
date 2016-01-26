@@ -169,6 +169,7 @@ class configTest (OpsVsiTest):
         assert response.status == 401
 
 
+
 class Test_config:
     def setup(self):
         pass

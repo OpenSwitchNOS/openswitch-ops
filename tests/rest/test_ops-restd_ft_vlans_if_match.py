@@ -494,6 +494,7 @@ class IfMatchVlanTest(OpsVsiTest):
             assert status_code == httplib.NO_CONTENT, "VLAN deleted" % path
 
 
+
 class Test_IfMatchVlan:
     def setup(self):
         pass

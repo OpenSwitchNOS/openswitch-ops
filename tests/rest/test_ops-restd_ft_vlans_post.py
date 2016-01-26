@@ -122,6 +122,7 @@ class CreateBasicVlan(OpsVsiTest):
         info("########## Executing POST to /system/bridges DONE ##########\n")
 
 
+
 class TestPostBasicVlan:
     def setup(self):
         pass

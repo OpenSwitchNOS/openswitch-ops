@@ -179,6 +179,7 @@ def restTestSystem(wrkston01):
     return retStruct
 
 
+
 class Test_ft_framework_rest:
     def setup_class(cls):
         # Create Topology object and connect to devices

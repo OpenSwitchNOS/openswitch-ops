@@ -400,7 +400,6 @@ class CreateUserTest(OpsVsiTest):
         info("\n########## End Test Create user: two user with the "
              "same password ##########\n")
 
-
 class Test_CreateUser:
 
     def setup(self):
