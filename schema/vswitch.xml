@@ -1164,7 +1164,17 @@
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
 
-      <column name="other_config">
+      <column name="other_config" key="dhcp_relay_enabled"
+              type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable DHCP relay functionality
+        globally and set it to <code>false</code> to disable it. DHCP relay is
+        enabled by default.
+      </column>
+      <column name="other_config" key="udp_bcast_forwarder_enabled"
+              type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable UDP broadcast forwarder
+        functionality globally and set it to <code>false</code> to disable it.
+        UDP broadcast forwarder is disabled by default.
       </column>
       <column name="external_ids">
       </column>
@@ -2455,6 +2465,43 @@
 
       <column name="other_config"/>
       <column name="external_ids"/>
+    </group>
+
+    <group title="DHCP Relay Statistics">
+      DHCP Relay statistics counters for both IPv4 and IPv6
+
+      <column name="dhcp_relay_statistics" key="valid_v4client_requests"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay requests processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4client_requests"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay requests dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v4server_responses"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay responses processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4server_responses"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay responses dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v6client_requests"
+              type='{"type":"integer"}'>
+        Number of valid IPv6 DHCP relay requests processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v6client_requests"
+              type='{"type":"integer"}'>
+        Number of IPv6 DHCP relay requests dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v6server_responses"
+              type='{"type":"integer"}'>
+        Number of valid IPv6 DHCP relay responses processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v6server_responses"
+              type='{"type":"integer"}'>
+        Number of IPv6 DHCP relay responses dropped.
+      </column>
     </group>
   </table>
 
@@ -5097,6 +5144,39 @@
         <column name="lsa_data">
           The OSPFv2 LSA specific data.
         </column>
+    </group>
+  </table>
+  <table name="UDP_Bcast_Forwarder_Server">
+    <p>
+      Placeholder for server configuration entries related to DHCP-Relay and UDP broadcast forwarder
+      are stored in this table. Per port, for a supported UDP destination port, one or more
+      destination servers can be configured to which matching UDP broadcast packets are forwarded.
+    </p>
+    <group title="UDP Broadcast Forwarder Server Configuration">
+      <column name="port">
+        Port on which the configuration is made.
+      </column>
+      <column name="dst_udp_port">
+        UDP broadcast packets with this destination udp port will be forwarded to the configured
+        destination.
+      </column>
+      <column name="ipv4_ucast_server">
+        List of IPv4 unicast server destinations to which UDP broadcast packets received on the port
+        are forwarded. A maximum of 16 ipv4 unicast server configurations are allowed.
+      </column>
+      <column name="ipv6_ucast_server">
+        List of IPv6 unicast server destinations to which UDP broadcast packets received on the port
+        are forwarded. IPv6 unicast server destination can be configured only for DHCP-Relay.
+        A maximum of 16 IPv6 server configurations are allowed. The count includes IPv6 multicast
+        and link local server configuration from the column "ipv6_server".
+      </column>
+      <column name="ipv6_server" keyname="ipv6_address">
+        IPv6 multicast or link local address is the key and value references a port table entry,
+        through which matching packets are forwarded to the configured server(s). IPv6 multicast and
+        link local addresses can only be configured for DHCP-Relay. A maximum of 16 IPv6 server
+        configurations are allowed. This count includes IPv6 unicast server configurations from the
+        column "ipv6_ucast_server".
+      </column>
     </group>
   </table>
 </database>
