@@ -1,0 +1,8 @@
+Code-Review+2: jennahung <jenna.hung@hpe.com>
+Verified+2: jennahung <jenna.hung@hpe.com>
+Workflow+1: jennahung <jenna.hung@hpe.com>
+Submitted-by: jennahung <jenna.hung@hpe.com>
+Submitted-at: Tue, 26 Jan 2016 00:14:21 +0000
+Reviewed-on: https://review.openswitch.net/3487
+Project: openswitch/ops
+Branch: refs/heads/feature/ntp_client
