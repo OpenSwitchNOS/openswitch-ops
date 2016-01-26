@@ -1145,6 +1145,18 @@
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
 
+      <column name="other_config" key="dhcp_relay_enabled"
+              type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable DHCP relay functionality
+        globally and set it to <code>false</code> to disable it. DHCP relay is
+        enabled by default.
+      </column>
+      <column name="other_config" key="udp_fwd_enabled"
+              type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable UDP broadcast forwarder
+        functionality globally and set it to <code>false</code> to disable it.
+        UDP broadcast forwarder is disabled by default.
+      </column>
       <column name="other_config">
       </column>
       <column name="external_ids">
@@ -4895,6 +4907,76 @@
         <column name="lsa_data">
           The OSPFv2 LSA specific data.
         </column>
+    </group>
+  </table>
+  <table name="UDP_Bcast_Forwarder_Server">
+    <p>
+      Placeholder for the configuration entries to forward matching UDP broadcast packets
+      to specific server(s).
+    </p>
+    <group title="UDP Broadcast Forwarder Server Configuration">
+      <column name="ports">
+        Port on which the configuration is made. Refers port table record.
+      </column>
+      <column name="dst_udp_port">
+        Destination UDP port of the forwarding protocol.
+      </column>
+      <column name="ipv4_ucast_server">
+        List of IPv4 unicast server destinations to which UDP broadcast packets received on
+        the port are forwarded. Per port there could be a maximum of 16 server configurations.
+      </column>
+      <column name="ipv6_ucast_server">
+        List of IPv6 unicast server destinations to which UDP broadcast packets received on
+        the port are forwarded. Per port there could be a maximum of 16 IPv6 server configurations.
+      </column>
+      <column name="ipv6_server" keyname="ipv6_address">
+        IPv6 multicast or link local address is the key and value is output port for forwarded
+        packets. Value references a port table entry. Selective UDP broadcast packets are
+        forwarded to the IPv6 multicast destinations. Per port there could be a maximum of 16
+        IPv6 server configurations.
+      </column>
+    </group>
+  </table>
+  <table name="Dhcp_Relay_Statistics">
+    <p>
+      Per interface statistics related to the DHCP relay agent.
+    </p>
+    <group title="DHCP Relay Statistics">
+      <column name="ports">
+        Port on which DHCP relay statistics are captured. Refers port table record.
+      </column>
+      <column name="ipv4_stats" key="valid_client_requests"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of valid IPv4 DHCP relay requests processed.
+      </column>
+      <column name="ipv4_stats" key="dropped_client_requests"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of IPv4 DHCP relay requests dropped.
+      </column>
+      <column name="ipv4_stats" key="valid_server_responses"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of valid IPv4 DHCP relay responses processed.
+      </column>
+      <column name="ipv4_stats" key="dropped_server_responses"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of IPv4 DHCP relay responses dropped.
+      </column>
+      <column name="ipv6_stats" key="valid_client_requests"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of valid IPv6 DHCP relay requests processed.
+      </column>
+      <column name="ipv6_stats" key="dropped_client_requests"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of IPv6 DHCP relay requests dropped.
+      </column>
+      <column name="ipv6_stats" key="valid_server_responses"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of valid IPv6 DHCP relay responses processed.
+      </column>
+      <column name="ipv6_stats" key="dropped_server_responses"
+              type='{"type":"integer", "minInteger": 1}'>
+        Number of IPv6 DHCP relay responses dropped.
+      </column>
     </group>
   </table>
 </database>
