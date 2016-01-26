@@ -234,7 +234,6 @@ class DeleteUserTest(OpsVsiTest):
         info("########## End Test to Validate DELETE New User not in OVSDB "
              "Group ##########\n")
 
-
 class Test_DeleteUser:
     def setup(self):
         pass

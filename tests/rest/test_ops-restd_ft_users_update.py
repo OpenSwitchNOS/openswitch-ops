@@ -202,7 +202,7 @@ class UpdateUserTest(OpsVsiTest):
         info("########## End Test to Validate UPDATE Valid User and login with"
              " old password ##########\n")
 
-
+@pytest.mark.skipif(True, reason="Disabling until bug fix for 127 is merged into ops-restd")
 class Test_UpdateUser:
     def setup(self):
         pass

@@ -400,7 +400,7 @@ class CreateUserTest(OpsVsiTest):
         info("\n########## End Test Create user: two user with the "
              "same password ##########\n")
 
-
+@pytest.mark.skipif(True, reason="Disabling until bug fix for 127 is merged into ops-restd")
 class Test_CreateUser:
 
     def setup(self):

@@ -250,7 +250,6 @@ class QueryUserTest(OpsVsiTest):
         info("########## End Test to Validate GET Non existent "
              "User ##########\n")
 
-
 class Test_QueryUser:
     def setup(self):
         pass
