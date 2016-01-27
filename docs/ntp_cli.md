@@ -205,9 +205,12 @@ No parameters.
 ```
 s1(config)#show ntp status
 NTP is enabled.
-Synchronized to NTP Server 17.253.2.253 at stratum 1.
+NTP authentication is enabled.
+Uptime: 200 seconds
+Synchronized to NTP Server 17.253.2.253 at stratum 2.
 Poll interval = 1024 seconds.
-Time accuracy is within 50 ms.
+Time accuracy is within 0.994 seconds
+Reference time: Thu Jan 28 2016 0:57:06.647 (UTC)
 ```
 
 ### show ntp authentication-keys
@@ -281,7 +284,6 @@ No parameters.
 #### Examples
 ```
 s1(config)#show ntp statistics
-Uptime               12 h
 Rx-pkts              100
 Rx cur ver           80
 Rx old ver           20
