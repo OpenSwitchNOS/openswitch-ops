@@ -2194,7 +2194,7 @@
         </ul>
       </column>
 
-      <column name="tag">
+      <column name="tag" keyname="vlan">
         <p>
           For an access port, the port's implicitly tagged VLAN.  For a
           native-tagged or native-untagged port, the port's native VLAN.  Must
@@ -2202,7 +2202,7 @@
         </p>
       </column>
 
-      <column name="trunks">
+      <column name="trunks" keyname="vlan">
         <p>
           For a trunk, native-tagged, or native-untagged port, the 802.1Q VLAN
           or VLANs that this port trunks; if it is empty, then the port trunks
@@ -2213,6 +2213,12 @@
           A native-tagged or native-untagged port always trunks its native
           VLAN, regardless of whether <ref column="trunks"/> includes that
           VLAN.
+        </p>
+      </column>
+      <column name="vlan_to_tunnel_key_map" keyname="vlan">
+        <p>
+          VNI binding value keyed by vlan. Maximum 4096 key value pairs.
+          If this is an access port, only one key needs to be specified.
         </p>
       </column>
     </group>
@@ -2491,6 +2497,11 @@
             An Ethernet over RFC 2890 Generic Routing Encapsulation over IPv4
             IPsec tunnel.
           </dd>
+
+          <dt><code>vxlan</code></dt>
+          <dd>This is a vitual interface of type vxlan (L2 overlay over L3
+          network RFC 7348). This configuration will need column: options to have
+          remote_ip and key.</dd>
        </dl>
       </column>
     </group>
@@ -2498,7 +2509,7 @@
     <group title="Tunnel Options">
       <p>
         These options apply to interfaces with <ref column="type"/> of
-        <code>ipsec_gre</code>.
+        <code>ipsec_gre</code> and <code>vxlan</code>.
       </p>
 
       <p>
@@ -2520,60 +2531,19 @@
             An IPv4 address (not a DNS name), e.g. <code>192.168.0.123</code>.
             Only unicast endpoints are supported.
           </li>
-          <li>
-            The word <code>flow</code>.  The tunnel accepts packets from any
-            remote tunnel endpoint.  To process only packets from a specific
-            remote tunnel endpoint, the flow entries may match on the
-            <code>tun_src</code> field.  When sending packets to a
-            <code>remote_ip=flow</code> tunnel, the flow actions must
-            explicitly set the <code>tun_dst</code> field to the IP address of
-            the desired remote tunnel endpoint, e.g. with a
-            <code>set_field</code> action.
-          </li>
         </ul>
-
-        <p>
-          The remote tunnel endpoint for any packet received from a tunnel
-          is available in the <code>tun_src</code> field for matching in the
-          flow table.
-        </p>
       </column>
 
       <column name="options" key="local_ip">
         <p>
-          Optional.  The tunnel destination IP that received packets must
-          match.  Default is to match all addresses.  If specified, may be one
-          of:
+          The tunnel destination IP that received packets must
+          match.
         </p>
-
         <ul>
           <li>
             An IPv4 address (not a DNS name), e.g. <code>192.168.12.3</code>.
           </li>
-          <li>
-            The word <code>flow</code>.  The tunnel accepts packets sent to any
-            of the local IP addresses of the system running OVS.  To process
-            only packets sent to a specific IP address, the flow entries may
-            match on the <code>tun_dst</code> field.  When sending packets to a
-            <code>local_ip=flow</code> tunnel, the flow actions may
-            explicitly set the <code>tun_src</code> field to the desired IP
-            address, e.g. with a <code>set_field</code> action.  However, while
-            routing the tunneled packet out, the local system may override the
-            specified address with the local IP address configured for the
-            outgoing system interface.
-
-            <p>
-              This option is valid only for tunnels also configured with the
-              <code>remote_ip=flow</code> option.
-            </p>
-          </li>
         </ul>
-
-        <p>
-          The tunnel destination IP address for any packet received from a
-          tunnel is available in the <code>tun_dst</code> field for matching in
-          the flow table.
-        </p>
       </column>
 
       <column name="options" key="in_key">
@@ -2589,10 +2559,11 @@
             A 32-bit (for GRE).  The tunnel receives only packets with the
             specified key.
           </li>
+          <li>
+            A positive 24-bit (VXLAN). The tunnel receives only
+            packets with the specified key.
+          </li>
         </ul>
-
-        <p>
-        </p>
       </column>
 
       <column name="options" key="out_key">
@@ -2605,7 +2576,11 @@
             key="out_key"/> at all.
           </li>
           <li>
-            A 32-bit (for GRE).  The tunnel receives only packets with the
+            A 32-bit (for GRE).  The tunnel sends packets only with the
+            specified key.
+          </li>
+          <li>
+            A positive 24-bit (VXLAN). The tunnel sends packets will have the
             specified key.
           </li>
         </ul>
@@ -5080,5 +5055,41 @@
         </column>
     </group>
   </table>
-</database>
 
+  <table name="Mac">
+
+    <p>
+      Configuration for consoidated Mac table which can potentially be
+      learnt from ASIC  or from the controller.
+    </p>
+
+    <column name="mac_addr">
+      MAC address.
+    </column>
+
+    <column name="port">
+      Specifies the port <ref table="Port"/> on which this mac address
+      is learnt or configured by the controller.
+    </column>
+
+    <column name="vlan">
+      VLAN associated with MAC address learnt.
+    </column>
+
+    <column name="from">
+      This column specifies who has configured this entry in the database.
+      Is it the controller or self learned from ASIC.
+    </column>
+
+    <column name="tunnel_key">
+      If this mac address is learnt from Tunnel port, then the tunnel_key
+      will be populated/configured.
+    </column>
+
+    <column name="status">
+      This column specifies the status of this entry in the table.
+      Ok: properly configured, invalid: invalid parameters,
+      no memory: memory exhaustion, error: unspecified error.
+    </column>
+  </table>
+</database>
