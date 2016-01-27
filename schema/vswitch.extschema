@@ -2389,6 +2389,7 @@
         },
         "trunks": {
           "category": "configuration",
+          "relationship": "1:m",
           "type": {
             "key": {
               "type": "integer",
@@ -2437,6 +2438,23 @@
             "value": "string",
             "min": 0,
             "max": "unlimited"
+          }
+        },
+        "vlan_to_tunnel_key_map": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 4094
+            },
+            "value": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 18446744073709551615
+            },
+            "min": 0,
+            "max": 4096
           }
         },
         "mac": {
@@ -2769,7 +2787,8 @@
                   "system",
                   "internal",
                   "vlansubint",
-                  "loopback"
+                  "loopback",
+                  "vxlan"
                 ]
               ]
             }
@@ -4020,7 +4039,7 @@
      }
    },
    "DHCPSrv_Match":{
-      "columns":{
+     "columns":{
        "set_tag":{
          "category":"configuration",
          "type":{
@@ -4060,6 +4079,90 @@
          }
        }
      }
+    },
+    "Mac": {
+      "columns": {
+        "mac_addr": {
+          "category": "configuration",
+          "type": "string",
+          "maxLength": 18
+        },
+        "port": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port"
+            }
+          }
+        },
+        "vlan": {
+          "type": {
+            "key": {
+              "maxInteger": 4094,
+              "minInteger": 1,
+              "type": "integer"
+            },
+            "max": 1,
+            "min": 0
+          }
+        },
+        "from": {
+          "type": {
+            "key": {
+              "enum": [
+                "set",
+                [
+                  "controller",
+                  "self-learn"
+                ]
+              ],
+              "type": "string"
+            }
+          }
+        },
+        "tunnel_key": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 18446744073709551615
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "status": {
+          "category": "status",
+          "type": {
+            "key": {
+              "enum": [
+                "set",
+                [
+                  "ok",
+                  "invalid",
+                  "no memory",
+                  "error"
+                ]
+              ],
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        }
+      },
+      "indexes": [
+        [
+          "mac_addr",
+          "port",
+          "vlan",
+          "tunnel_key"
+        ]
+      ],
+      "isRoot": true
     },
    "sFlow":{
       "columns":{
