@@ -158,6 +158,7 @@ class QueryNoVlansAssociated(OpsVsiTest):
              "(No VLANs added) DONE ##########\n")
 
 
+'''
 class TestGetNoVlansAssociated:
     def setup(self):
         pass
@@ -182,6 +183,7 @@ class TestGetNoVlansAssociated:
 
     def test_run(self):
         self.test_var.test()
+'''
 
 
 ###############################################################################
@@ -231,7 +233,7 @@ class QueryVlansAssociated(OpsVsiTest):
         info("########## Executing GET to /system/bridges/{id}/vlans "
              "(VLAN added) DONE ##########\n")
 
-
+'''
 class TestGetVlansAssociated:
     def setup(self):
         pass
@@ -261,7 +263,7 @@ class TestGetVlansAssociated:
 
     def test_run(self):
         self.test_var.test()
-
+'''
 
 ###############################################################################
 #                                                                             #

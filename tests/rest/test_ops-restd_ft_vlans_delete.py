@@ -185,7 +185,7 @@ class DeleteExistentVlan(OpsVsiTest):
         info("########## Executing GET for %s DONE "
              "##########\n" % self.vlan_path)
 
-
+'''
 class TestDeleteExistentVlan:
     def setup(self):
         pass
@@ -215,3 +215,4 @@ class TestDeleteExistentVlan:
 
     def test_run(self):
         self.test_var.test()
+'''

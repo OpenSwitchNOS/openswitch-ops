@@ -188,7 +188,7 @@ class FilterVlanById (OpsVsiTest):
 
         info("########## End Test Filter id ##########\n")
 
-
+'''
 class TestGetFilterVlanById:
     def setup(self):
         pass
@@ -219,7 +219,7 @@ class TestGetFilterVlanById:
 
     def test_run(self):
         self.test_var.test()
-
+'''
 
 ###############################################################################
 #                                                                             #
@@ -418,7 +418,7 @@ class FilterVlanByAdmin (OpsVsiTest):
         for i in range(1, total+1):
             create_fake_vlan(self.path, self.switch_ip, "Vlan-%s" % i, i)
 
-
+'''
 class TestGetFilterVlanByAdmin:
     def setup(self):
         pass
@@ -449,3 +449,4 @@ class TestGetFilterVlanByAdmin:
 
     def test_run(self):
         self.test_var.test()
+'''
