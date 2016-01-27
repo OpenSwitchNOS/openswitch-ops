@@ -2486,10 +2486,21 @@
           deleted by administrator. Loopback interface IP address is used
           as router-id and source address by many protocols.</dd>
 
+          <dt><code>ipsec_ike</code></dt>
+          <dd>
+            Generic Internet Key Exchange (IKE) IPsec tunnel protection.
+          </dd>
+
           <dt><code>ipsec_gre</code></dt>
           <dd>
-            An Ethernet over RFC 2890 Generic Routing Encapsulation over IPv4
-            IPsec tunnel.
+            An Ethernet over RFC 2890 Generic Routing Encapsulation over
+            IPsec IKE tunnel.
+          </dd>
+
+          <dt><code>ipsec_ospfv3</code></dt>
+          <dd>
+            An Ethernet over RFC 5340  Open Shortest Path First version 3 over
+            IPsec manual KE tunnel.
           </dd>
        </dl>
       </column>
@@ -2498,7 +2509,8 @@
     <group title="Tunnel Options">
       <p>
         These options apply to interfaces with <ref column="type"/> of
-        <code>ipsec_gre</code>.
+        <code>ipsec_gre</code>, <code>ipsec_ike</code>
+        and <code>ipsec_ospfv3</code>.
       </p>
 
       <p>
@@ -2639,10 +2651,69 @@
         to <code>false</code> to disable.
       </column>
 
-      <group title="Tunnel Options: ipsec_gre only">
+      <group title="Tunnel Options: ipsec_gre, ipsec_ike only">
         <p>
-          Only <code>ipsec_gre</code> interfaces support these options.
+          Only <code>ipsec_gre</code>, <code>ipsec_ike</code>
+          interfaces support these options.
         </p>
+
+        <column name="options" key="policy_name">
+          Required. Specifies the IPsec policy name that includes rules to detect
+          and transform specific IP flows.
+        </column>
+
+        <column name="options" key="policy_enable">
+          Required. Specifies the IPsec policy operating state. True for Enable.
+        </column>
+
+        <column name="options" key="ip_family">
+          Required. Specifies the traffic IP family: IPv4 or IPv6.
+        </column>
+
+        <column name="options" key="protocol">
+          Required. Specifies the traffic IPsec protocol: Authentication Header (AH) vs.
+          Encapsulating Security Payload (ESP).
+        </column>
+
+        <column name="options" key="mode">
+          Required. Specifies the traffic IPsec operation mode: tunnel vs. transport,
+        </column>
+
+        <column name="options" key="authentication">
+          Required. Specifies the supported hashes for the message authenticity and integrity.
+        </column>
+
+        <column name="options" key="encryption">
+          Required. Specifies the supported encryptions for the message privacy.
+        </column>
+
+        <column name="options" key="ike_version">
+          Required. Specifies the supported IKE versions: IKEv1v2, IKEv1, IKEv2.
+        </column>
+
+        <column name="options" key="ike_authentication">
+          Required. Specifies the supported hashes for the IKE authenticity and integrity protection.
+        </column>
+
+        <column name="options" key="ike_encryption">
+          Required. Specifies the supported encryptions for the IKE privacy protection.
+        </column>
+
+        <column name="options" key="ike_group">
+          Required. Specifies the supported key exchange groups: Diffie2 or Diffie14.
+        </column>
+
+        <column name="options" key="peer_auth_by">
+          Required. Specifies the supported credential types: PSK or Certificate.
+        </column>
+
+        <column name="options" key="local_id">
+          Required. Specifies the local ID used in IKE authentications.
+        </column>
+
+        <column name="options" key="remote_id">
+          Required. Specifies the remote ID used in IKE authentications.
+        </column>
 
         <column name="options" key="peer_cert">
           Required for certificate authentication.  A string containing the
@@ -3031,6 +3102,62 @@
       <column name="status" key="lldp_local_port_description">
         Description of LLDP port in alpha-numeric format.
       </column>
+    </group>
+
+    <group title="IKE Status: ipsec_gre, ipsec_ike only">
+      <p>
+        Only <code>ipsec_gre</code>, <code>ipsec_ike</code>
+        interfaces support these status
+      </p>
+
+      <column name="status" key="policy_name">
+         Reports the corresponding IPsec policy used to establish this connection.
+      </column>
+
+      <column name="status" key="request_id">
+         Reports the request ID to establish this connection.
+      </column>
+
+      <column name="status" key="ike_spi_inbound">
+         Reports the Security Parameter Index used for  IKE inbound traffics.
+      </column>
+
+      <column name="status" key="ike_spi_outbound">
+         Reports the Security Parameter Index used for IKE outbound traffics.
+      </column>
+
+      <column name="status" key="ike_proposals">
+         Reports the IKE proposal from the remote entity.
+      </column>
+
+      <column name="status" key="ike_reauth_eta">
+         Reports the ETA when the next IKE reauthentication happens in seconds.
+      </column>
+
+      <column name="status" key="sa_status">
+         Reports the current SA status.
+      </column>
+
+      <column name="status" key="sa_mode">
+         Reports the selected IPsec mode (tunnel or transport) of this SA.
+      </column>
+
+      <column name="status" key="sa_spi_inbound">
+         Reports the Security Parameter Index used for SA inbound traffics.
+      </column>
+
+      <column name="status" key="sa_spi_outbound">
+         Reports the Security Parameter Index used for SA outbound traffics.
+      </column>
+
+      <column name="status" key="sa_proposal">
+         Reports the SA proposal from the remote entity.
+      </column>
+
+      <column name="status" key="sa_rekey_eta">
+         Reports the ETA when the next SA rekey happens in seconds.
+      </column>
+
     </group>
 
     </group>
