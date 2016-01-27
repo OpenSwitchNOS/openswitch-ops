@@ -9,6 +9,7 @@ System commands
 	- [Setting an LED state](#setting-an-led-state)
 	- [Unsetting an LED state](#unsetting-an-led-state)
 - [System Display Commands](#system-display-commands)
+	- [Showing version information](#showing-version-information)
 	- [Showing system information](#showing-system-information)
 	- [System fan information](#system-fan-information)
 	- [Showing system temperature information](#showing-system-temperature-information)
@@ -130,6 +131,22 @@ switch(config)#no led base-loc
 ```
 
 ## System Display Commands
+### Showing version information
+#### Syntax
+`show version`
+
+#### Description
+This command shows the current switch version information.
+
+#### Authority
+All users.
+
+#### Examples
+```
+switch#show version
+OpenSwitch 0.3.0 (Build: developer_image)
+```
+
 ### Showing system information
 #### Syntax
 `show system [ < fan | temperature [ detail ] | led | power-supply >]`
