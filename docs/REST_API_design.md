@@ -9,6 +9,10 @@
 - [User account management](#user-account-management)
 - [HTTPS support](#https-support)
 - [Logs support](#logs-support)
+- [Notifications support](#notifications-support)
+    - [WebSockets](#websockets)
+    - [Monitor request](#monitor-request)
+    - [Notifications](#notifications)
 - [References](#references)
 
 ## Introduction
@@ -127,10 +131,10 @@ conn.request('GET', url, None, headers=_headers)
 response = conn.getresponse()
 ```
 
-Following is an example URL with HTTPS to query ports on the system from a web browser. HTTPS uses the default port 443 if not specified.
-```
-https://172.17.0.3/rest/v1/system/ports
-```
+Following is an example URL with HTTPS to query ports on the system from a web browser:
+`https://172.17.0.3/rest/v1/system/ports`
+
+HTTPS uses the default port 443 if not specified.
 
 ## Logs Support
 ### Design
@@ -210,6 +214,107 @@ The following fields are supported:
 Following is an example of a log API response with offset=0&limit=2 which limits the log entries to 2 in the response:
 ```
 [{"_BOOT_ID": "f43a84807a2d4b1389c87867fe6aaec3", "__REALTIME_TIMESTAMP": "1455653778503173", "_CAP_EFFECTIVE": "25402800cf", "__MONOTONIC_TIMESTAMP": "1556353467723", "_SYSTEMD_UNIT": "systemd-journald.service", "_MACHINE_ID": "5f7d6bb2aee84e5cb5bb3007b2911e7d", "_PID": "20", "_CMDLINE": "/lib/systemd/systemd-journald", "_SYSTEMD_CGROUP": "/system.slice/systemd-journald.service", "_SYSTEMD_SLICE": "system.slice", "PRIORITY": "6", "_EXE": "/lib/systemd/systemd-journald", "_UID": "0", "_TRANSPORT": "driver", "_GID": "0", "__CURSOR": "s=4696aa7b4c7b4090850ee29b7748df5c;i=2;b=f43a84807a2d4b1389c87867fe6aaec3;m=16a5de5454b;t=52be8ce623605;x=7ac41464416ef406", "MESSAGE": "Runtime journal is using 8.0M (max allowed 197.4M, trying to leave 296.2M free of 1.9G available \uffffffe2\uffffff86\uffffff92 current limit 197.4M).", "MESSAGE_ID": "ec387f577b844b8fa948f33cad9a75e6", "_COMM": "systemd-journal", "_HOSTNAME": "f37f0cd9a774"}, {"_BOOT_ID": "f43a84807a2d4b1389c87867fe6aaec3", "__REALTIME_TIMESTAMP": "1455653778503270", "_CAP_EFFECTIVE": "25402800cf", "__MONOTONIC_TIMESTAMP": "1556353467820", "_SYSTEMD_UNIT": "systemd-journald.service", "_MACHINE_ID": "5f7d6bb2aee84e5cb5bb3007b2911e7d", "_PID": "20", "_CMDLINE": "/lib/systemd/systemd-journald", "_SYSTEMD_CGROUP": "/system.slice/systemd-journald.service", "_SYSTEMD_SLICE": "system.slice", "PRIORITY": "6", "_EXE": "/lib/systemd/systemd-journald", "_UID": "0", "_TRANSPORT": "driver", "_GID": "0", "__CURSOR": "s=4696aa7b4c7b4090850ee29b7748df5c;i=3;b=f43a84807a2d4b1389c87867fe6aaec3;m=16a5de545ac;t=52be8ce623666;x=568d82819815b54d", "MESSAGE": "Journal started", "MESSAGE_ID": "f77379a8490b408bbe5f6940505a777b", "_COMM": "systemd-journal", "_HOSTNAME": "f37f0cd9a774"}]
+```
+
+## Notifications support
+Clients can subscribe to resources to be notified about changes within the database. The REST daemon is the entry point for subscribing. Clients can subscribe to specific resources or a collection of resource changes through REST APIs. The REST daemon receives notifications from the OVSDB indicating changes and are notified to the clients.
+
+```ditaa
+    +------------+
+    |            |
+    |            |
+    |  Client 1  |
+    |            |  WebSocket  +----------------+       +----------------+
+    |            +-------------+                |       |                |
+    +------------+             |                |       |                |
+                               |     restd      +-------+     OVSDB      |
+    +------------+  WebSocket  |                |       |                |
+    |            +-------------+                |       |                |
+    |            |             +----------------+       +----------------+
+    |  Client N  |
+    |            |
+    |            |
+    +------------+
+```
+
+### WebSockets
+The REST daemon exposes a WebSocket interface via the underlying Tornado web framework for receiving notifications and is accessible at the `/rest/v1/ws/notifications` path. When the REST daemon receives notification of changes from the OVSDB, the REST daemon informs the clients through the WebSocket. The WebSocket connection is authenticated upon the initial HTTP handshake before upgrading to WebSockets.
+
+The REST daemon maintains a reference to the WebSocket upon connection establishment and adds a new `Notification_Subscriber` resource into the OVSDB. The new subscriber resource is assigned an auto-generated random value for the `name`, and `ws` is set for the subscriber `type`. The REST daemon returns the URI to the subscriber resource created to the WebSocket client upon connection establishment, for example:
+
+```
+{
+    "notification_subscriber": {
+        "resource_uri": "/rest/v1/system/notification_subscribers/3562910982"
+    }
+}
+```
+
+OVSDB changes trigger pushes to the client using the WebSocket identified by its `name`. Reference to the WebSocket, along with the associated subscriber and notification subscription resources, are removed upon WebSocket disconnect.
+
+### Monitor request
+Clients subscribe to resource changes through REST APIs. Sending a POST request to, for example, `/rest/v1/system/notification_subscribers/3562910982/notification_subscriptions`, will create a new `Notification_Subscription` resource and subscribe the client for notifications. The subscription request includes a `resource_uri` for monitoring. The client can subscribe to a specific resource or a collection of resources. For example, to subscribe to a specific resource for changes, the client can subscribe to the `/rest/v1/system/vrfs/vrf_default` URI, and  the `/rest/v1/system/vrfs` URI for a collection of `VRF` changes. Subscribing to a resource will monitor for modifications and deletion. Subscriptions for URIs without an explicit parent will subscribe to the complete collection. Subscribing to a collection that has a parent will monitor a collection of resources that are children of that parent, and will only monitor for additions and deletions. For example, subscribing to `/rest/v1/system/vrfs/vrf_default/bgp_routers` will monitor `BGP_Router` resources that are children of the `vrf_default` resource.
+
+**Example: Monitor request JSON**
+
+```
+{
+    "configuration": {
+        "resource_uri": "/rest/v1/system/vrfs/vrf_default"
+    }
+}
+```
+
+The `resource_uri` field will be validated and will result in a `400` error response, such as `Invalid resource URI` if the resource does not exist. Upon a successful subscription, the initial values for the subscribed URIs are sent as notifications to the client.
+
+The POST request for a subscription results in the URI of the new resource in the response, which includes the index of the subscription relative to the subscriber. For example, the first subscription for subscriber `3562910982` will result in a response with the following JSON data:
+
+```
+{
+    "notification_subscription": {
+        "resource_uri": "/rest/v1/system/notification_subscribers/3562910982/notification_subscriptions/0"
+    }
+}
+```
+
+A second IDL is used to monitor for specific changes to increase the performance by avoiding the need to use the existing REST daemon's IDL which subscribes to every resource and attributes. The second IDL is used only for notification subscriptions, and is reconfigured if a subscription doesn't already exist. This helps to avoid false change notifications from the DB, and prevent unnecessary checking.
+
+### Notifications
+When changes in the database are detected, the REST daemon notifies the corresponding clients that subscribed. The notification is pushed to the client in JSON format, which includes the URI and the attributes updated. Notifications do not require a response.
+
+The notification message contains the `notifications` field and includes URIs for resources that are `added`, `modified`, and `deleted`. When a resource that belongs to a monitored parent is added, the `added` field contains a list of changes that include the `subscription_uri` of the subscription, `resource_uri` of the resource added, and the initial `values`.
+
+When a resource is modified, the `modified` field contains a list of changes that includes the `subscription_uri` of the subscription, `resource_uri` of the resource modified, and the `new_values` of attributes that were updated.
+
+When a resource is deleted, the `deleted` field contains a list of changes that includes the `subscription_uri` of the subscription and the `resource_uri` of the resource deleted.
+
+**Notification JSON**
+
+```
+{
+    "notifications": {
+        "added": [{
+            "subscription_uri": "/rest/v1/system/notification_subscribers/3562910982/notification_subscriptions/1",
+            "resource_uri": "/rest/v1/system/vrfs/vrf_default/bgp_routers/1/bgp_neighbors/2.2.2.2",
+            "values": {
+                "remote_as": 2,
+                ...
+            }
+        }],
+        "modified": [{
+            "subscription_uri": "/rest/v1/system/notification_subscribers/3562910982/notification_subscriptions/0",
+            "resource_uri": "/rest/v1/system/vrfs/vrf_default/bgp_routers/1",
+            "new_values": {
+                "router_id": "1.1.1.1",
+                "maximum_paths": 5,
+            }
+        }],
+        "deleted": [{
+            "subscription_uri": "/rest/v1/system/notification_subscribers/3562910982/notification_subscriptions/2",
+            "resource_uri": "/rest/v1/system/vrfs/vrf_default/bgp_routers/1/bgp_neighbors/3.3.3.3"
+        }]
+    }
+}
 ```
 
 ## References
