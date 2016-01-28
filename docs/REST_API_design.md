@@ -7,6 +7,10 @@
 - [Participating modules](#participating-modules)
 - [OVSDB schema](#ovsdb-schema)
 - [HTTPS support](#https-support)
+- [Events](#events)
+    - [WebSockets](#websockets)
+    - [Subscriptions](#subscriptions)
+    - [Notifications](#notifications)
 - [References](#references)
 
 ## Introduction
@@ -81,9 +85,85 @@ response = conn.getresponse()
 
 ```
 
-Following is an example URL with HTTPS to query ports on the system from a web browser. HTTPS uses the default port 443 if not specified.
-```https://172.17.0.3/rest/v1/system/ports```
+Following is an example URL with HTTPS to query ports on the system from a web browser:
+`https://172.17.0.3/rest/v1/system/ports`
 
+HTTPS uses the default port 443 if not specified.
+
+
+## Events
+Clients can subscribe to events to be notified about changes within the database. The REST daemon is the entry point for subscribing to events. Clients can subscribe to specific rows or table changes through REST APIs. The REST daemon receives notifications from the OVSDB indicating changes and are notified to the clients.
+
+```ditaa
+    +------------+
+    |            |
+    |            |
+    |  Client 1  |
+    |            |  WebSocket  +----------------+       +----------------+
+    |            +-------------+                |       |                |
+    +------------+             |                |       |                |
+                               |     restd      +-------+     OVSDB      |
+    +------------+  WebSocket  |                |       |                |
+    |            +-------------+                |       |                |
+    |            |             +----------------+       +----------------+
+    |  Client N  |
+    |            |
+    |            |
+    +------------+
+```
+
+### WebSockets
+The REST daemon exposes a WebSocket interface via the underlying Tornado web framework for receiving event notifications and is accessible at the `/rest/v1/event_notifications` path. When the REST daemon receives notification of changes from the OVSDB, the REST daemon informs the clients through the WebSocket. The WebSocket connection is authenticated upon the initial HTTP handshake before upgrading to WebSockets.
+
+The REST daemon maintains a reference to the WebSocket upon connection establishment and inserts a new entry in the `EventSubscriber` table. The new subscriber entry is assigned an auto-generated value for the `name` in the format of `ws_N`, where `N` is a counter for the number of WebSocket connects, and `ws` is set for the subscriber `type`. The REST daemon returns the URI to the subscriber entry created to the WebSocket client upon connection establishment, for example `/rest/v1/system/eventsubscribers/ws_1`. OVSDB changes trigger pushes to the client using the WebSocket identified by its `name`. Reference to the WebSocket, along with the associated subscriber and event OVSDB entries, are removed upon WebSocket disconnect.
+
+### Subscriptions
+Clients subscribe to events through REST APIs. Sending a POST request to the subscriber URI, for example `/rest/v1/system/eventsubscribers/ws_1`, will create a new entry in the `EventSubscription` table and subscribe the client to the event. The event subscription request includes a `uri` to subscribe to. The client can subscribe to a specific row or table. For example, to subscribe to a specific row for changes, the client can subscribe to the `/rest/v1/system/vrfs/vrf_default` URI, and  the `/rest/v1/system/vrfs` URI for `VRF` table changes. Top-level table subscriptions subscribe to the complete table. Subscribing to tables that have a parent will monitor a collection of rows that are children of that parent. For example, subscribing to `/rest/v1/system/vrfs/vrf_default/bgp_routers` will monitor rows in the `BGP_Router` table that are children of the `vrf_default` entry.
+
+**Example: Subscription JSON for subscriber ws_1**
+
+```
+{
+    "configuration": {
+        "uri": "/rest/v1/system/vrfs/vrf_default"
+    }
+}
+```
+
+The POST request for an event subscription results in the URI of the new resource in the response, which includes the index of the event relative to the subscriber. For example, the first event subscription for subscriber `ws_1` will result in a response with the `/rest/v1/system/eventsubscribers/ws_1/eventsubscriptions/0` URI. The `uri` field will be validated and will result in a `400` error response, such as `Invalid resource URI` if the resource does not exist. Upon a successful subscription, the initial values for the subscribed URIs are sent as notifications to the client.
+
+A second IDL is used to monitor for specific changes, on an as-needed basis, to increase the performance by avoiding the need to subscribe to all tables and columns. The second IDL will only be used for event subscriptions.
+
+### Notifications
+When changes in the database are detected, the REST daemon notifies the corresponding clients that subscribed. The notification is pushed to the client in JSON format, which includes the URI and the fields updated. Notifications do not require a response.
+
+The notification message contains the `notifications` field and includes URIs for entries that are `added`, `modified`, and `deleted`. When an entry is added to a table that belongs to a monitored parent, the `added` field contains a list of changes that include the `uri` of the new entry and the initial `values`. When an entry is modified, the URI and the value `updates` are included in the list of `modified` entries. If an entry is deleted, the URI is included in the list of `deleted` entries.
+
+**Notification JSON**
+
+```
+{
+    "notifications": {
+        "added": [{
+            "uri": "/rest/v1/system/vrfs/vrf_default/bgp_routers/1/bgp_neighbors/2.2.2.2",
+            "values": {
+                "remote_as": 2,
+                ...
+            }
+        }],
+        "modified": [{
+            "uri": "/rest/v1/system/vrfs/vrf_default/bgp_routers/1",
+            "updates": {
+                "router_id": "1.1.1.1",
+                "maximum_paths": 5,
+            }
+        }],
+        "deleted": [
+            "/rest/v1/system/vrfs/vrf_default/bgp_routers/1/bgp_neighbors/3.3.3.3"
+        ]
+    }
+}
+```
 
 ## References
 
