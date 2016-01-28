@@ -1241,11 +1241,11 @@
       <column name="name">
         Name of the filter list.
       </column>
-      <column name="action">
-        Action to either "permit" or "deny".
+      <column name="permit">
+        Permitted POSIX regular expressions.
       </column>
-      <column name="match">
-      Specify POSIX regex expression to match.
+      <column name="deny">
+        Denied POSIX regular expressions.
       </column>
     </group>
   </table>
@@ -1297,11 +1297,11 @@
      <column name="name">
        Name of the list.
      </column>
-     <column name="match">
-       Regular expression.
+     <column name="permit">
+       Permitted regular expressions.
      </column>
-     <column name="action">
-       There are two types, either "permit" or "deny".
+     <column name="deny">
+       Denied regular expressions.
      </column>
      <column name="type">
        There are two types, either "extcommunity-list" or "community-list".

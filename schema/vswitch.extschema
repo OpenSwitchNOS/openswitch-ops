@@ -929,28 +929,26 @@
             }
           }
         },
-        "action": {
-          "category": "configuration",
-          "type": {
-           "key": {
-              "type": "string",
-              "enum": [
-                "set",
-                [
-                  "permit",
-                  "deny"
-                ]
-              ]
-            }
-          }
-        },
-        "match": {
+        "permit": {
           "category": "configuration",
           "type": {
             "key": {
               "type": "string",
               "maxLength": 80
-            }
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "deny": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": "unlimited"
           }
         }
       },
@@ -1107,30 +1105,26 @@
             }
           }
         },
-        "match": {
+        "permit": {
           "category": "configuration",
           "type": {
             "key": {
-             "type": "string",
+              "type": "string",
               "maxLength": 80
             },
             "min": 0,
-            "max": 1
+            "max": "unlimited"
           }
         },
-        "action": {
+        "deny": {
           "category": "configuration",
           "type": {
-           "key": {
+            "key": {
               "type": "string",
-              "enum": [
-                "set",
-                [
-                  "permit",
-                  "deny"
-                ]
-              ]
-            }
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": "unlimited"
           }
         },
         "type": {
@@ -1149,6 +1143,11 @@
           }
         }
       },
+      "indexes": [
+        [
+          "name"
+        ]
+      ],
       "isRoot": true
     },
     "Route": {
