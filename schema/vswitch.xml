@@ -2509,8 +2509,7 @@
     <group title="Tunnel Options">
       <p>
         These options apply to interfaces with <ref column="type"/> of
-        <code>ipsec_gre</code>, <code>ipsec_ike</code>
-        and <code>ipsec_ospfv3</code>.
+        <code>ipsec_gre</code>, <code>ipsec_ike</code>.
       </p>
 
       <p>
@@ -2741,13 +2740,82 @@
           tunnel.
         </column>
       </group>
+    </group>
 
-      <group title="Tunnel Options: ipsec_ospfv3 only">
+    <group title="Manual Tunnel Options">
+      <p>
+        These options apply to interfaces with <ref column="type"/> of
+        <code>ipsec_ospfv3</code>.
+      </p>
+
+      <group title="IPsec Manual SA">
         <p>
-          Only <code>ipsec_ospfv3</code> interface supports these
-          IPsec manual key exchange (KE) options.
+          IPsec SA configuration while operating with a manual key exchange.
         </p>
 
+        <column name="options" key="spi">
+          Required. Specifies the Security Parameter Index identifies a manual SA.
+        </column>
+
+        <column name="options" key="addr_family">
+          Required. Specifies the address family: IPv4 or IPv6.
+        </column>
+
+        <column name="options" key="src_addr">
+          Required. Specifies the source IP address or host name.
+        </column>
+
+        <column name="options" key="dest_addr">
+          Required. Specifies the destination IP address or host name.
+        </column>
+
+        <column name="options" key="request_id">
+          Required. Specifies the request ID for this manual SA operation.
+        </column>
+
+        <column name="options" key="protocol">
+          Required. Specifies the IPsec protocol (AH or ESP) for this manual SA.
+        </column>
+
+        <column name="options" key="mode">
+          Required. Specifies the IPsec mode (tunnel or transport) for this manual SA.
+        </column>
+
+        <column name="options" key="auth_type">
+          Required. Specifies the manual SA hash for the authenticity and integrity protection.
+        </column>
+
+        <column name="options" key="auth_key_id">
+          Required. Specifies the manual SA key ID for the authentication protection.
+        </column>
+
+        <column name="options" key="encr_type">
+          Required. Specifies the manual SA encryption for the privacy protection.
+        </column>
+
+        <column name="options" key="encr_key_id">
+          Required. Specifies the manual SA key ID for the privacy protection.
+        </column>
+
+        <column name="options" key="selector_addr_family">
+          Required. Specifies the selector address family: IPv4 or IPv6.
+        </column>
+
+        <column name="options" key="selector_src_addr">
+          Required. Specifies the selector source IP address or host name.
+        </column>
+
+        <column name="options" key="selector_src_addr_mask">
+          Required. Specifies the selector source IP address mask.
+        </column>
+
+        <column name="options" key="selector_dest_addr">
+          Required. Specifies the selector destination IP address or host name.
+        </column>
+
+        <column name="options" key="selector_dest_addr_mask">
+          Required. Specifies the selector destination IP address mask.
+        </column>
       </group>
 
     </group>
@@ -3173,6 +3241,64 @@
           Only <code>ipsec_ospfv3</code>  interface supports these
           IPsec manual key exchange (KE) status.
         </p>
+
+        <group title="IPsec Manual SA Status">
+          <column name="status" key="src_ip">
+            Reports the manual SA source IP address.
+          </column>
+
+          <column name="status" key="dest_ip">
+            Reports the manual SA destination IP address.
+          </column>
+
+          <column name="status" key="spi">
+             Reports the Security Parameter Index of this manual SA.
+          </column>
+
+          <column name="status" key="protocol">
+             Reports the IPsec protocol (AH or ESP) of this manual SA.
+          </column>
+
+          <column name="status" key="mode">
+             Reports the IPsec mode (tunnel or transport) of this manual SA.
+          </column>
+
+          <column name="status" key="selector_addr_family">
+            Reports the selector address family: IPv4 or IPv6.
+          </column>
+
+          <column name="status" key="selector_src_addr">
+            Reports the selector source IP address.
+          </column>
+
+          <column name="status" key="selector_src_addr_mask">
+            Reports the selector source IP address mask.
+          </column>
+
+          <column name="status" key="selector_dest_addr">
+            Reports the selector destination IP address.
+          </column>
+
+          <column name="status" key="selector_dest_addr_mask">
+            Reports the selector destination IP address mask.
+          </column>
+
+          <column name="status" key="sa_data_bytes">
+             Reports the manual SA data exchanges in bytes.
+          </column>
+
+          <column name="status" key="sa_data_packets">
+             Reports the manual SA data exchanges in packets.
+          </column>
+
+          <column name="status" key="sa_conn_added">
+             Reports the time this manual SA connection is esblished.
+          </column>
+
+          <column name="status" key="sa_conn_used">
+             Reports the time this manual SA connection is last used.
+          </column>
+        </group>
 
       </group>
 
