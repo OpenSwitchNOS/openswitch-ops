@@ -7,6 +7,10 @@
 - [Participating modules](#participating-modules)
 - [OVSDB schema](#ovsdb-schema)
 - [HTTPS support](#https-support)
+- [Events](#events)
+    - [WebSockets](#websockets)
+    - [Subscriptions](#subscriptions)
+    - [Notifications](#notifications)
 - [References](#references)
 
 ## Introduction
@@ -81,9 +85,159 @@ response = conn.getresponse()
 
 ```
 
-Following is an example URL with HTTPS to query ports on the system from a web browser. HTTPS uses the default port 443 if not specified.
-```https://172.17.0.3/rest/v1/system/ports```
+Following is an example URL with HTTPS to query ports on the system from a web browser:
+`https://172.17.0.3/rest/v1/system/ports`
 
+HTTPS uses the default port 443 if not specified.
+
+
+## Events
+Clients can subscribe to events to be notified about changes within the database. The REST daemon is the entry point for subscribing to events. Clients can subscribe to specific row and column changes, or all changes to a table. The REST daemon receives notifications from the OVSDB indicating changes. The changes, if subscribed to, are notified to the clients.
+
+```ditaa
+    +------------+
+    |            |
+    |            |
+    |  Client 1  |
+    |            |   /ws    +----------------+       +----------------+
+    |            +----------+                |       |                |
+    +------------+          |                |       |                |
+                            |     restd      +-------+     OVSDB      |
+    +------------+   /ws    |                |       |                |
+    |            +----------+                |       |                |
+    |            |          +----------------+       +----------------+
+    |  Client N  |
+    |            |
+    |            |
+    +------------+
+```
+
+### WebSockets
+The REST daemon exposes a WebSocket interface via the underlying Tornado web framework for subscribing and receiving event notifications and is accessible at the `/ws` path, where `ws` denotes WebSocket. Clients subscribe to specific events through the WebSocket. The REST daemon records the event subscriptions associated with the client by the established WebSocket connection. When the REST daemon receives notification of changes from the OVSDB, the REST daemon informs the clients through the WebSocket.
+
+The REST daemon maintains a reference to the WebSocket upon connection establishment. OVSDB changes trigger pushes to the client using the WebSocket. Reference to the WebSocket, along with the associated events, are removed upon WebSocket disconnect.
+
+WebSocket messages are formatted in JSON with the following fields:
+
+- **type**: Type can be either a `request` or a `response`.
+- **data**: Contains the application data.
+- **status**: Status in response to the request. Can be either `successful` or `error`.
+- **info**: Contains information about the failed request.
+
+**Example of a request:**
+
+```
+{
+    "type": "request",
+    "data": {
+        "event": {
+            ...
+        }
+    }
+}
+```
+
+**Example of an error response:**
+
+```
+{
+    "type": "response",
+    "status": "error",
+    "info": "Unsupported application type"
+}
+```
+
+### Subscriptions
+The client subscribes by sending a JSON indicating the resource URI or table name, and fields to subscribe to. More than one subscriptions in an event request is permitted. To subscribe to a specific row, the `resource` field should contain the full URI, such as: `/system/vrfs/vrf_default/bgp_routers/1` and the `type` needs to be set to `row`. If the `fields` array is empty, changes to all columns are registered; otherwise, specific columns are registered to. Each event must have an `event_id` field that is unique to this subscriber. To subscribe to a table, the `resource` field should include name of the table and the `type` should be set to `table`, as shown in the second element of the `event` key below. For table events, any change will trigger a notification and does not utilize `fields`.
+
+**Subscription JSON**
+
+```
+{
+    "type": "request",
+    "data": {
+        "event": {
+            "subscriptions": [{
+                "event_id": "1",
+                "type": "row",
+                "resource": "/rest/v1/system/vrfs/vrf_default/bgp_routers/1",
+                "fields": ["router_id", "timers"]
+            }, {
+                "event_id": "2",
+                "type": "table",
+                "resource": "VRF"
+            }]
+        }
+    }
+}
+```
+
+Upon receiving the subscription request, the REST daemon attempts to register the client. All subscriptions must be successful. If the request fails due to invalid `resource` or `fields`, the daemon responds with the errors and an event `status` of `unsuccessful`. The `errors` field contains the error messages associated with the `event_id`. If the request is successful, the response includes a `successful` status without the `errors` field.
+
+**Subscription failure response JSON**
+
+```
+{
+    "type": "response",
+    "status": "successful",
+    "data": {
+        "event": {
+            "status": "unsuccessful",
+            "errors": [{
+                "event_id": "1",
+                "messages": [
+                    "Invalid column router_idx",
+                    "Invalid column timersx"
+                ]
+            }, {
+                "event_id": "2",
+                "messages": [
+                    "Invalid resource URI"
+                ]
+            }]
+        }
+    }
+}
+```
+
+**Subscription success response JSON**
+
+```
+{
+    "type": "response",
+    "status": "successful",
+    "data": {
+        "event": {
+            "status": "successful"
+        }
+    }
+}
+```
+
+### Notifications
+When changes in the database are detected, the REST daemon notifies the corresponding clients that subscribed. The notification is pushed to the client in JSON format, which includes the URI and the fields affected. Notifications do not require a response.
+
+If an update occurred on the row, the `change` field is set to `updated` and the `details` field includes the names of the columns changed. If the row is deleted, the `change` field is set to `deleted` and  excludes the `details` field. The notification includes the new value as `value`. Currently, table changes including rows added, updated, and deleted, are all represented as `change` of `updated`.
+
+**Notification JSON**
+
+```
+{
+    "type": "request",
+    "data": {
+        "event": {
+            "notifications": [{
+                "event_id": "1",
+                "change": "updated",
+                "details": ["router_id"]
+            }, {
+                "event_id": "2",
+                "change": "updated"
+            }]
+        }
+    }
+}
+```
 
 ## References
 
