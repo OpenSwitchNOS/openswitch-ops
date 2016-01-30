@@ -2826,6 +2826,19 @@
           },
           "ephemeral": true
         },
+        "queue_statistics": {
+          "category": "statistics",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
         "lldp_statistics": {
           "category": "statistics",
           "type": {

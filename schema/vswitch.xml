@@ -3163,6 +3163,13 @@
           the above.
         </column>
       </group>
+      <group title="Statistics: Interface Queue Transmit Statistics">
+        <column name="queue_statistics">
+          For each outbound queue on a given interface, a comma-separated list
+          of the total number of bytes and packets transmitted, and errors,
+          in that order.
+        </column>
+      </group>
       <group title="Layer3/IP Statistics">
         <column name="statistics" key="ipv4_uc_rx_packets">
           Number of received ipv4 unicast packets.
