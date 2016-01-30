@@ -3213,6 +3213,14 @@
           Number of transmitted ipv6 multicast bytes.
         </column>
       </group>
+      <group title="Statistics: Interface Queue Transmit Statistics">
+        <column name="queue_statistics" keyname="queue_number">
+          For each outbound queue there is an entry with the queue's statistics.
+          Entries are keyed by the queue number.  The value is a comma-separated list
+          of three counts in this order: total number of bytes transmitted, total number
+          of packets transmitted, and total number of packet errors (drops).
+        </column>
+      </group>
       <group title="LLDP Interface Level Statistics">
         <column name="lldp_statistics" key="lldp_tx">
           Number of lldp packets transmitted.
