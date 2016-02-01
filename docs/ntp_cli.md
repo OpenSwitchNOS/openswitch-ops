@@ -114,13 +114,12 @@ Admin user.
 | Parameter | Status   | Syntax |	Description          |
 |-----------|----------|----------------------|
 | *key-id* | Required | 1-65534 | The key used while communicating with the server. |
-| password | Required | 8-16 chars | The MD5 password. |
 | **no** | Optional | Literal | Destroys the perviously created NTP authentication key. |
 
 #### Examples
 ```
-s1(config)#ntp authentication-key 1 md5 myPassword
-s1(config)#no ntp authentication-key 1
+s1(config)#ntp trusted-key 1
+s1(config)#no ntp trusted-key 1
 ```
 
 ## Display commands
