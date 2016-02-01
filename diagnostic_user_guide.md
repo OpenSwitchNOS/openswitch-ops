@@ -1,0 +1,61 @@
+# Diagnostic Dump
+
+## Contents
+
+- [Diagnostic Dump](#diagnostic-dump)
+    - [Contents](#contents)
+    - [Overview](#overview)
+    - [How to use the feature](#how-to-use-the-feature)
+        - [List diagnostic supported features](#list-diagnostic-supported-features)
+        - [Basic diagnostic on console](#basic-diagnostic-on-console)
+        - [Basic diagnostic to file](#basic-diagnostic-to-file)
+        - [Troubleshooting the configuration](#troubleshooting-the-configuration)
+            - [Condition](#condition)
+            - [Cause](#cause)
+            - [Remedy](#remedy)
+        - [Feature to daemon mapping](#feature-to-daemon-mapping)
+    - [References](#references)
+
+## Overview
+Diagnostic dump command is used to collect internal diagnostic information from single or multiple daemon mapped to a single feature.
+
+
+## How to use the feature
+1. To show supported feature list run the cli 'diag-dump list' .
+2. To show basic diagnostic information on console run 'diag-dump <feature> basic' .
+3. To dump basic diagnostic information to a file run 'diag-dump <feature> basic  <file path>' .
+
+### List diagnostic supported features
+Execute cli command "diag-dump list" and get the list of supported features with description on console.
+
+### Basic diagnostic on console
+Execute "diag-dump <feature> basic" to get basic diagnostic information on console.
+
+### Basic diagnostic to file
+Execute "diag-dump <feature> basic <filename>" to get basic diagnostic information in a file.
+
+### Troubleshooting the configuration
+
+#### Condition
+'diag-dump' cli command results in the following error
+'Failed to capture diagnostic information'
+
+
+#### Cause
+1.ops_diagdump.yaml file is not present in right path  (/etc/openswitch/supportability/ops_diagdump.yaml )
+2.user may not have read permission.
+3.incorrect content of yaml file .
+
+
+#### Remedy
+1.Please ensure the yaml file is present in its path
+(/etc/openswitch/supportability/ops_diagdump.yaml )
+2.Verify the content of yaml file using yaml lint tool.
+3.Verify the structure of the configuration is valid.
+4.Ensure the user has read permission for yaml file.
+
+### Feature to daemon mapping
+"/etc/openswitch/supportability/ops_diagdump.yaml" file contains feature to daemon mapping configuration.
+
+## References
+* [Reference 1] 'diagnostic_user_guide.md'
