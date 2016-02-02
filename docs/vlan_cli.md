@@ -51,13 +51,13 @@ switch(config-if)#vlan access 20
 #### Syntax
 `no vlan access [<vlanid>]`
 #### Description
-This command removes the interface from an access VLAN represented by an ID.
+This command removes the interface from an access VLAN represented by an ID. Interface that are access to default vlan 'vlan 1' cannot be removed.
 #### Authority
 All users.
 #### Parameters
 | Parameter | Status   | Syntax         | Description                           |
 |:-----------|:----------|:----------------:|:---------------------------------------|
-| *vlanid* | Optional | 1 - 4094 | Represents VLAN and takes values from 1 to 4094 |
+| *vlanid* | Optional | 2 - 4094 | Represents VLAN and takes values from 2 to 4094 |
 
 #### Examples
 ```
@@ -238,7 +238,7 @@ switch(config-vlan)# no shutdown
 `shutdown`
 
 #### Description
-This command shuts the VLAN down.
+This command shuts the VLAN down if the VLAN is non default vlan (other than 'vlan 1'). The 'shutdown' command on 'vlan 1' is not permitted, as the default vlan cannot be made admin down.
 
 #### Authority
 All users.
@@ -250,6 +250,10 @@ This command does not require a parameter.
 ```
 switch(config)# vlan 3
 switch(config-vlan)# shutdown
+switch(config-vlan)#vlan 1
+switch(config-vlan)#shutdown
+Shutdown not permitted in DEFAULT_VLAN_1.
+switch(config-vlan)#
 ```
 ### Global context commands
 #### Creating a VLAN
@@ -278,7 +282,7 @@ switch(config-vlan)#
 `no vlan < vlanid >`
 
 #### Description
-This command deletes the VLAN with a given ID. The value ranges from 1 to 4094.
+This command deletes the VLAN with a given ID. The value ranges from 2 to 4094. Default vlan 'vlan 1' cannot be deleted.
 
 #### Authority
 All users.
@@ -286,7 +290,7 @@ All users.
 #### Parameters
 | Parameter | Status   | Syntax         | Description                           |
 |:-----------|:----------|:----------------:|:---------------------------------------|
-| *vlanid* | Required | 1 - 4094 | Represents VLAN and takes values from 1 to 4094 |
+| *vlanid* | Required | 2 - 4094 | Represents VLAN and takes values from 2 to 4094 |
 #### Examples
 ```
 switch(config-vlan)# no vlan 3

@@ -12,7 +12,7 @@ VLANs
 
 
 ## Overview
-This guide provides detail for managing and monitoring VLANs on the switch. All the VLAN configuratio ns work in VLAN context. For a VLAN to have a physical existance, it has to be associated with one of the interfaces.
+This guide provides detail for managing and monitoring VLANs on the switch. All the VLAN configurations work in VLAN context. For a VLAN to have a physical existance, it has to be associated with one of the interfaces.
 All such configurations work in interface context. VLAN mandates the associated in terface to be non-routing interface. By default when the VLAN is created it is not associated with a ny interface. To configure this feature, see the basic configuration.
 
 The main use of VLANs is to ***provide network segmentation***.VLANs also address issues such as *scalability*,*security* and *network management*.
@@ -20,13 +20,13 @@ The main use of VLANs is to ***provide network segmentation***.VLANs also addres
 ## Configuring a VLAN
 ### Setting up the basic configuration
 1. ++Create a VLAN++
-The 'vlan *vlanid*' command creates a VLAN with a given ID and changes the vtysh context to VLAN. If the VLAN already exists then it changes the context to VLAN. The '*vlanid*' in the command depicts the name of the VLAN, which is replaced with VLAN '12' in the following example.
+The 'vlan *vlanid*' command creates a VLAN with a given ID and changes the vtysh context to VLAN. If the VLAN already exists then it changes the context to VLAN. The 'vlan 1' is the default VLAN and it will be created during boot. The '*vlanid*' in the command depicts the name of the VLAN, which is replaced with VLAN '12' in the following example.
 ```
 switch# configure terminal
 switch(config)# vlan 12
 switch(config-vlan)#
 ```
-The 'no vlan ID' command deletes the VLAN.
+The 'no vlan ID' command deletes the VLAN if VLAN is a non default VLAN (other than 'vlan 1').
 ```
 switch(config)# no vlan 12
 switch(config)
@@ -42,6 +42,13 @@ The 'shutdown' command disables a particular VLAN.
 switch(config-vlan)#shutdown
 switch(config-vlan)#
 ```
+The 'shutdown' command on 'vlan 1' is not permitted, as the default vlan cannot be deleted.
+```
+switch(config)#vlan 1
+switch(config-vlan)#shutdown
+Shutdown not permitted in DEFAULT_VLAN_1.
+switch(config-vlan)#
+```
 
 3. ++ Add VLAN access to the interface or LAG interface++
 The 'vlan access ID' command adds an access VLAN to the interface. If the interface is already associated with an access VLAN then this command overrides the previous configuration. There can only be one access VLAN associated with the interface.
@@ -51,7 +58,7 @@ switch(config)# interface 2
 switch(config-if)#no routing
 switch(config-if)#vlan access 20
 ```
-The 'no vlan access' command removes the access VLAN from the interface.
+The 'no vlan access' command removes the access VLAN from the interface if VLAN is a non default VLAN (other than 'vlan 1').
 ```
 switch(config-if)#no vlan access
 ```
@@ -128,21 +135,25 @@ The 'show vlan summary' displays a VLAN summary. The following summary displays 
 switch# show running-config
 Current configuration:
 !
-vlan 3003
 vlan 1
+    no shutdown
+vlan 3003
+vlan 2
     no shutdown
 vlan 1212
     no shutdown
 vlan 33
     no shutdown
 vlan 2
-   no shutdown
-interface bridge_normal
-  no routing
+    no shutdown
+interface 1
+    no shutdown
+    no routing
+    vlan access 1
 ```
 ```
 switch# show vlan summary
-Number of existing VLANs: 5
+Number of existing VLANs: 6
 ```
 
 2. ++ Viewing VLAN detailed information++
