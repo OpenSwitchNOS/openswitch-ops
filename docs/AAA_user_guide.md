@@ -25,6 +25,7 @@
 The AAA feature is used for authenticating users who access the switch management interface using console, SSH or REST. The AAA feature supports the following:
 
 - Local or RADIUS authentication.
+- Configure RADIUS authentication type.
 - Configure RADIUS servers (maximum up-to 64 RADIUS servers).
 - Configure SSH authentication method.
 
@@ -44,6 +45,7 @@ This feature currently supports user authentication based on user name and passw
  2. Change the default value of the port used for communication with the RADIUS server.
  3. Change the default value of the connection retries.
  4. Change the connection timeout default value.
+ 5. Change RADIUS authentication type to CHAP or PAP (default is PAP).
 
 ###Verifying scenario 1 configuration
  1. Verify the configuration using `show` command
@@ -93,6 +95,7 @@ The RADIUS authentication is configured, but user unable to log in with the RADI
  2. Change the default value of the port used for communication with the RADIUS server.
  3. Change the default value of the connection retries.
  4. Change the connection timeout default value.
+ 5. Change RADIUS authentication type to CHAP or PAP (default is PAP).
 
 ### Verifying scenario 2 configuration
  1. Verify using the `show` command.
