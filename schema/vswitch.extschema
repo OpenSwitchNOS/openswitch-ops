@@ -5567,6 +5567,138 @@
           }
         }
       }
+    },
+
+    "SNMPv3_User": {
+      "columns": {
+        "user_name": {
+          "category": "configuration",
+          "type": {
+           "key": {
+             "type": "string",
+             "minLength": 1,
+             "maxLength": 32
+           }
+          }
+        },
+
+        "auth_protocol": {
+          "category": "configuration" ,
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "MD5",
+                  "SHA"
+                ]
+              ]
+            }
+          }
+        },
+
+        "priv_protocol": {
+          "category": "configuration" ,
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "AES",
+                  "DES"
+                ]
+              ]
+            }
+          }
+        },
+
+        "auth_pass_phrase": {
+          "category": "configuration" ,
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 8
+            }
+          }
+        },
+
+        "priv_pass_phrase": {
+          "category": "configuration" ,
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 8
+            }
+          }
+        },
+
+        "security_level": {
+          "category": "configuration" ,
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                 "noAuth",
+                 "auth",
+                 "priv"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "maxRows": 10,
+      "indexes": [
+        [
+          "user_name"
+        ]
+      ],
+      "isRoot": true
+    },
+
+    "SNMP_Config": {
+      "columns": {
+        "community_name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            "min": 1,
+            "max": 10
+          }
+        },
+
+        "trap_receiver": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "min": 0,
+            "max": 10
+          }
+        },
+
+        "agent_port": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger":65535
+            },
+            "min": 1,
+            "max": 1
+          }
+        }
+      },
+      "maxRows": 1,
+      "isRoot" : true
     }
   }
 }
