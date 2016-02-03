@@ -5099,5 +5099,22 @@
         </column>
     </group>
   </table>
-</database>
 
+
+  <table name="SNMP">
+    <group title="configuration">
+      <column name="community_name">
+        The name of the SNMPv1/SNMPv2c community string. Should be alphanumeric and no more than about 32 characters.
+      </column>
+
+      <column name="trap_receiver">
+        The ip and port of the trap receiver. This column value should be in the form "ip:port".
+      </column>
+
+      <column name="agent_port">
+        The port on which the SNMP Master agent should listen for SNMP requests.The Default value is 161. The range  is 1-65535.
+      </column>
+    </group>
+  </table>
+
+</database>
