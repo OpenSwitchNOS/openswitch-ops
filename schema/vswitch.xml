@@ -5099,5 +5099,97 @@
         </column>
     </group>
   </table>
-</database>
 
+  <table name="SNMP_V3_Users" >
+    <group title="configuration">
+       <column name="security_name">
+         User Name.  Should be alphanumeric. This should be unique.
+       </column>
+       <column name="auth_protocol">
+         The authentication protocol to be used for authenticating the user. This can be either MD5 or SHA.
+       </column>
+       <column name="priv_protocol">
+         The privacy protocol to be used for encrypting the user requests. This can be either AES or DES.
+       </column>
+       <column name="auth_pass_phrase">
+         The key to be used by authentication protocol.
+       </column>
+       <column name="priv_pass_phrase">
+         The key to be used by privacy protocol.
+       </column>
+       <column name="security_level">
+         Messages can be be sent unauthenticated, authenticated, or authenticated and encrypted
+         by setting the securityLevel. This can be either noAuth, auth, priv.
+
+         noAuth -   noAuthUser i.e. Users with noAuthnoPriv i.e. NO authentication and NO privacy.
+         auth       -    authUser i.e. Users with authNoPriv i.e.  WITH authentication but NO privacy.
+         priv        -   privUser i.e. Users with authPriv i.e. WITH both authentication and privacy.
+
+       </column>
+       <column name="oid_access">
+         The MIB object for which the user has the access. This is optional.
+         Default is Empty.
+       </column>
+    </group>
+  </table>
+
+
+  <table name="SNMP_Community_String" >
+    <group title="configuration">
+       <column name="community_name">
+         Community Name.  Should be alphanumeric and no more than about 32 characters. This should be unique.
+       </column>
+       <column name="host_address">
+         The IP address (ipv4 or ipv6) of the host from which access for this community string is allowed.
+       </column>
+       <column name="oid_access">
+         The MIB object for which the user has the access.
+       </column>
+    </group>
+  </table>
+
+
+  <table name="SNMP_Master_Agent" >
+    <group title = "configuration">
+       <column name="ip">
+         The IP to which the master agent is bound to. This can be IPv4 or IPv6 address.
+       </column>
+       <column name="port">
+         The port on which the Master agent listens for requests. Range is 1-65535.
+         The default value is 161.
+       </column>
+   </group>
+  </table>
+
+   <table name="SNMP_AgentX_Subagent" >
+    <group title = "configuration">
+       <column name="port">
+         The port on which the AgentX-Subagent listens. Range is 1-65532.
+         The default named port is /var/agentx/master
+       </column>
+    </group>
+   </table>
+
+
+   <table name="SNMP_Trap" >
+     <group title = "configuration" >
+       <column  name="ip_address">
+         The ip address (ipv4 or ipv6) of the host which listens for traps. This can be IPv4 or IPv6 address.
+       </column>
+       <column  name="udp_port">
+         The port on which the host listens for traps.
+         The default value is 162.
+       </column>
+       <column name="snmp_community_strings">
+         Community name preferred while sending trap notifications to the specified trap receiver.
+       </column>
+       <column name = "trap_type">
+         Specifies the type of traps being sent. This can be either v1, v2c or informs.
+         v1 - SNMPv1 traps.
+         v2c - SNMPv2c traps.
+         informs - SNMPv2c or SNMPv3 informs.
+       </column>
+    </group>
+   </table>
+
+</database>
