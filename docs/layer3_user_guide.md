@@ -59,6 +59,19 @@ Interface 1 is up
             0 input error                0 dropped
             0 collision
 
+ops-as5712# show ip interface
+
+Interface 1 is up
+ Admin state is up
+ Hardware: Ethernet, MAC Address: 70:72:cf:77:06:df
+ IPv4 address: 192.168.1.1/24
+ MTU 0
+ RX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
+ TX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
 
 ops-as5712# show interface brief
 
