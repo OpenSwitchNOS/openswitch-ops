@@ -5099,5 +5099,65 @@
         </column>
     </group>
   </table>
-</database>
 
+  <table name="SNMPv3_User" >
+    <group title="configuration">
+       <column name="security_name">
+         User Name.  Should be alphanumeric. This should be unique.
+       </column>
+       <column name="auth_protocol">
+         The authentication protocol to be used for authenticating the user. This can be either MD5 or SHA.
+       </column>
+       <column name="priv_protocol">
+         The privacy protocol to be used for encrypting the user requests. This can be either AES or DES.
+       </column>
+       <column name="auth_pass_phrase">
+         The key to be used by authentication protocol.
+       </column>
+       <column name="priv_pass_phrase">
+         The key to be used by privacy protocol.
+       </column>
+       <column name="security_level">
+         Messages can be be sent unauthenticated, authenticated, or authenticated and encrypted
+         by setting the securityLevel. This can be either noAuth, auth, priv.
+
+         noAuth -   noAuthUser i.e. Users with noAuthnoPriv i.e. NO authentication and NO privacy.
+         auth       -    authUser i.e. Users with authNoPriv i.e.  WITH authentication but NO privacy.
+         priv        -   privUser i.e. Users with authPriv i.e. WITH both authentication and privacy.
+
+       </column>
+    </group>
+  </table>
+
+
+  <table name="SNMP_Community" >
+    <group title="configuration">
+       <column name="community_name">
+         Community Name.  Should be alphanumeric and no more than about 32 characters. This should be unique.
+       </column>
+    </group>
+  </table>
+
+
+  <table name="SNMP_Agent" >
+    <group title = "configuration">
+       <column name="port">
+         The port on which the Master agent listens for requests. Range is 1-65535.
+         The default value is 161.
+       </column>
+    </group>
+  </table>
+
+   <table name="SNMP_Trap" >
+     <group title = "configuration" >
+       <column  name="ip_address">
+         The ip address (ipv4 or ipv6) of the host which listens for traps. This can be IPv4 or IPv6 address.
+       </column>
+       <column  name="udp_port">
+         The port on which the host listens for traps.
+         The default value is 162.
+       </column>
+    </group>
+   </table>
+
+</database>
