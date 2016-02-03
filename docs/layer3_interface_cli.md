@@ -12,6 +12,8 @@
 - [Display commands](#display-commands)
 	- [show interface](#show-interface)
 	- [show interface vlan-name](#show-interface-vlan-name)
+	- [show ip interface](#show-ip-interface)
+	- [show ipv6 interface](#show-ipv6-interface)
 
 
 ## Configuration commands
@@ -256,15 +258,94 @@ Operator
 
 #### Parameters
 | Parameter | Status   | Syntax |	Description          |
-|-----------|----------|----------------------|
+|-----------|----------|--------|----------------------|
 | *vlan-name*  | Required  |String  |	The VLAN name. |
 
 #### Example
-The following example displays the VLAN interface configuration for VLAN: vlan101:
+The following example displays the VLAN interface configuration for VLAN: vlan10:
 ```
-hostname# show interface vlan101
+hostname# show interface vlan10
 
-Interface vlan101 is down (Administratively down)
- Admin state is down
+ Interface vlan10 is up
+ Admin state is up
+ Hardware: Ethernet, MAC Address: 70:72:cf:fd:e9:26
+ IPv4 address 3.3.3.1/24
+ RX
+            10 input packets              750 bytes
+ TX
+            0 output packets             0 bytes
+```
+
+### show ip interface
+
+#### Syntax
+Under privileged mode.
+
+`show ip interface [ifname]`
+
+#### Description
+Displays L3 and IPv4 specific information for the interfaces including statistics, configuration and interface state. This command is only supported for physical interfaces. Interfaces for which L3 is not configured are not shown.
+
+#### Authority
+Operator.
+
+#### Parameters
+| Parameter | Status   | Syntax | Description          |
+|-----------|----------|--------|------------------------|
+| **ifname**   | Optional | String | Name of the interface |
+
+
+#### Example
+Show L3 IPv4 interface details (interface: 1)
+```
+hostname# show ip interface 1
+Interface 1 is up
+ Admin state is up
  Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
+ IPv4 address: 2.2.2.1/24
+ MTU 1500
+ RX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
+ TX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
+```
+
+### show ipv6 interface
+
+#### Syntax
+Under privileged mode.
+
+`show ipv6 interface [ifname]`
+
+#### Description
+Displays L3 and IPv6 specific information for the interfaces including statistics, configuration and interface state. This command is only supported for physical interfaces. Interfaces for which L3 is not configured are not shown.
+
+#### Authority
+Operator.
+
+#### Parameters
+| Parameter | Status   | Syntax | Description          |
+|-----------|----------|--------|------------------------|
+| **ifname**   | Optional | String | Name of the interface |
+
+
+#### Example
+
+Show L3 IPv6 interface details (interface: 1)
+```
+hostname# show ipv6 interface 1
+
+Interface 1 is up
+ Admin state is up
+ Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
+ IPv6 address: 2000::1001/120
+ MTU 1500
+ RX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
+ TX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
 ```
