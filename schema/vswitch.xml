@@ -5128,5 +5128,22 @@
         </column>
     </group>
   </table>
-</database>
 
+
+  <table name="SNMP">
+    <group title="configuration">
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings. The default community string is "public".
+      </column>
+
+      <column name="trap_receiver">
+        The IPv4 or IPv6 address and port to identify the trap receiver. The string should be of the form ip:port for IPv4 address, ex:- 10.10.10.10:162 and of the form [ip]:port for IPv6 address, ex:- [2001:a101::0001]:162.
+      </column>
+
+      <column name="agent_port">
+        The port on which the SNMP agent listens for SNMP requests. The default port is 161.
+      </column>
+    </group>
+  </table>
+
+</database>
