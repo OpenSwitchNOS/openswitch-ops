@@ -5567,6 +5567,260 @@
           }
         }
       }
+    },
+    "SNMP_V3_Users" : {
+      "columns" : {
+        "security_name" : {
+          "category": "configuration",
+          "type" : {
+           "key" : {
+             "type" : "string",
+             "minLength" : 1,
+             "maxLength": 32
+           }
+          }
+        },
+
+        "auth_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "MD5",
+                  "SHA"
+                ]
+              ]
+            }
+          }
+        },
+
+        "priv_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "AES",
+                  "DES"
+                ]
+              ]
+            }
+          }
+        },
+
+        "auth_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8
+            }
+          }
+        },
+
+        "priv_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8
+            }
+          }
+        },
+
+        "security_level" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                 "noAuth",
+                 "auth",
+                 "priv"
+                ]
+              ]
+            }
+          }
+        },
+
+        "oid_access" : {
+          "category": "configuration",
+          "type" : "string"
+        }
+      },
+      "maxRows" : 10,
+      "indexes" : [
+        [
+          "security_name"
+        ]
+      ]
+    },
+
+    "SNMP_Community_String" : {
+      "columns" : {
+        "community_name" : {
+          "category": "configuration",
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 1,
+              "maxLength": 32
+            }
+          }
+        },
+
+        "host_address" : {
+          "category": "configuration",
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 16,
+              "maxLength": 49
+            }
+          }
+        },
+
+        "oid_access" : {
+          "category": "configuration",
+          "type" : "string"
+        }
+      },
+      "maxRows" : 10,
+      "indexes" : [
+       [
+         "community_name"
+       ]
+      ]
+    },
+
+
+    "SNMP_Master_Agent" : {
+      "columns" : {
+        "ip" : {
+          "category" : "configuration",
+          "type" : {
+            "key" :{
+              "type" : "string",
+              "minLength" : 16,
+              "maxLength" : 49
+            }
+          }
+        },
+
+        "port" : {
+          "category" : "configuration",
+          "type" : {
+            "key" :{
+              "type" : "integer",
+              "minInteger" : 1,
+              "maxInteger" : 65535
+            }
+          }
+        }
+      },
+      "maxRows" : 1
+    },
+
+    "SNMP_AgentX_Subagent" : {
+      "columns" : {
+        "port" : {
+          "category" : "configuration",
+          "type" : {
+            "key" :{
+              "type" : "integer",
+              "minInteger" : 1,
+              "maxInteger" : 65535
+            }
+          }
+        }
+      },
+      "maxRows" : 1
+    },
+
+    "SNMP_Apply_Config" : {
+      "columns" : {
+        "apply_config" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+              "type" : "integer",
+              "minInteger" : 0,
+              "maxInteger" : 1
+            }
+          }
+        }
+      },
+      "maxRows" : 1
+    },
+
+
+
+    "SNMP_Trap" : {
+      "columns" : {
+        "ip_address" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+            "type" : "string",
+            "minLength" : 16,
+            "maxLength" : 49
+            }
+          }
+        },
+
+        "udp_port" : {
+          "category"  : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "integer",
+              "minInteger" : 1,
+              "maxInteger" : 65535
+            }
+          }
+        },
+
+        "snmp_community_strings" : {
+          "category": "configuration",
+          "relationship" : "reference",
+          "type" : {
+            "key" : {
+              "type" : "uuid",
+              "refTable" : "SNMP_Community_String"
+            }
+          }
+        },
+
+        "trap_type" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "v1",
+                  "v2c",
+                  "informs"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "maxRows" : 10,
+      "indexes" : [
+        [
+          "ip_address",
+          "udp_port"
+        ]
+      ]
     }
   }
 }
