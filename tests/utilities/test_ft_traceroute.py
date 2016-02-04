@@ -683,6 +683,12 @@ class Test_traceroute:
                                               defSwitchContext="vtyShell")
         # Get traceroute topology object
         Test_traceroute.tracerouteTopoObj = Test_traceroute.testObj.topoObjGet()
+        # Defect Note:  Waiting for Tiaga ID 314 to get fixed to 
+        if Test_traceroute.tracerouteTopoObj.topoType == "physical":
+            LogOutput('info',
+                      "Skipping  test physical run due to Tiaga #314")
+            # time.sleep(2)
+            pytest.skip("Skipping  test physical run due to Tiaga #314")
 
     def teardown_class(cls):
 
