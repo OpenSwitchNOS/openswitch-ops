@@ -103,6 +103,16 @@
       <column name="dns_servers">
       </column>
 
+      <column name="banner">
+        Banner displayed when shell is executed. By default this is an empty string
+        which is equivalent to having the feature be disabled.
+      </column>
+
+      <column name="banner_exec">
+        Banner displayed when user succesfully authenticates. By default this is an
+        empty string which is equivalent to having this feature be disabled.
+      </column>
+
       <column name="router_id"  key="router_id_static" type='{"type": "boolean"}'>
         This determines whether the system global router-ID is configured statically
         or selected by Routing Manager dynamically.

@@ -98,6 +98,14 @@
           "category": "configuration",
           "type": "string"
         },
+        "banner": {
+          "category": "configuration",
+          "type": "string"
+        },
+        "banner_exec": {
+          "category": "configuration",
+          "type": "string"
+        },
         "domain_name":{
           "category": "configuration",
           "type": {
