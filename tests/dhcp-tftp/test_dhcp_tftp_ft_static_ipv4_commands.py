@@ -286,6 +286,10 @@ class Test_dhcp_tftp_commands:
     def __del__(self):
         del self.dhcpIPV4StaticPoolConfigCTTest
 
+    @pytest.mark.skipif(True, reason="Disabling this testcase "
+                        "due to modular ops-cli repo removed dhcp-tftp"
+                        "related cli command,will be enabling it "
+                        "once repo changes is done")
     def test_dhcp_tftp_full(self):
         info('\n########## Test DHCP server static IPV4 '\
              'configuration ##########\n')
