@@ -94,6 +94,18 @@
             "max": 1
           }
         },
+        "ipsec_ike_policies": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "IPsec_IKE_Policy"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "hostname": {
           "category": "configuration",
           "type": "string"
@@ -2788,10 +2800,23 @@
                   "system",
                   "internal",
                   "vlansubint",
-                  "loopback"
+                  "loopback",
+                  "ipsec_gre_ike"
                 ]
               ]
             }
+          }
+        },
+        "ipsec_ike_policy": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "IPsec_IKE_Policy"
+            },
+            "min": 0,
+            "max": 1
           }
         },
         "mac_in_use": {
@@ -5567,6 +5592,166 @@
           }
         }
       }
+    },
+    "IPsec_IKE_Policy": {
+      "columns": {
+        "name": {
+          "category": "configuration",
+          "type": "string"
+        },
+        "protocol": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "AH",
+                  "ESP"
+                ]
+              ]
+            }
+          }
+        },
+        "mode": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "tunnel",
+                  "transport"
+                ]
+              ]
+            }
+          }
+        },
+        "integrity": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "SHA1HMAC",
+                  "SHA256HMAC",
+                  "SHA512HMAC"
+                ]
+              ]
+            }
+          }
+        },
+        "encryption": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "AES128",
+                  "AES256"
+                ]
+              ]
+            }
+          }
+        },
+        "ike_integrity": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "SHA1HMAC",
+                  "SHA256HMAC",
+                  "SHA512HMAC"
+                ]
+              ]
+            }
+          }
+        },
+        "ike_encryption": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "AES128",
+                  "AES256"
+                ]
+              ]
+            }
+          }
+        },
+        "ike_group": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "DIFFIE2",
+                  "DIFFIE14"
+                ]
+              ]
+            }
+          }
+        },
+        "peer_auth_by": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "PSK",
+                  "cert"
+                ]
+              ]
+            }
+          }
+        },
+        "psk": {
+          "category": "configuration",
+          "type": "string"
+        },
+        "psk_selectors": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": "string"
+        },
+        "ssl": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "SSL"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "keep_alive_seconds": {
+          "category": "configuration",
+            "type": {
+              "key": {
+                "type": "integer",
+                "minInteger": 0,
+                "maxInteger": 600
+              },
+              "min": 0,
+              "max": 1
+            }
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ]
     }
   }
 }
