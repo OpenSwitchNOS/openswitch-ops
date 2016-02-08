@@ -2411,6 +2411,11 @@
         Determines whether sflow sampling is enabled on this port.
         Default is true.
       </column>
+      <column name="other_config" key="proxy_arp_enabled" type='{"type": "boolean"}'>
+        Enables proxy ARP feature on the interface.
+        Default is false. Routing has to be enabled on the interface for the feature
+        to work. Else proxy ARP feature will be inactive.
+      </column>
    </group>
 
     <group title="Port Status">
