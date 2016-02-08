@@ -93,6 +93,11 @@
       <column name="ssl">
       </column>
 
+      <column name="ipsec_ike_policies">
+        This is a list of configured IPsec IKE policies. These are system configuration
+        settings with no interface or routing dependences.
+      </column>
+
       <column name="hostname">
       </column>
 
@@ -2516,6 +2521,13 @@
             An Ethernet over RFC 2890 Generic Routing Encapsulation over IPv4
             IPsec tunnel.
           </dd>
+
+          <dt><code>ipsec_gre_ike</code></dt>
+          <dd>
+            An Ethernet over RFC 2890 Generic Routing Encapsulation over
+            IPsec IKE tunnel.
+          </dd>
+
        </dl>
       </column>
     </group>
@@ -2695,6 +2707,7 @@
           tunnel.
         </column>
       </group>
+
     </group>
 
     <group title="Interface Status">
@@ -3055,9 +3068,71 @@
 
       <column name="status" key="lldp_local_port_description">
         Description of LLDP port in alpha-numeric format.
-      </column>
-    </group>
+        </column>
+      </group>
 
+      <group title="IKE Status: ipsec_gre_ike only">
+        <p>
+          Only <code>ipsec_gre_ike</code> interface supports these status.
+        </p>
+
+        <column name="status" key="established_secs">
+           Reports seconds this connection has been established.
+        </column>
+
+        <column name="status" key="initiator_spi">
+           Reports the IKE initiator SPI.
+        </column>
+
+        <column name="status" key="responder_spi">
+           Reports the IKE responder SPI.
+        </column>
+
+        <column name="status" key="reauth_time">
+           Reports seconds until this connection re-authenticates.
+        </column>
+
+        <column name="status" key="conn_state">
+           Reports this connection state.
+        </column>
+
+        <column name="status" key="sa_rekey">
+           Reports seconds until this SA re-keys.
+        </column>
+
+        <column name="status" key="sa_lifetime">
+           Reports seconds until this SA expires.
+        </column>
+
+        <column name="status" key="bytes_in">
+           Reports input bytes processed.
+        </column>
+
+        <column name="status" key="bytes_out">
+           Reports output bytes processed.
+        </column>
+
+        <column name="status" key="packets_in">
+           Reports input packets processed.
+        </column>
+
+        <column name="status" key="packets_out">
+           Reports output packets processed.
+        </column>
+
+        <column name="status" key="sa_state">
+           Reports the this SA state.
+      </column>
+
+        <column name="status" key="sa_spi_in">
+           Reports the Security Parameter Index used for SA inbound traffics.
+        </column>
+
+        <column name="status" key="sa_spi_out">
+           Reports the Security Parameter Index used for SA outbound traffics.
+        </column>
+
+      </group>
     </group>
 
     <group title="Module Information">
@@ -5104,6 +5179,59 @@
           The OSPFv2 LSA specific data.
         </column>
     </group>
+  </table>
+  <table name="IPsec_IKE_Policy">
+    <p>
+      Following is the description of the IPsec IKE configuration settings of <ref table=IPsec_IKE_Policy/>.
+    </p>
+    <column name="name">
+      Specifies the IPsec policy name that includes rules to detect and transform specific IP flows.
+    </column>
+    <column name="protocol">
+      Specifies the traffic IPsec protocol: Authentication Header (AH) vs. Encapsulating Security Payload (ESP).
+      Defaults to <code>ESP</code>.
+    </column>
+    <column name="mode">
+      Specifies the traffic IPsec operation mode: tunnel vs. transport,
+      Defaults to <code>transport</code>.
+    </column>
+    <column name="integrity">
+      Specifies the configured hashes for the authenticity and integrity protection.
+      Defaults to <code>SHA1HMAC</code>.
+    </column>
+    <column name="encryption">
+      Specifies the supported encryptions for the message privacy.
+      Defaults to <code>AES128</code>.
+    </column>
+    <column name="ike_integrity">
+      Specifies the supported hashes for the IKE authenticity and integrity protection.
+      Defaults to <code>SHA1HMAC</code>.
+    </column>
+    <column name="ike_encryption">
+      Specifies the supported encryptions for the IKE privacy protection.
+      Defaults to <code>AES128</code>.
+    </column>
+    <column name="ike_group">
+      Specifies the supported key exchange groups.
+      Defaults to <code>DIFFIE2</code>.
+    </column>
+    <column name="peer_auth_by">
+      Specifies the selected peer authentication type: PSK or cert
+    </column>
+    <column name="psk">
+      Specifies the shared secret for a peer authentication.
+    </column>
+    <column name="psk_selectors">
+      Specifies remote IP addresses, Fully Qualified Domain Names,
+      user@FQDNs, %any or %any6 to be used with a configured PSK.
+    </column>
+    <column name="ssl">
+      Specifies the reference SSL certificates.
+    </column>
+    <column name="keep_alive_seconds">
+      Specifies the configured kee-alive SA session in seconds.
+      Defaults to <code>10</code> seconds.
+    </column>
   </table>
 </database>
 
