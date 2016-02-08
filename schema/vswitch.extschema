@@ -94,6 +94,18 @@
             "max": 1
           }
         },
+        "ipsec_ike_policies": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "IPsec_IKE_Policy"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "hostname": {
           "category": "configuration",
           "type": "string"
@@ -2788,7 +2800,8 @@
                   "system",
                   "internal",
                   "vlansubint",
-                  "loopback"
+                  "loopback",
+                  "ipsec_gre"
                 ]
               ]
             }
@@ -5567,6 +5580,132 @@
           }
         }
       }
+    },
+    "IPsec_IKE_Policy": {
+      "columns": {
+        "name": {
+          "category": "configuration",
+          "type": "string"
+        },
+        "protocol": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "AH",
+                  "ESP"
+                ]
+              ]
+            }
+          }
+        },
+        "mode": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "tunnel",
+                  "transport"
+                ]
+              ]
+            }
+          }
+        },
+        "integrity": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "SHA1HMAC",
+                  "SHA256HMAC",
+                  "SHA512HMAC"
+                ]
+              ]
+            }
+          }
+        },
+        "encryption": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "AES128",
+                  "AES256"
+                ]
+              ]
+            }
+          }
+        },
+        "ike_integrity": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "SHA1HMAC",
+                  "SHA256HMAC",
+                  "SHA512HMAC"
+                ]
+              ]
+            }
+          }
+        },
+        "ike_encryption": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "AES128",
+                  "AES256"
+                ]
+              ]
+            }
+          }
+        },
+        "ike_group": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "DIFFIE2",
+                  "DIFFIE14"
+                ]
+              ]
+            }
+          }
+        },
+        "keep_alive_seconds": {
+          "category": "configuration",
+            "type": {
+              "key": {
+                "type": "integer",
+                "minInteger": 0,
+                "maxInteger": 600
+              },
+              "min": 0,
+              "max": 1
+            }
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ],
+      "isRoot": true
     }
   }
 }
