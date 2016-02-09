@@ -250,6 +250,26 @@
             "max": 8
           }
         },
+        "mclag_inter_switch_link": {
+         "type": {
+          "key": {
+            "refTable": "Port",
+            "refType": "weak",
+            "type": "uuid"
+           },
+         "min": 0,
+         "max": 1
+         }
+       },
+        "mclag_sync_protocol_statistics": {
+         "ephemeral": true,
+           "type": {
+             "key": "string",
+             "value": "integer",
+             "min": 0,
+             "max": "unlimited"
+           }
+       },
         "other_config": {
           "category": "configuration",
           "type": {
@@ -2575,6 +2595,19 @@
             "max": 1
           }
         },
+       "remote_mclag_interface": {
+         "category": "configuration",
+         "relationship": "1:m",
+         "type": {
+           "key": {
+             "refTable": "Interface",
+             "type": "uuid",
+             "refType":"strong"
+             },
+            "min": 0,
+            "max": 8
+       }
+      },
         "bond_active_slave": {
           "category": "configuration",
           "type": {
