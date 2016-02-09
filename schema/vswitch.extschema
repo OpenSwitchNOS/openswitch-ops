@@ -2575,6 +2575,53 @@
             "max": 1
           }
         },
+        "lag_type": {
+          "type": {
+            "key": {
+             "enum": [
+               "set",
+                  [
+                   "lag_standalone",
+                   "lag_multichassis"
+                    ]
+                  ],
+             "type": "string"
+              },
+              "max": 1,
+               "min": 0
+            }
+        },
+        "remote_mclag_port_name": {
+           "mutable": false,
+           "type": "string"
+        },
+       "remote_mclag_lacp": {
+         "type": {
+           "key": {
+             "enum": [
+                "set",
+                   [
+                    "active",
+                     "passive",
+                     "off"
+                    ]
+                 ],
+                  "type": "string"
+                 },
+             "max": 1,
+             "min": 0
+             }
+       },
+       "remote_mclag_interface": {
+         "type": {
+           "key": {
+             "refTable": "Interface",
+             "type": "uuid"
+             },
+            "max": 8,
+            "min": 0
+       }
+      },
         "bond_active_slave": {
           "category": "configuration",
           "type": {
@@ -2769,6 +2816,66 @@
         ]
       ]
     },
+  "Mclag_sync_protocol": {
+    "columns": {
+     "mclag_inter_switch_link": {
+       "type": {
+        "key": {
+          "refTable": "Port",
+          "refType": "weak",
+          "type": "uuid"
+          },
+        "max": 1,
+        "min": 0
+       }
+     },
+     "mclag_switch_role": {
+       "type": {
+          "key": {
+          "enum": [
+             "set",
+              [
+                "none",
+                "standalone",
+                "primary",
+                "secondary"
+               ]
+             ],
+           "type": "string"
+           },
+         "max": 1,
+         "min": 0
+         }
+     },
+     "mclag_sync_protocol_state": {
+        "ephemeral": true,
+         "type": {
+           "key": {
+            "enum": [
+             "set",
+               [
+                 "InSync",
+                 "OutOfSync"
+                ]
+             ],
+             "type": "string"
+           },
+          "max": 1,
+          "min": 0
+          }
+     },
+     "mclag_sync_protocol_statistics": {
+       "ephemeral": true,
+         "type": {
+           "key": "string",
+           "max": "unlimited",
+           "min": 0,
+           "value": "integer"
+         }
+        }
+    }
+  },
+
     "Interface": {
       "columns": {
         "name": {
@@ -2788,7 +2895,8 @@
                   "system",
                   "internal",
                   "vlansubint",
-                  "loopback"
+                  "loopback",
+                  "remote_mclag_interface"
                 ]
               ]
             }

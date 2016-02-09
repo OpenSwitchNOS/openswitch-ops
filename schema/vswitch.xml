@@ -2412,6 +2412,18 @@
         Default is true.
       </column>
    </group>
+    <column name="lag_type">
+        Specifies lag types either standalone or multichassis.
+    </column>
+    <column name="remote_mclag_port_name">
+        Remote lag port name.
+    </column>
+    <column name="remote_mclag_lacp">
+        Specifies remote lacp mode active, passive or off.
+    </column>
+    <column name="remote_mclag_interface">
+        Reference to remote lag interface.
+    </column>
 
     <group title="Port Status">
       <p>
@@ -2456,6 +2468,21 @@
       <column name="other_config"/>
       <column name="external_ids"/>
     </group>
+  </table>
+
+  <table name="Mclag_sync_protocol">
+     <column name ="mclag_inter_switch_link" >
+        Reference to the port table.
+     </column>
+     <column name="mclag_switch_role">
+        Specifies mclag switch roles standalone, primary, secondary.
+     </column>
+     <column name="mclag_sync_protocol_state">
+        Specifies mclag protocol state.
+     </column>
+     <column name="mclag_sync_protocol_statistics">
+        Mclag sync protocol statistics.
+     </column>
   </table>
 
   <table name="Interface" title="One physical network device in a Port.">
