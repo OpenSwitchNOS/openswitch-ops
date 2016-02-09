@@ -303,3 +303,44 @@ Test to verify whether hostname of the system changes to the value configured by
 The test is successful if the configured value is present in `uname -n` output.
 #### Fail Criteria ####
 The test fails if  the configured hostname is not present in `uname -n` output.
+
+## Verifying system domainname configuration testcases.  ##
+
+### Objectives ###
+   These cases test:
+   - Configuring, reconfiguring and unconfiguring the system domainname.
+   - Verifying the expected behavior of the system domainname.
+
+### Requirements ###
+The requirements for this test case are:
+
+ -  DHCP Server.
+
+### Setup ###
+- #### Topology Diagram ####
+
+                                                +-------------------+
+              +------------------+              | Linux workstation |
+              |                  |eth0     eth1 |+-----------------+|
+              |  AS5712 switch   |--------------||   DHCP Server   ||
+              |                  |              |+-----------------+|
+              +------------------+              +-------------------+
+
+
+### Test case 6.01 : Verifying that the system domainname is configured using CLI.  ###
+#### Description ####
+Test to verify whether domainname of the system changes to the value configured using CLI command "domainname new-name" in config mode.
+### Test Result Criteria ###
+#### Pass Criteria ####
+The test is successful if the configured value is present in `uname -n` output.
+#### Fail Criteria ####
+The test fails if  the configured hostname is not present in `uname -n` output.
+
+### Test case 6.02 : Verifying that the system domainname is configured via DHCP Server.  ###
+#### Description ####
+Test to verify whether domainname of the system changes to the value configured by DHCP server via dhclient using option12 "option domain-name".
+### Test Result Criteria ###
+#### Pass Criteria ####
+The test is successful if the configured value is present in `uname -n` output.
+#### Fail Criteria ####
+The test fails if  the configured hostname is not present in `uname -n` output.
