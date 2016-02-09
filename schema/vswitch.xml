@@ -179,7 +179,6 @@
         </p>
       </column>
 
-
       <group title="TFTP Server Configurations">
         <column name="other_config" key="tftp_server_enable"
                 type='{"type": "boolean"}'>
@@ -195,6 +194,31 @@
           would be enabled. This config is valid only if TFTP server is enabled.
         </column>
       </group>
+
+     <group title="MCLAG status">
+       <column name="mclag_status" kay="mclag_switch_role">
+          Specifies MCLAG switch roles:standalone, primary, secondary.
+       </column>
+       <column name="mclag_status" key="mclag_sync_protocol_state">
+          Specifies MCLAG sync protocol state.
+       </column>
+
+       <column name ="mclag_inter_switch_link" >
+          <ref table="Port"> records that is used as the inter switch link.
+       </column>
+       <column name="mclag_sync_protocol_statistics" key:"mclag_hello_tx">
+          Number of MCLAG hello packet transmitted.
+       </column>
+       <column name="mclag_sync_protocol_statistics" key:"mclag_hello_rx">
+          Number of MCLAG hello packet received.
+       </column>
+       <column name="mclag_sync_protocol_statistics" key:"mclag_protocol_tx">
+          Number of MCLAG protocol transmitted.
+       </column>
+       <column name="mclag_sync_protocol_statistics" key:"mclag_protocol_rx">
+          Number of MCLAG protocol received.
+       </column>
+     </group>
 
     <group title="SFTP Server Configurations">
         <column name="other_config" key="sftp_server_enable"
@@ -2321,7 +2345,6 @@
             If not specified, lacp-fallback is assumed to be false.
           </p>
         </column>
-
       </group>
     </group>
    <group title="L3 Configuration">
@@ -2422,6 +2445,21 @@
         Enables proxy ARP feature on the interface.
         Default is false. Port should be part of VRF in order for the feature
         to be active.
+      </column>
+   </group>
+
+   <group title ="MCLAG configuration">
+      <column name="mclag_config" key="mclag_port" type='{"type": "boolean"}'>
+        Indicates if port is part of a multichassis LAG.
+      </column>
+      <column name="mclag_config" key="remote_mclag_port_name">
+        Specifies remote chassis LAG port name.
+      </column>
+      <column name="mclag_config" key="remote_mclag_lacp">
+        Specifies remote LACP mode:active, passive or off.
+      </column>
+      <column name="remote_mclag_interface">
+        Specifies the remote LAG <ref table="Interface"> records.
       </column>
    </group>
 
