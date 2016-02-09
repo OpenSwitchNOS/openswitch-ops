@@ -14,6 +14,8 @@
 	- [Show running configuration from interface level](#show-running-configuration-from-interface-level)
 - [Hostname configuration](#hostname-configuration)
 	- [Hostname configuration commands](#hostname-configuration-commands)
+- [Domainname configurations](#Domainname-configuration)
+        - [Domainname configuration commands](#Domainname-configuration-commands)
 
 ## Management interface configuration commands
 ### Management interface context command
@@ -215,3 +217,24 @@ User can configure hostname as alphanumeric string. First letter must be alphabe
     switch(config)#
 
 ```
+## Domainname configuration
+### Domainname configuration commands
+These commands are used to configure the system domainname.
+#### Syntax
+```
+domain-name <name>
+no domain-name
+```
+Command "domain-name <name>" is used to configure the domainname of the system through CLI.Command "no domain-name" removes the configured system domainname.
+#### Authority
+Admin
+#### Parameters
+User can configure domainname as an alphanumeric string. First letter must be an alphabet and the maximum length of the string can be 32.
+#### Examples
+```
+  switch(config)# hostname abc
+  abc(config)# domain-name example.com
+  abc.example.com(config)#no domain-name
+  abc(config)#
+```
+
