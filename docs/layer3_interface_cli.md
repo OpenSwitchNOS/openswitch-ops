@@ -9,11 +9,10 @@
 	- [ipv6 address](#ipv6-address)
 	- [interface vlan](#interface-vlan)
 	- [interface](#interface)
+	- [ip proxy-arp](#ip-proxy-arp)
 - [Display commands](#display-commands)
 	- [show interface](#show-interface)
 	- [show interface vlan-name](#show-interface-vlan-name)
-	- [show ip interface](#show-ip-interface)
-	- [show ipv6 interface](#show-ipv6-interface)
 
 
 ## Configuration commands
@@ -26,7 +25,7 @@ Under the interface context.
 `[no] routing`
 
 #### Description
-The command enables/disables the routing for the interface.
+Enable/disable routing for the interface.
 
 #### Authority
 Admin.
@@ -48,7 +47,7 @@ Under the interface context.
 `[no] vrf attach <vrf-name>`
 
 #### Description
-The command attaches/detaches an interface to/from a VRF.
+Attach/detach an interface to/from a VRF.
 
 #### Authority
 Admin.
@@ -74,7 +73,7 @@ Under the interface context.
 `[no] ip address <address/mask> [secondary]`
 
 #### Description
-This command configures an IPv4 address to the specified interface.
+Configures an IPv4 address to the specified interface.
 
 #### Authority
 Admin.
@@ -87,7 +86,7 @@ Admin.
 
 
 #### Example
-Configure an IPv4 address on the interface.
+Configures an IPv4 address on the interface.
 ```
 hostname(config-if)# interface 1
 hostname(config-if)# ip address 172.16.100.10/24
@@ -102,7 +101,7 @@ Under the interface context.
 `[no] ipv6 address <address/prefix> [secondary]`
 
 #### Description
-This command configures an IPv6 address to the specified interface.
+Configures an IPv6 address to the specified interface.
 
 #### Authority
 Admin.
@@ -115,7 +114,7 @@ Admin.
 
 
 #### Example
-Configure an IPv6 address on the interface.
+Configures an IPv6 address on the interface.
 ```
 hostname(config)# interface 1
 hostname(config-if)# ipv6 address fd00:5708::f02d:4df6/64
@@ -130,7 +129,7 @@ Under the config context.
 `[no] interface vlan <vlan-id>`
 
 #### Description
-This command lets you create and configure an L3 VLAN interface corresponding to the specified VLAN ID.
+This command lets you create and configure a L3 VLAN interface corresponding to the specified VLAN ID.
 
 #### Authority
 Admin
@@ -157,7 +156,7 @@ Under the config context
 `[no] interface <vlan-name>`
 
 #### Description
-This command lets you create and configure an L3 VLAN interface corresponding to the specified VLAN name.
+This command lets you create and configure a L3 VLAN interface corresponding to the specified VLAN name.
 
 #### Authority
 Admin
@@ -174,7 +173,31 @@ Admin
 hostname(config)# interface vlan101
 hostname(config-if-vlan)#
 ```
+###ip proxy-arp
 
+#### Syntax
+
+Under the interface context.
+
+`[no] ip proxy-arp`
+
+#### Description
+Enable/Disable proxy ARP on a L3 physical interface. By default, it is disabled.
+
+#### Authority
+Admin
+
+#### Parameter
+none
+
+#### Example
+Configure proxy ARP on an interface
+```
+hostname# configure terminal
+hostname(config)# interface 1
+hostname(config-if)# ip proxy-arp
+
+```
 ## Display commands
 
 ### show interface
@@ -185,7 +208,7 @@ Under privileged mode.
 `show interface [brief | mgmt]`
 
 #### Description
-This command displays information for the interfaces, including statistics, configuration and interface state.
+Displays information for the interfaces including statistics, configuration and interface state.
 
 #### Authority
 Operator.
@@ -198,7 +221,7 @@ Operator.
 
 #### Example
 
-Show management interface details.
+Show management interface details
 ```
 hostname# show interface mgmt
   Address Mode                  : dhcp
@@ -210,13 +233,14 @@ hostname# show interface mgmt
   Primary Nameserver            :
   Secondary Nameserver          :
 ```
-Show specific interface in detail mode (interface: 1).
+Show specific interface in detail mode (interface: 1)
 ```
 hostname# show interface 1
 
 Interface 1 is up
  Admin state is up
  Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
+ Proxy ARP: Enabled
  MTU 1500
  Full-duplex
  Speed 1000 Mb/s
@@ -232,7 +256,8 @@ Interface 1 is up
             0 input error               21 dropped
             0 collision
 ```
-Show specific interface in brief mode (interface: 1).
+
+Show specific interface in brief mode (interface: 1)
 ```
 hostname# show interface 1 brief
 
@@ -258,94 +283,15 @@ Operator
 
 #### Parameters
 | Parameter | Status   | Syntax |	Description          |
-|-----------|----------|--------|----------------------|
+|-----------|----------|----------------------|
 | *vlan-name*  | Required  |String  |	The VLAN name. |
 
 #### Example
-Display the VLAN interface configuration for VLAN: vlan10.
+The following example displays the VLAN interface configuration for VLAN: vlan101:
 ```
-hostname# show interface vlan10
+hostname# show interface vlan101
 
- Interface vlan10 is up
- Admin state is up
- Hardware: Ethernet, MAC Address: 70:72:cf:fd:e9:26
- IPv4 address 3.3.3.1/24
- RX
-            10 input packets              750 bytes
- TX
-            0 output packets             0 bytes
-```
-
-### show ip interface
-
-#### Syntax
-Under privileged mode.
-
-`show ip interface [ifname]`
-
-#### Description
-This command displays L3 and IPv4 specific information for the interfaces including statistics, configuration and interface state. Currently this command is only supported for L3 physical interfaces and does not support other L3 VLAN interfaces.
-
-#### Authority
-Operator.
-
-#### Parameters
-| Parameter | Status   | Syntax | Description          |
-|-----------|----------|--------|------------------------|
-| **ifname**   | Optional | String | Name of the interface |
-
-
-#### Example
-Show L3 IPv4 interface details (interface: 1).
-```
-hostname# show ip interface 1
-Interface 1 is up
- Admin state is up
+Interface vlan101 is down (Administratively down)
+ Admin state is down
  Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
- IPv4 address: 2.2.2.1/24
- MTU 1500
- RX
-          ucast: 10 packets, 750 bytes
-          mcast: 0 packets, 0 bytes
- TX
-          ucast: 10 packets, 750 bytes
-          mcast: 0 packets, 0 bytes
-```
-
-### show ipv6 interface
-
-#### Syntax
-Under privileged mode.
-
-`show ipv6 interface [ifname]`
-
-#### Description
-This command displays L3 and IPv6 specific information for the interfaces including statistics, configuration and interface state. Currently this command is only supported for L3 physical interfaces and does not support other L3 VLAN interfaces.
-
-#### Authority
-Operator.
-
-#### Parameters
-| Parameter | Status   | Syntax | Description          |
-|-----------|----------|--------|------------------------|
-| **ifname**   | Optional | String | Name of the interface |
-
-
-#### Example
-
-Show L3 IPv6 interface details (interface: 1).
-```
-hostname# show ipv6 interface 1
-
-Interface 1 is up
- Admin state is up
- Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
- IPv6 address: 2000::1001/120
- MTU 1500
- RX
-          ucast: 10 packets, 750 bytes
-          mcast: 0 packets, 0 bytes
- TX
-          ucast: 10 packets, 750 bytes
-          mcast: 0 packets, 0 bytes
 ```
