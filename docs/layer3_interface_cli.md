@@ -9,6 +9,7 @@
 	- [ipv6 address](#ipv6-address)
 	- [interface vlan](#interface-vlan)
 	- [interface](#interface)
+	- [ip proxy-arp](#ip-proxy-arp)
 - [Display commands](#display-commands)
 	- [show interface](#show-interface)
 	- [show interface vlan-name](#show-interface-vlan-name)
@@ -174,7 +175,31 @@ Admin
 hostname(config)# interface vlan101
 hostname(config-if-vlan)#
 ```
+###ip proxy-arp
 
+#### Syntax
+
+Under the interface context.
+
+`[no] ip proxy-arp`
+
+#### Description
+The command enables/disables proxy ARP on a L3 physical interface. By default, it is disabled.
+
+#### Authority
+Admin
+
+#### Parameter
+none
+
+#### Example
+Configure proxy ARP on an interface
+```
+hostname# configure terminal
+hostname(config)# interface 1
+hostname(config-if)# ip proxy-arp
+
+```
 ## Display commands
 
 ### show interface
@@ -217,6 +242,7 @@ hostname# show interface 1
 Interface 1 is up
  Admin state is up
  Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
+ Proxy ARP: Enabled
  MTU 1500
  Full-duplex
  Speed 1000 Mb/s
