@@ -140,7 +140,7 @@ def restartNTPDaemon(dut01, wrkston01, wrkston02):
 def chkNTPAssociationandStatus(dut01, wrkston01, wrkston02):
     global SERVER_UNREACHABLE
     info("\n### Checking NTP associations and NTP status ###\n")
-    total_timeout = 360
+    total_timeout = 720
     timeout = 10
     check1 = False
     check2 = False
