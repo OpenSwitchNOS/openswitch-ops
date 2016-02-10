@@ -140,7 +140,7 @@ def restartNTPDaemon(dut01, wrkston01, wrkston02):
 def chkNTPAssociationandStatus(dut01, wrkston01, wrkston02):
     global SERVER_UNREACHABLE
     info("\n### Checking NTP associations and NTP status ###\n")
-    total_timeout = 360
+    total_timeout = 720
     timeout = 10
     check1 = False
     check2 = False
@@ -159,7 +159,7 @@ def chkNTPAssociationandStatus(dut01, wrkston01, wrkston02):
     return False
 
 #timeout increased to provide enough time to download the images from docker hub
-@pytest.mark.timeout(1200)
+@pytest.mark.timeout(1600)
 class TestNtpClientConfig:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
