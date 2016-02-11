@@ -7518,6 +7518,58 @@
           "name"
         ]
       ]
+    },
+    "Package_info": {
+      "columns": {
+        "name": {
+          "category": "status",
+          "type": "string",
+          "mutable": false
+        },
+        "src_uri": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          },
+          "mutable": true
+        },
+        "version": {
+          "category": "status",
+          "type": "string",
+          "mutable": true
+        },
+        "repo_type": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "git",
+                  "https",
+                  "http",
+                  "ftp",
+                  "svn",
+                  "cvs",
+                  "other"
+                ]
+              ]
+            }
+          },
+          "mutable": true
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ],
+      "isRoot": true
     }
   }
 }
