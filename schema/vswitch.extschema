@@ -5567,6 +5567,53 @@
           }
         }
       }
+    },
+    "Source_Repository": {
+      "columns": {
+        "name": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          "mutable": false
+        },
+        "version_type": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "git",
+                  "other"
+                ]
+              ]
+            }
+          },
+          "mutable": true
+        },
+        "version": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          "mutable": true
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ],
+      "isRoot": true,
+      "maxRows": 64
     }
   }
 }

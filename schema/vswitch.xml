@@ -5099,5 +5099,19 @@
         </column>
     </group>
   </table>
+  <table name="Source_Repository">
+    <p>
+      Table containing the entity and its version number.
+    </p>
+    <column name="name">
+      Name of the git-repo or of the daemon.
+    </column>
+    <column name="version_type">
+      If it's a git-repo it will be "git"
+      Default is "git"
+    </column>
+    <column name="version">
+      40-byte git-hash in case of a git-repo, else the version-string.
+    </column>
+  </table>
 </database>
-
