@@ -5740,4 +5740,26 @@
       <column name="external_ids"/>
     </group>
   </table>
+
+  <table name="Source_Repository">
+    <p>
+      Table containing the list of packages present in the image 
+      and associated metadata.
+    </p>
+    <column name="name">
+      Name of the package or of the daemon.
+      Example: ops-openvswitch, sed, ops-quagga, openssh etc.
+    </column>
+    <column name="src_uri">
+      This denotes the download location for the source-code for the package/daemon.
+      Example for ops-openvswitch: git://git.openswitch.net/openswitch/ops-openvswitch;protocol=http
+      Example for openssh        : ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-6.8p1.tar.gz
+    </column>
+    <column name="version">
+      If the src_uri is a git repository, this will contain the git hash.
+      Otherwise it will contain the version string (depending on the package).
+      Example for ops-openvswitch: ac19ac49778adf6cf011a3ef6e0675025f1945b5
+      Example for openssh        : 6.8p1
+    </column>
+  </table>
 </database>
