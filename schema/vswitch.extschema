@@ -6730,6 +6730,47 @@
         ]
       ],
       "isRoot": true
+    },
+    "Source_Repository": {
+      "columns": {
+        "name": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          "mutable": false
+        },
+        "src_uri": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          "mutable": true
+        },
+        "version": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          "mutable": true
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ],
+      "isRoot": true,
+      "maxRows": 2048
     }
   }
 }
