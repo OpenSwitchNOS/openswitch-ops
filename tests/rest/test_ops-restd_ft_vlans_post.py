@@ -27,6 +27,7 @@ import urllib
 
 from utils.fakes import *
 from utils.utils import *
+from utils.swagger_test_utility import *
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -74,7 +75,6 @@ class myTopo(Topo):
 ###############################################################################
 class CreateBasicVlan(OpsVsiTest):
     def setupNet(self):
-
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -132,6 +132,11 @@ class TestPostBasicVlan:
     def setup_class(cls):
         TestPostBasicVlan.test_var = CreateBasicVlan()
         rest_sanity_check(cls.test_var.switch_ip)
+        net = cls.test_var.net
+        container_name = net.switches[0].testid + "_" + net.switches[0].name
+        cls.container_id = subprocess.check_output(["docker", "ps", "-a",
+                                                   "-q", "-f", "name=" +
+                                                   container_name]).strip()
 
     def teardown_class(cls):
         TestPostBasicVlan.test_var.net.stop()
@@ -146,6 +151,10 @@ class TestPostBasicVlan:
         del self.test_var
 
     def test_run(self):
+        info("container_id_test %s\n" % self.container_id)
+        swagger_model_verification(self.container_id,
+                                   "/system/bridges/{pid}/vlans",
+                                   "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -168,6 +177,7 @@ class CreateVlanInvalidName(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        info("switch_ip %s" % self.switch_ip)
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
 
     def test(self):
