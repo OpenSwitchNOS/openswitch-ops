@@ -32,15 +32,14 @@ The requirements for this test case are:
 
  - 1 Switch running OpenSwitch
  - **FT file**: `ops/tests/lag/lagDynamicSupportedAndUnsupportedNames.py`
+
 ### Setup
 #### Topology diagram
 ```ditaa
-
                         +----------+
                         |          |
                         |  dut01   |
                         +----------+
-
 ```
 
 #### Test setup
@@ -68,16 +67,17 @@ This test fails if the dynamic LAG cannot be configured using valid names or can
 To verify that a static LAG cannot be created if the name is too long or if it has unsupported characters
 ### Requirements
 The requirements for this test case are:
+
  - 1 Switch running OpenSwitch
+ - **FT file**: `ops/tests/lag/lagStaticSupportedAndUnsupportedNames.py`
+
 ### Setup
 #### Topology diagram
 ```ditaa
-
                         +----------+
                         |          |
                         |  dut01   |
                         +----------+
-
 ```
 
 #### Test setup
@@ -116,12 +116,10 @@ The requirements for this test case are:
 
 #### Topology diagram
 ```ditaa
-
                         +----------+
                         |          |
                         |  dut01   |
                         +----------+
-
 ```
 #### Test setup
 ### Description
@@ -157,12 +155,10 @@ The requirements for this test case are:
 
 #### Topology diagram
 ```ditaa
-
                         +----------+
                         |          |
                         |  dut01   |
                         +----------+
-
 ```
 #### Test setup
 ### Description
@@ -199,7 +195,6 @@ The requirements for this test case are:
 
 #### Topology diagram
 ```ditaa
-
                         +-----------+
                         |workstation|
                         |    01     |
@@ -254,7 +249,6 @@ The requirements for this test case are:
 
 #### Topology diagram
 ```ditaa
-
                         +-----------+
                         |workstation|
                         |    01     |
