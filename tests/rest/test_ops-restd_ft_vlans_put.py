@@ -24,9 +24,11 @@ from opsvsi.opsvsitest import *
 import json
 import httplib
 import urllib
+import subprocess
 
 from utils.fakes import *
 from utils.utils import *
+from utils.swagger_test_utility import *
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -132,6 +134,12 @@ class TestPutExistingVlan:
                          TestPutExistingVlan.test_var.vlan_name,
                          TestPutExistingVlan.test_var.vlan_id)
 
+        net = cls.test_var.net
+        container_name = net.switches[0].testid + "_" + net.switches[0].name
+        cls.container_id = subprocess.check_output(["docker", "ps", "-a",
+                                                   "-q", "-f", "name=" +
+                                                   container_name]).strip()
+
     def teardown_class(cls):
         TestPutExistingVlan.test_var.net.stop()
 
@@ -145,6 +153,10 @@ class TestPutExistingVlan:
         del self.test_var
 
     def test_run(self):
+        info("container_id_test %s\n" % self.container_id)
+        swagger_model_verification(self.container_id,
+                                   "/system/bridges/{pid}/vlans/{id}",
+                                   "PUT", base_vlan_data)
         self.test_var.test()
 
 
