@@ -2,20 +2,20 @@
 
 ## Contents
 
-- [Overview](#overview)
-- [How to define the mapping between a feature and the daemon which implements that eature](#how-to-define-the-mapping-between-a-feature-and-the-daemon-which-implements-that-feature)
-	- [YAML configuration](#yaml-configuration)
-- [Diagnostics dump callback function in daemons](#diagnostics-dump-callback-function-in-daemons)
-	- [BB script changes](#bb-script-changes)
-	- [Header file](#header-file)
-	- [Daemon init function](#daemon-init-function)
-	- [Example of a callback function definition](#example-of-a-callback-function-definition)
-	- [Example for lldpd daemon](#example-for-lldpd-daemon)
-- [Testing](#testing)
-	- [diag-dump list](#diag-dump-list)
-	- [diag-dump for a feature (basic) on CLI session](#diag-dump-for-a-feature-basic-on-cli-session)
-	- [diag-dump for a feature (basic) to a file](#diag-dump-for-a-feature-basic-to-a-file)
-		- [CT script](#ct-script)
+- [Developer Guide for Diagnostic Dump](#developer-guide-for-diagnostic-dump)
+	- [Contents](#contents)
+	- [Overview](#overview)
+	- [How to define the mapping between a feature and the daemon which implements that feature](#how-to-define-the-mapping-between-a-feature-and-the-daemon-which-implements-that-feature)
+		- [YAML configuration](#yaml-configuration)
+	- [Diagnostics dump C API](#diagnostics-dump-c-api)
+	- [Diagnostics dump python API](#diagnostics-dump-python-api)
+	- [Testing](#testing)
+		- [diag-dump list](#diag-dump-list)
+		- [diag-dump for a feature (basic) on CLI session](#diag-dump-for-a-feature-basic-on-cli-session)
+		- [diag-dump for a feature (basic) to a file](#diag-dump-for-a-feature-basic-to-a-file)
+			- [CT script](#ct-script)
+	- [References](#references)
+
 
 ## Overview
 The Diagnostic CLI captures internal diagnostic information about the requested feature(s) from the respective daemons. Internally it uses the unixctl mechanism to communicate with the daemons.
@@ -43,7 +43,7 @@ Following are some examples:
 
 ```
 
-## Diagnostics dump callback function in daemons
+## Diagnostics dump C API
 Define a callback function that collects the necessary diagnostics information from the daemon for the given feature. This callback function needs to allocate sufficient memory (buf) to hold the diagnostics information. This memory is later deallocated by the diagnostic framework.
 
 The syntax of the callback function should be as follows:
@@ -68,11 +68,11 @@ In summary the following steps need to be completed:
 	 c. Null terminate the buffer.
 3. Initialize the basic diagnostic framework in the daemon init routine.
 
-*Note that the dagnostics framework is responsible for freeing the allocated buffer once it is used.*
+*Note that the diagnostics framework is responsible for freeing the allocated buffer once it is used.*
 
 
 ### BB script changes
-Add a dependancy in bbscript for the respective daemon.
+Add a dependency in bbscript for the respective daemon.
 ```
 DEPENDS = "ops-supportability"
 ```
@@ -87,8 +87,6 @@ Include diag_dump.h in the .c file.
 The daemon initialization routine should invoke this macro with the callback function. For example: ```
 INIT_DIAG_DUMP_BASIC(lldpd_diag_dump_basic_cb)
 ```
-
-
 
 ### Example of a callback function definition
 
@@ -153,6 +151,90 @@ static void lldpd_diag_dump_basic_cb(const char *feature , char **buf)
 
 ```
 
+## Diagnostics dump python API
+Define a callback function that collects the necessary diagnostics information from the daemon for the given feature. This callback function needs to fill a buffer to  hold the diagnostics information.This callback function return this buffer.
+
+The syntax of the callback function should be as follows:
+
+```ditaa
+cb_func_name(argv)
+```
+
+Initialize the basic diagnostic framework in the daemon init routine by calling `init_diag_dump_basic` and passing the callback function name.
+
+Example:
+```ditaa
+init_diag_dump_basic(basic_diag_handler_cb)
+```
+
+In summary the following steps need to be completed:
+1. Add dependency "ops-supportability" in bb script.
+2. Import python module ops_diagdump.
+3. Define a callback function for collecting basic diagnostic information.
+4. The callback function should perform the following activities:
+	 a. Copy the diagnostics information (text format) into the buffer.
+	 b. return the buffer
+5. Initialize the basic diagnostic framework in the daemon init routine.
+
+
+### BB script changes
+Add a dependency in bbscript for the respective daemon.
+```ditaa
+DEPENDS = "ops-supportability"
+```
+
+### Import python module
+import ops_diag_dump in python file.
+
+```ditaa
+from ops_diagdump import *
+```
+### Daemon init function
+The daemon initialization routine should invoke this macro with the callback function. For example:
+```ditaa
+init_diag_dump_basic(diag_basic_handler)
+```
+
+
+
+### Example of a callback function definition
+
+```ditaa
+
+def diag_basic_handler( argv ):
+    # argv[0] is basic
+    # argv[1] is feature name
+    feature = argv.pop()
+    buff = 'Diagnostic dump response for feature ' + feature + '.\n'
+    buff = buff + 'diag-dump feature for AAA is not implemented'
+    return buff
+
+
+```
+### Example for AAA daemon
+
+```ditaa
+BB Script: yocto/openswitch/meta-distro-openswitch/recipes-ops/utils/ops-aaa-utils.bb
+DEPENDS = "ops-ovsdb ops-supportability"
+
+file: src/ops-aaa-utils/ops_aaautilspamcfg.py
+
+from ops_diagdump import *
+.....
+
+def diag_basic_handler( argv ):
+    # argv[0] is basic
+    # argv[1] is feature name
+    feature = argv.pop()
+    buff = 'Diagnostic dump response for feature ' + feature + '.\n'
+    buff = buff + 'diag-dump feature for AAA is not implemented'
+    return buff
+
+...
+init_diag_dump_basic(diag_basic_handler)
+...
+
+```
 
 ## Testing
 ### diag-dump list
@@ -164,3 +246,11 @@ The `diag-dump <feature> basic <file name>` command captures diagnostic informat
 #### CT script
 Run the following CT test to verify that the diag-dump command is properly working with the configuration changes:
 `make devenv_ct_test src/ops-supportability/test/diag_dump_test.py`
+
+## References
+
+* [Reference 1] 'diagnostic_design.md'
+* [Reference 2] 'diagnostic_cli.md'
+* [Reference 3] 'diagnostic_test.md'
+* [Reference 4] 'diagnostic_user_guide.md'
+* [Reference 5] 'diagnostic_dev_guide.md'
