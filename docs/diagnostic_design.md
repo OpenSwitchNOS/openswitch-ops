@@ -5,24 +5,19 @@ Primary goal of diagnostic module is to capture internal diagnostic information 
 ## Contents
 
 - [High level design of Diagnostic Dump](#high-level-design-of-diagnostic-dump)
-    - [Contents](#contents)
-    - [Responsibilities](#responsibilities)
-    - [Design choices](#design-choices)
-    - [Participating modules](#participating-modules)
-    - [OVSDB-schema](#ovsdb-schema)
-    - [Diagnostic dump configuration yaml file](#diagnostic-dump-configuration-yaml-file)
-    - [Internal structure](#internal-structure)
-        - [Source modules](#source-modules)
-        - [Data structures](#data-structures)
-    - [API detail](#api-detail)
-        - [API description](#api-description)
-        - [Sample code](#sample-code)
-            - [BB script](#bb-script)
-            - [Header file](#header-file)
-            - [Init function](#init-function)
-            - [Handler function definition](#handler-function-definition)
-            - [Example for lldpd daemon](#example-for-lldpd-daemon)
-    - [References](#references)
+	- [Contents](#contents)
+	- [Responsibilities](#responsibilities)
+	- [Design choices](#design-choices)
+	- [Participating modules](#participating-modules)
+	- [OVSDB-schema](#ovsdb-schema)
+	- [Diagnostic dump configuration yaml file](#diagnostic-dump-configuration-yaml-file)
+	- [Internal structure](#internal-structure)
+		- [Source modules](#source-modules)
+		- [Data structures](#data-structures)
+	- [C API detail](#c-api-detail)
+	- [Python API detail](#python-api-detail)
+	- [References](#references)
+
 
 ##Responsibilities
 
@@ -33,6 +28,7 @@ Diagnostic infrastructure is responsible for capturing information from one or m
 -User can change mapping of feature to daemon at runtime .
 -Basic diagnostic is dumped to console or file using CLI .
 -CLI can't be blocked for more than 30 sec . If daemon doesn't reply to vtysh then timer handler in vtysh will release vtysh for next command.
+-The diagnostic dump command creates dump file at /tmp/ops-diag/<file name>.
 
 ## Participating modules
 
@@ -150,8 +146,8 @@ struct feature {
 
 
 ```
-## API detail
-Daemon initialisation function is required to register diagnostic dump basic handler function.
+## C API description
+Daemon initialization function is required to register diagnostic dump basic handler function.
 "INIT_DIAG_DUMP_BASIC" macro takes function name as argument and this function is callback handler for basic diag-dump.
 
 ###API description
@@ -179,14 +175,14 @@ In summary the following steps needs to be followed
 
 ### Sample code
 #### BB script
-Add dependancy "DEPENDS = ops-supportability" in bbscript of respective daemon.
+Add dependency "DEPENDS = ops-supportability" in bbscript of respective daemon.
 #### Header file
 include diag_dump.h in .c file.
 ```ditaa
 #include  <diag_dump.h>
 ```
 #### Init function
-Inside initialisation function invoke this macro with handler function.
+Inside initialization function invoke this macro with handler function.
 INIT_DIAG_DUMP_BASIC(cb_func_name);
 
 #### Handler function definition
@@ -253,10 +249,99 @@ static void lldpd_diag_dump_basic_cb(const char *feature , char **buf)
 
 ```
 
+## Python API Description
+Daemon initialization function is required to register the handler for basic diagnostics dump by calling init_diag_dump_basic().
+The function init_diag_dump_basic() takes the diagnostic dump handler function name as argument.
+
+###Python API description
+
+This function registers it argument as callback handler . Callback handler
+function  contains feature name in argument argv. Callback handler collect all
+the diagnostic information and copy to a buffer and return the buffer.
+
+
+```ditaa
+Syntax:
+ops_diagdump.init_diag_dump_basic(cb_func_name)
+cb_func_name (argv)
+```
+
+In summary the following steps needs to be followed
+
+1. Define a callback function for collecting basic diagnostic information.
+2. The callback function should perform the following activities:
+	 a. Copy the diagnostics information (text format) into the buffer.
+	 b. return the buffer
+3. Initialize the basic diagnostic framework in the daemon init routine.
+
+
+
+
+### Sample code
+#### BB script
+Add dependency "DEPENDS = ops-supportability" in bbscript of respective daemon.
+
+#### Import python module
+import ops_diag_dump in python file.
+```ditaa
+import ops_diagdump
+```
+
+#### Init function
+Inside initialization function invoke this function with handler function.
+init_diag_dump_basic(cb_func_name)
+
+```ditaa
+ops_diagdump.init_diag_dump_basic(diag_basic_handler)
+```
+
+#### Handler function definition
+
+```ditaa
+
+def diag_basic_handler( argv ):
+    # argv[0] is set to the string "basic"
+    # argv[1] is set to the feature name, e.g. lldp
+    feature = argv.pop()
+    buff = 'Diagnostic dump response for feature ' + feature + '.\n'
+    buff = buff + 'diag-dump feature for AAA is not implemented'
+    return buff
+
+```
+
+#### Example for AAA daemon
+
+```ditaa
+
+BB Script: yocto/openswitch/meta-distro-openswitch/recipes-ops/utils/ops-aaa-utils.bb
+DEPENDS = "ops-ovsdb ops-supportability"
+
+file: src/ops-aaa-utils/ops_aaautilspamcfg.py
+
+...
+import ops_diagdump
+...
+
+def diag_basic_handler( argv ):
+    # argv[0] is basic
+    # argv[1] is feature name
+    feature = argv.pop()
+    buff = 'Diagnostic dump response for feature ' + feature + '.\n'
+    buff = buff + 'diag-dump feature for AAA is not implemented'
+    return buff
+
+...
+ops_diagdump.init_diag_dump_basic(diag_basic_handler)
+...
+
+
+```
+
+
 ## References
 
 * [Reference 1] 'diagnostic_design.md'
-* [Reference 2] 'diagnostic_cli.md' 167
-* [Reference 3] 'diagnostic_test.md'    168
+* [Reference 2] 'diagnostic_cli.md'
+* [Reference 3] 'diagnostic_test.md'
 * [Reference 4] 'diagnostic_user_guide.md'
-* [Reference 5] 'diagnostic_dev_guide.md'   165
+* [Reference 5] 'diagnostic_dev_guide.md'
