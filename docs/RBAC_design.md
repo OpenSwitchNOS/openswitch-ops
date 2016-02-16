@@ -1,0 +1,350 @@
+# High-level design of RBAC
+
+Role-Based Access Control (RBAC) is a method for allowing or restricting an authenticated user access to resources based on a role the user has been assigned. Roles are assigned to the user when the user's account is created.
+
+In OpenSwitch we will be using these roles to restrict a user's access to configuration information and system password administration by granting each role a pre-defined list of permissions.
+
+
+The diagram below shows the relationship between users, roles, and permissions.
+
+```ditaa
+
+     +---------+                                              +------------+
+     | User 1  +---+                                     +----> Permission |
+     |         |   |                                     |    |      A     |
+     +---------+   |         +-------------------+       |    +------------+
+                   |         |     Role Alpha    |       |
+     +---------+   +--------->                   +-------+    +------------+
+     | User 2  +---+         |                   |       +----> Permission |
+     |         |             +-------------------+       |    |      B     |
+     +---------+                                         |    +------------+
+                                                         |
+     +---------+             +-------------------+       |    +------------+
+     | User 3  +-----+       |     Role Beta     |    +--+----> Permission |
+     |         |     +------->                   +----+  |    |      C     |
+     +---------+     |       |                   |    |  |    +------------+
+                     |       +-------------------+    |  |
+     +---------+     |                                |  |    +------------+
+     | User 4  +-----+                                +--+----> Permission |
+     |         |             +-------------------+    |  |    |      D     |
+     +---------+             |    Role Gamma     |    |  |    +------------+
+                       +----->                   +-+  |  |
+     +---------+       |     |                   | |  |  |    +------------+
+     | User 5  +-------+     +-------------------+ +--+--+----> Permission |
+     |         |                                              |      E     |
+     +---------+                                              +------------+
+```
+
+## Table of contents
+[TOC]
+
+
+## Responsibilities
+
+The RBAC module will be responsible for:
+- Setting up the infrastructure so a user can be assigned to a role.
+- Support an API that will allow OpenSwitch modules to check permissions for a given user.
+
+## Design choices
+
+The design choices made for the `RBAC` module are:
+- Will initially support 2 roles (ops_admin, ops_netops). The scope of these roles will be discussed later in this document.
+- Roles and their underlying permissions will be pre-defined and will not be customer modifiable.
+- When a username is passed into any RBAC APIs it is assumed that the user has been authenticated.
+- If an authenticated user has no associated role, they will be assigned the role of none and will have no permissions.
+- Supporting user-defined roles or permissions will not be addressed at this time.
+
+## Relationships to external OpenSwitch entities
+
+The following diagram provides detailed description of relationships and interactions of the `RBAC` modules with other modules in the switch.
+
+```ditaa
+                                              Network
+                                                 |
+          +------------+----------+--------------+----+---------------+--------------+
+          |            |          |                   |               |              |
+    +-----v-----+      |     +----v------+       +----v------+  +-----v-----+  +-----v-----+
+    | Ansible   |      |     | WebUI     |       | OVSDB API |  | SNMP      |  | vtysh     |
+    |           |      |     |           <---+   |           |  |           |  |           |
+    |           |      |     +----^------+   |   |           |  |           |  |           |
+    |           |      |          |          |   |           |  |           |  |           |
+    |           |  +---v----------v------+   |   |           |  |           |  |           |
+    |           |  | REST API            |   |   |           |  |           |  |           |
+    |           |  |                     <---+   |           |  |           |  |           |
+    +-----------+  +---^-----------------+   |   +-----------+  +-----------+  +----^------+
+                       |                     |                                      |
+             +---------+                     +-------------------+             +----+
+             |                                                   |             |
+    +--------v---------+        +----------------+           +---v-------------v----------+
+    | AAA              |        | OVSDB          |           |  RBAC                      |
+    | ops-aaa-util     |        |                |           |  check_user_permissions()  |
+    |                  |        |                |           |  get_user_permissions()    |
+    |                  |        |                |           |  get_user_role()           |
+    +------------------+        +----------------+           +----------------------------+
+```
+
+### RBAC Interface
+
+RBAC will support the following functions in both Python and "C" to allow modules to either check if a user has a specific permission or to retrieve a list of permissions for the specified user.
+```
+	check_user_permission(…) - Check if a user has been assigned a specific permission.
+    get_user_permissions(…) – Get the list of permissions assigned to the user.
+    get_user_role(…) – Get the role of the specified user.
+```
+
+Python examples of using the RBAC Interface.
+
+```
+  Boolean rbac.check_user_permission(username, permission)
+
+  Example_usage of rbac.check_user_permission(username, permission):
+      ......
+      result = rbac.check_user_permission("user", rbac.WRITE_SWITCH_CONFIG)
+      if result == True:
+         /* User has write access to switch config */
+         ...
+      ......
+```
+
+```
+  List rbac.get_user_permissions(username)
+
+  Example_usage of rbac.get_user_permissions(username):
+     ......
+     permission_list = rbac.get_user_permissions("user")
+     ......
+     if rbac.READ_SWITCH_CONFIG in permissions_list:
+         /* User has read access to the switch config */
+         ...
+     ......
+
+     if rbac.WRITE_SWITCH_CONFIG in permissions_list:
+         /* User has write access to the swith config */
+         ...
+```
+
+```
+  get_user_role(username)
+
+  Example_usage of rbac.get_user_role(username):
+     ......
+     role_name = rbac.get_user_role("user")
+     ......
+```
+
+C Examples of using the RBAC Interface.
+
+```
+#include <rbac.h>
+
+      bool result;
+      ......
+      result = rbac_check_user_permission("user", WRITE_SWITCH_CONFIG);
+      if (result == true) {
+         /* User has write access to the switch config */
+         ...
+         }
+      ......
+```
+
+```
+#include <rbac.h>
+
+     ......
+     bool                 result;
+     rbac_permissions_t   permission_list;
+     result = rbac_get_user_permissions("user", &permission_list);
+     if (result == true) {
+        int i = 0;
+        while (i < permission_list.count) {
+           if (strcmp(permission_list.name[i], RBAC_READ_SWITCH_CONFIG) == 0) {
+              /* User has read access to the switch config */
+              }
+           i++;
+           ...
+           }
+        }
+     .....
+```
+
+```
+#include <rbac.h>
+
+     .....
+     bool           result;
+     rbac_role_t    role;
+
+     result = rbac_get_user_role("user", &role);
+     if (result == true) {
+        /* We have the users role name */
+        }
+     ......
+```
+
+### Restricting a User's Scope based on roles
+
+This section outlines the responsibility OpenSwitch modules will have in restricting a user's access to resources.
+
+#### Restricting a User's Access in vtysh
+
+When vtysh is started the user has already been authenticated. Vtysh will need to make a call to RBAC to either check specific permissions or get the list of permissions accessible to the user. Vtysh will need to restrict the user from accessing information that is not allowed under their permission list depending on which role (ops_admin, ops_netops, none) the authenticated user has been assigned.
+
+Bash access (start-shell) will no longer be allowed under vtysh. In addition, vtysh should restrict the use of system calls make by using seccomp or some equivalent functionality.
+
+Vtysh will be the shell that netop users should be launched into. Admin user will be launched into the bash shell, however they will be able to run vtysh if they desire.
+
+NOTE: By default, the admin will not be a member of the ovsdb-client group. If the admin is allowed to have access to vtysh, then a change to vtysh will need to be made to allow vtysh to startup.
+
+Below are example's on how the CLI may look depending on the role the user has:
+
+For ops_admin
+```
+  clear        Reset functions
+  disable      Turn off privileged mode command
+  end          End current mode and change to enable mode
+  exit         Exit current mode and down to previous mode
+  list         Print command list
+  password     Change user password
+  ping         Ping Utility
+  ping6        Ping Utility
+  reboot       Reload the switch
+  user         User account
+```
+
+For ops_netops
+```
+  clear        Reset functions
+  configure    Configuration from vty interface
+  copy         Copy from one config to another
+  disable      Turn off privileged mode command
+  end          End current mode and change to enable mode
+  exit         Exit current mode and down to previous mode
+  list         Print command list
+  password     Change user password
+  ping         Ping Utility
+  ping6        Ping Utility
+  reboot       Reload the switch
+  show         Show running system information
+```
+
+For none
+```
+  exit         Exit current mode and down to previous mode
+```
+
+#### Restricting a User's Access via WebUI
+
+The webUI will be using the REST API to authenticate the user and to retrieve a list of permissions accessible to the user. The permission list will be passed to the webUI so they can make decisions on what type of information they can present to the user.
+
+#### Restricting a User's Access via SNMP
+
+The SNMP interface is read-only, so there are no plans to place any limitations on this interface.
+Access to this interface will be controlled by netop configuring the community name and other snmp access control.
+
+#### Restricting a User's Access via REST API
+
+The REST API will need to authenticate the user (using AAA) for both network and WebUI access. The REST API will call RBAC to get the permission set of the user. If the user does not have the appropriate permissions to access the switch configuration, the REST API will block the user from access the switch configuration in ovsdb..
+
+#### Restricting a User's Access to OVSDB API
+
+Access to the ovsdb server from the bash shell is restricted using the ovsdb-client group. Any linux user given membership to this group will have read/write access to the ovsdb server via the ovsdb-client utility. Great care must be given before any linux user is given membership to this group.
+
+The builtin user "admin" will be created without membership in this group. The users with the ops_netops role should be created with membership in the ovsdb-client group.
+
+#### Restricting a User's Access via Ansible
+
+Ansible will connect to the switch via SSH (key or user/pass) to do system configuration management and provisioning. It is currently being investigated what role the ansible user should belong and we will need to scope the user's account accordingly.
+
+## OVSDB-Schema
+
+RBAC will not be adding any data to the OVSDB Schema.
+
+## Internal structure
+
+This section will outline the implementation to support RBAC.
+
+### RBAC Roles
+
+We will be supporting 2 pre-defined roles. The table below briefly describes the permissions for each role. Any user created that is not a member of one of the two pre-defined roles will have the role of "none" and will be restricted in using the switch management interface (CLI, REST, WebUI) .
+
+Built in Roles | Access
+---------------|-------
+ops_admin      |  * Default bash shell(with sudo privileges)
+               |  * No switch configuration from the management interfaces
+               |  * Not a member of the ovsdb-client group
+               |  * Firmware upgrades from the management interfaces
+               |  * Change user's passwords from the management interfaces
+ops_netops     |  * Default vtysh shell
+               |  * No bash access
+               |  * View/Set switch configuration from the management interfaces
+               |  * Change own password.
+none           |  * No permissions
+
+### List of Permissions
+
+This table shows the permissions that will be supported with a brief description of what behavior they allow. These permissions will be mapped to user's role as described above.
+
+Permission            | Access
+----------------------|-------
+READ_SWITCH_CONFIG    | Ability to read switch configuration information.
+WRITE_SWITCH_CONFIG   | Ability to write switch configuration information.
+SYS_MANAGEMENT        | User Management and fw image download/upgrade.
+
+### Creating Users and Assigning Roles
+
+This section illustrates how the the user accounts will be created with a specified role.
+```ditaa
+                                              Network
+                                                 |
+          +------------+----------+--------------+----+---------------+--------------+
+          |            |          |                   |               |              |
+    +-----v-----+      |     +----v------+       +----v------+  +-----v-----+  +-----v-----+
+    | Ansible   |      |     | WebUI     |       | OVSDB API |  | SNMP      |  | CLI       |
+    |           |      |     |           <---+   |           |  |           |  |           |
+    |           |      |     +----^------+   |   |           |  |           |  |           |
+    |           |  +---v----------v------+   |   |           |  |           |  |           |
+    |           |  | REST API            |   |   |           |  |           |  |           |
+    |           |  |                     <---+   |           |  |           |  |           |
+    +-----------+  +---------------------+   |   +-----------+  +-----------+  +----^------+
+                                             |                                      |
+                                             +-------------------+             +----+
+                                                                 |             |
+                                                             +---v-------------v----------+
+                                                             |  Linux commands            |
+                                                             |  useradd, userdel          |
+                                                             |                            |
+                                                             +----------------------------+
+```
+
+Currently, OpenSwitch's CLI and REST management interfaces adds a user by making a call to "useradd" and removes a user by calling "userdel". Both CLI and REST will need to remove the user account creation/deletion from there management interfaces. User creation/deletion will now be handled by in the bash shell by the system admin. To support the two roles, we will be using unix groups (as shown below)
+
+ovsdb-client:x:1020:
+
+ops_admin:x:abcd:
+ops_netops:x:abce:
+
+The admin will need to create the user accounts the following way:
+
+"/usr/sbin/useradd -g ops_admin -s /bin/bash admin_username"
+"/usr/sbin/useradd -g ops_netops -G ovsdb-client -s /usr/bin/vtysh netops_username"
+
+#### Out of the box pre-created accounts.
+There will be two pre-created user accounts that will exist on the switch.
+* admin - Will be a member of the ops_admin group with a default bash shell with sudo privileges.
+* netops - Will be a member of both the ops_netops and ovsdb-client group and will have default vtysh shell.
+
+#### User account creation work flow
+
+All users on the OpenSwitch device will need to have local user accounts created before the user can log in. These accounts will need to be created by the Admin:
+
+* All user accounts will be created by the admin using useradd command in Linux. The admin will need to follow the rules listed above to create users with the appropriate roles.
+
+Note: The current RADIUS authentication workflow requires a local user account to be added (with or without password). Will will continue to use this workflow and the role will be provided by local group membership assigned to the user.
+
+#### Additional changes required to the current implementation Besides the changes above, some additional changes will need to be made to support RBAC.
+
+* Remove "ovsdb-client" and "ovsdb_users" group members from having sudo priviledges.
+* Allow "ops_admin" group members to have sudo priviledges.
+* Add ops_admin and ops_netops groups to the /etc/group file.
+* Remove the password for user "root".
+* Create "admin" and "netops" accounts with appropriate group membership and permissions.
