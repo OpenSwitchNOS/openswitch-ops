@@ -7,6 +7,7 @@
 - [Participating modules](#participating-modules)
 - [OVSDB schema](#ovsdb-schema)
 - [HTTPS support](#https-support)
+- [Logs support](#logs-support)
 - [References](#references)
 
 ## Introduction
@@ -84,6 +85,74 @@ response = conn.getresponse()
 Following is an example URL with HTTPS to query ports on the system from a web browser. HTTPS uses the default port 443 if not specified.
 ```https://172.17.0.3/rest/v1/system/ports```
 
+## Logs Support
+### Design
+REST APIs for logs provides an interface to query the systemd journal. The API internally calls the Journalctl linux command to read the systemd journal. Journalctl command was chosen as it has several filtering options and is an easy tool for accessing all the systemd/kernel logs. It also provides the output in JSON pretty format which is required for REST. The REST server does not modify the output from the journalctl command as it is already in JSON format.
+
+### Log API definitions
+- ```GET https://10.10.0.1/rest/v1/logs```
+Returns complete system journal output in json. This may be a huge output depending on how long the system is running. Hence, it is recommended to use filtering options to retrieve the logs that are of interest.
+
+-  ```GET https://10.10.0.1/rest/v1/logs?priority=<0-7>```
+Returns log output filtered by the given log priority level. Priority levels are similar to syslog levels 0-7. All logs with input level or a lower level (important) levels will be returned.
+
+- ```GET https://10.10.0.1/rest/v1/logs?since=”yyyy-mm-dd
+hh:mm:ss”;until=”yyyy-mm-dd hh:mm:ss”```
+Returns output filtered by the given time window.
+Instead of specific time, user can also give relative words like “yesterday”, “1 day ago”, “2 hours ago” etc;
+```GET https://10.10.0.1/rest/v1/logs?since="2 hours ago"```
+Returns log messages generated in the past 2 hour time window.
+
+
+- ```GET https://10.10.0.1/rest/v1/logs?after-cursor=”cursor_string”```
+Returns log output after a specified location in the log journal as indicated by the cursor. Cursor is maintained by the systemd journald service.  For e.g. If the user wants to retrieve the logs since the last request, the user will have to provide the valid cursor value returned in the previous request at the bottom of the output e.g. cursor: s=66e980e3c7bc46bea313de741ce481bc;i=8598c;b=78537df4874046d5ae9f251193b9f0bc;m=285fc88ec04;t=52bd96c4fa130;x=2f797c4c0bb5eafc
+
+- ```GET https://10.10.0.1/rest/v1/logs?cursor=”cursor_string”```
+Returns logs from the location specified by the passed cursor in the log output. Cursor is shown as the last entry in the output.
+
+- ```GET https://10.10.0.1/rest/v1/logs?offset=<int>;limit=<int>```
+As the log output can be huge, pagination is required to see the output in chunks. In order to retrieve the logs in pages, user may use the offset and limit parameters.  `Offset` is the starting point to obtain the results and the limit defines the number of logs returned in a page. Pagination parameters ```offset``` and ```limit``` can be used along with other filtering parameters.
+For example ```GET https://10.10.0.1/rest/v1/logs?priority=<0-7>;offset=<int>;limit=<int>```
+
+
+- ```Get https://10.10.0.1/rest/v1/logs?<field>=<value>```
+Returns the output based on the fields in the system journal. The following fields are supported:
+    |Field       | Description                                                             |
+    ----------   |--------------------------------------------------------------------------
+    |MESSAGE     | Exact log message that is expected in string format.
+    |MESSAGE_ID  | A 128-bit message identifier ID for recognizing certain message types. All openswitch events are stored with this message ID 50c0fa81c2a545ec982a54293f1b1945 in the system journal. Use this MESSAGE_ID in string format to query all the events.
+    |PRIORITY     | A priority value between 0 ("emerg") and 7 ("debug").
+    |SYSLOG_IDENTIFIER | Identifier string is the module generating the log message. Use this field to filter logs by a specific module.
+    |_PID | Process ID of the process that is generating the log entry.
+    |_UID | User ID of the process that is generating the log entry.
+    |_GID | Group ID of the process that is generating the log entry.
+   Following is an example of the log API response.
+```{
+
+	"__CURSOR" : "s=66e980e3c7bc46bea313de741ce481bc;i=9d56f;b=78537df4874046d5ae9f251193b9f0bc;m=294bd70c2b9;t=52be82d3777e5;x=97f095510c616684",
+	"__REALTIME_TIMESTAMP" : "1455651074570213",
+	"__MONOTONIC_TIMESTAMP" : "2837856699065",
+	"_BOOT_ID" : "78537df4874046d5ae9f251193b9f0bc",
+	"_TRANSPORT" : "syslog",
+	"PRIORITY" : "5",
+	"SYSLOG_FACILITY" : "3",
+	"SYSLOG_IDENTIFIER" : "ops-switchd",
+	"_PID" : "193",
+	"_UID" : "0",
+	"_GID" : "0",
+	"_COMM" : "ops-switchd",
+	"_EXE" : "/usr/sbin/ops-switchd",
+	"_CMDLINE" : "/usr/sbin/ops-switchd --no-chdir --pidfile --detach -vSYSLOG:INFO",
+	"_CAP_EFFECTIVE" : "3fffffffff",
+	"_SYSTEMD_CGROUP" : "/system.slice/switchd.service",
+	"_SYSTEMD_UNIT" : "switchd.service",
+	"_SYSTEMD_SLICE" : "system.slice",
+	"_MACHINE_ID" : "1547d722b8f04e1d8c4993c9664d625c",
+	"_HOSTNAME" : "switch",
+	"MESSAGE" : "ovs|383379|ovsdb_idl|INFO|DEBUG first row is missing from table class Neighbor",
+	"_SOURCE_REALTIME_TIMESTAMP" : "1455651074569511"
+}
+```
 
 ## References
 
