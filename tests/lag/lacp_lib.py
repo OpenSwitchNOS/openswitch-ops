@@ -216,7 +216,6 @@ def get_info_from_packet_capture(capture, switch_side, sw_mac):
                  r'Key\s(?P<key>\d*)\,\s'
                  r'Port\s(?P<port_id>\d*)\,\s'
                  r'Port\sPriority\s(?P<port_priority>\d*)')
-
     re_result = re.search(packet_re, capture)
     assert re_result
 
@@ -264,3 +263,11 @@ def validate_interface_not_in_lag(sw, interface, lag_id):
     print("Came back from show lacp interface")
     assert output['lag_id'] == "",\
         "Unable to associate interface to lag"
+
+
+def config_lacp_rate(sw, lag_id, lacp_rate='slow'):
+    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
+        if lacp_rate.lower() == 'slow':
+            ctx.no_lacp_rate_fast()
+        elif lacp_rate.lower() == 'fast':
+            ctx.lacp_rate_fast()
