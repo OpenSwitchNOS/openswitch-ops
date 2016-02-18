@@ -242,13 +242,52 @@ def get_info_from_packet_capture(capture, switch_side, sw_mac):
                  r'Key\s(?P<key>\d*)\,\s'
                  r'Port\s(?P<port_id>\d*)\,\s'
                  r'Port\sPriority\s(?P<port_priority>\d*)')
-
     re_result = re.search(packet_re, capture)
     assert re_result
 
     result = re_result.groupdict()
 
     return result
+
+
+def tcpdump_capture_interface_start(sw, interface_id):
+    cmd_output = sw('tcpdump -D'.format(**locals()),
+                    shell='bash_swns')
+    interface_re = (r'(?P<linux_interface>\d)\.' + interface_id +
+                    r'\s[\[Up, Running\]]')
+    re_result = re.search(interface_re, cmd_output)
+    assert re_result
+    result = re_result.groupdict()
+
+    cmd_output = sw(
+        'tcpdump -ni ' + result['linux_interface'] +
+        ' -e ether proto ' + LACP_PROTOCOL + ' -vv'
+        '> /tmp/ops_{interface_id}.cap 2>&1 &'.format(**locals()),
+        shell='bash_swns'
+    )
+
+    res = re.compile(r'\[\d+\] (\d+)')
+    res_pid = res.findall(cmd_output)
+
+    if len(res_pid) == 1:
+        tcpdump_pid = int(res_pid[0])
+    else:
+        tcpdump_pid = -1
+
+    return tcpdump_pid
+
+
+def tcpdump_capture_interface_stop(sw, interface_id, tcpdump_pid):
+    sw('kill {tcpdump_pid}'.format(**locals()),
+        shell='bash_swns')
+
+    capture = sw('cat /tmp/ops_{interface_id}.cap'.format(**locals()),
+                 shell='bash_swns')
+
+    sw('rm /tmp/ops_{interface_id}.cap'.format(**locals()),
+       shell='bash_swns')
+
+    return capture
 
 
 def set_debug(sw):
@@ -334,3 +373,11 @@ def assign_ip_to_lag(sw, lag_id, ip_address, ip_address_mask):
     with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
         ctx.routing()
         ctx.ip_address(ip_address_complete)
+
+
+def config_lacp_rate(sw, lag_id, lacp_rate='slow'):
+    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
+        if lacp_rate.lower() == 'slow':
+            ctx.no_lacp_rate_fast()
+        elif lacp_rate.lower() == 'fast':
+            ctx.lacp_rate_fast()
