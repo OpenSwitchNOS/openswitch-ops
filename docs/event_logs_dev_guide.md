@@ -2,11 +2,19 @@
 
 ## Contents
 
-- [Overview](#overview)
-- [How to define an event in a YAML file](#how-to-define-an-event-in-a-yaml-file)
-- [Sample YAML file](#sample-yaml-file)
-- [API usage](#api-usage)
-- [show events CLI](#show-events-cli)
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Event Log Infrastructure Developer Guide](#event-log-infrastructure-developer-guide)
+	- [Contents](#contents)
+	- [Overview](#overview)
+	- [How to define an event in a YAML file](#how-to-define-an-event-in-a-yaml-file)
+	- [Sample YAML file](#sample-yaml-file)
+	- [API usage](#api-usage)
+		- [C API Usage:](#c-api-usage)
+		- [Python API Usage](#python-api-usage)
+	- [show events CLI](#show-events-cli)
+
+<!-- /TOC -->
 
 ## Overview
 The event log framework is designed to facilitate generation and processing of high level events that are related to the functionality and components of the switch. For example, a port state change event, an LLDP neighbor discovered, or a Management Interface IP address updated.
@@ -95,6 +103,7 @@ event_definitions:
 
 ## API usage
 
+### C API Usage:
 Every daemon that defined its event category of interest and its events in a YAML file, is supposed to call event_log_init(category_name) during initialization. This enables the daemon to log all the events in that category using the log_events(event_name, key-values,...) API.
 
 Following is the syntax of the APIs:
@@ -132,6 +141,40 @@ For example:
    log_event("FAN_EVENT", NULL)
    ```
 
+### Python API Usage
+Python API's could be used by Python daemons to log events.
+
+Following is the syntax of the API's:
+
+event_log_init("event_category")
+
+Initializes feature or event category specific events for the daemon.
+
+- Returns -1 on failure.
+
+- An argument of event_log_init API is event_category. This is the category of events that needs to be initialized for the daemon.
+
+For example:
+ (a) event_log_init("LLDP")
+ (b) event_log_init("FAN")
+ (c) event_log_init("OSPF")
+
+ Events can be logged using:
+
+ log_event(event_name, [KEY, VALUE],..)
+
+ Arguments that are passed in the log_event API are:
+ - event_name - A unique event name that is defined in the YAML file.
+ - Key, Value - This should be specified as [KEY, VALUE]
+
+ For example:
+ - With Key Value Pairs
+
+ log_event("LLDP_A", ["X", value_of_X], ["Y", "testing"])
+
+ - Without Key Value Pairs
+
+  log_event("FAN_EVENT")
 
 ## show events CLI
 
