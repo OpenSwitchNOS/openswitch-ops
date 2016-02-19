@@ -131,7 +131,7 @@ Example output:
 
  switch# show ntp status
 
- NTP has been enabled
+ NTP is  enabled
  NTP Authentication has been enabled
  Synchronized to NTP Server 172.17.0.3 at stratum 3
  Poll interval = 64 seconds
@@ -269,7 +269,7 @@ switch# show ntp associations
 
 switch# show ntp status
 
-NTP has been enabled
+NTP is enabled
 NTP Authentication has been enabled
 Synchronized to NTP Server 172.17.0.2 at stratum 3
 Poll interval = 64 seconds
