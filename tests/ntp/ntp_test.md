@@ -131,8 +131,8 @@ Example output:
 
  switch# show ntp status
 
- NTP has been enabled
- NTP Authentication has been enabled
+ NTP is enabled
+ NTP authentication is enabled
  Synchronized to NTP Server 172.17.0.3 at stratum 3
  Poll interval = 64 seconds
  Time accuracy is within 0.016 seconds
@@ -269,8 +269,8 @@ switch# show ntp associations
 
 switch# show ntp status
 
-NTP has been enabled
-NTP Authentication has been enabled
+NTP is enabled
+NTP authentication is enabled
 Synchronized to NTP Server 172.17.0.2 at stratum 3
 Poll interval = 64 seconds
 Time accuracy is within 0.016 seconds
