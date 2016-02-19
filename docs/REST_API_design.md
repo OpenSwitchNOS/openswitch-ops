@@ -7,6 +7,7 @@
 - [Participating modules](#participating-modules)
 - [OVSDB schema](#ovsdb-schema)
 - [HTTPS support](#https-support)
+- [Logs support](#logs-support)
 - [References](#references)
 
 ## Introduction
@@ -84,6 +85,84 @@ response = conn.getresponse()
 Following is an example URL with HTTPS to query ports on the system from a web browser. HTTPS uses the default port 443 if not specified.
 ```https://172.17.0.3/rest/v1/system/ports```
 
+## Logs Support
+### Design
+REST APIs for logs provides an interface to query the systemd journal. The API internally calls the `journalctl` linux command to read the systemd journal. Journalctl command was chosen as it has several filtering options and is an easy tool for accessing all the systemd/kernel logs. It also provides the output in JSON format which is required for REST. The REST server does not modify the output from the journalctl command as it is already in JSON format. Each log entry in the system journal is represented in JSON as shown below. The response may have several such entries depending on the filtering options.
+```{
+        "__CURSOR" : "s=917df6ad70ee41cdba3f8fb28118e81b;i=4177e;b=78537df4874046d5ae9f251193b9f0bc;m=1b8905391e8;t=52b0c001a4714;x=75ceb440bae113ce",
+        "__REALTIME_TIMESTAMP" : "1454705424877332",
+        "__MONOTONIC_TIMESTAMP" : "1892207006184",
+        "_BOOT_ID" : "78537df4874046d5ae9f251193b9f0bc",
+        "_TRANSPORT" : "stdout",
+        "PRIORITY" : "6",
+        "SYSLOG_FACILITY" : "3",
+        "SYSLOG_IDENTIFIER" : "ops_ntpd",
+        "MESSAGE" : "2016-02-05T20:50:24Z |389737| ops-ntpd | INFO | Sync NTPD -> OVSDB : done",
+        "_PID" : "230",
+        "_UID" : "0",
+        "_GID" : "0",
+        "_COMM" : "python",
+        "_EXE" : "/usr/bin/python2.7",
+        "_CMDLINE" : "python /usr/bin/ops_ntpd",
+        "_CAP_EFFECTIVE" : "3fffffffff",
+        "_SYSTEMD_CGROUP" : "/system.slice/ops-ntpd.service",
+        "_SYSTEMD_UNIT" : "ops-ntpd.service",
+        "_SYSTEMD_SLICE" : "system.slice",
+        "_MACHINE_ID" : "79f8ca920cda4483ac8d36f63c7dd5cb",
+        "_HOSTNAME" : "switch"
+}
+```
+
+### Log API definitions
+- ```GET https://10.10.0.1/rest/v1/logs```
+Returns the most recent 1000 log entries from the system journal in JSON. The response is displayed by the newest entries first. This number is not user configurable currently and is fixed to 1000. It can be made user configurable in the future if needed.
+
+-  ```GET https://10.10.0.1/rest/v1/logs?priority=<0-7>```
+Returns log output filtered by the given log priority level. Priority levels are similar to syslog levels 0-7. All logs with the given priority level or lower will be returned.
+
+- ```GET https://10.10.0.1/rest/v1/logs?since=yyyy-mm-dd
+hh:mm:ss;until=yyyy-mm-dd hh:mm:ss```
+Returns output filtered by the given time window.
+Instead of specific time, user can also give relative words like "yesterday", "today", "now", "1 day ago", "1 hour ago", "1 minute ago". Words like "hour ago", "minute ago" and "day ago" must precede with an integer and can be in plural form too e.g 2 hours ago or 1 hour ago. Words other than the ones mentioned above will return an error.
+
+- ```GET https://10.10.0.1/rest/v1/logs?since=2 hours ago```
+Returns log entries generated in the past 2 hour time window.
+
+
+- ```GET https://10.10.0.1/rest/v1/logs?after-cursor=cursor_string```
+Returns logs *after* the location specified by the given cursor. Cursor is maintained by the systemd journald service per log entry and is displayed in the response for each log entry.  If the user wants to retrieve logs since the last request, the user will have to provide the cursor value of the last log entry returned in the previous request. Here is an example cursor string "s=66e980e3c7bc46bea313de741ce481bc;i=8598c;b=78537df4874046d5ae9f251193b9f0bc;m=285fc88ec04;t=52bd96c4fa130;x=2f797c4c0bb5eafc".
+
+
+- ```GET https://10.10.0.1/rest/v1/logs?offset=<int>;limit=<int>```
+As the log output can be huge, user may request the number of log entries in a response. For that, the user needs to pass `offset` and `limit` parameters.  `Offset` is the starting log entry to obtain the results which starts with 0. The `limit` defines the number of JSON log entries in the response. These parameters can be used along with other filtering parameters.
+For example, to retrieve the first 10 logs since the bootup, use `GET https:////10.10.0.1/rest/v1/logs?offset=0;limit=10`. To retrieve the next 10 logs, use `GET https:////10.10.0.1/rest/v1/logs?offset=10;limit=10`. The offset in the next request is typically the previous offset + limit. Following is an example to request log entries filtered based on priority level 6 and limit 5 log entries in the response.
+    ```GET https://10.10.0.1/rest/v1/logs?priority=6;offset=0;limit=5```
+
+
+- ```Get https://10.10.0.1/rest/v1/logs?<field>=<value>```
+Returns log output based on the fields matched to the given value in the system journal. User may give multiple match field/values in one request.
+    If one match field is specified, all entries with a field matching the expression are returned in response.
+    ``` https://10.10.0.1/rest/v1/logs?MESSAGE_ID=50c0fa81c2a545ec982a54293f1b1945```
+    If two different fields are matched, only entries matching both expressions at the same time are returned.
+    ``` https://10.10.0.1/rest/v1/logs?MESSAGE_ID=50c0fa81c2a545ec982a54293f1b1945;SYSLOG_INDETIFIER=ops-bgpd```
+    If two matches refer to the same field, all entries matching either expression are returned.
+    ```https://10.10.0.1/rest/v1/logs?_PID=150;_PID=178```
+
+The following fields are supported:
+
+    |Field       | Description                                     |
+    |----------  |-------------------------------------------------|
+    |MESSAGE     | Exact log message that is expected.|
+    |MESSAGE_ID  | A 128-bit message identifier ID for recognizing certain message types. All openswitch events are stored with this message ID 50c0fa81c2a545ec982a54293f1b1945 in the system journal. Use this MESSAGE_ID to query all the events.|
+    |PRIORITY     | A priority value between 0 ("emerg") and 7 ("debug").|
+    |SYSLOG_IDENTIFIER | Identifier string is the module generating the log message. Use this field to filter logs by a specific module.|
+    |_PID | Process ID of the process that is generating the log entry.|
+    |_UID | User ID of the process that is generating the log entry.|
+    |_GID | Group ID of the process that is generating the log entry.|
+
+Following is an example of log API response with offset=0;limit=2 which limits the log entries to 2 in the response.
+```[{"_BOOT_ID": "f43a84807a2d4b1389c87867fe6aaec3", "__REALTIME_TIMESTAMP": "1455653778503173", "_CAP_EFFECTIVE": "25402800cf", "__MONOTONIC_TIMESTAMP": "1556353467723", "_SYSTEMD_UNIT": "systemd-journald.service", "_MACHINE_ID": "5f7d6bb2aee84e5cb5bb3007b2911e7d", "_PID": "20", "_CMDLINE": "/lib/systemd/systemd-journald", "_SYSTEMD_CGROUP": "/system.slice/systemd-journald.service", "_SYSTEMD_SLICE": "system.slice", "PRIORITY": "6", "_EXE": "/lib/systemd/systemd-journald", "_UID": "0", "_TRANSPORT": "driver", "_GID": "0", "__CURSOR": "s=4696aa7b4c7b4090850ee29b7748df5c;i=2;b=f43a84807a2d4b1389c87867fe6aaec3;m=16a5de5454b;t=52be8ce623605;x=7ac41464416ef406", "MESSAGE": "Runtime journal is using 8.0M (max allowed 197.4M, trying to leave 296.2M free of 1.9G available \uffffffe2\uffffff86\uffffff92 current limit 197.4M).", "MESSAGE_ID": "ec387f577b844b8fa948f33cad9a75e6", "_COMM": "systemd-journal", "_HOSTNAME": "f37f0cd9a774"}, {"_BOOT_ID": "f43a84807a2d4b1389c87867fe6aaec3", "__REALTIME_TIMESTAMP": "1455653778503270", "_CAP_EFFECTIVE": "25402800cf", "__MONOTONIC_TIMESTAMP": "1556353467820", "_SYSTEMD_UNIT": "systemd-journald.service", "_MACHINE_ID": "5f7d6bb2aee84e5cb5bb3007b2911e7d", "_PID": "20", "_CMDLINE": "/lib/systemd/systemd-journald", "_SYSTEMD_CGROUP": "/system.slice/systemd-journald.service", "_SYSTEMD_SLICE": "system.slice", "PRIORITY": "6", "_EXE": "/lib/systemd/systemd-journald", "_UID": "0", "_TRANSPORT": "driver", "_GID": "0", "__CURSOR": "s=4696aa7b4c7b4090850ee29b7748df5c;i=3;b=f43a84807a2d4b1389c87867fe6aaec3;m=16a5de545ac;t=52be8ce623666;x=568d82819815b54d", "MESSAGE": "Journal started", "MESSAGE_ID": "f77379a8490b408bbe5f6940505a777b", "_COMM": "systemd-journal", "_HOSTNAME": "f37f0cd9a774"}]
+```
 
 ## References
 
