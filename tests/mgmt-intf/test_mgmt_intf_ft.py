@@ -67,8 +67,11 @@ class mgmtIntfTests(OpsVsiTest):
     def dhclient_started_on_mgmt_intf_ipv4(self):
         s1 = self.net.switches[0]
         cnt = 15
+        output_tmp = ''
+        output = ''
         while cnt:
-            output = s1.cmd("systemctl status dhclient@eth0.service")
+            output = s1.cmd("systemctl status dhclient@eth0.service -l")
+            output_tmp = s1.cmd("ifconfig")
             if output in 'running':
                 break
             else:
@@ -76,6 +79,8 @@ class mgmtIntfTests(OpsVsiTest):
                 sleep(1)
         assert 'running' in output, "Test to verify dhcp client has"\
             " started failed"
+        info("DHCLIENT tatus debug info : %s\n" % (output))
+        info("Mgmt port status debug info : %s\n" % (output_tmp))
         info('### Successfully verified dhcp client has started ###\n')
 
     # Mgmt Interface updated during bootup.
