@@ -7,6 +7,9 @@ VLANs
 - [Configuring a VLAN](#configuring-VLAN)
 	- [Setting up the basic configuration](#setting-up-the-basic-configuration)
 	- [Verifying the configuration](#verifying-the-configuration)
+- [Configuring a internal VLAN range](#configuring-internal-VLAN-range)
+- [Troubleshooting](#Troubleshooting)
+    - [Troubleshooting internal vlan](#Troubleshooting-internal-vlan)
 - [CLI](#cli)
 - [Related features](#related-features)
 
@@ -190,12 +193,71 @@ VLAN  Name         Status    Reason        Reserved       Ports
 33    vlan33       up       ok             (null)         2
 ```
 
+##Configuring internal VLAN range
+vlan internal range start-vlan-id end-vlan-id [ ascending | decsending ] sets range for internal VLAN in ascending or descending order. For every L3 interfaces there should be one internal VLAN. Whenever user configures interfaces, one of the VLAN from this range will be getting assigned to interface.
+```
+switch(config)# vlan internal range 4093 4094 ascending
+switch(config)# interface 1
+switch(config-if)# no shutdown
+switch(config-if)# interface 2
+switch(config-if)# no shutdown
+switch(config-if)# do show vlan internal
 
+Internal VLAN range  : 4093-4094
+Internal VLAN policy : ascending
+------------------------
+Assigned Interfaces:
+        VLAN            Interface
+        ----            ---------
+        4093            1
+        4094            2
+```
+##Troubleshooting
+###Troubleshooting internal VLAN
+Every L3 interface must have one internal VLAN. If an interface do not have internal VLAN because of running short of internal VLAN that can be checked in the "show vrf" output. The interface which do not have internal VLAN will have a status of ‘error: no_internal_vlan’.
 
+```
+switch# configure terminal
+switch(config)# vlan internal range 4093 4094 ascending
+switch(config)# interface 1
+switch(config-if)# no shutdown
+switch(config-if)# interface 2
+switch(config-if)# no shutdown
+switch(config-if)# do show vlan internal
 
+Internal VLAN range  : 4093-4094
+Internal VLAN policy : ascending
+------------------------
+Assigned Interfaces:
+        VLAN            Interface
+        ----            ---------
+        4093            1
+        4094            2
+switch(config-if)# interface 3
+switch(config-if)# no shutdown
+switch(config-if)# do show vlan internal
 
+Internal VLAN range  : 4093-4094
+Internal VLAN policy : ascending
+------------------------
+Assigned Interfaces:
+        VLAN            Interface
+        ----            ---------
+        4093            1
+        4094            2
+switch(config-if)# do show vrf
+VRF Configuration:
+------------------
+VRF Name : vrf_default
 
+        Interfaces :     Status :
+        -------------------------
+        3                error: no_internal_vlan
+        2                up
+        1                up
+switch(config-if)#
 
+```
 ## CLI
 Click [here](/documents/user/VLAN_cli) for the CLI commands related to the VLAN.
 
