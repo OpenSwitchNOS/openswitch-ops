@@ -22,7 +22,6 @@ from opstestfw.switch.OVS import *
 
 # Topology definition
 topoDict = {"topoExecution": 1000,
-            "topoType": "physical",
             "topoTarget": "dut01 dut02",
             "topoDevices": "dut01 dut02 wrkston01 wrkston02 wrkston03",
             "topoLinks": "lnk01:dut01:dut02,\
@@ -724,6 +723,7 @@ def ecmp_ping(**kwargs):
         retStruct.printValueString()
         LogOutput('info', "\n##### Ping Passed, Case Failed #####\n\n")
 
+@pytest.mark.timeout(500)
 
 class Test_ecmp_ping:
 
