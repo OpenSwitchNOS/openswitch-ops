@@ -66,5 +66,3 @@ true, false
 
 ## References
 openSSH 6.8 Package (http://olex.openlogic.com/packages/openssh/6.8)
-
-SFTP RFC (https://tools.ietf.org/html/rfc913)
