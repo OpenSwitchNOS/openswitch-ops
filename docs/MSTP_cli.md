@@ -1,0 +1,581 @@
+MSTP commands
+=============
+# Contents
+- [MSTP configuration commands](#mstp-configuration-commands)
+	- [Config context commands](#config-context-commands)
+		- [Enable MSTP protocol](#enable-mstp-protocol)
+		- [Disable MSTP protocol](#disable-mstp-protocol)
+		- [Modify MSTP protocol status](#modify-mstp-protocol-status)
+		- [Set MSTP config name](#set-mstp-config-name)
+		- [Set default MSTP config name](#set-default-mstp-config-name)
+		- [Set MSTP config revision number](#set-mstp-config-revision-number)
+		- [Set default MSTP config revision number](#set-default-mstp-config-revision-number)
+		- [VLAN to an instance](#vlan-to-an-instance)
+		- [Remove VLAN from instance](#remove-vlan-from-instance)
+		- [Set forward delay](#set-forward-delay)
+		- [Set default forward delay](#set-default-forward-delay)
+		- [Set hello time](#set-hello-time)
+		- [Set default hello time](#set-default-hello-time)
+		- [Set max age](#set-max-age)
+		- [Set default max age](#set-default-max-age)
+		- [Set max hops](#set-max-hops)
+		- [Set default max hops](#set-default-max-hops)
+		- [Set port type](#set-port-type)
+		- [Set default port type](#set-default-port-type)
+		- [Enable bpdu guard](#enable-bpdu-guard)
+		- [Set default bpdu guard](#set-default-bpdu-guard)
+		- [Enable loop guard](#enable-loop-guard)
+		- [Set default loop guard](#set-default-loop-guard)
+		- [Enable root guard](#enable-root-guard)
+		- [Set default root guard](#set-default-root-guard)
+		- [Enable bpdu filter](#enable-bpdu-filter)
+		- [Set default bpdu filter](#set-default-bpdu-filter)
+	- [MSTP show commands](#mstp-show-commands)
+	    - [Show spanning tree global configuration](#show-spanning-tree-global-configuration)
+		- [Show MSTP global configuration](#show-mstp-global-configuration)
+		- [Show MSTP configuration](#show-mstp-configuration)
+		- [Show MSTP running configuration](#show-mstp-running-configuration)
+
+# MSTP configuration commands
+## Config context commands
+### Enable MSTP protocol
+#### Syntax ####
+`spanning-tree`
+#### Description ####
+This command enables MSTP feature for all the instances.
+#### Authority ####
+All users.
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree
+```
+### Disable MSTP protocol
+#### Syntax ####
+`no spanning-tree`
+#### Description ####
+This command disables MSTP feature for all the instances.
+#### Authority ####
+All users.
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree
+```
+### Modify MSTP protocol status
+#### Syntax ####
+`spanning-tree [ enable | disable ]`
+#### Description ####
+This command modifies MSTP feature status for all the instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status     |Description |
+|:---------------|:-----------|:--------------|
+| *admin_status* | Optional   |Specifies the MSTP feature status value |
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree enable
+switch# spanning-tree disable
+```
+### Set MSTP config name
+#### Syntax ####
+`spanning-tree config-name <configuration-name>`
+#### Description ####
+This command sets config name for MSTP.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter            | Status    | Description |
+|:---------------------|:----------|:--------------|
+| *configuration-name* | Required  | Specifies the MSTP configuration name |
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree config-name MST0
+```
+### Set default MSTP config name
+#### Syntax ####
+`no spanning-tree config-name [<configuration-name>]`
+#### Description ####
+This command sets the default config name for all the instances, default is system MAC-Address.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter     |  Status      | Description |
+|:--------------|:-------------|:----------------|
+| *config-name* | Optional     | Specifies the MSTP configuration name |
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree config-name
+```
+### Set MSTP config revision number
+#### Syntax ####
+`spanning-tree config-revision <revision-number>`
+#### Description ####
+This command sets config revision number for the all the instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter         | Status   | Syntax    | Description |
+|:------------------|:---------|:----------|:--------------|
+| *revision-number* | Required | <1-40>    | Specifies the MSTP configuration revision number value|
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree config-revision 40
+```
+### Set default MSTP config revision number
+#### Syntax ####
+`no spanning-tree config-revision [<revision-number>]`
+#### Description ####
+This command sets default config revision number for the all the instances, default value is 0.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter         | Status   | Syntax         | Description |
+|:------------------|:---------|:---------------|:--------------|
+| *revision-number* | Optional | <1-40>         | Specifies the MSTP configuration revision number value|
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree config-revision
+```
+### VLAN to an instance
+#### Syntax ####
+`spanning-tree instance <instance-id> vlan <VLAN-ID>`
+#### Description ####
+This command maps the VLAN-ID to corresponding  instance.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter     | Status   | Syntax    | Description   |
+|:--------------|:---------|:----------|:--------------|
+| *instance-id* | Required | <1-64>    | Specifies the MSTP instance number|
+| *VLAN-ID*     | Required | <1-4094>  | Specifies the VLAN-ID number|
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree instance 1 vlan 1
+switch# spanning-tree instance 1 vlan 2
+```
+### Remove VLAN from instance
+#### Syntax ####
+`no spanning-tree instance <instance-id> vlan <VLAN-ID>`
+#### Description ####
+This command removes the VLAN-ID from the MSTP instance.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter     | Status   | Syntax    | Description   |
+|:--------------|:---------|:----------|:--------------|
+| *instance-id* | Required | <1-64>    | Specifies the MSTP instance number|
+| *VLAN-ID*     | Required | <1-4094>  | Specifies the VLAN-ID number|
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree instance 1 vlan 1
+switch# no spanning-tree instance 1 vlan 2
+```
+###Set forward delay
+#### Syntax ####
+`spanning-tree forward-delay <delay-in-secs>`
+#### Description ####
+This command sets the forward-delay for all the MSTP instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *delay-in-secs*| Required | <4-30>    | Specifies the forward delay in seconds|
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree forward-delay 6
+```
+###Set default forward delay
+#### Syntax ####
+`no spanning-tree forward-delay [<delay-in-secs>]`
+#### Description ####
+This command sets the default forward-delay for all the MSTP instances, default value is 15 seconds.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *delay-in-secs*| Optional | <4-30>    | Specifies the forward delay in seconds|
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree forward-delay
+```
+###Set hello time
+#### Syntax ####
+`spanning-tree hello-time <hello-in-secs>`
+#### Description ####
+This command sets the hello interval for all the MSTP instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *hello-in-secs*| Required | <2-10>    | Specifies the hello interval in seconds|
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree hello-time 6
+```
+###Set default hello time
+#### Syntax ####
+`no spanning-tree hello-time [<hello-in-secs>]`
+#### Description ####
+This command sets the default hello interval for all the MSTP instances, default value is 2 seconds.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *hello-in-secs*| Optional | <2-10>    | Specifies the hello interval in seconds|
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree hello-time
+```
+###Set max age
+#### Syntax ####
+`spanning-tree max-age <age-in-secs>`
+#### Description ####
+This command sets the maximum age for all the MSTP instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *age-in-secs*  | Required | <6-30>    | Specifies the maximum age in seconds|
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree max-age 10
+```
+###Set default max age
+#### Syntax ####
+`no spanning-tree max-age [<age-in-secs>]`
+#### Description ####
+This command sets the default max age for all the MSTP instances, default value is 20 seconds.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *age-in-secs*  | Optional | <6-30>    | Specifies the maximum age in seconds|
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree max-age
+```
+###Set max hops
+#### Syntax ####
+`spanning-tree max-hops <hop-count>`
+#### Description ####
+This command sets the hop count for all the MSTP instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *hop-count*    | Required | <1-40>    | Specifies the maximum number of hops|
+#### Examples ####
+```
+switch# configure terminal
+switch# spanning-tree max-hops 10
+```
+###Set default max hops
+#### Syntax ####
+`no spanning-tree max-hops [<hop-count>]`
+#### Description ####
+This command sets the default hop count for all the MSTP instances, default value is 20.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Syntax    | Description   |
+|:-------------- |:---------|:----------|:--------------|
+| *hop-count*    | Optional | <1-40>    | Specifies the maximum number of hops|
+#### Examples ####
+```
+switch# configure terminal
+switch# no spanning-tree max-hops
+```
+###Set port type
+#### Syntax ####
+`spanning-tree port-type (admin-edge | admin-network)`
+#### Description ####
+This command sets the port-type for all the MSTP instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *admin-edge*   | Optional |Specifies the port as admin-edge|
+| *admin-network*| Optional |Specifies the port as admin-network|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree port-type admin-edge
+switch# spanning-tree port-type admin-network
+```
+###Set default port type
+#### Syntax ####
+`no spanning-tree port-type [admin-edge | admin-network]`
+#### Description ####
+This command sets the default port-type for all the MSTP instances.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *admin-edge*   | Optional |Specifies the port as admin-edge|
+| *admin-network*| Optional |Specifies the port as admin-network|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# no spanning-tree port-type
+```
+###Enable bpdu guard
+#### Syntax ####
+`spanning-tree bpdu-guard [enable | disable]`
+#### Description ####
+This command enable the bpdu guard on the interfaces.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *bpdu-guard*   | Required |Specifies the bpdu-guard|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree bpdu-guard enable
+```
+###Set default bpdu guard
+#### Syntax ####
+`no spanning-tree bpdu-guard [enable | disable]`
+#### Description ####
+This command sets the default bpdu guard status on the interface.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *bpdu-guard*   | Required |Specifies the bpdu-guard|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree bpdu-guard
+```
+###Enable root guard
+#### Syntax ####
+`spanning-tree root-guard [enable | disable]`
+#### Description ####
+This command enable the root guard on the interface.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *root-guard*   | Required |Specifies the root-guard|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree root-guard enable
+```
+###Set default root guard
+#### Syntax ####
+`no spanning-tree root-guard [enable | disable]`
+#### Description ####
+This command sets the default root guard status on the interface.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *root-guard*   | Required |Specifies the root-guard|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree root-guard
+```
+###Enable loop guard
+#### Syntax ####
+`spanning-tree loop-guard [enable | disable]`
+#### Description ####
+This command enable the loop guard in the interface.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *loop-guard*   | Required |Specifies the loop-guard|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree loop-guard enable
+```
+###Set default loop guard
+#### Syntax ####
+`no spanning-tree loop-guard [enable | disable]`
+#### Description ####
+This command sets the default loop guard status on the interface.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *loop-guard*   | Required |Specifies the loop-guard|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree loop-guard
+```
+###Enable bpdu filter
+#### Syntax ####
+`spanning-tree bpdu-filter [enable | disable]`
+#### Description ####
+This command enable the bpdu filter in the interface.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *bpdu-filter*  | Required |Specifies the bpdu-filter|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree bpdu-guard enable
+switch# spanning-tree root-guard disable
+```
+###Set default bpdu filter
+#### Syntax ####
+`no spanning-tree bpdu-filter [enable | disable]`
+#### Description ####
+This command sets the default bpdu filter on the interface.
+#### Authority ####
+All users.
+#### Parameters ####
+| Parameter      | Status   | Description   |
+|:-------------- |:---------|:--------------|
+| *bpdu-filter*  | Required |Specifies the bpdu-filter|
+| *enable*       | Optional |Specifies the status parameter|
+| *disable*      | Optional |Specifies the status parameter|
+#### Examples ####
+```
+switch# configure terminal
+switch# interface 1
+switch# spanning-tree bpdu-guard enable
+switch# spanning-tree root-guard disable
+```
+# MSTP show commands
+### Show spanning tree global configuration
+#### Syntax ####
+`show spanning-tree`
+#### Description ####
+This command shows priority, address, Hello-time, Max-age, Forward-delay for bridge and root node.
+#### Authority ####
+All users.
+#### Examples ####
+```
+MST0
+  Spanning tree status: Enabled
+  Root ID    Priority    : 32768
+             MAC-Address : 70:72:cf:e1:b9:16
+             This bridge is the root
+             Hello time(in seconds): 2  Max Age(in seconds): 20  Forward Delay(in seconds): 15
+
+
+  Bridge ID  Priority    : 32768
+             MAC-Address : 70:72:cf:e1:b9:16
+             Hello time(in seconds): 2  Max Age(in seconds): 20  Forward Delay(in seconds): 15
+
+Port           Role           State      Cost    Priority   Type
+-------------- -------------- ---------- ------- ---------- ----------
+1              disabled_port  Blocking   0       128        point_to_point
+bridge_normal  disabled_port  Blocking   0       128        point_to_point
+```
+### Show MSTP global configuration
+#### Syntax ####
+`show spanning-tree mst-config`
+#### Description ####
+This command shows MSTP instance and corresponding VLANs.
+#### Authority ####
+All users.
+#### Examples ####
+```
+MST configuration information
+   MST config ID           : MST0
+   MST config revision     : 33
+   Number of instances     : 2
+
+Instance ID     Member VLANs
+--------------- ----------------------------------
+3               3
+1               1,2
+```
+### Show MSTP configuration
+#### Syntax ####
+`show  spanning-tree mst`
+#### Description ####
+This command shows global MSTP configuration.
+#### Authority ####
+All users.
+#### Examples ####
+```
+#### MST0
+vlans mapped: Bridge         address:70:72:cf:05:02:b3    priority:32768
+Root           this switch for the CIST
+Operational    Hello time(in seconds):2  Forward delay(in seconds):15  Max-age(in seconds):20  txHoldCount:6
+Configured     Hello time(in seconds):2  Forward delay(in seconds):15  Max-age(in seconds):20  txHoldCount:6
+
+Port           Role           State      Cost    Priority   Type
+-------------- -------------- ---------- ------- ---------- ----------
+1              disabled_port  Blocking   0       128        point_to_point
+bridge_normal  disabled_port  Blocking   0       128        point_to_point
+```
+### Show MSTP running configuration
+#### Syntax ####
+`show running-config spanning-tree`
+#### Description ####
+This command shows configured commands for MSTP.
+#### Authority ####
+All users.
+#### Examples ####
+```
+spanning-tree enable
+spanning-tree config-name MST0
+spanning-tree config-revision 33
+spanning-tree instance 3 vlan 3
+spanning-tree instance 1 vlan 1,2
+```
