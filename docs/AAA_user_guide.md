@@ -30,6 +30,7 @@ The AAA feature is used for authenticating users who access the switch managemen
 - Configuring the SSH authentication method.
 
 This feature currently supports user authentication based on user name and password.
+IEEE 802.1X Port Based Network Access Control is not supported on data ports.
 
 ## How to use the feature
 ### Scenario 1
