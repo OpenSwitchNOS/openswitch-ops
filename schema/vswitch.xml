@@ -217,6 +217,18 @@
         </column>
       </group>
 
+    <group title="UDP Broadcast Forwarder Configurations">
+        <column name="other_config" key="udp_bcast_forwarder_enabled"
+              type='{"type": "boolean"}'>
+          Set this value to <code>true</code> to enable UDP-Broadcast-Forwarder
+          functionality globally and set it to <code>false</code> to disable it.
+          UDP-Broadcast-Forwarder is disabled by default. If the key is missing, the
+          configuration is assumed to be disabled.
+          Thought UDP-Broadcast-Forwarder feature is enabled globally, the functionality
+          is effective only after the port level server configuration.
+        </column>
+    </group>
+
     <group title="LACP Configurations">
       <column name="lacp_config" key="lacp-system-id">
         The LACP system ID of this <ref table="Bridge"/>.  The system ID of a
@@ -5183,6 +5195,29 @@
       </column>
       <column name="status" key="error">
           Unspecified error.
+      </column>
+    </group>
+  </table>
+  <table name="UDP_Bcast_Forwarder_Server">
+    <p>
+      Placeholder for a set of server configuration entries. UDP-Broadcast-Forwarder feature uses
+      these entries to forward matching UDP broadcast packets received on the layer3 Port.
+    </p>
+    <group title="UDP Broadcast Forwarder Configuration">
+      <column name="port">
+        Layer 3 Port on which the configuration is made.
+      </column>
+      <column name="vrf">
+        VRF through which server is reachable.
+      </column>
+      <column name="udp_dport">
+        UDP broadcast packets with this destination udp port are forwarded to the configured
+        server(s).
+      </column>
+      <column name="ipv4_ucast_server">
+        List of IPv4 unicast server destinations to which matching UDP broadcast packets received
+        on the port are duplicated and forwarded.
+        A maximum of 16 ipv4 unicast server configurations are allowed.
       </column>
     </group>
   </table>

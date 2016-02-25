@@ -5737,6 +5737,64 @@
           }
         }
       }
+    },
+    "UDP_Bcast_Forwarder_Server": {
+      "columns": {
+        "port": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port",
+              "refType" : "weak"
+            }
+          },
+          "mutable": false
+        },
+        "vrf": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRF",
+              "refType" : "weak"
+            }
+          },
+          "mutable": false
+        },
+        "udp_dport": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 65535
+            }
+          },
+          "mutable": false
+        },
+        "ipv4_ucast_server": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 15
+            },
+            "min": 0,
+            "max": 16
+          }
+        }
+      },
+      "indexes": [
+        [
+          "port",
+          "vrf",
+          "udp_dport"
+        ]
+      ],
+      "isRoot": true
     }
   }
 }
