@@ -224,7 +224,19 @@
           globally and set it to <code>false</code> to enable it. DHCP-Relay is
           enabled by default. If the key is missing, the configuration is assumed
           to be enabled.
-          Thought DHCP-Relay configuration is enabled globally, the functionality
+          Though DHCP-Relay configuration is enabled globally, the functionality
+          is effective only after the port level server configuration.
+        </column>
+    </group>
+
+    <group title="UDP Broadcast Forwarder Configurations">
+        <column name="other_config" key="udp_bcast_forwarder_enabled"
+              type='{"type": "boolean"}'>
+          Set this value to <code>true</code> to enable UDP-Broadcast-Forwarder
+          functionality globally and set it to <code>false</code> to disable it.
+          UDP-Broadcast-Forwarder is disabled by default. If the key is missing, the
+          configuration is assumed to be disabled.
+          Though UDP-Broadcast-Forwarder configuration is enabled globally, the functionality
           is effective only after the port level server configuration.
         </column>
     </group>
@@ -5600,7 +5612,7 @@
 
   <table name="DHCP_Relay">
     <p>
-      Placeholder for a set of server configuration entries. DHCP-Relay features uses these entries
+      Placeholder for a set of server configuration entries. DHCP-Relay feature uses these entries
       to forward matching DHCP broadcast packets received on the layer3 Port.
     </p>
     <group title="DHCP-Relay Configuration">
@@ -5628,6 +5640,30 @@
         this port.
         A maximum of 16 IPv6 server configurations are allowed. This count includes IPv6 unicast
         server configurations from the column "ipv6_ucast_server".
+      </column>
+    </group>
+  </table>
+
+  <table name="UDP_Bcast_Forwarder_Server">
+    <p>
+      Placeholder for a set of server configuration entries. UDP-Broadcast-Forwarder feature uses
+      these entries to forward matching UDP broadcast packets received on the layer3 Port.
+    </p>
+    <group title="UDP Broadcast Forwarder Configuration">
+      <column name="port">
+        Layer 3 Port on which the configuration is made.
+      </column>
+      <column name="vrf">
+        VRF through which server is reachable.
+      </column>
+      <column name="udp_dport">
+        UDP broadcast packets with this destination udp port are forwarded to the configured
+        server(s).
+      </column>
+      <column name="ipv4_ucast_server">
+        List of IPv4 unicast server destinations to which matching UDP broadcast packets received
+        on the port are duplicated and forwarded.
+        A maximum of 16 ipv4 unicast server configurations are allowed.
       </column>
     </group>
   </table>
