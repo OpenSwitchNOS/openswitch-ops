@@ -18,7 +18,7 @@
 # Name:        lagDynamicInterfacesOnOtherLag
 #
 # Objective:   To verify the interface is moved when it is
-#				part of a dynamic LAG and is added to another LAG
+#              part of a dynamic LAG and is added to another LAG
 #
 # Author:      Pablo Araya M.
 #

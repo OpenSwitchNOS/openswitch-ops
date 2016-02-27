@@ -18,6 +18,7 @@ from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.host import *
 import math
+import pdb
 
 topoDict = {"topoExecution": 1500,
             "topoDevices": "dut01 dut02 dut03\
@@ -56,7 +57,7 @@ def clean_up(dut01, dut02, dut03, wrkston01, wrkston02, wrkston03):
         LogOutput('info', "Passed Switch Reboot ")
 
 
-class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
+class Test_ft_LAG_Dynamic_L3_Hashing_Flow_Distribution:
 
     listDut = None
     listWrkston = None
@@ -78,10 +79,10 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
     def setup_class(cls):
 
         # Create Topology object and connect to devices
-        Test_ft_LAG_static_L3_Hashing_Flow_Distribution.testObj \
+        Test_ft_LAG_Dynamic_L3_Hashing_Flow_Distribution.testObj \
             = testEnviron(topoDict=topoDict)
-        Test_ft_LAG_static_L3_Hashing_Flow_Distribution.topoObj = \
-            Test_ft_LAG_static_L3_Hashing_Flow_Distribution. \
+        Test_ft_LAG_Dynamic_L3_Hashing_Flow_Distribution.topoObj = \
+            Test_ft_LAG_Dynamic_L3_Hashing_Flow_Distribution. \
             testObj.topoObjGet()
 
         # Global definition
@@ -110,6 +111,7 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
         l2IpNetmask = "255.255.255.0"
         l2IpNet = ["10.2.2.0", "10.2.3.0", "10.2.4.0"]
         vlanLagId = 800
+        marginError = 0.10
         dut01Obj = cls.topoObj.deviceObjGet(device="dut01")
         dut02Obj = cls.topoObj.deviceObjGet(device="dut02")
         dut03Obj = cls.topoObj.deviceObjGet(device="dut03")
@@ -127,9 +129,9 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
                  dut02Obj,
                  dut03Obj,
                  wrkston01Obj,
-                 workstation2,
+                 wrkston02Obj,
                  wrkston03Obj)
-        Test_ft_LAG_static_L3_Hashing_Flow_Distribution.topoObj. \
+        Test_ft_LAG_Dynamic_L3_Hashing_Flow_Distribution.topoObj. \
             terminate_nodes()
 
     ##########################################################################
@@ -175,13 +177,37 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
                 LogOutput('info', "Passed lag configured ")
 
     ##########################################################################
-    # Step 3 - Configured vlan
+    # Step 3 - Enable dynamic Lag
+    ##########################################################################
+
+    def test_enable_dynamic_lag(self):
+
+        LogOutput('info', "\n###############################################")
+        LogOutput('info', "# Step 3 - Enable dynamic Lag ")
+        LogOutput('info', "###############################################")
+
+        listSemiDut = [dut01Obj, dut02Obj]
+
+        for currentDut in listSemiDut:
+            devLagDinRetStruct = lagMode(
+                deviceObj=currentDut,
+                lagId=lagId,
+                lacpMode="active")
+
+            if devLagDinRetStruct.returnCode() != 0:
+                LogOutput('error', "Failed to enable dynamic lag")
+                assert(False)
+            else:
+                LogOutput('info', "Enable dynamic lag")
+
+    ##########################################################################
+    # Step 4 - Configured vlan
     ##########################################################################
 
     def test_configure_vlan(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 3 - Configure vlan  in the switch")
+        LogOutput('info', "# Step 4 - Configure vlan  in the switch")
         LogOutput('info', "###############################################")
 
         listSemiDut = [dut01Obj, dut02Obj]
@@ -213,13 +239,13 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
                 LogOutput('info', "Vlan created")
 
     ##########################################################################
-    # Step 4 - Add ports to vlan
+    # Step 5 - Add ports to vlan
     ##########################################################################
 
     def test_interface_vlan(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 4 - Add ports to vlan")
+        LogOutput('info', "# Step 5 - Add ports to vlan")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk01']
@@ -264,13 +290,13 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
                 LogOutput('info', "Passed interface vlan configured")
 
     ##########################################################################
-    # Step 5 - Add ports to lag
+    # Step 6 - Add ports to lag
     ##########################################################################
 
     def test_configure_interface_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 5 - Configure lag id in the interface")
+        LogOutput('info', "# Step 6 - Configure lag id in the interface")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk02']
@@ -307,13 +333,13 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
                 LogOutput('info', "Passed interface lag id configured ")
 
     ##########################################################################
-    # Step 6 - Configured Switch ip address
+    # Step 7 - Configured Switch ip address
     ##########################################################################
 
     def test_configured_switch_ip_address(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 6 - Configured Switch ip address")
+        LogOutput('info', "# Step 7 - Configured Switch ip address")
         LogOutput('info', "###############################################")
 
         dut03Interface01 = dut03Obj.linkPortMapping['lnk04']
@@ -342,13 +368,13 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
                 LogOutput('info', "Successfully configured IP on Interface")
 
     ##########################################################################
-    # Step 7 - Configure Workstation
+    # Step 8 - Configure Workstation
     ##########################################################################
 
     def test_configure_workstations(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 7 - Configure Workstations")
+        LogOutput('info', "# Step 8 - Configure Workstations")
         LogOutput('info', "###############################################")
 
         # Client Side
@@ -377,13 +403,13 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
                 assert(False)
 
     ##########################################################################
-    # Step 8 - Enable switch ports
+    # Step 9 - Enable switch ports
     ##########################################################################
 
     def test_enable_switch_interfaces(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 8 - Enable all the switchs interfaces")
+        LogOutput('info', "# Step 9 - Enable all the switchs interfaces")
         LogOutput('info', "###############################################")
 
         switch1Interface1 = dut01Obj.linkPortMapping['lnk01']
@@ -447,13 +473,13 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
         LogOutput('info', "All ports in switches are enable")
 
     ##########################################################################
-    # Step 9 - Send and validated traffic
+    # Step 10 - Send and validated traffic
     ##########################################################################
 
     def test_send_validated_traffic(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 9 - Send and validated traffic")
+        LogOutput('info', "# Step 10 - Send and validated traffic")
         LogOutput('info', "###############################################")
 
         packetsCounter = 25
@@ -552,6 +578,7 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
         LogOutput('info', "Interface clean is : " + str(tx2Second))
 
         # Operations to see if traffic was distributed
+
         raw2Tx = (int(tx1Firts) - int(tx2Delta)) - \
             (int(tx1Firts) - int(tx1Delta))
         raw1Tx = (int(tx2Second) - int(tx1Firts)) - \
@@ -562,7 +589,7 @@ class Test_ft_LAG_static_L3_Hashing_Flow_Distribution:
         highBandError = packetsCounter + \
             math.ceil(float(packetsCounter) * marginError)
 
-        if lowBandError > raw2Tx or  raw2Tx > highBandError \
+        if lowBandError > raw2Tx or raw2Tx > highBandError \
                 or lowBandError > raw1Tx or raw1Tx > highBandError:
             LogOutput('error', "Traffic not was evenly distributed ")
             assert(False)
