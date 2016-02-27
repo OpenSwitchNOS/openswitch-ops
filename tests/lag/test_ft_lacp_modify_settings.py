@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,9 +14,9 @@
 #    under the License.
 #
 ###############################################################################
-# Name:        staticLinkAggregation_noModSet.py
+# Name:        dynamicLinkAggregation_noModSet.py
 #
-# Description: Tests that a previously configured static Link Aggregation does
+# Description: Tests that a previously configured dynamic Link Aggregation does
 #              not stop forwarding traffic when the link is reconfigured with
 #              the same initial settings. The current link should keep working
 #              fine and the configuration retain the same settings
@@ -24,10 +24,10 @@
 # Author:      Jose Calvo
 #
 # Topology:  |Host A| ---- |Switch A| ---------------- |Switch B| ---- |Host B|
-#                                   (Static LAG - 3 links)
+#                                  (Dynamic LAG - 3 links)
 #
 # Success Criteria:  PASS -> Traffic flow between hosts is not stopped after
-#                            applying static LAG configuration and current
+#                            applying dynamic LAG configuration and current
 #                            configuration is not modified
 #
 #                    FAILED -> Traffic between hosts stops crossing the static
@@ -36,7 +36,6 @@
 #
 ###############################################################################
 
-import pytest
 import threading
 from opstestfw.switch.CLI import *
 from opstestfw import *
@@ -54,7 +53,7 @@ topoDict = {"topoExecution": 2000,
                             wrkston02:system-category:workstation"}
 
 
-def lag_createStatic(dutA, dutB):
+def lag_createDynamic(dutA, dutB):
     devices = []
     devices.append(dutA)
     devices.append(dutB)
@@ -64,7 +63,11 @@ def lag_createStatic(dutA, dutB):
             lagId=1,
             configFlag=True
         ).returnCode()
-        setMode = lagMode(deviceObj=dev, lagId=1, lacpMode="off").returnCode()
+        setMode = lagMode(
+            deviceObj=dev,
+            lagId=1,
+            lacpMode="active"
+        ).returnCode()
         if setCreate != 0 or setMode != 0:
             return -1
         for i in range(2, 5):
@@ -292,7 +295,7 @@ class Test_ft_framework_basics:
         LogOutput('info', "STEP 5 - CREATING LINK AGGREGATION\n")
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
-        retCode = lag_createStatic(dut01Obj, dut02Obj)
+        retCode = lag_createDynamic(dut01Obj, dut02Obj)
         try:
             validateStep(retCode, 5)
         except Exception as err:
@@ -325,7 +328,7 @@ class Test_ft_framework_basics:
         t.start()
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
-        retCode = lag_createStatic(dut01Obj, dut02Obj)
+        retCode = lag_createDynamic(dut01Obj, dut02Obj)
         try:
             validateStep(retCode, 7)
         except Exception as err:
