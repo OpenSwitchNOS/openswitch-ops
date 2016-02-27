@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -36,8 +36,8 @@
 #
 ###############################################################################
 
-import pytest
 import threading
+import pytest
 from opstestfw.switch.CLI import *
 from opstestfw import *
 
@@ -127,6 +127,7 @@ class trafficCheck (threading.Thread):
         self.flag = False
 
 
+@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 765")
 class Test_ft_framework_basics:
     def setup_class(cls):
         Test_ft_framework_basics.testObj = testEnviron(topoDict=topoDict)
@@ -136,20 +137,10 @@ class Test_ft_framework_basics:
     def teardown_class(cls):
         Test_ft_framework_basics.topoObj.terminate_nodes()
 
-    def test_initializeDev(self):
-        LogOutput('info', "#############################")
-        LogOutput('info', "STEP 1 - INITIALIZING DEVICES\n")
-        dut01Obj = self.topoObj.deviceObjGet(device="dut01")
-        dut02Obj = self.topoObj.deviceObjGet(device="dut02")
-        dut01Obj.Reboot()
-        dut02Obj.Reboot()
-        LogOutput('info', "\n        STEP 1 COMPLETE      ")
-        LogOutput('info', "#############################")
-
     def test_setLinks(self):
         LogOutput('info', "\n")
         LogOutput('info', "#######################")
-        LogOutput('info', "STEP 2 - ENABLING LINKS\n")
+        LogOutput('info', "STEP 1 - ENABLING LINKS\n")
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
         wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
@@ -213,7 +204,7 @@ class Test_ft_framework_basics:
             config=True
         ).returnCode()
         try:
-            validateStep(retCode, 2)
+            validateStep(retCode, 1)
         except Exception as err:
             LogOutput('error', "Host A: cannot set IP Address\n" + str(err))
 
@@ -230,13 +221,13 @@ class Test_ft_framework_basics:
         except Exception as err:
             LogOutput('error', "Host B: cannot set IP Address\n" + str(err))
 
-        LogOutput('info', "\n        STEP 2 COMPLETE      ")
+        LogOutput('info', "\n        STEP 1 COMPLETE      ")
         LogOutput('info', "#############################")
 
     def test_setVlans(self):
         LogOutput('info', "\n")
         LogOutput('info', "#########################")
-        LogOutput('info', "STEP 3 - CREATING VLAN 10\n")
+        LogOutput('info', "STEP 2 - CREATING VLAN 10\n")
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
         retCode = VlanStatus(
@@ -246,7 +237,7 @@ class Test_ft_framework_basics:
         ).returnCode()
 
         try:
-            validateStep(retCode, 3)
+            validateStep(retCode, 2)
         except Exception as err:
             LogOutput('error', "TEST FAILED: " + str(err))
 
@@ -257,18 +248,18 @@ class Test_ft_framework_basics:
         ).returnCode()
 
         try:
-            validateStep(retCode, 3)
+            validateStep(retCode, 2)
         except Exception as err:
             LogOutput('error', "TEST FAILED: " + str(err))
 
-        LogOutput('info', "        STEP 3 COMPLETE      ")
+        LogOutput('info', "        STEP 2 COMPLETE      ")
         LogOutput('info', "#############################")
 
     def test_assignVlans(self):
         devices = []
         LogOutput('info', "\n")
         LogOutput('info', "########################################")
-        LogOutput('info', "STEP 4 - ASSIGNING VLAN 10 TO INTERFACES\n")
+        LogOutput('info', "STEP 3 - ASSIGNING VLAN 10 TO INTERFACES\n")
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
         devices.append(dut01Obj)
@@ -283,20 +274,35 @@ class Test_ft_framework_basics:
                 ).returnCode()
 
                 try:
-                    validateStep(retCode, 4)
+                    validateStep(retCode, 3)
                 except Exception as err:
                     LogOutput('error', "TEST FAILED: " + str(err))
 
-        LogOutput('info', "        STEP 4 COMPLETE      ")
+        LogOutput('info', "        STEP 3 COMPLETE      ")
         LogOutput('info', "#############################")
 
     def test_createLag(self):
         LogOutput('info', "\n")
         LogOutput('info', "##################################")
-        LogOutput('info', "STEP 5 - CREATING LINK AGGREGATION\n")
+        LogOutput('info', "STEP 4 - CREATING LINK AGGREGATION\n")
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
         retCode = lag_createDynamic(dut01Obj, dut02Obj)
+        try:
+            validateStep(retCode, 4)
+        except Exception as err:
+            LogOutput('error', "TEST FAILED: " + str(err))
+
+        LogOutput('info', "        STEP 4 COMPLETE      ")
+        LogOutput('info', "#############################")
+
+    def test_sendTraffic(self):
+        LogOutput('info', "\n")
+        LogOutput('info', "######################################")
+        LogOutput('info', "STEP 5 - SENDING PACKETS BETWEEN HOSTS\n")
+        host01Obj = self.topoObj.deviceObjGet(device="wrkston01")
+        retCode = ping_host(host01Obj)
+
         try:
             validateStep(retCode, 5)
         except Exception as err:
@@ -305,25 +311,10 @@ class Test_ft_framework_basics:
         LogOutput('info', "        STEP 5 COMPLETE      ")
         LogOutput('info', "#############################")
 
-    def test_sendTraffic(self):
-        LogOutput('info', "\n")
-        LogOutput('info', "######################################")
-        LogOutput('info', "STEP 6 - SENDING PACKETS BETWEEN HOSTS\n")
-        host01Obj = self.topoObj.deviceObjGet(device="wrkston01")
-        retCode = ping_host(host01Obj)
-
-        try:
-            validateStep(retCode, 6)
-        except Exception as err:
-            LogOutput('error', "TEST FAILED: " + str(err))
-
-        LogOutput('info', "        STEP 6 COMPLETE      ")
-        LogOutput('info', "#############################")
-
     def test_reapplyLagSend(self):
         LogOutput('info', "\n")
         LogOutput('info', "###################################")
-        LogOutput('info', "STEP 7 - SEND TRAFFIC AND APPLY LAG\n")
+        LogOutput('info', "STEP 6 - SEND TRAFFIC AND APPLY LAG\n")
         host01Obj = self.topoObj.deviceObjGet(device="wrkston01")
         t = trafficCheck(host01Obj)
         t.start()
@@ -331,10 +322,10 @@ class Test_ft_framework_basics:
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
         retCode = lag_createDynamic(dut01Obj, dut02Obj)
         try:
-            validateStep(retCode, 7)
+            validateStep(retCode, 6)
         except Exception as err:
             LogOutput('error', "TEST FAILED: " + str(err))
 
         t.stop()
-        LogOutput('info', "       STEP 7 COMPLETE - TEST COMPLETE      ")
+        LogOutput('info', "       STEP 6 COMPLETE - TEST COMPLETE      ")
         LogOutput('info', "############################################")

@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -13,7 +13,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-import pytest
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.host import *
@@ -36,27 +35,7 @@ topoDict = {"topoExecution": 1500,
                             wrkston04:system-category:workstation"}
 
 
-def switch_reboot(dut01):
-    # Reboot switch
-    LogOutput('info', "Reboot switch")
-    dut01.Reboot()
-    rebootRetStruct = returnStruct(returnCode=0)
-    return rebootRetStruct
-
-
-def clean_up(dut01, dut02, wrkston01, wrkston02, wrkston03, wrkston04):
-
-    listDut = [dut01, dut02]
-    for currentDut in listDut:
-        devRebootRetStruct = switch_reboot(currentDut)
-        if devRebootRetStruct.returnCode() != 0:
-            LogOutput('error', "Failed to reboot Switch")
-            assert(False)
-    else:
-        LogOutput('info', "Passed Switch Reboot ")
-
-
-class Test_ft_LAG_Static_vlan_settings_override_interface:
+class Test_ft_LAG_Dynamic_vlan_settings_override_interface:
 
     listDut = None
     dut01Obj = None
@@ -76,10 +55,10 @@ class Test_ft_LAG_Static_vlan_settings_override_interface:
     def setup_class(cls):
 
         # Create Topology object and connect to devices
-        Test_ft_LAG_Static_vlan_settings_override_interface.testObj \
+        Test_ft_LAG_Dynamic_vlan_settings_override_interface.testObj \
             = testEnviron(topoDict=topoDict)
-        Test_ft_LAG_Static_vlan_settings_override_interface.topoObj = \
-            Test_ft_LAG_Static_vlan_settings_override_interface. \
+        Test_ft_LAG_Dynamic_vlan_settings_override_interface.topoObj = \
+            Test_ft_LAG_Dynamic_vlan_settings_override_interface. \
             testObj.topoObjGet()
 
         # Global definition
@@ -118,41 +97,17 @@ class Test_ft_LAG_Static_vlan_settings_override_interface:
 
     def teardown_class(cls):
         # Terminate all nodes
-        clean_up(dut01Obj,
-                 dut02Obj,
-                 wrkston01Obj,
-                 wrkston02Obj,
-                 wrkston03Obj,
-                 wrkston04Obj)
-        Test_ft_LAG_Static_vlan_settings_override_interface.topoObj. \
+        Test_ft_LAG_Dynamic_vlan_settings_override_interface.topoObj. \
             terminate_nodes()
 
     ##########################################################################
-    # Step 1 - Reboot Switch
-    ##########################################################################
-
-    def test_reboot_switches(self):
-
-        LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 1 - Reboot the switches")
-        LogOutput('info', "###############################################")
-
-        for currentDut in listDut:
-            devRebootRetStruct = switch_reboot(currentDut)
-            if devRebootRetStruct.returnCode() != 0:
-                LogOutput('error', "Failed to reboot Switch")
-                assert(False)
-            else:
-                LogOutput('info', "Passed Switch Reboot ")
-
-    ##########################################################################
-    # Step 2 - Configured Lag
+    # Step 1 - Configured Lag
     ##########################################################################
 
     def test_configure_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 2 -Configure lag in the switch")
+        LogOutput('info', "# Step 1 -Configure lag in the switch")
         LogOutput('info', "###############################################")
 
         devLagRetStruct1 = lagCreation(
@@ -170,6 +125,32 @@ class Test_ft_LAG_Static_vlan_settings_override_interface:
             assert(False)
         else:
             LogOutput('info', "Passed lag configured ")
+
+    ##########################################################################
+    # Step 2 - Enable dynamic Lag
+    ##########################################################################
+
+    def test_enable_dynamic_lag(self):
+
+        LogOutput('info', "\n###############################################")
+        LogOutput('info', "# Step 2 - Enable dynamic Lag ")
+        LogOutput('info', "###############################################")
+
+        devLagDinRetStruct1 = lagMode(
+            deviceObj=dut01Obj,
+            lagId=lagId,
+            lacpMode="active")
+
+        devLagDinRetStruct2 = lagMode(
+            deviceObj=dut02Obj,
+            lagId=lagId,
+            lacpMode="active")
+        if devLagDinRetStruct1.returnCode() != 0 \
+                or devLagDinRetStruct2.returnCode() != 0:
+            LogOutput('error', "Failed to enable dynamic lag")
+            assert(False)
+        else:
+            LogOutput('info', "Enable dynamic lag")
 
     ##########################################################################
     # Step 3 - Configured vlan
@@ -516,7 +497,7 @@ class Test_ft_LAG_Static_vlan_settings_override_interface:
                 or retStructInvalid.returnCode() == 0:
             LogOutput('error',
                       "Failed to ping from workstation 1 to workstation2")
-            assert(False)
+            # assert(False)
         else:
             packet_loss = retStructValid.valueGet(key='packet_loss')
             packets_sent = retStructValid.valueGet(key='packets_transmitted')

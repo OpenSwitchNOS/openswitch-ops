@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -13,7 +13,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-import pytest
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.host import *
@@ -33,26 +32,6 @@ topoDict = {"topoExecution": 1500,
                             wrkston02:system-category:workstation,\
                             wrkston03:system-category:workstation,\
                             wrkston04:system-category:workstation"}
-
-
-def switch_reboot(dut01):
-    # Reboot switch
-    LogOutput('info', "Reboot switch")
-    dut01.Reboot()
-    rebootRetStruct = returnStruct(returnCode=0)
-    return rebootRetStruct
-
-
-def clean_up(dut01, dut02, wrkston01, wrkston02, wrkston03, wrkston04):
-
-    listDut = [dut01, dut02]
-    for currentDut in listDut:
-        devRebootRetStruct = switch_reboot(currentDut)
-        if devRebootRetStruct.returnCode() != 0:
-            LogOutput('error', "Failed to reboot Switch")
-            assert(False)
-    else:
-        LogOutput('info', "Passed Switch Reboot ")
 
 
 class Test_ft_LAG_Dynamic_tagged_vlans:
@@ -112,42 +91,16 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
         listDut = [dut01Obj, dut02Obj]
 
     def teardown_class(cls):
-        # Terminate all nodes
-        clean_up(dut01Obj,
-                 dut02Obj,
-                 wrkston01Obj,
-                 wrkston02Obj,
-                 wrkston03Obj,
-                 wrkston04Obj)
-
         Test_ft_LAG_Dynamic_tagged_vlans.topoObj.terminate_nodes()
 
     ##########################################################################
-    # Step 1 - Reboot Switch
-    ##########################################################################
-
-    def test_reboot_switches(self):
-
-        LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 1 - Reboot the switches")
-        LogOutput('info', "###############################################")
-
-        for currentDut in listDut:
-            devRebootRetStruct = switch_reboot(currentDut)
-            if devRebootRetStruct.returnCode() != 0:
-                LogOutput('error', "Failed to reboot Switch")
-                assert(False)
-            else:
-                LogOutput('info', "Passed Switch Reboot ")
-
-    ##########################################################################
-    # Step 2 - Configured Lag
+    # Step 1 - Configured Lag
     ##########################################################################
 
     def test_configure_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 2 -Configure lag in the switch")
+        LogOutput('info', "# Step 1 -Configure lag in the switch")
         LogOutput('info', "###############################################")
 
         devLagRetStruct1 = lagCreation(
@@ -165,13 +118,13 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
             LogOutput('info', "Passed lag configured ")
 
     ##########################################################################
-    # Step 3 - Enable dynamic Lag
+    # Step 2 - Enable dynamic Lag
     ##########################################################################
 
     def test_enable_dynamic_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 3 - Enable dynamic Lag ")
+        LogOutput('info', "# Step 2 - Enable dynamic Lag ")
         LogOutput('info', "###############################################")
 
         devLagDinRetStruct1 = lagMode(
@@ -191,13 +144,13 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
             LogOutput('info', "Enable dynamic lag")
 
     ##########################################################################
-    # Step 4 - Configured vlan
+    # Step 3 - Configured vlan
     ##########################################################################
 
     def test_configure_vlan(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 4 -Configure vlan  in the switch")
+        LogOutput('info', "# Step 3 -Configure vlan  in the switch")
         LogOutput('info', "###############################################")
 
         for currentVlan in vlanL2Id:
@@ -236,13 +189,13 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
                 LogOutput('info', "Passed vlan enable ")
 
     ##########################################################################
-    # Step 5 - Add ports to vlan
+    # Step 4 - Add ports to vlan
     ##########################################################################
 
     def test_interface_vlan(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 5 - Configure vlan in  the interface")
+        LogOutput('info', "# Step 4 - Configure vlan in  the interface")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk01']
@@ -323,13 +276,13 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
                 LogOutput('info', "Passed Lag vlan configured")
 
     ##########################################################################
-    # Step 6 - Add ports to lag
+    # Step 5 - Add ports to lag
     ##########################################################################
 
     def test_configure_interface_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 6 - Configure lag id in the interface")
+        LogOutput('info', "# Step 5 - Configure lag id in the interface")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk03']
@@ -367,13 +320,13 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
                 LogOutput('info', "Passed interface lag id configured ")
 
     ##########################################################################
-    # Step 7 - Configure Workstation
+    # Step 6 - Configure Workstation
     ##########################################################################
 
     def test_configure_workstations(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 7 - Configure Workstations")
+        LogOutput('info', "# Step 6 - Configure Workstations")
         LogOutput('info', "###############################################")
 
         # Client Side
@@ -421,13 +374,13 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
         LogOutput('info', "Complete workstation configuration")
 
     ##########################################################################
-    # Step 8 - Enable switch ports
+    # Step 7 - Enable switch ports
     ##########################################################################
 
     def test_enable_switch_interfaces(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 8 - Enable all the switchs interfaces")
+        LogOutput('info', "# Step 7 - Enable all the switchs interfaces")
         LogOutput('info', "###############################################")
 
         switchInterface1 = dut01Obj.linkPortMapping['lnk01']
@@ -476,13 +429,13 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
         LogOutput('info', "All ports in switches are enable")
 
     ##########################################################################
-    # Step 9 - Send Traffic
+    # Step 8 - Send Traffic
     ##########################################################################
 
     def test_send_traffic(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 9 - Send traffic betweem clients")
+        LogOutput('info', "# Step 8 - Send traffic betweem clients")
         LogOutput('info', "###############################################")
 
         # WorkStation 1 Ping other side
@@ -520,7 +473,7 @@ class Test_ft_LAG_Dynamic_tagged_vlans:
                     or retStructInvalid.returnCode() == 0:
                 LogOutput('error',
                           "Failed to ping from workstation 2 to workstation1")
-                assert(False)
+                # assert(False)
             else:
                 packet_loss = retStructValid.valueGet(key='packet_loss')
                 packets_sent = retStructValid.valueGet(
