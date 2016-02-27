@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -13,7 +13,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-import pytest
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.host import *
@@ -21,22 +20,6 @@ from opstestfw.host import *
 topoDict = {"topoExecution": 1000,
             "topoDevices": "dut01",
             "topoFilters": "dut01:system-category:switch"}
-
-
-def switch_reboot(dut01):
-
-    # Reboot switch
-    LogOutput('info', "Reboot switch")
-    dut01.Reboot()
-    rebootRetStruct = returnStruct(returnCode=0)
-    return rebootRetStruct
-
-
-def clear_up(dut01):
-    LogOutput('info', "Reboot switch")
-    dut01.Reboot()
-    rebootRetStruct = returnStruct(returnCode=0)
-    return rebootRetStruct
 
 
 def getInterfaceVlan(deviceObj, interface):
@@ -121,7 +104,7 @@ def getInterfaceVlan(deviceObj, interface):
     return listVlansResult
 
 
-class Test_FT_LAG_Static_Negative_Tag_Untag_Vlan:
+class Test_FT_LAG_dynamic_Negative_Tag_Untag_Vlan:
 
     # Global Var
     dut01Obj = None
@@ -133,10 +116,10 @@ class Test_FT_LAG_Static_Negative_Tag_Untag_Vlan:
     def setup_class(cls):
 
         # Create Topology object and connect to devices
-        Test_FT_LAG_Static_Negative_Tag_Untag_Vlan.testObj = testEnviron(
+        Test_FT_LAG_dynamic_Negative_Tag_Untag_Vlan.testObj = testEnviron(
             topoDict=topoDict)
-        Test_FT_LAG_Static_Negative_Tag_Untag_Vlan.topoObj = \
-            Test_FT_LAG_Static_Negative_Tag_Untag_Vlan.testObj.topoObjGet()
+        Test_FT_LAG_dynamic_Negative_Tag_Untag_Vlan.topoObj = \
+            Test_FT_LAG_dynamic_Negative_Tag_Untag_Vlan.testObj.topoObjGet()
 
         # Global definition
         global dut01Obj
@@ -154,35 +137,16 @@ class Test_FT_LAG_Static_Negative_Tag_Untag_Vlan:
 
     def teardown_class(cls):
         # Terminate all nodes
-        clear_up(dut01Obj)
-        Test_FT_LAG_Static_Negative_Tag_Untag_Vlan.topoObj.terminate_nodes()
+        Test_FT_LAG_dynamic_Negative_Tag_Untag_Vlan.topoObj.terminate_nodes()
 
     ##########################################################################
-    # Step 1 - Reboot Switch
-    ##########################################################################
-
-    def test_reboot_switches(self):
-
-        LogOutput('info', "\n################################################")
-        LogOutput('info', "# Step 1 - Reboot the switches")
-        LogOutput('info', "################################################")
-
-        devRebootRetStruc = switch_reboot(dut01Obj)
-
-        if devRebootRetStruc.returnCode() != 0:
-            LogOutput('error', "Failed to reboot Switch")
-            assert(False)
-        else:
-            LogOutput('info', "Passed Switch Reboot")
-
-    ##########################################################################
-    # Step 2 - Create Lag
+    # Step 1 - Create Lag
     ##########################################################################
 
     def test_create_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 2 - Create Lag ")
+        LogOutput('info', "# Step 1 - Create Lag ")
         LogOutput('info', "###############################################")
 
         devLagRetStruct = lagCreation(
@@ -195,6 +159,27 @@ class Test_FT_LAG_Static_Negative_Tag_Untag_Vlan:
             assert(False)
         else:
             LogOutput('info', "Passed lag creation")
+
+    ##########################################################################
+    # Step 2 - Enable dynamic Lag
+    ##########################################################################
+
+    def test_enable_dynamic_lag(self):
+
+        LogOutput('info', "\n###############################################")
+        LogOutput('info', "# Step 2 - Enable dynamic Lag ")
+        LogOutput('info', "###############################################")
+
+        devLagDinRetStruct = lagMode(
+            deviceObj=dut01Obj,
+            lagId=lagId,
+            lacpMode="active")
+
+        if devLagDinRetStruct.returnCode() != 0:
+            LogOutput('error', "Failed to enable dynamic lag")
+            assert(False)
+        else:
+            LogOutput('info', "Enable dynamic lag")
 
     ##########################################################################
     # Step 3 - Create vlans
@@ -296,7 +281,7 @@ class Test_FT_LAG_Static_Negative_Tag_Untag_Vlan:
             LogOutput('info', "Passed to enable vlan access in lag")
 
     ##########################################################################
-    # Step 7 - Validated access vlan show in lag 1
+    # Step 7 - Validated access vlan show in lag
     ##########################################################################
 
     def test_validated_trunk_vlan_lag(self):
@@ -321,7 +306,7 @@ class Test_FT_LAG_Static_Negative_Tag_Untag_Vlan:
             LogOutput('Info', "Vlan was corrected configured")
 
     ##########################################################################
-    # Step 8 - Validated access vlan show in lag 1
+    # Step 8 - Validated access vlan show in lag
     ##########################################################################
 
     def test_enable_vlan_access_lag(self):
@@ -346,7 +331,7 @@ class Test_FT_LAG_Static_Negative_Tag_Untag_Vlan:
             LogOutput('info', "Passed to enable vlan access in lag")
 
     #######################################################################
-    # Step 9 - Validated access vlan show in lag 1
+    # Step 9 - Validated access vlan show in lag
     ##########################################################################
 
     def test_validated_access_vlan_lag(self):
