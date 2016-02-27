@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -13,23 +13,23 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
+###############################################################################
+# Name:        StaticLagConvertToDynamic.py
+#
+# Description: Tests that a previously configured static Link Aggregation can
+#              be converted to a dynamic one
+#
+# Author:      Jose Hernandez
+#
+# Topology:  |Host| ----- |Switch| ---------------------- |Switch| ----- |Host|
+#                                   (Static LAG - 2 links)
+#
+# Success Criteria:  PASS -> LAGs is converted from static to dynamic
+#
+#                    FAILED -> LAG cannot be converted from static to dynamic
+#
+###############################################################################
 
-##########################################################################
-# Name:        lagStaticNonConsecutiveInterfaces
-#
-# Objective:   To a static LAG can be created with non-consecutive interfaces
-#
-# Author:      Pablo Araya M.
-#	           Adapted from: StaticLagConvertToDynamic by Jose Pablo Hernandez
-#
-# Topology:
-#              Client 1 <-> OpenSwitch_1
-#                                ||  LAG
-#              Client 2 <-> OpenSwitch_2
-#
-##########################################################################
-
-import pytest
 from opstestfw import *
 from opstestfw.switch.CLI import *
 
@@ -42,13 +42,9 @@ topoDict = {"topoExecution": 3000,
             "topoFilters": "dut01:system-category:switch,\
                             dut02:system-category:switch,\
                             wrkston01:system-category:workstation,\
-                            wrkston02:system-category:workstation",
-            "topoLinkFilter": 	"lnk01:dut01:interface:2,\
-                                lnk02:dut01:interface:1,\
-                                lnk02:dut02:interface:1,\
-                                lnk03:dut01:interface:3,\
-                                lnk03:dut02:interface:3,\
-                                lnk04:dut02:interface:2"}
+                            wrkston02:system-category:workstation"}
+
+# Reboots switch
 
 
 def switch_reboot(deviceObj):
@@ -631,37 +627,57 @@ def pingBetweenWorkstations(deviceObj1, deviceObj2, ipAddr, success):
             return False
     return True
 
+# Clean up devices
 
-def cleanup(dut01Obj, dut02Obj, wrkston01Obj, wrkston02Obj):
+
+def clean_up_devices(dut01Obj, dut02Obj, wrkston01Obj, wrkston02Obj):
     LogOutput('info', "\n############################################")
-    LogOutput('info', "CLEANUP")
+    LogOutput('info', "Device Cleanup - rolling back config")
     LogOutput('info', "############################################")
     finalResult = []
 
-    LogOutput('info', "\nCLEANUP - Unconfiguring workstation 1")
+    LogOutput('info', "Unconfigure workstations")
+    LogOutput('info', "Unconfiguring workstation 1")
     finalResult.append(configureWorkstation(
         wrkston01Obj,
         wrkston01Obj.linkPortMapping['lnk01'], "140.1.1.10",
         "255.255.255.0", "140.1.1.255", False))
-    LogOutput('info', "\nCLEANUP - Unconfiguring workstation 2")
+    LogOutput('info', "Unconfiguring workstation 2")
     finalResult.append(configureWorkstation(
         wrkston02Obj,
         wrkston02Obj.linkPortMapping['lnk04'], "140.1.1.11",
         "255.255.255.0", "140.1.1.255", False))
 
-    LogOutput('info', "\nCLEANUP - Reboot the switches")
-    devRebootRetStruct = switch_reboot(dut01Obj)
-    if devRebootRetStruct.returnCode() != 0:
-        LogOutput('error', "Failed to reboot Switch 1")
-        finalResult.append(devRebootRetStruct.returnCode())
-    else:
-        LogOutput('info', "Passed Switch 1 Reboot piece")
-    devRebootRetStruct = switch_reboot(dut02Obj)
-    if devRebootRetStruct.returnCode() != 0:
-        LogOutput('error', "Failed to reboot Switch 2")
-        finalResult.append(devRebootRetStruct.returnCode())
-    else:
-        LogOutput('info', "Passed Switch 2 Reboot piece")
+    LogOutput('info', "Delete LAGs on DUTs")
+    finalResult.append(createLAG(dut01Obj, '1', False, [], 'off'))
+    finalResult.append(createLAG(dut02Obj, '1', False, [], 'off'))
+
+    LogOutput('info', "Disable interfaces on DUTs")
+    LogOutput('info', "Configuring switch dut01")
+    finalResult.append(
+        enableDutInterface(dut01Obj, dut01Obj.linkPortMapping['lnk01'],
+                           False))
+    finalResult.append(
+        enableDutInterface(dut01Obj, dut01Obj.linkPortMapping['lnk02'],
+                           False))
+    finalResult.append(
+        enableDutInterface(dut01Obj, dut01Obj.linkPortMapping['lnk03'],
+                           False))
+
+    LogOutput('info', "Configuring switch dut02")
+    finalResult.append(
+        enableDutInterface(dut02Obj, dut02Obj.linkPortMapping['lnk02'],
+                           False))
+    finalResult.append(
+        enableDutInterface(dut02Obj, dut02Obj.linkPortMapping['lnk03'],
+                           False))
+    finalResult.append(
+        enableDutInterface(dut02Obj, dut02Obj.linkPortMapping['lnk04'],
+                           False))
+
+    LogOutput('info', "Remove VLAN from DUTs")
+    finalResult.append(configureVLAN(dut01Obj, 900, False))
+    finalResult.append(configureVLAN(dut02Obj, 900, False))
 
     for i in finalResult:
         if not i:
@@ -671,24 +687,42 @@ def cleanup(dut01Obj, dut02Obj, wrkston01Obj, wrkston02Obj):
     LogOutput('info', "Cleaned up devices")
 
 
-class Test_lagStaticNonConsecutiveInterfaces:
+class Test_ft_framework_basics:
 
     def setup_class(cls):
         # Create Topology object and connect to devices
-        Test_lagStaticNonConsecutiveInterfaces.testObj = testEnviron(
-            topoDict=topoDict)
-        Test_lagStaticNonConsecutiveInterfaces.topoObj =\
-            Test_lagStaticNonConsecutiveInterfaces.testObj.topoObjGet()
+        Test_ft_framework_basics.testObj = testEnviron(topoDict=topoDict)
+        Test_ft_framework_basics.topoObj =\
+            Test_ft_framework_basics.testObj.topoObjGet()
 
     def teardown_class(cls):
-        dut01Obj = cls.topoObj.deviceObjGet(device="dut01")
-        dut02Obj = cls.topoObj.deviceObjGet(device="dut02")
-        wrkston01Obj = cls.topoObj.deviceObjGet(device="wrkston01")
-        wrkston02Obj = cls.topoObj.deviceObjGet(device="wrkston02")
-        cleanup(dut01Obj, dut02Obj, wrkston01Obj, wrkston02Obj)
-
+        # clean devices
+        clean_up_devices(
+            cls.topoObj.deviceObjGet(device="dut01"),
+            cls.topoObj.deviceObjGet(device="dut02"),
+            cls.topoObj.deviceObjGet(device="wrkston01"),
+            cls.topoObj.deviceObjGet(device="wrkston02"))
         # Terminate all nodes
-        Test_lagStaticNonConsecutiveInterfaces.topoObj.terminate_nodes()
+        Test_ft_framework_basics.topoObj.terminate_nodes()
+
+    def test_reboot_switch(self):
+        LogOutput('info', "\n############################################")
+        LogOutput('info', "Reboot the switches")
+        LogOutput('info', "############################################")
+        dut01Obj = self.topoObj.deviceObjGet(device="dut01")
+        devRebootRetStruct = switch_reboot(dut01Obj)
+        if devRebootRetStruct.returnCode() != 0:
+            LogOutput('error', "Failed to reboot Switch 1")
+            assert(devRebootRetStruct.returnCode() == 0)
+        else:
+            LogOutput('info', "Passed Switch 1 Reboot piece")
+        dut02Obj = self.topoObj.deviceObjGet(device="dut02")
+        devRebootRetStruct = switch_reboot(dut02Obj)
+        if devRebootRetStruct.returnCode() != 0:
+            LogOutput('error', "Failed to reboot Switch 2")
+            assert(devRebootRetStruct.returnCode() == 0)
+        else:
+            LogOutput('info', "Passed Switch 2 Reboot piece")
 
     def test_createLAGs(self):
         LogOutput('info', "\n############################################")
@@ -768,9 +802,79 @@ class Test_lagStaticNonConsecutiveInterfaces:
             wrkston02Obj.linkPortMapping[
                 'lnk04'], "140.1.1.11", "255.255.255.0", "140.1.1.255", True))
 
-    def test_pingBetweenClients(self):
+    def test_pingBetweenClients1(self):
         LogOutput('info', "\n############################################")
         LogOutput('info', "Test ping between clients work")
+        LogOutput('info', "############################################")
+        wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
+        wrkston02Obj = self.topoObj.deviceObjGet(device="wrkston02")
+        assert(pingBetweenWorkstations(
+            wrkston01Obj, wrkston02Obj, "140.1.1.11", True))
+
+    def test_changelagMode(self):
+        LogOutput('info', "\n############################################")
+        LogOutput('info', "Change LAGs from dynamic to static")
+        LogOutput('info', "############################################")
+        dut01Obj = self.topoObj.deviceObjGet(device="dut01")
+        dut02Obj = self.topoObj.deviceObjGet(device="dut02")
+        LogOutput('info', "Change LAG mode on dut01")
+        assert(changeLagMode(dut01Obj, '1', 'active'))
+        LogOutput('info', "Change LAG mode on dut02")
+        assert(changeLagMode(dut02Obj, '1', 'passive'))
+
+    def test_pingBetweenClients2(self):
+        LogOutput('info', "\n############################################")
+        LogOutput('info', "Test ping between clients continue working")
+        LogOutput('info', "############################################")
+        wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
+        wrkston02Obj = self.topoObj.deviceObjGet(device="wrkston02")
+        assert(pingBetweenWorkstations(
+            wrkston01Obj, wrkston02Obj, "140.1.1.11", True))
+
+    def test_disableAndEnableInterfacesOfLAGs(self):
+        LogOutput('info', "\n############################################")
+        LogOutput(
+            'info', "Disable and re-enable interfaces associated to LAGs")
+        LogOutput('info', "############################################")
+        dut01Obj = self.topoObj.deviceObjGet(device="dut01")
+        dut02Obj = self.topoObj.deviceObjGet(device="dut02")
+        LogOutput('info', "Disable interfaces on DUTs")
+        LogOutput('info', "Configuring switch dut01")
+        assert(
+            enableDutInterface(dut01Obj, dut01Obj.linkPortMapping['lnk02'],
+                               False))
+        assert(
+            enableDutInterface(dut01Obj, dut01Obj.linkPortMapping['lnk03'],
+                               False))
+
+        LogOutput('info', "Configuring switch dut02")
+        assert(
+            enableDutInterface(dut02Obj, dut02Obj.linkPortMapping['lnk02'],
+                               False))
+        assert(
+            enableDutInterface(dut02Obj, dut02Obj.linkPortMapping['lnk03'],
+                               False))
+
+        LogOutput('info', "Re-enable interfaces on DUTs")
+        LogOutput('info', "Configuring switch dut01")
+        assert(
+            enableDutInterface(dut01Obj, dut01Obj.linkPortMapping['lnk02'],
+                               True))
+        assert(
+            enableDutInterface(dut01Obj, dut01Obj.linkPortMapping['lnk03'],
+                               True))
+
+        LogOutput('info', "Configuring switch dut02")
+        assert(
+            enableDutInterface(dut02Obj, dut02Obj.linkPortMapping['lnk02'],
+                               True))
+        assert(
+            enableDutInterface(dut02Obj, dut02Obj.linkPortMapping['lnk03'],
+                               True))
+
+    def test_pingBetweenClients3(self):
+        LogOutput('info', "\n############################################")
+        LogOutput('info', "Test ping between clients continue working")
         LogOutput('info', "############################################")
         wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
         wrkston02Obj = self.topoObj.deviceObjGet(device="wrkston02")

@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,24 +14,25 @@
 #    under the License.
 #
 ###############################################################################
-# Name:        StaticLagDeleteMaxNumberOfMembers.py
+# Name:        DynamicLagModifyMaxNumberOfMembers.py
 #
-# Description: Tests that a previously configured static Link Aggregation of 8
-#              members can be deleted
+# Description: Tests that a previously configured dynamic Link Aggregation can
+#              be modified to have between 7 and 8 members
 #
 # Author:      Jose Hernandez
 #
 # Topology:  |Host| ----- |Switch| ---------------------- |Switch| ----- |Host|
-#                                   (Static LAG - 8 links)
+#                                   (Dynamic LAG - 8 links)
 #
-# Success Criteria:  PASS -> LAGs are deleted when having 8 members
+# Success Criteria:  PASS -> LAGs are modified to support 7 or 8 members
+#                            and pass traffic
 #
-#                    FAILED -> LAGs cannot be deleted in the scenario
-#                              mentioned in the pass criteria
+#                    FAILED -> LAGs cannot be modified to 7 or 8 members or
+#                              traffic cannot pass after any of these
+#                              modifications
 #
 ###############################################################################
 
-import pytest
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.host import *
@@ -323,6 +324,83 @@ def enableDutInterface(deviceObj, int, enable):
                 'info', "Disabled " + deviceObj.device + " interface " + int)
     return True
 
+# Add/remove a single interface from a LAG
+
+
+def addInterfaceToLAG(deviceObj, lagId, int, config, expectedIntArray):
+    if config:
+        LogOutput('info', "Adding interface " + str(int) +
+                  " to LAG" + lagId + " on device " + deviceObj.device)
+    else:
+        LogOutput('info', "Removing interface " + str(int) +
+                  " to LAG" + lagId + " on device " + deviceObj.device)
+    returnStruct = InterfaceLagIdConfig(
+        deviceObj=deviceObj, interface=int, lagId=lagId, enable=config)
+    if returnStruct.returnCode() != 0:
+        return False
+    if config:
+        LogOutput(
+            'info', "Verifying if interface " + str(int) +
+            " was added to LAG")
+    else:
+        LogOutput(
+            'info', "Verifying if interface " + str(int) +
+            " was removed from LAG")
+    # verify if device is added/removed from LAG
+    returnStruct = InterfaceLagShow(deviceObj=deviceObj, interface=int)
+    if returnStruct.returnCode() != 0:
+        LogOutput('info', "Unable to verify change in interface " + str(int))
+        return False
+    if config:
+        helper = False
+        for i in returnStruct.valueGet(key='localPort').keys():
+            if i == 'lagId':
+                helper = True
+                break
+        if not helper:
+            LogOutput(
+                'error', "The interface " + str(int) +
+                " was verified to not be in a LAG")
+            return False
+        if returnStruct.valueGet(key='localPort')['lagId'] != str(lagId):
+            LogOutput('error', "The interface " + str(int) +
+                      " was verified to not be added to LAG " + str(lagId))
+            return False
+        else:
+            LogOutput('info', "The interface " + str(int) +
+                      " was verified to be added to LAG " + str(lagId))
+    else:
+        for i in returnStruct.valueGet(key='localPort').keys():
+            if i == 'lagId':
+                LogOutput('error', "The interface " + str(int) +
+                          " was verified to still be in a LAG with ID: " +
+                          returnStruct.valueGet(key='localPort')['lagId'])
+                return False
+        LogOutput('info', "The interface " + str(int) +
+                  " was verified to not be in a LAG")
+    returnStruct = lacpAggregatesShow(deviceObj=deviceObj, lagId=lagId)
+    if returnStruct.returnCode() != 0:
+        LogOutput('error', "Unable to verify integrity of resulting LAG")
+        return False
+    if len(returnStruct.valueGet(key=lagId)['interfaces']) !=\
+            len(expectedIntArray):
+        LogOutput(
+            'error',
+            "The resulting number of interfaces in LAG is different \
+            than expected")
+        return False
+    for i in expectedIntArray:
+        compareResult = False
+        for k in returnStruct.valueGet(key=lagId)['interfaces']:
+            if i == k:
+                compareResult = True
+                break
+        if not compareResult:
+            LogOutput(
+                'error', 'Could not find interface ' + i + ' on resulting LAG')
+            return False
+    return True
+
 # Create/delete a LAG and add interfaces
 
 
@@ -352,6 +430,9 @@ def createLAG(deviceObj, lagId, configure, intArray, mode):
                 deviceObj.device)
             return False
         if len(retStruct.dataKeys()) == 0:
+            print "----"
+            print retStruct.buffer()
+            print "----"
             LogOutput('error', "No LAGs were configured on device")
             return False
         if retStruct.valueGet(key=str(lagId)) is None:
@@ -553,14 +634,18 @@ def clean_up_devices(dut01Obj, dut02Obj, wrkston01Obj, wrkston02Obj):
     LogOutput('info', "Unconfigure workstations")
     LogOutput('info', "Unconfiguring workstation 1")
     finalResult.append(configureWorkstation(
-        wrkston01Obj,
-        wrkston01Obj.linkPortMapping['lnk01'], "140.1.1.10",
-        "255.255.255.0", "140.1.1.255", False))
+        wrkston01Obj, wrkston01Obj.linkPortMapping['lnk01'],
+        "140.1.1.10", "255.255.255.0", "140.1.1.255", False))
     LogOutput('info', "Unconfiguring workstation 2")
     finalResult.append(configureWorkstation(
-        wrkston02Obj,
-        wrkston02Obj.linkPortMapping['lnk10'], "140.1.1.11",
-        "255.255.255.0", "140.1.1.255", False))
+        wrkston02Obj, wrkston02Obj.linkPortMapping['lnk10'],
+        "140.1.1.11", "255.255.255.0", "140.1.1.255", False))
+
+    LogOutput('info', "Delete LAGs from DUTs")
+    LogOutput('info', "Configuring switch dut01")
+    finalResult.append(createLAG(dut01Obj, '1', False, None, None))
+    LogOutput('info', "Configuring switch dut02")
+    finalResult.append(createLAG(dut02Obj, '1', False, None, None))
 
     LogOutput('info', "Disable interfaces on DUTs")
     LogOutput('info', "Configuring switch dut01")
@@ -684,7 +769,7 @@ class Test_ft_framework_basics:
             dut01Obj.linkPortMapping['lnk06'],
             dut01Obj.linkPortMapping['lnk07'],
             dut01Obj.linkPortMapping['lnk08'],
-            dut01Obj.linkPortMapping['lnk09']], 'off'))
+            dut01Obj.linkPortMapping['lnk09']], 'active'))
         assert(createLAG(dut02Obj, '1', True, [
             dut02Obj.linkPortMapping['lnk02'],
             dut02Obj.linkPortMapping['lnk03'],
@@ -693,7 +778,7 @@ class Test_ft_framework_basics:
             dut02Obj.linkPortMapping['lnk06'],
             dut02Obj.linkPortMapping['lnk07'],
             dut02Obj.linkPortMapping['lnk08'],
-            dut02Obj.linkPortMapping['lnk09']], 'off'))
+            dut02Obj.linkPortMapping['lnk09']], 'passive'))
 
     def test_configureVLANs(self):
         LogOutput('info', "\n############################################")
@@ -802,23 +887,87 @@ class Test_ft_framework_basics:
         LogOutput('info', "############################################")
         wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
         wrkston02Obj = self.topoObj.deviceObjGet(device="wrkston02")
-        assert(pingBetweenWorkstations(wrkston01Obj, wrkston02Obj,
-                                       "140.1.1.11", True))
+        assert(pingBetweenWorkstations(
+            wrkston01Obj, wrkston02Obj, "140.1.1.11", True))
 
-    def test_deleteLAGs(self):
+    def test_modifyLAGs1(self):
         LogOutput('info', "\n############################################")
-        LogOutput('info', "Delete LAGs")
+        LogOutput('info', "Delete 1 member from LAG")
         LogOutput('info', "############################################")
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
-        assert(createLAG(dut01Obj, '1', False, [], None))
-        assert(createLAG(dut02Obj, '1', False, [], None))
+        LogOutput('info', "Delete 1 LAG member from dut01")
+        assert(
+            addInterfaceToLAG(
+                dut01Obj, '1', dut01Obj.linkPortMapping['lnk02'],
+                False, [
+                    dut01Obj.linkPortMapping['lnk03'],
+                    dut01Obj.linkPortMapping['lnk04'],
+                    dut01Obj.linkPortMapping['lnk05'],
+                    dut01Obj.linkPortMapping['lnk06'],
+                    dut01Obj.linkPortMapping['lnk07'],
+                    dut01Obj.linkPortMapping['lnk08'],
+                    dut01Obj.linkPortMapping['lnk09']]))
+        LogOutput('info', "Delete 1 LAG member from dut02")
+        assert(
+            addInterfaceToLAG(
+                dut02Obj, '1', dut02Obj.linkPortMapping['lnk02'],
+                False, [
+                    dut02Obj.linkPortMapping['lnk03'],
+                    dut02Obj.linkPortMapping['lnk04'],
+                    dut02Obj.linkPortMapping['lnk05'],
+                    dut02Obj.linkPortMapping['lnk06'],
+                    dut02Obj.linkPortMapping['lnk07'],
+                    dut02Obj.linkPortMapping['lnk08'],
+                    dut02Obj.linkPortMapping['lnk09']]))
 
     def test_pingBetweenClients2(self):
         LogOutput('info', "\n############################################")
-        LogOutput('info', "Test ping between clients does not work")
+        LogOutput('info', "Test ping between clients work")
         LogOutput('info', "############################################")
         wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
         wrkston02Obj = self.topoObj.deviceObjGet(device="wrkston02")
-        assert(pingBetweenWorkstations(wrkston01Obj, wrkston02Obj,
-                                       "140.1.1.11", False))
+        assert(pingBetweenWorkstations(
+            wrkston01Obj, wrkston02Obj, "140.1.1.11", True))
+
+    def test_modifyLAGs2(self):
+        LogOutput('info', "\n############################################")
+        LogOutput('info', "Add 1 member to LAG")
+        LogOutput('info', "############################################")
+        dut01Obj = self.topoObj.deviceObjGet(device="dut01")
+        dut02Obj = self.topoObj.deviceObjGet(device="dut02")
+        LogOutput('info', "Add 1 LAG member to dut01")
+        assert(
+            addInterfaceToLAG(
+                dut01Obj, '1', dut01Obj.linkPortMapping['lnk02'],
+                True, [
+                    dut01Obj.linkPortMapping['lnk02'],
+                    dut01Obj.linkPortMapping['lnk03'],
+                    dut01Obj.linkPortMapping['lnk04'],
+                    dut01Obj.linkPortMapping['lnk05'],
+                    dut01Obj.linkPortMapping['lnk06'],
+                    dut01Obj.linkPortMapping['lnk07'],
+                    dut01Obj.linkPortMapping['lnk08'],
+                    dut01Obj.linkPortMapping['lnk09']]))
+        LogOutput('info', "Add 1 LAG member to dut02")
+        assert(
+            addInterfaceToLAG(
+                dut02Obj, '1', dut02Obj.linkPortMapping['lnk02'],
+                True, [
+                    dut02Obj.linkPortMapping['lnk02'],
+                    dut02Obj.linkPortMapping['lnk03'],
+                    dut02Obj.linkPortMapping['lnk04'],
+                    dut02Obj.linkPortMapping['lnk05'],
+                    dut02Obj.linkPortMapping['lnk06'],
+                    dut02Obj.linkPortMapping['lnk07'],
+                    dut02Obj.linkPortMapping['lnk08'],
+                    dut02Obj.linkPortMapping['lnk09']]))
+
+    def test_pingBetweenClients3(self):
+        LogOutput('info', "\n############################################")
+        LogOutput('info', "Test ping between clients work")
+        LogOutput('info', "############################################")
+        wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
+        wrkston02Obj = self.topoObj.deviceObjGet(device="wrkston02")
+        assert(pingBetweenWorkstations(
+            wrkston01Obj, wrkston02Obj, "140.1.1.11", True))
