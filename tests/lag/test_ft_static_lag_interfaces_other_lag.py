@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,11 +14,12 @@
 #    under the License.
 #
 
+
 ##########################################################################
-# Name:        lagDynamicInterfacesOnOtherLag
+# Name:        lagStaticInterfacesOnOtherLag
 #
-# Objective:   To verify the interface is moved when it is
-#				part of a dynamic LAG and is added to another LAG
+# Objective:   To verify the interface is moved when it is part
+#                of a static LAG and is added to another LAG
 #
 # Author:      Pablo Araya M.
 #
@@ -26,7 +27,6 @@
 #
 ##########################################################################
 
-import pytest
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.host import *
@@ -101,36 +101,20 @@ class Test_lagStaticInterfacesOnOtherLag:
         deviceCleanup(dut01Obj)
         Test_lagStaticInterfacesOnOtherLag.topoObj.terminate_nodes()
 
-    def test_create_LAG_1(self):
-        lagName = 1
-        LogOutput('info', "############################################")
-        LogOutput('info', "Create LAG using name: " + str(lagName))
-        LogOutput('info', "############################################")
-
-        retStruct = lagCreation(deviceObj=dut01Obj, lagId=lagName)
-        if retStruct.returnCode() != 0:
-            LogOutput('error', "Failed to create LAG " + str(lagName))
-        else:
-            LogOutput(
-                'info', "LAG  " + str(lagName) + " successfully configured")
-
-        assert(retStruct.returnCode() == 0)
-
     def test_configure_LAG_1(self):
         lagName = 1
         LogOutput('info', "############################################")
         LogOutput('info', "Configure LAG using name: " + str(lagName))
         LogOutput('info', "############################################")
 
-        retStruct = lagMode(
-            deviceObj=dut01Obj, lagId=lagName, lacpMode="active")
+        retStruct = lagCreation(
+            deviceObj=dut01Obj, lagId=lagName, configFlag=True)
         if retStruct.returnCode() != 0:
             LogOutput('error', "Failed to configure LAG " + str(lagName))
         else:
             LogOutput(
                 'info', "LAG  " + str(lagName) + " successfully configured")
 
-        # pdb.set_trace()
         assert(retStruct.returnCode() == 0)
 
     def test_add_ports_to_LAG_1(self):
@@ -160,30 +144,14 @@ class Test_lagStaticInterfacesOnOtherLag:
             verifyInterfaceLag(dut01Obj=dut01Obj, interface=portId,
                                lagId=lagName))
 
-    def test_create_LAG_2(self):
-        lagName = 2
-        LogOutput('info', "############################################")
-        LogOutput('info', "Create LAG using name: " + str(lagName))
-        LogOutput('info', "############################################")
-
-        retStruct = lagCreation(deviceObj=dut01Obj, lagId=lagName)
-        if retStruct.returnCode() != 0:
-            LogOutput('error', "Failed to create LAG " + str(lagName))
-        else:
-            LogOutput(
-                'info', "LAG  " + str(lagName) + " successfully configured")
-
-        # pdb.set_trace()
-        assert(retStruct.returnCode() == 0)
-
     def test_configure_LAG_2(self):
         lagName = 2
         LogOutput('info', "############################################")
         LogOutput('info', "Configure LAG using name: " + str(lagName))
         LogOutput('info', "############################################")
 
-        retStruct = lagMode(
-            deviceObj=dut01Obj, lagId=lagName, lacpMode="active")
+        retStruct = lagCreation(
+            deviceObj=dut01Obj, lagId=lagName, configFlag=True)
         if retStruct.returnCode() != 0:
             LogOutput('error', "Failed to configure LAG " + str(lagName))
         else:
@@ -204,10 +172,10 @@ class Test_lagStaticInterfacesOnOtherLag:
         retStruct = InterfaceLagIdConfig(
             deviceObj=dut01Obj, interface=portId, lagId=lagName)
         if retStruct.returnCode() != 0:
-            LogOutput('error', "Failed to add interface " +
+            LogOutput('info', "Failed to add interface " +
                       str(portId) + " to LAG " + str(lagName))
         else:
-            LogOutput('info', "Successfully added interface " +
+            LogOutput('error', "Successfully added interface " +
                       str(portId) + " to LAG " + str(lagName))
 
         assert(retStruct.returnCode() == 0)
