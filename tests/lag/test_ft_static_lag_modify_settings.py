@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -36,7 +36,6 @@
 #
 ###############################################################################
 
-import pytest
 import threading
 from opstestfw.switch.CLI import *
 from opstestfw import *
@@ -122,7 +121,7 @@ class trafficCheck (threading.Thread):
     def stop(self):
         self.flag = False
 
-
+@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 765")
 class Test_ft_framework_basics:
     def setup_class(cls):
         Test_ft_framework_basics.testObj = testEnviron(topoDict=topoDict)
