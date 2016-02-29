@@ -1561,6 +1561,10 @@
         or to <code>false</code> to explicitly disable it.
         Default is <code>true</code>.
       </column>
+      <column name="flush_macaddress">
+        When set to true, this will result in flushing of all MAC addresses learnt on that port.
+        Default is <code>fasle</code>.
+      </column>
     </group>
     <group title="Statistics">
       <column name="mstp_statistics" key="mstp_BPDUs_Tx">
@@ -1628,6 +1632,10 @@
       </column>
       <column name="designated_port">
         The designated port ID.
+      </column>
+      <column name="flush_macaddress">
+        When set to true, this will result in flushing of all MAC addresses learnt on that port.
+        Default is <code>fasle</code>.
       </column>
     </group>
   </table>
@@ -3192,6 +3200,19 @@
         Unique identifier of the LAG from the data path's perspective.
         This key value should be treated as opaque handle by application
         daemons while updating LAG member interfaces in hardware.
+      </column>
+      <column name="status" key="stp_state">
+        The state of the port in the active topology.
+        The values are <code>disabled</code>, <code>forwarding</code>,
+        <code>learning</code>, <code>listening</code>, <code>blocking</code>.
+        Default is <code>disabled</code>.
+      </column>
+      <column name="status" key="hw_update_stp_state">
+        The values may be  <code>true</code> or <code>false</code>.
+        This will be set to <code>true</code> if this port is in a single MSTP instance
+        or if it transitions to forwarding for the first time in any MSTP
+        instance or if it goes into the blocked state in all MSTP instances.
+        Default is <code>false</code>.
       </column>
       <column name="lacp_status">
         Key-value pairs that report lacp-specific port status.

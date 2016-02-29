@@ -1004,6 +1004,16 @@
                     "max": 1
                 }
             },
+            "flush_macaddress_requested" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "boolean"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
             "port_role" : {
                 "category": "status",
                 "type": {
@@ -1105,6 +1115,16 @@
                     "key": {
                         "type": "string",
                         "maxLength": 45
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
+            "flush_macaddress_performed" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "boolean"
                     },
                     "min": 0,
                     "max": 1
@@ -1438,6 +1458,16 @@
                         "max": 1
                     }
             },
+            "flush_macaddress_requested" : {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "boolean"
+                    },
+                    "min": 0,
+                    "max": 1
+                }
+            },
             "port_role" : {
                 "category": "status",
                 "type": {
@@ -1698,6 +1728,16 @@
                      "value": "string",
                      "min": 0,
                      "max": "unlimited"
+                }
+            },
+            "flush_macaddress_performed" : {
+                "category": "status",
+                "type": {
+                    "key": {
+                        "type": "boolean"
+                    },
+                    "min": 0,
+                    "max": 1
                 }
             }
         }
