@@ -98,6 +98,14 @@
         settings with no interface or routing dependences.
       </column>
 
+      <column name="ipsec_manual_sas">
+        This is a list of configured IPsec manual security associations (SA)
+      </column>
+
+      <column name="ipsec_manual_sps">
+        This is a list of configured IPsec manual security policies (SP)
+      </column>
+
       <column name="hostname">
       </column>
 
@@ -3559,8 +3567,73 @@
            type='{"type": "integer"}'>
            Reports the Security Parameter Index used for SA outbound traffics.
         </column>
-
       </group>
+
+      <group title="Manual SA Status: ipsec_ospfv3_mke only">
+        <p>
+          Only <code>ipsec_ospfv3_mke</code> interface supports these status.
+        </p>
+
+        <column name="status" key="ipsec_sa_spi"
+           type='{"type": "integer"}'>
+           Reports the manual SA SPI.
+        </column>
+
+        <column name="status" key="ipsec_sa_dest_addr">
+          Reports the manual SA destination IP address.
+        </column>
+
+        <column name="status" key="ipsec_sa_protocol"
+           type='{"type": "string", "enum": ["set",
+                        ["AH",
+                        "ESP"]]}'>
+           Reports the selected IPsec protocol.
+        </column>
+
+        <column name="status" key="ipsec_sa_mode"
+           type='{"type": "string", "enum": ["set",
+                        ["tunnel",
+                        "transport"]]}'>
+           Reports the selected IPsec mode.
+        </column>
+
+        <column name="status" key="ipsec_sa_bytes"
+           type='{"type": "integer"}'>
+           Reports the SA bytes processed.
+        </column>
+
+        <column name="status" key="ipsec_sa_packets"
+           type='{"type": "integer"}'>
+           Reports the SA packets processed.
+        </column>
+
+        <column name="status" key="ipsec_sa_conn_added"
+           type='{"type": "integer"}'>
+           Reports the epoch time when this SA was added.
+      </column>
+
+        <column name="status" key="ipsec_sa_conn_used"
+           type='{"type": "integer"}'>
+           Reports the epoch time when this SA was last used.
+        </column>
+
+        <column name="status" key="ipsec_selector_src_addr">
+          Reports the selector source IP address.
+        </column>
+
+        <column name="status" key="ipsec_selector_src_addr_mask">
+          Reports the selector source IP address mask.
+        </column>
+
+        <column name="status" key="ipsec_selector_dest_addr">
+          Reports the selector destination IP address.
+        </column>
+
+        <column name="status" key="ipsec_selector_dest_addr_mask">
+          Reports the selector destination IP address mask.
+        </column>
+      </group>
+
     </group>
 
     <group title="Module Information">
@@ -5683,6 +5756,54 @@
     <column name="keep_alive_seconds">
       Specifies the configured keep-alive SA session in seconds.
       Defaults to <code>10</code> seconds.
+    </column>
+  </table>
+
+  <table name="IPsec_Manual_SA">
+    <p>
+      Following is the description of the IPsec manual SA configuration settings of
+      <ref table=IPsec_Manual_SA/>.
+    </p>
+    <column name="SPI">
+      Specifies the IPsec security parameter index associated to a SA.
+    </column>
+    <column name="request_id">
+      Specifies the request ID associated a manual SA to its corresponding SP.
+    </column>
+    <column name="priority">
+      Specifies the priority of the SA.
+    </column>
+    <column name="dest_addr">
+        Specifies the destination address of the SA.
+    </column>
+    <column name="protocol">
+      Specifies the traffic IPsec protocol: Authentication Header (AH) vs.
+      Encapsulating Security Payload (ESP).
+      Defaults to <code>ESP</code>.
+    </column>
+    <column name="mode">
+      Specifies the traffic IPsec operation mode: tunnel vs. transport,
+      Defaults to <code>transport</code>.
+    </column>
+    <column name="integrity">
+      Specifies the configured hashes for the authenticity and integrity protection.
+      Defaults to <code>SHA1HMAC</code>.
+    </column>
+    <column name="encryption">
+      Specifies the supported encryptions for the message privacy.
+      Defaults to <code>AES128</code>.
+    </column>
+    <column name="selector_src_addr">
+      Specifies the selector source addresses.
+    </column>
+    <column name="selector_src_addr_mask">
+      Specifies the selector source address mask.
+    </column>
+    <column name="selector_dest_addr">
+      Specifies the selector destination addresses.
+    </column>
+    <column name="selector_dest_addr_mask">
+      Specifies the selector destination address mask.
     </column>
   </table>
 
