@@ -7,6 +7,7 @@
 - [Participating modules](#participating-modules)
 - [OVSDB schema](#ovsdb-schema)
 - [HTTPS support](#https-support)
+- [User account management](#user-account-management)
 - [References](#references)
 
 ## Introduction
@@ -78,12 +79,48 @@ url = '/rest/v1/system/ports'
 conn = httplib.HTTPSConnection("172.17.0.3", 443, context=sslcontext)
 conn.request('GET', url, None, headers=_headers)
 response = conn.getresponse()
-
 ```
 
 Following is an example URL with HTTPS to query ports on the system from a web browser. HTTPS uses the default port 443 if not specified.
-```https://172.17.0.3/rest/v1/system/ports```
+```
+https://172.17.0.3/rest/v1/system/ports
+```
 
+## User account management
+### Design
+
+The `/account` resource is available in the REST API, to allow the user to change their own password and query their role and permissions. This resource requires a user to be already logged in into the system. The request and response bodies follow the "category" tags used in OVSDB resources.
+
+### Account management API definitions
+
+#### GET method
+`GET https://10.10.0.1/account`
+
+Returns a data structure containing the currently logged in user's role and list of permissions within the "status" tag, along with a `200 OK` HTTP response status code if the query is successful. A sample reponse data is as follows:
+
+```
+    {
+        "status": {
+            "role": "ops_netop",
+            "permissions": ["READ_SWITCH_CONFIG", "WRITE_SWITCH_CONFIG"]
+        }
+    }
+```
+
+#### PUT method
+`PUT https://10.10.0.1/account`
+
+Allows the currently logged in user to change their own password. A successful password change is indicated by a `200 OK` HTTP reponse status code. The request body must contain the user's current password and new password within the "configuration" tag, as follows:
+
+
+```
+    {
+        "configuration": {
+            "password": "current_password",
+            "new_password": "new_password"
+        }
+    }
+```
 
 ## References
 
