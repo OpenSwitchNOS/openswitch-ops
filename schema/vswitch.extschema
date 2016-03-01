@@ -7320,6 +7320,102 @@
         ]
       ],
       "isRoot": true
+    },
+    "SNMP_Config": {
+      "columns": {
+        "community_name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1 ,
+              "maxLength": 32
+            },
+            "min": 0,
+            "max": 10
+          }
+        },
+
+        "agent_port": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger":65535
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "other_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      },
+      "maxRows": 1,
+      "isRoot" : true
+    },
+    "SNMP_Trap" : {
+      "columns" : {
+        "trap_receiver_address" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+            "type" : "string",
+            "minLength" : 16,
+            "maxLength" : 49
+            }
+          }
+        },
+
+        "trap_receiver_port" : {
+          "category"  : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "integer",
+              "minInteger" : 1,
+              "maxInteger" : 65535
+            }
+          }
+        },
+        "trap_type" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+               "type"  : "string",
+               "enum": [
+                "set",
+                [
+                  "v1_trap",
+                  "v2_trap",
+                  "v3_trap",
+                  "v2_inform",
+                  "v3_inform"
+                ]
+              ]
+            }
+          }
+        },
+
+        "trap_community_name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1 ,
+              "maxLength": 32
+            }
+          }
+        }
+      },
+      "maxRows" : 10,
+      "isRoot" : true
     }
   }
 }
