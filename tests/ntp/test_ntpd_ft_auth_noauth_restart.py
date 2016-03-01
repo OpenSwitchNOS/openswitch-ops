@@ -185,6 +185,7 @@ def chkNTPAssociationandStatus(dut01, wrkston01, wrkston02):
 
 #timeout increased to provide enough time to download the images from docker hub
 @pytest.mark.timeout(1200)
+@pytest.mark.skipif(True, reason="Skipping due to Taiga ID 626")
 class TestNtpClientConfig:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
