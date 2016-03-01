@@ -282,6 +282,7 @@ class Test_ospf_configuration:
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
         configure(switch1=dut01Obj, switch2=dut02Obj)
 
+    @pytest.mark.skipif(True, reason="Skipping due to Taiga ID 630")
     def test_nbr_discovery(self):
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         dut02Obj = self.topoObj.deviceObjGet(device="dut02")
