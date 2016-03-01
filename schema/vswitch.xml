@@ -240,7 +240,6 @@
           <ref table="UDP_Bcast_Forwarder_Server"/>.
         </column>
     </group>
-
     <group title="LACP Configurations">
       <column name="lacp_config" key="lacp-system-id">
         The LACP system ID of this <ref table="Bridge"/>.  The system ID of a
@@ -350,6 +349,13 @@
         <p>
           Default value is 2.
         </p>
+      </column>
+   </group>
+
+   <group title="Syslog Configurations">
+      <column name="syslog_config" type='{"type": "uuid"}'>
+         List of syslog servers to which syslog messages will be forwarded.  Supports upto 6 syslog server configurations.
+         <ref table="Syslog_Config"/>
       </column>
    </group>
 
@@ -1021,7 +1027,7 @@
         case, this key's value may be the name of the last successfully
         configured system schedule profile.
         </p>
-      </column>
+        </column>
     </group>
 
     <group title="Common Columns">
@@ -1176,13 +1182,12 @@
         Set this value to specify the configuration revision number.
         Default value is 0.
       </column>
-   </group>
+    </group>
 
     <group title="Other Features">
       <column name="mirrors">
         <ref table="Mirror"/> references for sessions configured in this bridge.
       </column>
-
       <column name="datapath_type">
         Name of datapath provider.
       </column>
@@ -1190,7 +1195,6 @@
       </column>
       <column name="datapath_id">
       </column>
-
       <column name="other_config" key="hwaddr">
         An Ethernet address in the form
         <var>xx</var>:<var>xx</var>:<var>xx</var>:<var>xx</var>:<var>xx</var>:<var>xx</var>
@@ -1626,7 +1630,6 @@
       </column>
     </group>
   </table>
-
   <table name="Daemon" title="Daemon Information">
     Each entry in this table represents a single system daemon and contains
     information about that specific daemon. One use is to identify those
@@ -2544,7 +2547,6 @@
         Used for customer documentation.
       </column>
     </group>
-
     <group title="Hardware Default">
       The key-value pairs document the hardware defaults for configuration
       columns in this row.
@@ -2884,7 +2886,7 @@
       Contains the name of the schedule profile that is operating in hardware.
       This may different than the name in <ref column="qos"/> when
       that profile cannot be supported in hardware.
-      </column>
+        </column>
     </group>
 
     <group title="VLAN Configuration">
@@ -6123,6 +6125,21 @@
       <column name="ipv4_ucast_server">
         List of IPv4 unicast server destinations to which matching UDP broadcast packets received
         on the port are duplicated and forwarded.
+      </column>
+    </group>
+  </table>
+  <table name="Syslog_Config" title="Syslog server configuration">
+    <group title="Configuration">
+      <column name="host">
+         Host name or IPv4 address or IPv6 address of the syslog server.
+      </column>
+      <group title="protocol">
+         <column name="protocol" key="udp">
+            Use UDP protocol to forward syslog messages to server.
+         </column>
+      </group>
+      <column name="port_number" type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+         Port number on which syslog server is listening.
       </column>
     </group>
   </table>

@@ -435,6 +435,18 @@
             "max": "unlimited"
           },
           "ephemeral": true
+        },
+        "syslog_config": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Syslog_Config"
+            },
+            "min": 0,
+            "max": 6
+          }
         }
       },
       "isRoot": true,
@@ -7320,6 +7332,41 @@
         ]
       ],
       "isRoot": true
+    },
+    "Syslog_Config": {
+      "columns": {
+        "host": {
+          "category": "configuration",
+          "type": "string",
+          "maxLength": 256
+        },
+        "protocol": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "udp"
+                ]
+              ]
+            }
+          }
+        },
+        "port_number": {
+          "category": "configuration",
+          "type": "integer",
+          "minInteger": 1,
+          "maxInteger": 65535
+        }
+      },
+      "indexes": [
+        [
+          "host",
+          "protocol"
+        ]
+      ]
     }
   }
 }
