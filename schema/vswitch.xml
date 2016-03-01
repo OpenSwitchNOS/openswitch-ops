@@ -6126,4 +6126,50 @@
       </column>
     </group>
   </table>
+  <table name="SNMP_Config">
+    <group title="configuration">
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings.
+        This string could be up to 32 alphanumeric characters.
+        The default community string is "public".
+      </column>
+      <column name="agent_port">
+        The port on which the SNMP agent listens for SNMP requests. The default port is 161.
+      </column>
+      <group title="System MIB Information">
+        <column name="other_config">
+          Keys-value pairs of system MIB objects.
+        </column>
+        <column name="other_config" key="system_name">
+          This key represents the hostname configured by user. Defaults to "switch".
+        </column>
+        <column name="other_config" key="system_location">
+          This key represents the system location.
+        </column>
+        <column name="other_config" key="system_contact">
+          This key represents the system contact.
+        </column>
+        <column name="other_config" key="system_description">
+          This key represents the system description.
+        </column>
+      </group>
+    </group>
+  </table>
+   <table name="SNMP_Trap">
+    <group title="configuration">
+      <column name="ip_address">
+        The IP address (IPv4/IPv6) on which the SNMP trap receiver is configured.
+      </column>
+      <column name="udp_port">
+        The port on which host listens from SNMP traps.
+      </column>
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings. This string could be up to 32 alphanumeric characters.
+        The default community string is "public".
+      </column>
+      <column name="trap_type">
+        This can take one of the values from v1_trap/v2_trap/v3_trap/v2_inform/v3_inform. Defaults to v2_trap.
+      </column>
+    </group>
+  </table>
 </database>
