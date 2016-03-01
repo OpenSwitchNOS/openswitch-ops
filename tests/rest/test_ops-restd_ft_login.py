@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -15,167 +15,173 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import os
-import sys
-import time
-import pytest
-import subprocess
-import shutil
-import json
-import httplib
-import urllib
+# Testing framework imports
 from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 from opsvsiutils.systemutil import *
-from utils.utils import *
-import ssl
-from utils.utils import *
+
+import time
+import httplib
+import urllib
+
+from opsvsiutils.restutils.utils import get_switch_ip, rest_sanity_check, \
+    execute_request
+from opsvsiutils.restutils.utils import LOGIN_URI, DEFAULT_USER, \
+    DEFAULT_PASSWORD
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
+TEST_HEADER = "/login validation:"
+TEST_START = "\n########## " + TEST_HEADER + " %s ##########\n"
+TEST_END = "########## End " + TEST_HEADER + " %s ##########\n"
 
-def ordered(obj):
-    if isinstance(obj, dict):
-        return sorted((k, ordered(v)) for k, v in obj.items())
-    if isinstance(obj, list):
-        return sorted(ordered(x) for x in obj)
-    else:
-        return obj
+HEADERS = {"Content-type": "application/x-www-form-urlencoded",
+           "Accept": "text/plain"}
 
 
 class myTopo(Topo):
     def build(self, hsts=0, sws=1, **_opts):
-
         self.hsts = hsts
         self.sws = sws
-        switch = self.addSwitch("s1")
+        self.addSwitch("s1")
 
 
-class configTest (OpsVsiTest):
+class LoginTest (OpsVsiTest):
     def setupNet(self):
 
-        host_opts = self.getHostOpts()
-        switch_opts = self.getSwitchOpts()
-        ecmp_topo = myTopo(hsts=NUM_HOSTS_PER_SWITCH, sws=NUM_OF_SWITCHES,
-                           hopts=host_opts, sopts=switch_opts)
-        self.net = Mininet(ecmp_topo, switch=VsiOpenSwitch, host=Host,
-                           link=OpsVsiLink, controller=None, build=True)
+        mytopo = myTopo(hsts=NUM_HOSTS_PER_SWITCH, sws=NUM_OF_SWITCHES,
+                        hopts=self.getHostOpts(), sopts=self.getSwitchOpts())
+        self.net = Mininet(topo=mytopo, switch=VsiOpenSwitch, host=None,
+                           link=None, controller=None, build=True)
+
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
 
-    def verify_login(self):
+    def query_not_logged_in(self):
+        '''
+        This function verifies the user can't query on /login if not logged in
+        '''
+        test_title = "query login while not logged in"
+        info(TEST_START % test_title)
 
-        s1 = self.net.switches[0]
-        ip_addr = self.SWITCH_IP
+        info("Executing GET on /login while not logged in...")
+        status_code, response_data = execute_request(LOGIN_URI, "GET", None,
+                                                     self.SWITCH_IP, False)
+        assert status_code == httplib.UNAUTHORIZED, "Wrong status code " + \
+            "when querying /login while not logged in: %s" % status_code
+        info(" All good.\n")
 
-        ip_addr = ip_addr.strip()
+        info(TEST_END % test_title)
 
-        #POST
-        _headers = {"Content-type": "application/x-www-form-urlencoded",
-            "Accept": "text/plain"}
-        # GET to fetch system info from the DB
+    def successful_login(self):
+        '''
+        This verifies Login is successful when using correct data
+        '''
+        test_title = "successful Login"
+        info(TEST_START % test_title)
 
-        sslcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-        sslcontext.verify_mode = ssl.CERT_REQUIRED
-        sslcontext.check_hostname = False
+        data = {'username': DEFAULT_USER, 'password': DEFAULT_PASSWORD}
 
-        src_path = os.path.dirname(os.path.realpath(__file__))
-        src_file = os.path.join(src_path, 'utils/server.crt')
-        sslcontext.load_verify_locations(src_file)
-        url = '/login'
-        conn = httplib.HTTPSConnection(ip_addr, 443, context=sslcontext)
+        # Attempt Login
+        info("Attempting login with correct data...")
+        response, response_data = execute_request(LOGIN_URI, "POST",
+                                                  urllib.urlencode(data),
+                                                  self.SWITCH_IP, True,
+                                                  HEADERS)
+        assert response.status == httplib.OK, ("Login POST not successful, " +
+                                               "code: %s " % response.status)
+        info(" All good.\n")
 
-        print("\n######### Running POST to fetch the cookie ##########\n")
-        body = {'username': 'netop', 'password': 'netop'}
-        conn.request('POST', url, urllib.urlencode(body), headers=_headers)
-        response = conn.getresponse()
-        status_code, response_data = response.status, response.read()
-        conn.close()
-
-        _headers = {'Cookie': response.getheader('set-cookie')}
-        time.sleep(2)
-        print ('''"\n######### Running GET to fetch the system
-                info from the DB ##########\n"''')
-
-        conn = httplib.HTTPSConnection(ip_addr, 443, context=sslcontext)
-
-        conn.request('GET', url, headers=_headers)
-        response = conn.getresponse()
-
-        assert response.status == 200
+        # Get cookie header
+        cookie_header = {'Cookie': response.getheader('set-cookie')}
 
         time.sleep(2)
 
-        print ('''"\n######### Running GET to fetch the system info
-                from the DB after removing the cookie ##########\n"''')
+        # Verify Login was successful
+        info("Verifying Login was successful...")
+        status_code, response_data = execute_request(LOGIN_URI, "GET", None,
+                                                     self.SWITCH_IP, False,
+                                                     cookie_header)
+        assert status_code == httplib.OK, ("Login GET not successful, " +
+                                           "code: %s " % status_code)
+        info(" All good.\n")
 
-        _headers = {'Cookie': response.getheader('set-cookie')}
+        info(TEST_END % test_title)
 
-        # GET to fetch system info from the DB
+    def unsuccessful_login_with_wrong_password(self):
+        '''
+        This verifies Login is unsuccessful for an
+        existent user but using a wrong password
+        '''
+        test_title = "unsuccessful Login with wrong password"
+        info(TEST_START % test_title)
 
-        conn = httplib.HTTPSConnection(ip_addr, 443, context=sslcontext)
-        conn.request('GET', url, headers=_headers)
-        response = conn.getresponse()
+        data = {'username': DEFAULT_USER, 'password': 'wrongpassword'}
 
-        assert response.status == 401
+        # Attempt Login
+        info("Attempting login with wrong password...")
+        response, response_data = execute_request(LOGIN_URI, "POST",
+                                                  urllib.urlencode(data),
+                                                  self.SWITCH_IP, True,
+                                                  HEADERS)
+        assert response.status == httplib.UNAUTHORIZED, "Wrong status code" + \
+            " when login in with wrong password: %s " % response.status
 
-    def verify_fail_login(self):
-        s1 = self.net.switches[0]
-        ip_addr = self.SWITCH_IP
+        info(" All good.\n")
 
-        ip_addr = ip_addr.strip()
+        info(TEST_END % test_title)
 
-        #POST
-        _headers = {"Content-type": "application/x-www-form-urlencoded",
-            "Accept": "text/plain"}
-        # GET to fetch system info from the DB
+    def unsuccessful_login_with_non_existent_user(self):
+        '''
+        This verifies Login is unsuccessful for a non-existent user
+        '''
+        test_title = "unsuccessful Login with non-existent user"
+        info(TEST_START % test_title)
 
-        sslcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-        sslcontext.verify_mode = ssl.CERT_REQUIRED
-        sslcontext.check_hostname = False
+        data = {'username': 'john', 'password': 'doe'}
 
-        src_path = os.path.dirname(os.path.realpath(__file__))
-        src_file = os.path.join(src_path, "utils/server.crt")
-        sslcontext.load_verify_locations(src_file)
-        url = '/login'
-        conn = httplib.HTTPSConnection(ip_addr, 443, context=sslcontext)
+        # Attempt Login
+        info("Attempting login with non-existent user...")
+        response, response_data = execute_request(LOGIN_URI, "POST",
+                                                  urllib.urlencode(data),
+                                                  self.SWITCH_IP, True,
+                                                  HEADERS)
+        assert response.status == httplib.UNAUTHORIZED, "Wrong status code" + \
+            " when login in with non-existent user: %s " % response.status
 
-        print("\n######### Running POST to fetch the cookie ##########\n")
-        body = {'username': 'john', 'password': 'doe'}
-        conn.request('POST', url, urllib.urlencode(body), headers=_headers)
-        response = conn.getresponse()
-        status_code, response_data = response.status, response.read()
-        conn.close()
+        info(" All good.\n")
 
-        _headers = {'Cookie': response.getheader('set-cookie')}
-        time.sleep(2)
-        print ('''"\n######### Running GET to fetch the system
-                info from the DB ##########\n"''')
+        info(TEST_END % test_title)
 
-        conn = httplib.HTTPSConnection(ip_addr, 443, context=sslcontext)
+    def unauthorized_user_login_attempt(self):
+        '''
+        This verifies that you can't login with
+        a user that has no REST login permissions.
+        Current login permissions include
+        READ_SWITCH_CONFIG and WRITE_SWITCH_CONFIG.
+        Currently, the only users that do not have
+        either of these permissions are any user from
+        the ops_admin group
+        '''
+        test_title = "login attempt by unauthorized user"
+        info(TEST_START % test_title)
 
-        conn.request('GET', url, headers=_headers)
-        response = conn.getresponse()
+        data = {'username': 'admin', 'password': 'admin'}
 
-        assert response.status == 401
+        # Attempt Login
+        info("Attempting login with an unauthorized user...")
+        status_code, response_data = execute_request(LOGIN_URI, "POST",
+                                                     urllib.urlencode(data),
+                                                     self.SWITCH_IP, False,
+                                                     HEADERS)
+        assert status_code == httplib.UNAUTHORIZED, "Wrong status code " + \
+            "when attempting login by an unauthorized user: %s " % status_code
+        info(" All good.\n")
 
-        time.sleep(2)
-
-        print ('''"\n######### Running GET to fetch the system info
-                from the DB after removing the cookie ##########\n"''')
-
-        _headers = {'Cookie': response.getheader('set-cookie')}
-
-        # GET to fetch system info from the DB
-
-        conn = httplib.HTTPSConnection(ip_addr, 443, context=sslcontext)
-        conn.request('GET', url, headers=_headers)
-        response = conn.getresponse()
-
-        assert response.status == 401
+        info(TEST_END % test_title)
 
 
-class Test_config:
+class Test_login:
     def setup(self):
         pass
 
@@ -183,11 +189,11 @@ class Test_config:
         pass
 
     def setup_class(cls):
-        cls.test_var = configTest()
+        cls.test_var = LoginTest()
         rest_sanity_check(cls.test_var.SWITCH_IP)
 
     def teardown_class(cls):
-        Test_config.test_var.net.stop()
+        cls.test_var.net.stop()
 
     def setup_method(self, method):
         pass
@@ -198,6 +204,17 @@ class Test_config:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
-        self.test_var.verify_login()
-        self.test_var.verify_fail_login()
+    def test_query_login_while_not_logged_in(self):
+        self.test_var.query_not_logged_in()
+
+    def test_successful_login(self):
+        self.test_var.successful_login()
+
+    def test_login_with_wrong_password(self):
+        self.test_var.unsuccessful_login_with_wrong_password()
+
+    def test_login_with_non_existent_user(self):
+        self.test_var.unsuccessful_login_with_non_existent_user()
+
+    def test_unauthorized_user_login_attempt(self):
+        self.test_var.unauthorized_user_login_attempt()
