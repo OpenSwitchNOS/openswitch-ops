@@ -414,6 +414,7 @@ class Test_vlan_ping:
     def teardown_class (cls):
         Test_vlan_ping.topoObj.terminate_nodes()
 
+    @pytest.mark.skipif(True, reason="Skipping due to Taiga ID 629")
     def test_ping_vlan(self):
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
         wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
