@@ -279,6 +279,7 @@ class Test_template:
         rc = obj.cmd("vlan access 10")
 
 
+    @pytest.mark.skipif(True, reason="Skipping due to Taiga Defect ID 628")
     def test_autonegotiation(self):
         # Get everything initially configured
         LogOutput('info', "*****Testing autonegotiation*****")
