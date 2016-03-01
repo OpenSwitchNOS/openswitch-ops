@@ -358,6 +358,15 @@
       </column>
    </group>
 
+   <group title="Syslog Configurations">
+      <column name="syslog_configs" type='{"type": "uuid"}'>
+        <p>
+          List of syslog servers to which syslog messages will be forwarded.  Supports upto 6 syslog server configurations.
+          <ref table="Syslog_Config"/>
+        </p>
+      </column>
+   </group>
+
    </group>
 
     <group title="Status">
@@ -6277,6 +6286,21 @@
       <column name="ipv4_ucast_server">
         List of IPv4 unicast server destinations to which matching UDP broadcast packets received
         on the port are duplicated and forwarded.
+      </column>
+    </group>
+  </table>
+  <table name="Syslog_Config" title="Syslog server configuration">
+    <group title="Configuration">
+      <column name="host">
+         Host name or IPv4 address or IPv6 address of the syslog server.
+      </column>
+      <group title="protocol">
+         <column name="protocol" key="udp">
+           Protocol used to forward messages to the server is UDP.
+         </column>
+      </group>
+      <column name="port_number" type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+         Port number on which syslog server is listening.
       </column>
     </group>
   </table>
