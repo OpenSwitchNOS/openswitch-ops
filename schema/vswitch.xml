@@ -1699,8 +1699,74 @@
       <column name="match">
         The match rule for route map. Default is deny.
       </column>
+      <column name="match" key="prefix_list">
+        The match rule for route-map is keyed by prefix-list.
+      </column>
+      <column name="match" key="ipv6_prefix_list">
+        The match rule for route-map is keyed by ipv6_prefix_list.
+      </column>
+      <column name="match" key="community">
+        The match rule for route-map is keyed by community.
+      </column>
+      <column name="match" key="extcommunity">
+        The match rule for route-map is keyed by extcommunity.
+      </column>
+      <column name="match" key="as_path">
+        The match rule for route-map is keyed by as_path.
+      </column>
+      <column name="match" key="origin">
+        The match rule for route-map is keyed by origin.
+      </column>
+      <column name="match" key="metric">
+        The match rule for route-map is keyed by metric.
+      </column>
+      <column name="match" key="ipv6_next_hop">
+        The match rule for route-map is keyed by ipv6_next_hop.
+      </column>
+      <column name="match" key="probability">
+        The match rule for route-map is keyed by probability.
+      </column>
       <column name="set">
-        The set rule for route map
+        The set rule for route map.
+      </column>
+      <column name="set" key="community">
+        The set rule for route-map is keyed by community.
+      </column>
+      <column name="set" key="metric">
+        The set rule for route-map is keyed by metric.
+      </column>
+      <column name="set" key="aggregator_as">
+        The set rule for route-map is keyed by aggregator_as.
+      </column>
+      <column name="set" key="as_path_exclude">
+        The set rule for route-map is keyed by as_path_exclude.
+      </column>
+      <column name="set" key="as_path_prepend">
+        The set rule for route-map is keyed by as_path_prepend.
+      </column>
+      <column name="set" key="atomic_aggregate">
+        The set rule for route-map is keyed by atomic_aggregate.
+      </column>
+      <column name="set" key="comm_list">
+        The set rule for route-map is keyed by comm_list.
+      </column>
+      <column name="set" key="extcommunity_rt">
+        The set rule for route-map is keyed by extcommunity_rt.
+      </column>
+      <column name="set" key="extcommunity_soo">
+        The set rule for route-map is keyed by extcommunity_soo.
+      </column>
+      <column name="set" key="ipv6_next_hop_global">
+        The set rule for route-map is keyed by ipv6_next_hop_global.
+      </column>
+      <column name="set" key="local_preference">
+        The set rule for route-map is keyed by local_preference.
+      </column>
+      <column name="set" key="origin">
+        The set rule for route-map is keyed by origin.
+      </column>
+      <column name="set" key="weight">
+        The set rule for route-map is keyed by weight.
       </column>
    </group>
    <group title="Status">
@@ -2237,6 +2303,14 @@
 
       <column name="timers">
       BGP per neighbor timers - Connect timer/Keep-alive Interval.
+      </column>
+
+      <column name="timers" key="keepalive">
+        BGP per neighbor timers is keyed by keepalive.
+      </column>
+
+      <column name="timers" key="holdtime">
+        BGP per neighbor timers is keyed by holdtime.
       </column>
 
       <column name="aspath_filters">
