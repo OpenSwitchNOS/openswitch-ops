@@ -125,7 +125,7 @@ Returns log output filtered by the given log priority level. Priority levels are
 
 `GET https://10.10.0.1/rest/v1/logs?since=yyyy-mm-dd hh:mm:ss;until=yyyy-mm-dd hh:mm:ss`
 Returns the output filtered by the given time window.
-Instead of a specific time, a user can also give relative words like "yesterday", "today", "now", "1 day ago", "1 hour ago", "1 minute ago". Words like "hour ago", "minute ago" and "day ago" must precede with an integer and can be in plural form too. For example, 2 hours ago or 1 hour ago. Words other than the ones mentioned above return an error.
+Instead of a specific time, a user can also give relative words like "yesterday", "today", "now", "1 day ago", "1 hour ago", "1 minute ago". Words like "hour ago", "minute ago" and "day ago" must precede with a positive integer and can be in plural form too. For example, 2 hours ago or 1 hour ago. Words other than the ones mentioned above return an error.
 
 `GET https://10.10.0.1/rest/v1/logs?since=2 hours ago`
 Returns log entries generated in the past 2 hour time window.
@@ -136,9 +136,9 @@ Returns logs *after* the location specified by the given cursor. The cursor is m
 
 
 `GET https://10.10.0.1/rest/v1/logs?offset=<int>;limit=<int>`
-As the log output can be huge, a user may request the number of log entries in a response. To do so, the user needs to pass `offset` and `limit` parameters. The `Offset` parameter is the starting log entry to obtain the results which starts with 0. The `limit` parameter defines the number of JSON log entries in the response. These parameters can be used along with other filtering parameters.
+As the log output can be huge, a user may request the number of log entries in a response. To do so, the user needs to pass `offset` and `limit` parameters. The `Offset` parameter is the starting log entry to obtain the results which starts with 0. The `limit` parameter defines the number of JSON log entries in the response and the valid range is 1 - 1000. These two parameters can be used along with other filtering parameters separated by `&`.
 For example, to retrieve the first 10 logs since the bootup, use `GET https:////10.10.0.1/rest/v1/logs?offset=0;limit=10`. To retrieve the next 10 logs, use `GET https:////10.10.0.1/rest/v1/logs?offset=10;limit=10`. The offset in the next request is typically the previous offset plus the limit. Following is an example to request log entries filtered based on priority level 6, and limit 5 log entries in the response:
-    `GET https://10.10.0.1/rest/v1/logs?priority=6;offset=0;limit=5`
+    `GET https://10.10.0.1/rest/v1/logs?priority=6&offset=0&limit=5`
 
 
 `Get https://10.10.0.1/rest/v1/logs?<field>=<value>`
@@ -146,9 +146,9 @@ Returns log output based on the fields matched to the given value in the systemd
     If one match field is specified, all entries with a field matching the expression are returned in response.
     ` https://10.10.0.1/rest/v1/logs?MESSAGE_ID=50c0fa81c2a545ec982a54293f1b1945`
     If two different fields are matched, only entries matching both expressions at the same time are returned.
-    `https://10.10.0.1/rest/v1/logs?MESSAGE_ID=50c0fa81c2a545ec982a54293f1b1945;SYSLOG_INDETIFIER=ops-bgpd`
+    `https://10.10.0.1/rest/v1/logs?MESSAGE_ID=50c0fa81c2a545ec982a54293f1b1945&SYSLOG_INDETIFIER=ops-bgpd`
     If two matches refer to the same field, all entries matching either expression are returned.
-    `https://10.10.0.1/rest/v1/logs?_PID=150;_PID=178`
+    `https://10.10.0.1/rest/v1/logs?_PID=150&_PID=178`
 
 The following fields are supported:
 
