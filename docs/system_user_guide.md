@@ -97,6 +97,18 @@ base-3    18.50          normal         normal
 base-2    20.50          normal         normal
 ```
 
+5. ++View detailed version information++
+The 'show version detail' command displays the source URI and version of every
+package present in the switch image.
+```
+switch#show version detail
+----------------------------------------------------------------------------------------------------------------------
+NAME                             SOURCE URI                                                 VERSION
+----------------------------------------------------------------------------------------------------------------------
+ops-tempd         git://git.openswitch.net/openswitch/ops-tempd;protocol=http   b49827ee980ea81481b7f5c3c753320f9f998f0
+openssl           http://www.openssl.org/source/openssl-1.0.2a.tar.gz           1.0.2a
+```
+
 ## CLI
 
 Click [here](/documents/user/system_cli) for the CLI commands related to the system.
