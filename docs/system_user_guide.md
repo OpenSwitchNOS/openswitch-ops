@@ -97,6 +97,20 @@ base-3    18.50          normal         normal
 base-2    20.50          normal         normal
 ```
 
+5. ++View detailed version information++
+The 'show version detail' command displays the source URI and version of every
+package present in the switch image.
+```
+switch#show version detail
+PKG: kernel-module-lttng-probe-signal
+SRC: git://git.lttng.org/lttng-modules.git;branch=stable-2.6
+VER: 62080b2248fd8ec4111ffc379d0bc5eaf0a5c16d
+
+PKG: openvswitch-sim
+SRC: http://openvswitch.org/releases/openvswitch-2.3.1.tar.gz
+VER: 2.3.1
+```
+
 ## CLI
 
 Click [here](/documents/user/system_cli) for the CLI commands related to the system.
