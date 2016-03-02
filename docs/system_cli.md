@@ -9,6 +9,7 @@ System commands
 	- [Setting an LED state](#setting-an-led-state)
 	- [Unsetting an LED state](#unsetting-an-led-state)
 - [System Display Commands](#system-display-commands)
+        - [Showing source URI and version of each package] (#showing-source-uri-and-version-of-each-package)
 	- [Showing system information](#showing-system-information)
 	- [System fan information](#system-fan-information)
 	- [Showing system temperature information](#showing-system-temperature-information)
@@ -130,6 +131,35 @@ switch(config)#no led base-loc
 ```
 
 ## System Display Commands
+### Showing source URI and version of each package
+#### Syntax
+`show version detail`
+
+#### Description
+This command lists every package present in the switch image under the NAME column. It displays the download location for the source-code of the corresponding package in the SOURCE URI column. VERSION column displays the git hash value if SOURCE URI is a git repository. If not, VERSION column displays the version string of the package. If version information and/or Source URI is not available during build-time, `show version detail` displays 'Not Available'.
+
+#### Authority
+All users.
+
+#### Parameters
+This command does not require a parameter.
+
+#### Examples
+```
+switch#show version detail
+PKG: kernel-module-lttng-probe-signal
+VER: 62080b2248fd8ec4111ffc379d0bc5eaf0a5c16d
+SRC: git://git.lttng.org/lttng-modules.git;branch=stable-2.6
+
+PKG: openvswitch-sim
+VER: 2.3.1
+SRC: http://openvswitch.org/releases/openvswitch-2.3.1.tar.gz
+
+PKG: libgpg-error0
+VER: Not Available
+SRC: Not Available
+```
+
 ### Showing system information
 #### Syntax
 `show system [ < fan | temperature [ detail ] | led | power-supply >]`
