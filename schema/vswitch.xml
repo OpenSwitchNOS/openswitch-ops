@@ -1707,8 +1707,95 @@
       <column name="match">
         The match rule for route map. Default is deny.
       </column>
+      <column name="match" key="prefix_list">
+        The match rule for route-map is keyed by prefix-list
+        and value is a string.
+      </column>
+      <column name="match" key="ipv6_prefix_list">
+        The match rule for route-map is keyed by ipv6_prefix_list
+        and value is a string.
+      </column>
+      <column name="match" key="community">
+        The match rule for route-map is keyed by community
+        and value is a string.
+      </column>
+      <column name="match" key="extcommunity">
+        The match rule for route-map is keyed by extcommunity
+        and value is a string.
+      </column>
+      <column name="match" key="as_path">
+        The match rule for route-map is keyed by as_path
+        and value is a string.
+      </column>
+      <column name="match" key="origin">
+        The match rule for route-map is keyed by origin
+        and value is a string.
+      </column>
+      <column name="match" key="metric">
+        The match rule for route-map is keyed by metric
+        and value is a string.
+      </column>
+      <column name="match" key="ipv6_next_hop">
+        The match rule for route-map is keyed by ipv6_next_hop
+        and value is a string.
+      </column>
+      <column name="match" key="probability">
+        The match rule for route-map is keyed by probability
+        and value is a string.
+      </column>
       <column name="set">
-        The set rule for route map
+        The set rule for route map.
+      </column>
+      <column name="set" key="community">
+        The set rule for route-map is keyed by community
+        and value is a string.
+      </column>
+      <column name="set" key="metric">
+        The set rule for route-map is keyed by metric
+        and value is a string.
+      </column>
+      <column name="set" key="aggregator_as">
+        The set rule for route-map is keyed by aggregator_as
+        and value is a string.
+      </column>
+      <column name="set" key="as_path_exclude">
+        The set rule for route-map is keyed by as_path_exclude
+        and value is a string.
+      </column>
+      <column name="set" key="as_path_prepend">
+        The set rule for route-map is keyed by as_path_prepend
+        and value is a string.
+      </column>
+      <column name="set" key="atomic_aggregate">
+        The set rule for route-map is keyed by atomic_aggregate
+        and value is a string.
+      </column>
+      <column name="set" key="comm_list">
+        The set rule for route-map is keyed by comm_list
+        and value is a string.
+      </column>
+      <column name="set" key="extcommunity rt">
+        The set rule for route-map is keyed by extcommunity rt
+        and value is a string.
+      </column>
+      <column name="set" key="extcommunity soo">
+        The set rule for route-map is keyed by extcommunity soo
+        and value is a string.
+      </column>
+      <column name="set" key="ipv6_next_hop_global">
+        The set rule for route-map is keyed by ipv6_next_hop_global
+        and value is a string.
+      </column>
+      <column name="set" key="local_preference">
+        The set rule for route-map is keyed by local_preference.
+      </column>
+      <column name="set" key="origin">
+        The set rule for route-map is keyed by origin
+        and value is a string.
+      </column>
+      <column name="set" key="weight">
+        The set rule for route-map is keyed by weight
+        and value is a string.
       </column>
    </group>
    <group title="Status">
@@ -2247,6 +2334,16 @@
       BGP per neighbor timers - Connect timer/Keep-alive Interval.
       </column>
 
+      <column name="timers" key="keepalive">
+        BGP per neighbor timers is keyed by keepalive
+        and value is a string.
+      </column>
+
+      <column name="timers" key="holdtime">
+        BGP per neighbor timers is keyed by holdtime
+        and value is a string.
+      </column>
+
       <column name="aspath_filters">
       Name and direction of the as-path filters.
       </column>
@@ -2290,6 +2387,23 @@
       These values describe various status information about this
       BGP neighbor or BGP Peer group entry.
       </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_out_performed">
+      The status column is keyed by bgp_num_clear_counters_peer_soft_out_performed
+      and value is a string.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_out_requested">
+      The status column is keyed by bgp_num_clear_counters_peer_soft_out_requested
+      and value is a string.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_in_performed">
+      The status column is keyed by bgp_num_clear_counters_peer_soft_in_performed
+      and value is a string.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_in_requested">
+      The status column is keyed by bgp_num_clear_counters_peer_soft_in_requested
+      and value is a string.
+      </column>
+
    </group>
 
    <group title="BGP Neighbor or Peer group Status Info">
