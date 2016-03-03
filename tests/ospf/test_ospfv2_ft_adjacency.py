@@ -58,6 +58,7 @@ ADJACENCY_MAX_WAIT_TIME = 50
 
 # Topology definition
 topoDict = {"topoExecution": 5000,
+            "topoType": "virtual",
             "topoTarget": "dut01 dut02",
             "topoDevices": "dut01 dut02",
             "topoLinks": "lnk01:dut01:dut02",
