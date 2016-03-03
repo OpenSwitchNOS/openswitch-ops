@@ -23,6 +23,7 @@ LAG Test Cases
 * [Modify number of static LAG members upper limits](#modify-number-of-static-lag-members-upper-limits)
 * [Modify dynamic LAG without changing any setting](#modify-dynamic-lag-without-changing-any-setting)
 * [Modify static LAG without changing any setting](#modify-static-lag-without-changing-any-setting)
+* [Verify LAG interface functionality when using command shutdown for LAG](#verify-lag-interface-functionality-when-using-command-shutdown-for-lag)
 
 ## Create dynamic LAGs with different names
 ### Objective
@@ -645,7 +646,7 @@ to modify a dynamice link aggregation to have between zero and two members:
 
 ## Modify number of dynamic LAG members upper limits
 ### Objective
-To verify it is possible to modify a LAG’s upper limits.
+To verify it is possible to modify a LAG upper limits.
 ### Requirements
 The requirements for this test case are:
 
@@ -1188,3 +1189,64 @@ The traffic flow between hosts is not stopped after applying static LAG configur
 
 The traffic between hosts stops crossing the static LAG link, or the configuration changes, or the interfaces reset, or for any other unexpected behavior.
 
+## Verify LAG interface functionality when using command shutdown for LAG
+
+### Objective
+To verify that LAG interfaces are not passing traffic when the command shutdown is
+used in the LAG context, or to verify that LAG interfaces are passing traffic when
+the command no shutdown is used in the LAG context.
+
+### Requirements
+The requirements for this test case are:
+
+ - 2 Switches running OpenSwitch
+ - 2 Workstations
+ - **FT file**: `ops/tests/lag/test_lag_ft_shutdown_no_shutdown.py`
+
+### Setup
+
+#### Topology diagram
+```ditaa
+
+                        +-----------+
+                        |workstation|
+                        |    01     |
+                        +-----------+
+                              |
+                        +----------+
+                        |          |
+                        |  dut01   |
+                        +----------+
+                            ||         LAG 1
+                        +----------+
+                        |          |
+                        |  dut02   |
+                        +----------+
+                             |
+                        +-----------+
+                        |workstation|
+                        |    02     |
+                        +-----------+
+```
+#### Test setup
+### Description
+This test verifies functionality of the commands shutdown and no shutdown in a LAG context
+
+To configure a LAG:
+1. Configure LAG 1.
+2. Add interfaces to LAG 1.
+3. Configure the workstations.
+4. Ping between the workstations.
+5. Use commnd **shutdonw** in LAG 1. Ping between the workstations.
+5. Use commnd **no shutdonw** in LAG 1. Ping between the workstations.
+
+### Test result criteria
+#### Test pass criteria
+This test is effective if pinging between the workstations fails when the
+command **shutdonw** is used.
+This test is effective if pinging between the workstations is successful
+when the command **no shutdonw** is used.
+
+#### Test fail criteria
+This test fails if the ping reach the other side when the command **shutdonw** is used.
+This test fails if the ping does not reach the other side when the command **no shutdonw** is used.
