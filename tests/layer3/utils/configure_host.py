@@ -15,66 +15,89 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from opstestfw import *
-from opstestfw.switch.CLI import *
-from opstestfw.switch.OVS import *
+"""Configure Host Utility.
 
-from utils.keys import *
+Name:
+    configure_host
+
+Objective:
+    Used to automate host configuration using a dictionary provided from a test
+    case.
+"""
+
+from keys import (
+    IP_ADDR, IP_BROADCAST, IP_ENABLE, IP_INTF, IP_MASK, KEY_IP, KEY_IPV6,
+    KEY_ROUTE, ROUTE_DST, ROUTE_ENABLE, ROUTE_GATEWAY, ROUTE_IPV6, ROUTE_MASK
+)
+
+from opstestfw import LogOutput
 
 
 def host_configure_ip(host, config):
+    """Configure IPv4/IPv6 section.
+
+    Param:
+        - host: Device to be configure
+        - config: Array of dictionaries with IPv4/IPv6 configs
+    """
     for ip in config:
-        retStruct = False
+        ret_struct = False
 
         LogOutput('info',
-                  "Configuring host IP on Interface %s" %
+                  'Configuring host IP on Interface %s' %
                   ip[IP_INTF])
 
         if KEY_IPV6 in ip:
-            LogOutput('info', "Configuring IPv6 Address")
-            retStruct = host.Network6Config(
+            LogOutput('info', 'Configuring IPv6 Address')
+            ret_struct = host.Network6Config(
                                 ipAddr=ip[IP_ADDR],
                                 netMask=ip[IP_MASK],
                                 interface=host.linkPortMapping[ip[IP_INTF]],
                                 broadcast=ip[IP_BROADCAST],
                                 config=ip[IP_ENABLE])
         else:
-            LogOutput('info', "Configuring IPv4 Address")
-            retStruct = host.NetworkConfig(
+            LogOutput('info', 'Configuring IPv4 Address')
+            ret_struct = host.NetworkConfig(
                                 ipAddr=ip[IP_ADDR],
                                 netMask=ip[IP_MASK],
                                 interface=host.linkPortMapping[ip[IP_INTF]],
                                 broadcast=ip[IP_BROADCAST],
                                 config=ip[IP_ENABLE])
 
-    assert not retStruct.returnCode(), "Failed to configure an IP address"
+    assert not ret_struct.returnCode(), 'Failed to configure an IP address'
 
 
 def host_configure_static_route(host, config):
+    """Configure static routes section.
+
+    Param:
+        - host: Device to be configure
+        - config: Array of dictionaries with static route configs
+    """
     for route in config:
 
-        retStruct = False
+        ret_struct = False
 
         if KEY_IPV6 in route:
-            LogOutput('info', "Configuring IPv6 route for host")
-            retStruct = host.IPRoutesConfig(destNetwork=route[ROUTE_DST],
-                                            netMask=route[ROUTE_MASK],
-                                            gateway=route[ROUTE_GATEWAY],
-                                            ipv6Flag=route[ROUTE_IPV6],
-                                            config=route[ROUTE_ENABLE])
+            LogOutput('info', 'Configuring IPv6 route for host')
+            ret_struct = host.IPRoutesConfig(destNetwork=route[ROUTE_DST],
+                                             netMask=route[ROUTE_MASK],
+                                             gateway=route[ROUTE_GATEWAY],
+                                             ipv6Flag=route[ROUTE_IPV6],
+                                             config=route[ROUTE_ENABLE])
         else:
-            LogOutput('info', "Configuring IPv4 route for host")
-            retStruct = host.IPRoutesConfig(destNetwork=route[ROUTE_DST],
-                                            netMask=route[ROUTE_MASK],
-                                            gateway=route[ROUTE_GATEWAY],
-                                            config=route[ROUTE_ENABLE])
+            LogOutput('info', 'Configuring IPv4 route for host')
+            ret_struct = host.IPRoutesConfig(destNetwork=route[ROUTE_DST],
+                                             netMask=route[ROUTE_MASK],
+                                             gateway=route[ROUTE_GATEWAY],
+                                             config=route[ROUTE_ENABLE])
 
-        assert not retStruct.returnCode(), \
-            "Failed to configure IP address static route"
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
 
 
 def configure_host(host, config):
-    """Used for host basic configuration
+    """Used for host basic configuration.
 
     The idea of this function is to simplify device configuration, prevent
     multiple failure points across the test, it also to improve legibility when
@@ -91,7 +114,7 @@ def configure_host(host, config):
 
     The logic of how a device should be configured must be written here.
     """
-    LogOutput('info', "Starting host configuration!")
+    LogOutput('info', 'Starting host configuration!')
 
     if KEY_IP in config:
         host_configure_ip(host, config[KEY_IP])
@@ -99,4 +122,4 @@ def configure_host(host, config):
     if KEY_ROUTE in config:
         host_configure_static_route(host, config[KEY_ROUTE])
 
-    LogOutput('info', "Host configuration DONE!")
+    LogOutput('info', 'Host configuration DONE!')
