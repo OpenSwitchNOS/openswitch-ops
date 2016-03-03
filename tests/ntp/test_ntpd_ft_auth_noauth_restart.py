@@ -110,13 +110,9 @@ def validateNtpAssociationInfo(dut01, wrkston01, wrkston02):
     lines = out.split('\n')
     for line in lines:
         if WORKSTATION_IP_ADDR_SER1 in line:
-           if '.INIT.' in line:
-               return False
            assert ('.NKEY.' or '.TIME.' or '.RATE.' or '.AUTH.') not in line,\
                "### NTP client has incorrect information###\n"
         if WORKSTATION_IP_ADDR_SER2 in line:
-           if '.INIT.' in line:
-               return False
            assert ('.NKEY.' or '.TIME.' or '.RATE.' or '.AUTH.') not in line,\
                "### NTP client has incorrect information###\n"
     return True
