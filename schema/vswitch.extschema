@@ -7518,6 +7518,97 @@
           "name"
         ]
       ]
+    },
+    "SNMPv3_User" : {
+      "columns" : {
+        "user" : {
+          "category": "configuration",
+          "type" : {
+           "key" : {
+             "type" : "string",
+             "minLength" : 1,
+             "maxLength": 32
+           }
+          }
+        },
+
+        "auth_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "MD5",
+                  "SHA"
+                ]
+              ]
+            }
+          }
+        },
+
+        "priv_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "AES",
+                  "DES"
+                ]
+              ]
+            }
+          }
+        },
+
+        "auth_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8,
+              "maxLength" : 32
+            }
+          }
+        },
+
+        "priv_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8,
+              "maxLength" : 32
+            }
+          }
+        },
+        "security_level" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                 "noAuth",
+                 "auth",
+                 "priv"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "maxRows" : 10,
+      "indexes" : [
+        [
+          "user"
+        ]
+      ],
+      "isRoot" : true
     }
   }
 }
