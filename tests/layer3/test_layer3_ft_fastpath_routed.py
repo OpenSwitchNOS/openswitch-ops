@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2016 Hewlett Packard Enterprise Development LP
 #
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -15,445 +15,657 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import pytest
-from opstestfw import *
-from opstestfw.switch.CLI import *
-from opstestfw.switch.OVS import *
+"""Layer 3 test file.
+
+Name:
+    test_layer3_ft_lag_fastpath_routed
+
+Objective:
+    To verify the correct functionality of a layer 3 configuration over a
+    configured LAG.
+
+Topology:
+    2 switches
+    2 hosts
+"""
+
+from opstestfw.switch.CLI import (
+    InterfaceEnable,
+    InterfaceIpConfig,
+    InterfaceLagIdConfig,
+    IpRouteConfig,
+    lagCreation
+)
+
+from opstestfw.testEnviron import LogOutput, testEnviron
+
 
 # Topology definition
-topoDict = {"topoExecution": 1000,
-            "topoType": "physical",
-            "topoTarget": "dut01 dut02",
-            "topoDevices": "dut01 dut02 wrkston01 wrkston02",
-            "topoLinks": "lnk01:dut01:wrkston01,lnk02:dut01:dut02,lnk03:dut02:wrkston02",
-            "topoFilters": "dut01:system-category:switch,dut02:system-category:switch,wrkston01:system-category:workstation,wrkston02:system-category:workstation"}
+topoDict = {'topoExecution': 1000,
+            'topoTarget': 'dut01 dut02',
+            'topoDevices': 'dut01 dut02 wrkston01 wrkston02',
+            'topoLinks': 'lnk01:dut01:wrkston01,'
+                         'lnk02:dut01:dut02,'
+                         'lnk03:dut01:dut02,'
+                         'lnk04:dut02:wrkston02',
+            'topoFilters': 'dut01:system-category:switch,'
+                           'dut02:system-category:switch,'
+                           'wrkston01:system-category:workstation,'
+                           'wrkston02:system-category:workstation'}
+
 
 def fastpath_ping(**kwargs):
-    device1 = kwargs.get('device1',None)
-    device2 = kwargs.get('device2',None)
-    device3 = kwargs.get('device3',None)
-    device4 = kwargs.get('device4',None)
-    caseReturnCode = 0
-
-
-
-    #TEST_DESCRIPTION = "Virtual Topology / Physical Topology Sample Test"
-    #tcInstance.tcInfo(tcName = ResultsDirectory['testcaseName'], tcDesc = TEST_DESCRIPTION)
-
-    #Enabling interface 1 SW1
-    LogOutput('info', "Enabling interface1 on SW1")
-    retStruct = InterfaceEnable(deviceObj=device1, enable=True, interface=device1.linkPortMapping['lnk01'])
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Unable to enable interafce on SW1"
-       caseReturnCode = 1
-
-
-    #Entering interface for link 1 SW1, giving an ip address
-    retStruct = InterfaceIpConfig(deviceObj=device1, interface=device1.linkPortMapping['lnk01'], addr="10.0.10.2", mask=24, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv4 address"
-       caseReturnCode = 1
-
-    retStruct = InterfaceIpConfig(deviceObj=device1, interface=device1.linkPortMapping['lnk01'], addr="2000::2", mask=120, ipv6flag=True, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv6 address"
-       caseReturnCode = 1
-
-
-
-
-
-    #Enabling interface 2 SW1
-    LogOutput('info', "Enabling interface2 on SW1")
-    retStruct = InterfaceEnable(deviceObj=device1, enable=True, interface=device1.linkPortMapping['lnk02'])
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Unable to enable interafce on SW1"
-       caseReturnCode = 1
-
-    #Entering interface 2 SW1, giving an ip address
-    retStruct = InterfaceIpConfig(deviceObj=device1, interface=device1.linkPortMapping['lnk02'], addr="10.0.20.1", mask=24, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv4 address"
-       caseReturnCode = 1
-
-    retStruct = InterfaceIpConfig(deviceObj=device1, interface=device1.linkPortMapping['lnk02'], addr="2001::1", mask=120, ipv6flag=True, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv6 address"
-       caseReturnCode = 1
-
-
-    #Enabling interface 1 SW2
-    LogOutput('info', "Enabling interface1 on SW2")
-    retStruct = InterfaceEnable(deviceObj=device2, enable=True, interface=device2.linkPortMapping['lnk03'])
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Unable to enable interafce on SW2"
-       caseReturnCode = 1
-
-
-    #Entering interface for link 3 SW2, giving an ip address
-    retStruct = InterfaceIpConfig(deviceObj=device2, interface=device2.linkPortMapping['lnk03'], addr="10.0.30.2", mask=24, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv4 address"
-       caseReturnCode = 1
-
-    retStruct = InterfaceIpConfig(deviceObj=device2, interface=device2.linkPortMapping['lnk03'], addr="2002::2", mask=120, ipv6flag=True, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv6 address"
-       caseReturnCode = 1
-
-    #Enabling interface 2 SW2
-    LogOutput('info', "Enabling interface2 on SW2")
-    retStruct = InterfaceEnable(deviceObj=device2, enable=True, interface=device2.linkPortMapping['lnk02'])
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Unable to enable interafce on SW2"
-       caseReturnCode = 1
-
-
-    #Entering interface for link 2 SW2, giving an ip address
-    retStruct = InterfaceIpConfig(deviceObj=device2, interface=device2.linkPortMapping['lnk02'], addr="10.0.20.2", mask=24, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv4 address"
-       caseReturnCode = 1
-
-    retStruct = InterfaceIpConfig(deviceObj=device2, interface=device2.linkPortMapping['lnk02'], addr="2001::2", mask=120, ipv6flag=True, config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv6 address"
-       caseReturnCode = 1
-
-
-    #Configure host 1
-
-    LogOutput('info',"\n\n\nConfiguring host 1 ipv4")
-    retStruct = device3.NetworkConfig(ipAddr="10.0.10.1", netMask="255.255.255.0", interface=device3.linkPortMapping['lnk01'], broadcast="10.0.10.0", config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv4 address"
-       caseReturnCode = 1
-
-    LogOutput('info',"\n\n\nConfiguring host 1 ipv6")
-    retStruct = device3.Network6Config(ipAddr="2000::1", netMask=120, interface=device3.linkPortMapping['lnk01'], broadcast="2000::0", config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv4 address"
-       caseReturnCode = 1
-
-
-
-    #Configure host 2
-
-    LogOutput('info',"\n\n\nConfiguring host 2 ipv4")
-    retStruct = device4.NetworkConfig(ipAddr="10.0.30.1", netMask="255.255.255.0", interface=device4.linkPortMapping['lnk03'], broadcast="10.0.30.0", config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv4 address"
-       caseReturnCode = 1
-
-    LogOutput('info',"\n\n\nConfiguring host 2 ipv6")
-    retStruct = device4.Network6Config(ipAddr="2002::1", netMask=120, interface=device4.linkPortMapping['lnk03'],broadcast="2002::0",  config=True)
-    retCode = retStruct.returnCode()
-    if retCode != 0:
-       assert "Failed to configure an ipv6 address"
-       caseReturnCode = 1
-
-    #Configuring static routes on switches
-
-
-    LogOutput('info',"\n\n\n######### Configuring switch 1 and 2 static routes #########")
-    retStruct = IpRouteConfig(deviceObj=device1, route="10.0.30.0", mask=24, nexthop="10.0.20.2", config=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv4 address route")
-        caseReturnCode = 1
-
-    #LogOutput('info',"\n\n\nConfiguring switch 1 and 2 routes")
-    retStruct = IpRouteConfig(deviceObj=device2, route="10.0.10.0", mask=24, nexthop="10.0.20.1", config=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv4 address route")
-        caseReturnCode = 1
-
-    #LogOutput('info',"\n\n\nConfiguring switch 1 and 2 ipv6 routes")
-    retStruct = IpRouteConfig(deviceObj=device1, route="2002::", mask=120, nexthop="2001::2", config=True, ipv6flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv6 address route")
-        caseReturnCode = 1
-
-    retStruct = IpRouteConfig(deviceObj=device2, route="2000::", mask=120, nexthop="2001::1", config=True, ipv6flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv6 address route")
-        caseReturnCode = 1
-
-    #Configuring static routes on hosts
-    LogOutput('info', "Configuring routes on the workstations")
-    retStruct = device3.IPRoutesConfig(config=True, destNetwork="10.0.20.0", netMask=24, gateway="10.0.10.2")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv4 address route")
-        caseReturnCode = 1
-
-    retStruct = device3.IPRoutesConfig(config=True, destNetwork="10.0.30.0", netMask=24, gateway="10.0.10.2")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv4 address route")
-        caseReturnCode = 1
-
-    retStruct = device4.IPRoutesConfig(config=True, destNetwork="10.0.10.0", netMask=24, gateway="10.0.30.2")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv4 address route")
-        caseReturnCode = 1
-
-    retStruct = device4.IPRoutesConfig(config=True, destNetwork="10.0.20.0", netMask=24, gateway="10.0.30.2")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv4 address route")
-        caseReturnCode = 1
-
-
-
-    # Add V6 default gateway on hosts h1 and h2
-
-    retStruct = device3.IPRoutesConfig(config=True, destNetwork="2001::0", netMask=120, gateway="2000::2", ipv6Flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv6 address route")
-        caseReturnCode = 1
-
-    retStruct = device3.IPRoutesConfig(config=True, destNetwork="2002::0", netMask=120, gateway="2000::2", ipv6Flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv6 address route")
-        caseReturnCode = 1
-
-    retStruct = device4.IPRoutesConfig(config=True, destNetwork="2000::0", netMask=120, gateway="2002::2", ipv6Flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv6 address route")
-        caseReturnCode = 1
-
-    retStruct = device4.IPRoutesConfig(config=True, destNetwork="2001::0", netMask=120, gateway="2002::2", ipv6Flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to configure ipv6 address route")
-        caseReturnCode = 1
-
-
-
-    LogOutput('info',"\n\n\nPing after adding static route to S1 and S2")
-
-    LogOutput('info',"\n\n\n Pinging host 1 to host 2 using IPv4")
-    retStruct = device3.Ping(ipAddr="10.0.30.1", packetCount=1)
-    Sleep(seconds=7, message="")
-    #print devIntRetStruct
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv4 ping #####")
-    else:
-        LogOutput('info', "IPv4 Ping from host 1 to host 2 return JSON:\n")
-        retStruct.printValueString()
-        LogOutput('info',"\n##### Ping Passed #####\n\n")
-
-    LogOutput('info',"\n Pinging host 1 to host 2 using IPv6")
-    retStruct = device3.Ping(ipAddr="2002::1", packetCount=1, ipv6Flag=True)
-    Sleep(seconds=7, message="")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv6 ping #####")
-    else:
-        LogOutput('info', "IPv4 Ping from host 1 to host 2 return JSON:\n")
-        retStruct.printValueString()
-        LogOutput('info',"\n##### Ping Passed #####\n\n")
-
-
-
-
-    LogOutput('info',"\n\n\n Pinging host 2 to host 1 using IPv4")
-    retStruct = device4.Ping(ipAddr="10.0.10.1", packetCount=1)
-    Sleep(seconds=7, message="")
-    #print devIntRetStruct
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv4 ping #####")
-    else:
-        LogOutput('info', "IPv4 Ping from host  2 to host 1 return JSON:\n")
-        retStruct.printValueString()
-        LogOutput('info',"\n##### Ping Passed #####\n\n")
-
-    LogOutput('info',"\n Pinging host 2 to host 1 using IPv6")
-    retStruct = device4.Ping(ipAddr="2000::1", packetCount=1, ipv6Flag=True)
-    Sleep(seconds=7, message="")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv6 ping #####")
-    else:
-        LogOutput('info', "IPv4 Ping from host 2 to host 1 return JSON:\n")
-        retStruct.printValueString()
-        LogOutput('info',"\n##### Ping Passed #####\n\n")
-
-
-    #Verifying Hit bit in ASIC for IPv4 ping
-    LogOutput('info', "\Verifying HIT Bit for IPv4 ping")
-    appctl_command = "ovs-appctl plugin/debug l3route"
-
-    # check device1
-    retStruct = device1.DeviceInteract(command=appctl_command)
-    retCode = retStruct['returnCode']
-    if retCode:
-        LogOutput('error', "couldn't get l3route debug");
-    else:
-        table = retStruct['buffer']
-        rows = table.split('\n')
-        routerow = None
-        for row in rows:
-            if '10.0.30.0' in row:
-                routerow = row
-
-        if routerow == None:
-            LogOutput('error', "route not programmed in ASIC on device1")
-        else:
-            columns = routerow.split()
-            routehit = columns[5]
-            if routehit != 'Y':
-                LogOutput('error', "route not selected in ASIC on device1")
-
-    # check device2
-    returnStruct = device2.DeviceInteract(command=appctl_command)
-    retCode = retStruct['returnCode']
-    if retCode:
-        LogOutput('error', "couldn't get l3route debug");
-    else:
-        table = retStruct['buffer']
-        rows = table.split('\n')
-        routerow = None
-        for row in rows:
-            if '10.0.10.0' in row:
-                routerow = row
-
-        if routerow == None:
-            LogOutput('error', "route not programmed in ASIC on device2")
-        else:
-            columns = routerow.split()
-            routehit = columns[5]
-            if routehit != 'Y':
-                LogOutput('error', "route not selected in ASIC on device2")
-
-
-    #Remove IPv4 and IPv6 static route on s1
-    LogOutput('info',"\n\n\n######## Removing static Routes on s1 and s2 #########")
-    retStruct = IpRouteConfig(deviceObj=device1, route="10.0.30.0", mask=24, nexthop="10.0.20.2", config=False)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to unconfigure ipv4 address route")
-        caseReturnCode = 1
-
-    retStruct = IpRouteConfig(deviceObj=device2, route="10.0.10.0", mask=24, nexthop="10.0.20.1", config=False)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to unconfigure ipv4 address route")
-        caseReturnCode = 1
-
-    retStruct = IpRouteConfig(deviceObj=device1, route="2002::", mask=120, nexthop="2001::2", config=False, ipv6flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to unconfigure ipv6 address route")
-        caseReturnCode = 1
-
-    retStruct = IpRouteConfig(deviceObj=device2, route="2000::", mask=120, nexthop="2001::1", config=False, ipv6flag=True)
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\nFailed to unconfigure ipv6 address route")
-        caseReturnCode = 1
-
-
-
-
-
-    LogOutput('info',"\n\n\n\n\nPing after removing static route from S1 and S2")
-    LogOutput('info',"\n\n\n Pinging host 1 to host 2 using IPv4")
-    retStruct = device3.Ping(ipAddr="10.0.30.1", packetCount=1)
-    Sleep(seconds=7, message="")
-    #print devIntRetStruct
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv4 ping #####")
-    else:
-        LogOutput('info', "IPv4 Ping from host 1 to host 2 return JSON:\n")
-        retStruct.printValueString()
-        LogOutput('info',"\n##### Ping Passed #####\n\n")
-
-    LogOutput('info',"\n Pinging host 1 to host 2 using IPv6")
-    retStruct = device3.Ping(ipAddr="2002::1", packetCount=1, ipv6Flag=True)
-    Sleep(seconds=7, message="")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv6 ping #####")
-    else:
-        LogOutput('info', "IPv4 Ping from host 1 to host 2 return JSON:\n")
-        retStruct.printValueString()
-
-        LogOutput('info',"\n##### Ping Passed #####\n\n")
-
-
-
-
-    LogOutput('info',"\n\n\n Pinging host 2 to host 1 using IPv4")
-    retStruct = device4.Ping(ipAddr="10.0.10.1", packetCount=1)
-    Sleep(seconds=7, message="")
-    #print devIntRetStruct
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv4 ping #####")
-    else:
-        LogOutput('info', "IPv4 Ping from host 2 to host 1 return JSON:\n")
-        retStruct.printValueString()
-        LogOutput('info',"\n##### Ping Passed ######\n\n")
-
-    LogOutput('info',"\n Pinging host 2 to host 1 using IPv6")
-    retStruct = device4.Ping(ipAddr="2000::1", packetCount=1, ipv6Flag=True)
-    Sleep(seconds=7, message="")
-    retCode = retStruct.returnCode()
-    if retCode:
-        LogOutput('error', "\n##### Failed to do IPv6 ping ######")
-
-    else:
-        LogOutput('info', "IPv4 Ping from host 2 to host 1 return JSON:\n")
-        retStruct.printValueString()
-
-        LogOutput('info',"\n##### Ping Passed #####\n\n")
-
-
-
-class Test_fastpath_ping:
-    def setup_class (cls):
-	# Test object will parse command line and formulate the env
-	Test_fastpath_ping.testObj = testEnviron(topoDict=topoDict)
-	# Get topology object
-	Test_fastpath_ping.topoObj = Test_fastpath_ping.testObj.topoObjGet()
-
-    def teardown_class (cls):
-        Test_fastpath_ping.topoObj.terminate_nodes()
+    """Test description.
+
+    Topology:
+
+        [h1] <-----> [s1] <-----> [s2] <-----> [h2]
+
+    Objective:
+        Test successful and failure ping executions betwen h1 and h2 through
+        two switches configured with static routes and a LAG. The ping
+        executions will be done using IPv4 and IPv6.
+
+    Cases:
+        - Execute successful pings between hosts with static routes configured.
+        - Execute unsuccessful pings between hosts when there are no static
+          routes configured.
+    """
+    switch1 = kwargs.get('device1', None)
+    switch2 = kwargs.get('device2', None)
+    host1 = kwargs.get('device3', None)
+    host2 = kwargs.get('device4', None)
+
+    ###########################################################################
+    #                                                                         #
+    #                   [H1] ------- ping -------> [H2]                       #
+    #                                                                         #
+    ###########################################################################
+    LogOutput('info', 'Pinging host 1 to host 2 using IPv4')
+    ret_struct = host1.Ping(ipAddr='10.0.30.1', packetCount=5)
+
+    assert not ret_struct.returnCode(), 'Failed to do IPv4 ping'
+
+    LogOutput('info', 'IPv4 Ping from host 1 to host 2 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv4 Ping Passed')
+
+    LogOutput('info', 'Pinging host 1 to host 2 using IPv6')
+    ret_struct = host1.Ping(ipAddr='2002::1', packetCount=5, ipv6Flag=True)
+
+    assert not ret_struct.returnCode(), 'Failed to do IPv6 ping'
+
+    LogOutput('info', 'IPv6 Ping from host 1 to host 2 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv6 Ping Passed')
+
+    ###########################################################################
+    #                                                                         #
+    #                   [H1] <------- ping ------- [H2]                       #
+    #                                                                         #
+    ###########################################################################
+    LogOutput('info', 'Pinging host 2 to host 1 using IPv4')
+    ret_struct = host2.Ping(ipAddr='10.0.10.1', packetCount=5)
+
+    assert not ret_struct.returnCode(), 'Failed to do IPv4 ping'
+
+    LogOutput('info', 'IPv4 Ping from host 2 to host 1 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv4 Ping Passed')
+
+    LogOutput('info', 'Pinging host 2 to host 1 using IPv6')
+    ret_struct = host2.Ping(ipAddr='2000::1', packetCount=5, ipv6Flag=True)
+
+    assert not ret_struct.returnCode(), 'Failed to do IPv6 ping'
+
+    LogOutput('info', 'IPv6 Ping from host 2 to host 1 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv6 Ping Passed')
+
+    ###########################################################################
+    # Removing static routes                                                  #
+    ###########################################################################
+    LogOutput('info', 'Removing static Routes on s1 and s2')
+    ret_struct = IpRouteConfig(deviceObj=switch1,
+                               route='10.0.30.0',
+                               mask=24,
+                               nexthop='10.0.20.2',
+                               config=False)
+    assert not ret_struct.returnCode(), \
+        'Failed to unconfigure IPv4 address route'
+
+    ret_struct = IpRouteConfig(deviceObj=switch2,
+                               route='10.0.10.0',
+                               mask=24,
+                               nexthop='10.0.20.1',
+                               config=False)
+    assert not ret_struct.returnCode(), \
+        'Failed to unconfigure IPv4 address route'
+
+    ret_struct = IpRouteConfig(deviceObj=switch1,
+                               route='2002::',
+                               mask=120,
+                               nexthop='2001::2',
+                               config=False,
+                               ipv6flag=True)
+    assert not ret_struct.returnCode(), \
+        'Failed to unconfigure IPv6 address route'
+
+    ret_struct = IpRouteConfig(deviceObj=switch2,
+                               route='2000::',
+                               mask=120,
+                               nexthop='2001::1',
+                               config=False,
+                               ipv6flag=True)
+    assert not ret_struct.returnCode(), \
+        'Failed to unconfigure IPv6 address route'
+
+    LogOutput('info', 'Ping after removing static route from S1 and S2')
+    ###########################################################################
+    #                                                                         #
+    #                   [H1] ------- ping -------> [H2]                       #
+    #                                                                         #
+    ###########################################################################
+    # IPv4
+    LogOutput('info', 'Pinging host 1 to host 2 using IPv4')
+    ret_struct = host1.Ping(ipAddr='10.0.30.1', packetCount=1)
+
+    assert ret_struct.returnCode(), 'Failed: Successful IPv4 ping done!'
+
+    LogOutput('info', 'IPv4 Ping from host 1 to host 2 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv4 Ping Passed')
+
+    # IPv6
+    LogOutput('info', 'Pinging host 1 to host 2 using IPv6')
+    ret_struct = host1.Ping(ipAddr='2002::1', packetCount=1, ipv6Flag=True)
+
+    assert ret_struct.returnCode(), 'Failed: Successful IPv6 ping done!'
+
+    LogOutput('info', 'IPv6 Ping from host 1 to host 2 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv6 Ping Passed')
+
+    ###########################################################################
+    #                                                                         #
+    #                   [H1] <------- ping ------- [H2]                       #
+    #                                                                         #
+    ###########################################################################
+    # IPv4
+    LogOutput('info', 'Pinging host 2 to host 1 using IPv4')
+    ret_struct = host2.Ping(ipAddr='10.0.10.1', packetCount=1)
+
+    assert ret_struct.returnCode(), 'Failed: Successful IPv4 ping done!'
+
+    LogOutput('info', 'IPv4 Ping from host 2 to host 1 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv4 Ping Passed')
+
+    # IPv6
+    LogOutput('info', 'Pinging host 2 to host 1 using IPv6')
+    ret_struct = host2.Ping(ipAddr='2000::1', packetCount=1, ipv6Flag=True)
+
+    assert ret_struct.returnCode(), 'Failed: Successful IPv6 ping done!'
+
+    LogOutput('info', 'IPv6 Ping from host 2 to host 1 return JSON:\n')
+    ret_struct.printValueString()
+    LogOutput('info', 'IPv6 Ping Passed')
+
+
+class TestFastpathPing:
+    """Test Configuration Class for Fastpath Ping.
+
+    Topology:
+        - Switch 1
+        - Switch 2
+        - Workstation 1
+        - Workstation 2
+
+    Test Cases:
+        - test_fastpath_ping
+    """
+
+    @classmethod
+    def setup_class(cls):
+        """Class configuration method executed after class is instantiated.
+
+        Test topology is created and Topology object is stored as topoObj
+        """
+        # Test object will parse command line and formulate the env
+        TestFastpathPing.testObj = testEnviron(topoDict=topoDict)
+        # Get topology object
+        TestFastpathPing.topoObj = TestFastpathPing.testObj.topoObjGet()
+
+    @classmethod
+    def teardown_class(cls):
+        """Class configuration executed before class is destroyed.
+
+        All docker containers are destroyed
+        """
+        TestFastpathPing.topoObj.terminate_nodes()
+
+    def setup_method(self, method):
+        """Class configuration method executed before running all test cases.
+
+        All devices will be configured before running test cases.
+        """
+        dut01 = self.topoObj.deviceObjGet(device='dut01')
+        dut02 = self.topoObj.deviceObjGet(device='dut02')
+        hst01 = self.topoObj.deviceObjGet(device='wrkston01')
+        hst02 = self.topoObj.deviceObjGet(device='wrkston02')
+
+        test_lag_id = 100
+
+        ######################################################################
+        # Configuration switch 1
+        ######################################################################
+
+        # Create LAG 100
+        LogOutput('info', 'Creating LAG %s on switch' % test_lag_id)
+        ret_struct = lagCreation(deviceObj=dut01,
+                                 lagId=test_lag_id,
+                                 configFlag=True)
+        assert not ret_struct.returnCode(), \
+            'Unable to create LAG %s on device' % test_lag_id
+
+        # Enable interface 1
+        LogOutput('info',
+                  'Enabling interface %s on device' % 'lnk01')
+
+        ret_struct = InterfaceEnable(
+                        deviceObj=dut01,
+                        enable=True,
+                        interface=dut01.linkPortMapping['lnk01'])
+        assert not ret_struct.returnCode(), \
+            'Unable to enable interface %s on device' % 'lnk01'
+
+        # Enable interface 2
+        LogOutput('info',
+                  'Enabling interface %s on device' % 'lnk02')
+
+        ret_struct = InterfaceEnable(
+                        deviceObj=dut01,
+                        enable=True,
+                        interface=dut01.linkPortMapping['lnk02'])
+        assert not ret_struct.returnCode(), \
+            'Unable to enable interface %s on device' % 'lnk02'
+
+        # Enable interface 3
+        LogOutput('info',
+                  'Enabling interface %s on device' % 'lnk03')
+
+        ret_struct = InterfaceEnable(
+                        deviceObj=dut01,
+                        enable=True,
+                        interface=dut01.linkPortMapping['lnk03'])
+        assert not ret_struct.returnCode(), \
+            'Unable to enable interface %s on device' % 'lnk03'
+
+        # Configure interface IPv4 address
+        LogOutput('info', 'Configuring interface IPv4 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut01,
+                        interface=dut01.linkPortMapping['lnk01'],
+                        addr='10.0.10.2',
+                        mask=24,
+                        config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure interface IPv6 address
+        LogOutput('info', 'Configuring interface IPv6 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut01,
+                        interface=dut01.linkPortMapping['lnk01'],
+                        addr='2000::2',
+                        mask=120,
+                        config=True,
+                        ipv6flag=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure LAG IPv4 address
+        LogOutput('info', 'Configuring LAG IPv4 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut01,
+                        lag=test_lag_id,
+                        addr='10.0.20.1',
+                        mask=24,
+                        config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure LAG IPv6 address
+        LogOutput('info', 'Configuring LAG IPv6 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut01,
+                        lag=test_lag_id,
+                        addr='2001::1',
+                        mask=120,
+                        config=True,
+                        ipv6flag=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure LAG to interface 2
+        LogOutput('info',
+                  'Configuring LAG %s to interface %s' % (test_lag_id,
+                                                          'lnk02'))
+
+        ret_struct = InterfaceLagIdConfig(
+                        deviceObj=dut01,
+                        interface=dut01.linkPortMapping['lnk02'],
+                        lagId=test_lag_id,
+                        enable=True)
+        assert not ret_struct.returnCode(), \
+            'Unable to configure LAG %s to interface %s' % (test_lag_id,
+                                                            'lnk02')
+
+        # Configure LAG to interface 3
+        LogOutput('info',
+                  'Configuring LAG %s to interface %s' % (test_lag_id,
+                                                          'lnk03'))
+
+        ret_struct = InterfaceLagIdConfig(
+                        deviceObj=dut01,
+                        interface=dut01.linkPortMapping['lnk03'],
+                        lagId=test_lag_id,
+                        enable=True)
+        assert not ret_struct.returnCode(), \
+            'Unable to configure LAG %s to interface %s' % (test_lag_id,
+                                                            'lnk03')
+
+        # Configure Static Route
+        # IPv4 route to interface on switch 2
+        LogOutput('info', 'Configuring IPv4 static route')
+        ret_struct = IpRouteConfig(deviceObj=dut01,
+                                   route='10.0.30.0',
+                                   mask=24,
+                                   nexthop='10.0.20.2',
+                                   config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure static route'
+
+        # IPv6 route to interface on switch 2
+        LogOutput('info', 'Configuring IPv6 static route')
+        ret_struct = IpRouteConfig(deviceObj=dut01,
+                                   route='2002::',
+                                   mask=120,
+                                   nexthop='2001::2',
+                                   config=True,
+                                   ipv6flag=True)
+        assert not ret_struct.returnCode(), 'Failed to configure static route'
+
+        ######################################################################
+        # Configuration switch 2
+        ######################################################################
+
+        # Create LAG 100
+        LogOutput('info', 'Creating LAG %s on switch' % test_lag_id)
+        ret_struct = lagCreation(deviceObj=dut02,
+                                 lagId=test_lag_id,
+                                 configFlag=True)
+        assert not ret_struct.returnCode(), \
+            'Unable to create LAG %s on device' % test_lag_id
+
+        # Enable interface 2
+        LogOutput('info',
+                  'Enabling interface %s on device' % 'lnk02')
+
+        ret_struct = InterfaceEnable(
+                        deviceObj=dut02,
+                        enable=True,
+                        interface=dut02.linkPortMapping['lnk02'])
+        assert not ret_struct.returnCode(), \
+            'Unable to enable interface %s on device' % 'lnk02'
+
+        # Enable interface 3
+        LogOutput('info',
+                  'Enabling interface %s on device' % 'lnk03')
+
+        ret_struct = InterfaceEnable(
+                        deviceObj=dut02,
+                        enable=True,
+                        interface=dut02.linkPortMapping['lnk03'])
+        assert not ret_struct.returnCode(), \
+            'Unable to enable interface %s on device' % 'lnk03'
+
+        # Enable interface 4
+        LogOutput('info',
+                  'Enabling interface %s on device' % 'lnk04')
+
+        ret_struct = InterfaceEnable(
+                        deviceObj=dut02,
+                        enable=True,
+                        interface=dut02.linkPortMapping['lnk04'])
+        assert not ret_struct.returnCode(), \
+            'Unable to enable interface %s on device' % 'lnk04'
+
+        # Configure interface IPv4 address
+        LogOutput('info', 'Configuring interface IPv4 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut02,
+                        interface=dut02.linkPortMapping['lnk04'],
+                        addr='10.0.30.2',
+                        mask=24,
+                        config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure interface IPv6 address
+        LogOutput('info', 'Configuring interface IPv6 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut02,
+                        interface=dut02.linkPortMapping['lnk04'],
+                        addr='2002::2',
+                        mask=120,
+                        config=True,
+                        ipv6flag=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure LAG IPv4 address
+        LogOutput('info', 'Configuring LAG IPv4 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut02,
+                        lag=test_lag_id,
+                        addr='10.0.20.2',
+                        mask=24,
+                        config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure LAG IPv6 address
+        LogOutput('info', 'Configuring LAG IPv6 address')
+        ret_struct = InterfaceIpConfig(
+                        deviceObj=dut02,
+                        lag=test_lag_id,
+                        addr='2001::2',
+                        mask=120,
+                        config=True,
+                        ipv6flag=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure LAG to interface 2
+        LogOutput('info',
+                  'Configuring LAG %s to interface %s' % (test_lag_id,
+                                                          'lnk02'))
+
+        ret_struct = InterfaceLagIdConfig(
+                        deviceObj=dut01,
+                        interface=dut01.linkPortMapping['lnk02'],
+                        lagId=test_lag_id,
+                        enable=True)
+        assert not ret_struct.returnCode(), \
+            'Unable to configure LAG %s to interface %s' % (test_lag_id,
+                                                            'lnk02')
+
+        # Configure LAG to interface 3
+        LogOutput('info',
+                  'Configuring LAG %s to interface %s' % (test_lag_id,
+                                                          'lnk03'))
+
+        ret_struct = InterfaceLagIdConfig(
+                        deviceObj=dut01,
+                        interface=dut01.linkPortMapping['lnk03'],
+                        lagId=test_lag_id,
+                        enable=True)
+        assert not ret_struct.returnCode(), \
+            'Unable to configure LAG %s to interface %s' % (test_lag_id,
+                                                            'lnk03')
+
+        # Configure Static Route
+        # IPv4 route to interface on switch 1
+        LogOutput('info', 'Configuring IPv4 static route')
+        ret_struct = IpRouteConfig(deviceObj=dut02,
+                                   route='10.0.10.0',
+                                   mask=24,
+                                   nexthop='10.0.20.1',
+                                   config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure static route'
+
+        # IPv6 route to interface on switch 1
+        LogOutput('info', 'Configuring IPv6 static route')
+        ret_struct = IpRouteConfig(deviceObj=dut02,
+                                   route='2000::',
+                                   mask=120,
+                                   nexthop='2001::1',
+                                   config=True,
+                                   ipv6flag=True)
+        assert not ret_struct.returnCode(), 'Failed to configure static route'
+
+        ######################################################################
+        # Configuration host 1
+        ######################################################################
+
+        # Configure IPv4 address
+        LogOutput('info', 'Configuring IPv4 Address')
+        ret_struct = hst01.NetworkConfig(
+                            ipAddr='10.0.10.1',
+                            netMask='255.255.255.0',
+                            interface=hst01.linkPortMapping['lnk01'],
+                            broadcast='10.0.10.0',
+                            config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure IPv6 address
+        LogOutput('info', 'Configuring IPv6 Address')
+        ret_struct = hst01.Network6Config(
+                            ipAddr='2000::1',
+                            netMask=120,
+                            interface=hst01.linkPortMapping['lnk01'],
+                            broadcast='2000::0',
+                            config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure Static Routes
+        # IPv4 Route to LAG on switch 2
+        LogOutput('info', 'Configuring IPv4 route for host')
+        ret_struct = hst01.IPRoutesConfig(destNetwork='10.0.20.0',
+                                          netMask=24,
+                                          gateway='10.0.10.2',
+                                          config=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
+        # IPv6 Route to LAG on switch 2
+        LogOutput('info', 'Configuring IPv6 route for host')
+        ret_struct = hst01.IPRoutesConfig(destNetwork='2001::0',
+                                          netMask=120,
+                                          gateway='2000::2',
+                                          config=True,
+                                          ipv6Flag=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
+        # IPv4 Route to interface on switch 2
+        LogOutput('info', 'Configuring IPv4 route for host')
+        ret_struct = hst01.IPRoutesConfig(destNetwork='10.0.30.0',
+                                          netMask=24,
+                                          gateway='10.0.10.2',
+                                          config=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
+        # IPv6 Route to interface on switch 2
+        LogOutput('info', 'Configuring IPv6 route for host')
+        ret_struct = hst01.IPRoutesConfig(destNetwork='2002::0',
+                                          netMask=120,
+                                          gateway='2000::2',
+                                          config=True,
+                                          ipv6Flag=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
+        ######################################################################
+        # Configuration host 2
+        ######################################################################
+
+        # Configure IPv4 address
+        LogOutput('info', 'Configuring IPv4 Address')
+        ret_struct = hst02.NetworkConfig(
+                            ipAddr='10.0.30.1',
+                            netMask='255.255.255.0',
+                            interface=hst02.linkPortMapping['lnk04'],
+                            broadcast='10.0.30.0',
+                            config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure IPv6 address
+        LogOutput('info', 'Configuring IPv6 Address')
+        ret_struct = hst02.Network6Config(
+                            ipAddr='2002::1',
+                            netMask=120,
+                            interface=hst02.linkPortMapping['lnk04'],
+                            broadcast='2002::0',
+                            config=True)
+        assert not ret_struct.returnCode(), 'Failed to configure an IP address'
+
+        # Configure Static Routes
+        # IPv4 Route to LAG on switch 1
+        LogOutput('info', 'Configuring IPv4 route for host')
+        ret_struct = hst02.IPRoutesConfig(destNetwork='10.0.20.0',
+                                          netMask=24,
+                                          gateway='10.0.30.2',
+                                          config=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
+        # IPv6 Route to LAG on switch 1
+        LogOutput('info', 'Configuring IPv6 route for host')
+        ret_struct = hst02.IPRoutesConfig(destNetwork='2001::0',
+                                          netMask=120,
+                                          gateway='2002::2',
+                                          config=True,
+                                          ipv6Flag=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
+        # IPv4 Route to interface on switch 1
+        LogOutput('info', 'Configuring IPv4 route for host')
+        ret_struct = hst02.IPRoutesConfig(destNetwork='10.0.10.0',
+                                          netMask=24,
+                                          gateway='10.0.30.2',
+                                          config=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
+        # IPv6 Route to interface on switch 1
+        LogOutput('info', 'Configuring IPv6 route for host')
+        ret_struct = hst02.IPRoutesConfig(destNetwork='2000::0',
+                                          netMask=120,
+                                          gateway='2002::2',
+                                          config=True,
+                                          ipv6Flag=True)
+        assert not ret_struct.returnCode(), \
+            'Failed to configure IP address static route'
+
     def test_fastpath_ping(self):
-	# GEt Device objects
-	dut01Obj = self.topoObj.deviceObjGet(device="dut01")
-	dut02Obj = self.topoObj.deviceObjGet(device="dut02")
-	wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
-	wrkston02Obj = self.topoObj.deviceObjGet(device="wrkston02")
-	retValue = fastpath_ping(device1=dut01Obj, device2=dut02Obj, device3=wrkston01Obj, device4=wrkston02Obj)
-	if retValue != 0:
-            assert "Test failed"
-	else:
-	    LogOutput('info', "\n### Test passed ###\n")
+        """Fastpath ping case.
+
+        Topology:
+            - dut01: Switch 1
+            - dut02: Switch 2
+            - wrkston01: Host 1
+            - wrkston02: Host 2
+        """
+        dut01 = self.topoObj.deviceObjGet(device='dut01')
+        dut02 = self.topoObj.deviceObjGet(device='dut02')
+        wrkston01 = self.topoObj.deviceObjGet(device='wrkston01')
+        wrkston02 = self.topoObj.deviceObjGet(device='wrkston02')
+        fastpath_ping(device1=dut01,
+                      device2=dut02,
+                      device3=wrkston01,
+                      device4=wrkston02)
