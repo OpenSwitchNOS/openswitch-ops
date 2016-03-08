@@ -6,8 +6,9 @@
     - [Show tech](#show-tech)
     - [Show tech list](#show-tech-list)
     - [Show tech feature](#show-tech-feature)
+    - [Show tech to file](#show-tech-to-file)
     - [Help text](#help-text)
- 
+
 ## Display commands
 ### Command summary
 | Command | Usage |
@@ -15,6 +16,7 @@
 | **show tech** | Runs show tech for all supported features |
 | **show tech list**| Lists all the supported show tech features |
 | **show tech FEATURE**| Runs show tech for the feature specified |
+| **show tech [FEATURE] localfile FILENAME [force]**| Show tech output saved in the file /tmp/FILENAME.  Use *force* option to overwrite existing file.
 
 
 ### Show tech
@@ -194,6 +196,25 @@ Show Tech commands executed successfully
 ====================================================
 
 ```
+### Show tech to file
+#### Syntax
+`show tech [FEATURE] localfile FILENAME [force]`
+#### Description
+Save the output of show tech to the file /tmp/FILENAME.  Use force option to overwrite existing files.
+#### Authority
+All users
+#### Examples
+```
+switch# show tech basic localfile stbasic.sta
+Show Tech output stored in file /tmp/stbasic.sta
+
+switch# show tech basic localfile stbasic.sta
+/tmp/stbasic.sta already exists, please give different name or use force option to overwrite existing file
+
+switch# show tech basic localfile stbasic.sta force
+Show Tech output stored in file /tmp/stbasic.sta
+
+```
 
 ### Help text
 | Command | Help text |
@@ -201,6 +222,9 @@ Show Tech commands executed successfully
 | **show tech** | Runs show tech for all supported features |
 | **show tech list**| Lists all the supported show tech features |
 | **show tech FEATURE**| Runs show tech for the feature specified |
+| **show tech localfile**| Save show tech output in the given file |
+| **show tech localfile FILENAME**| Name of output file, will be saved in /tmp folder |
+| **show tech localfile FILENAME force**| Overwrite if the given file exists |
 
 #### Example
 
