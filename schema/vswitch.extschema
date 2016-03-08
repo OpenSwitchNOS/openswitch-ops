@@ -447,6 +447,18 @@
             "max": "unlimited"
           },
           "ephemeral": true
+        },
+        "snmp_communities": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1 ,
+              "maxLength": 32
+            },
+            "min": 0,
+            "max": 10
+          }
         }
       },
       "isRoot": true,
@@ -7553,6 +7565,73 @@
         ]
       ],
       "isRoot": true
+    },
+    "SNMP_Trap" : {
+      "columns" : {
+        "receiver_address" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+            "type" : "string",
+            "maxLength" : 45
+            }
+          }
+        },
+
+        "receiver_udp_port" : {
+          "category"  : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "integer",
+              "minInteger" : 1,
+              "maxInteger" : 65535
+            }
+          }
+        },
+        "type" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+               "type"  : "string",
+               "enum": [
+                "set",
+                [
+                  "v1_trap",
+                  "v2c_trap",
+                  "v3_trap",
+                  "v2c_inform",
+                  "v3_inform"
+                ]
+              ]
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        },
+
+        "community_name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+
+              "minLength": 1 ,
+              "maxLength": 32
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        }
+      },
+      "indexes": [
+        [
+          "receiver_address",
+          "receiver_udp_port"
+        ]
+      ],
+
+      "maxRows" : 10,
+      "isRoot" : true
     }
   }
 }
