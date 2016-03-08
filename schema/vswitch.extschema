@@ -8692,6 +8692,89 @@
           }
         }
       }
+    },
+    "CPU_Rx": {
+      "columns": {
+        "matches": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "ether_type",
+                  "ip_protocol",
+                  "dest_multicast_mac",
+                  "dest_multicast_ipv4",
+                  "dest_multicast_ipv6",
+                  "dest_udp_port"
+                ]
+              ]
+            },
+            "value": "string",
+            "min": 1,
+            "max": "unlimited"
+          }
+        },
+        "ports": {
+          "category": "status",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port",
+            "refType" : "weak"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "vlans" : {
+        "category": "status",
+        "relationship": "reference",
+           "type": {
+            "key": {
+               "type": "uuid",
+               "refTable": "VLAN",
+               "refType" : "weak"
+            },
+            "min": 0,
+            "max": 4094
+           }
+        },
+        "process_info": {
+          "category": "status",
+          "type": {
+             "key": {
+              "type": "string"
+            },
+            "value": "integer",
+            "min": 1,
+            "max": "unlimited"
+          }
+        },
+        "status": {
+          "category": "status",
+          "type": {
+             "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "hw_configured",
+                  "error"
+                ]
+              ]
+            },
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      },
+      "isRoot": true
     }
   }
 }
