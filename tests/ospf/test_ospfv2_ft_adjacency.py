@@ -273,6 +273,9 @@ class Test_ospf_configuration:
         #    Get topology object
         Test_ospf_configuration.topoObj = \
             Test_ospf_configuration.testObj.topoObjGet()
+        if Test_ospf_configuration.topoObj.topoType == "physical":
+            LogOutput('info', "Skipped test physical run due to defect #1525")
+            pytest.skip("Skipped test physical run due to defect #1525") 
 
     def teardown_class(cls):
         Test_ospf_configuration.topoObj.terminate_nodes()
