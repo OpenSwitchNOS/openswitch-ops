@@ -8159,6 +8159,77 @@
           "direction"
         ]
       ]
+    },
+    "CPU_Rx": {
+      "columns": {
+        "matches": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "dest_multicast_ipv4",
+                  "dest_multicast_ipv6",
+                  "dest_multicast_mac",
+                  "ip_protocol",
+                  "ether_type"
+                ]
+              ]
+            },
+            "value": "string",
+            "min": 1,
+            "max": "unlimited"
+          }
+        },
+        "ports": {
+          "category": "status",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port",
+            "refType" : "weak"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "vlans" : {
+        "category": "configuration",
+        "relationship": "reference",
+           "type": {
+            "key": {
+               "type": "uuid",
+               "refTable": "VLAN",
+               "refType" : "weak"
+            },
+            "min": 0,
+            "max": 4094
+           }
+        },
+        "process_info": {
+          "category": "status",
+          "type": {
+            "key": "integer",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      },
+      "isRoot": true
     }
   }
 }

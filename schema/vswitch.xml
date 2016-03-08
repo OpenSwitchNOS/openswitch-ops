@@ -6612,4 +6612,84 @@
       <column name="version">Trap/inform version. The default version is "v2c".</column>
     </group>
   </table>
+
+  <table name="CPU_Rx" title="CPU Multicast Reception">
+      <p>
+        Traffic types which are to be accepted by ASIC and copied to CPU
+        for further processing by respective daemons.
+        This table is populated by the daemon which want specific multicast
+        traffic to be delivered to it.
+      </p>
+      <group title="Matches">
+      <p>
+        Key-Value pairs to match from the packet and allow them.
+        Something like ipv4,ipv6,mac address/types. There can be one or more
+        key-value pairs.
+      </p>
+      <column name="matches" key="dest_multicast_ipv4"
+                             type='{"type": "string"}'>
+          Destination IPv4 multicast address to match.
+      </column>
+      <column name="matches" key="dest_multicast_ipv6"
+                             type='{"type": "string"}'>
+          Destination IPv6 multicast address to match.
+      </column>
+      <column name="matches" key="dest_multicast_mac"
+                             type='{"type": "string"}'>
+          Destination multicast mac address to match.
+      </column>
+      <column name="matches" key="ip_protocol"
+                             type='{"type": "integer", "minInteger": 1}'>
+          IP protocol Hex value to match.
+      </column>
+      <column name="matches" key="ether_type"
+                             type='{"type": "integer", "minInteger": 1}'>
+          EtherType Hex value to match.
+      </column>
+      <p>
+        For example OSPF protocol daemon will create an entry
+        ip_protocol:59
+        dest_multicast_ipv4:224.0.0.5 for accepting OSPF protocol packets.
+        And depending on the use case, for multiple similar address types,
+        like range of mac, ip's different, user defined keys should be used.
+        For example mac_start, mac_end, etc.
+        Otherwise multiple rows should be inserted to identify unique
+        matching addresses.
+      </p>
+      </group>
+      <column name="ports">
+        Specifies the port <ref table="Port"/> only on which the matching
+        traffic should be allowed.
+        Default is NULL, which means allow on all ports.
+      </column>
+      <column name="vlans">
+        Specifies the vlans <ref table="VLAN"/> only on which the matching
+        traffic should be allowed.
+        Default is 0, which means VLAN is not included in applying the match.
+      </column>
+      <group title="process_info">
+      <p>
+        process-id and socket-fd pair of the process/daemon interested in these
+        matching traffic. There can be multiple processes interested in this
+        traffic class in that case this column will have multiple pair of
+        process-id and socket-fd reference.
+      </p>
+      </group>
+      <group title="status">
+      <p>
+        Status whether the entry is successfully programmed in asic.
+        And any other status information for user, like error string etc.
+      </p>
+      <column name="status" key="installed"
+          type='{"type": "boolean"}'>
+          Indicates if the matching rule is installed in asic.
+          On restart of vswitchd daemon, the asic is also reset so this status
+          is ephemeral and has to be updated.
+      </column>
+      <column name="status" key="error" type='{"type": "string"}'>
+          Human readable error string.
+      </column>
+      </group>
+  </table>
+
 </database>
