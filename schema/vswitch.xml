@@ -3176,6 +3176,11 @@
         Default is false. Port should be part of VRF in order for the feature
         to be active.
       </column>
+      <column name="other_config" key="local_proxy_arp_enabled" type='{"type": "boolean"}'>
+        Enables local proxy ARP feature on the interface.
+        Default is false. Port should be part of VRF in order for the feature
+        to be active.
+      </column>
    </group>
 
     <group title="Port Status">
