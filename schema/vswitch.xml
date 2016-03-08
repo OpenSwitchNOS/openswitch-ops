@@ -129,6 +129,10 @@
         sFlow(R) configuration.
       </column>
 
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings.
+      </column>
+
       <column name="other_config" key="stats-update-interval"
               type='{"type": "integer", "minInteger": 5000}'>
         <p>
@@ -356,6 +360,21 @@
           Default value is 2.
         </p>
       </column>
+   </group>
+
+   <group title="SNMP configuration">
+      <column name="other_config"  key="snmp_agent_port">
+         The port on which the SNMP agent listens for SNMP requests. The default port is 161.
+       </column>
+        <column name="other_config" key="snmp_system_location">
+          This key represents the system location.
+        </column>
+        <column name="other_config" key="snmp_system_contact">
+          This key represents the system contact.
+        </column>
+        <column name="other_config" key="snmp_system_description">
+          This key represents the system description.
+        </column>
    </group>
 
    </group>
@@ -6145,12 +6164,12 @@
       <column name="ipv4_ucast_server">
         List of IPv4 unicast server destinations to which DHCP broadcast packets received on the
         port are duplicated and forwarded.
-        A maximum of 16 ipv4 unicast server configurations are allowed.
+        A maximum of 8 ipv4 unicast server configurations are allowed.
       </column>
       <column name="ipv6_ucast_server">
         List of IPv6 unicast server destinations to which DHCP broadcast packets received on the
         port are dulicated and forwarded.
-        A maximum of 16 IPv6 server configurations are allowed. The count includes IPv6 multicast
+        A maximum of 8 IPv6 server configurations are allowed. The count includes IPv6 multicast
         and link local server configuration from the column "ipv6_mcast_server".
       </column>
       <column name="ipv6_mcast_server" keyname="ipv6_address">
@@ -6158,7 +6177,7 @@
         packets received on the port are duplciated and forwarded. Value of this key referenes a
         Port table entry, packets matching the criteria are forwarded to the server through
         this port.
-        A maximum of 16 IPv6 server configurations are allowed. This count includes IPv6 unicast
+        A maximum of 8 IPv6 server configurations are allowed. This count includes IPv6 unicast
         server configurations from the column "ipv6_ucast_server".
       </column>
     </group>
@@ -6307,5 +6326,22 @@
       ops-openvswitch: ac19ac49778adf6cf011a3ef6e0675025f1945b5
       sed: 4.2.2
     </column>
+  </table>
+  <table name="SNMP_Trap">
+    <group title="configuration">
+      <column name="receiver_address">
+        The IP address of the trap receiver.
+      </column>
+      <column name="receiver_port">
+        The port of the trap receiver.
+      </column>
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings.
+        The default community string is "public".
+      </column>
+      <column name="trap_type">
+        This describes the trap type.
+      </column>
+    </group>
   </table>
 </database>
