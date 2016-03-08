@@ -1,15 +1,16 @@
-# Infrastructure for the show events command
-
 ## Contents
 
-- [Overview](#overview)
-- [How to use the feature](#how-to-use-the-feature)
-    - [Setting up the basic configuration](#setting-up-the-basic-configuration)
-    - [Verifying the configuration](#verifying-the-configuration)
-    - [Troubleshooting the configuration](#troubleshooting-the-configuration)
-        - [Configuration file is missing in its path](#Configuration file is missing in its path)
-        - [File is not properly configured](#File is not properly configured)
-
+- [Infrastructure for the show events command](#infrastructure-for-the-show-events-command)
+	- [Contents](#contents)
+	- [Overview](#overview)
+	- [How to use the CLI](#how-to-use-the-cli)
+		- [Setting up the basic configuration](#setting-up-the-basic-configuration)
+		- [Verifying the configuration](#verifying-the-configuration)
+			- [Log Filter Options](#log-filter-options)
+		- [Reverse List Option](#reverse-list-option)
+		- [Troubleshooting the configuration](#troubleshooting-the-configuration)
+			- [Configuration file is missing in its path.](#configuration-file-is-missing-in-its-path)
+			- [File is not properly configured](#file-is-not-properly-configured)
 
 ## Overview
 
@@ -26,6 +27,52 @@ The `show events` command infrastructure loads its configuration from the "showe
 ### Verifying the configuration
 
  Execute the CLI `show events` command and verify that the features are configured.
+
+#### Log Filter Options
+
+`show events` command provide log filter options to show the logs of interest only. The following filters are supported:
+
+ * event-id
+ * severity
+ * category
+
+These filter keywords can be used along with the `show events` command to filter logs accordingly.
+
+For example,
+
+To filter according to event ID of 1002
+`show events event-id 1002`
+
+To filter according to severity level of emergency,
+`show events severity emer`
+
+The following are the severity keywords supported in CLI:
+ * emer
+ * alert
+ * crit
+ * error
+ * warn
+ * notice
+ * info
+ * debug
+
+To filter according to interested log category:
+`show events category LLDP`
+
+Also a combination of all these filters can be used together.
+
+For example:
+`show events event-id 1003 category LLDP severity emer`
+
+#### Reverse List Option
+
+The show events output usually displays from oldest to latest in order.
+We can make use of `reverse` keyword to list logs from latest to oldest order.
+This option can be used along with any of the log filters as well.
+
+For example:
+`show events reverse`
+`show events event-id 1003 category LLDP severity emer reverse`
 
 ### Troubleshooting the configuration
 
