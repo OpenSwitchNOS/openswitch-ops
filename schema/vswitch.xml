@@ -9252,7 +9252,6 @@
       </p>
     </column>
   </table>
-
   <table name="Notification_Subscriber" title="Notification subscriber information">
     <group title="Configuration">
       <column name="name">
@@ -9273,5 +9272,104 @@
         URI of the resource being subscribed to for notifications.
       </column>
     </group>
+  </table>
+  <table name="CPU_RX" title="CPU Packet Reception">
+      <p>
+        Traffic types which ASIC will copy to the CPU for further
+        processing by respective daemons.
+        This table is populated by daemons whenever they need specific
+        traffic (ex. a protocol was enabled on a VLAN or port).
+      </p>
+      <group title="Matches">
+      <p>
+        Rules to match packets which are to be copied to the CPU.
+        Something like ipv4, ipv6, mac address or protocol types.
+        There can be one or more key-value pairs to match.
+      </p>
+      <column name="matches" key="ether_type"
+                             type='{"type": "integer",
+                                    "minInteger": 0, "maxInteger": 65535}'>
+          EtherType value to match.
+      </column>
+      <column name="matches" key="ip_protocol"
+                             type='{"type": "integer",
+                                    "minInteger": 0, "maxInteger": 255}'>
+          IP protocol value to match.
+      </column>
+      <column name="matches" key="dest_multicast_mac">
+          Destination multicast mac address to match.
+      </column>
+      <column name="matches" key="dest_multicast_ipv4">
+          Destination IPv4 multicast address to match.
+      </column>
+      <column name="matches" key="dest_multicast_ipv6">
+          Destination IPv6 multicast address to match.
+      </column>
+      <column name="matches" key="dest_udp_port"
+                             type='{"type": "integer",
+                                    "minInteger": 0, "maxInteger": 65535}'>
+          Destination UDP port to match.
+      </column>
+      <column name="matches" key="multicast_misses"
+                             type='{"type": "string"}'>
+          Multicast unknown or Multicast misses traffic.
+          Values: "ipv4" or "ipv6"
+      </column>
+      <p>
+        Unique rows should be inserted using above applicable keys to
+        match packet types and copy them to the CPU.
+        Example: For receiving ipv4 OSPF All-Router protocol packet,
+        OSPF daemon will create a row with:
+        matches column: ip_protocol:59, dest_multicast_ipv4:224.0.0.5.
+        port column: reference to ports on which to allow OSPF packet.
+        from column: process_name:"ops-ospfd".
+        ops-switchd will get this update and program the ASIC and update the
+        status column: hw_configured: "true" and error: "Ok"
+
+        And similarly OSPF will have to insert seperate rows for ipv4 OSPF DR,
+        ipv6 All Router, and ipv6 DR.
+        In case of invalid matching key-values or failure to program the ASIC,
+        status column will be populated with relevent error string.
+      </p>
+      </group>
+      <column name="ports">
+        Specifies the set of ports <ref table="Port"/> whose matching traffic
+        will be copied to the CPU.
+        Default is <code>NULL</code>, which means allow on all ports.
+      </column>
+      <column name="vlans">
+        Specifies the set of VLANs <ref table="VLAN"/> whose matching traffic
+        will be copied to the CPU.
+        Default is NULL, which means VLAN is not considered for match.
+      </column>
+      <column name="drop_after_copy">
+        Set this value to <code>true</code>, if the ASIC after copying
+        the packet to the CPU should drop it.
+        Default is <code>false</code>.
+      </column>
+      <column name="from">
+      <p>
+        Name of Process/Daemon which is creating this match's row.
+        In case when more than one process is interested in receiving same
+        traffic class, then each of the process should create seperate rows,
+        with their process_name's.
+      </p>
+      </column>
+      <group title="hw_status">
+      <p>
+        Status indicating whether the entry is successfully programmed in the
+        ASIC.
+      </p>
+      <column name="hw_status" key="hw_configured"
+          type='{"type": "boolean"}'>
+          Indicates <code>true</code> or <code>false</code> if the matching rule
+          is installed in the ASIC.
+          Default is <code>false</code>, meaning not installed.
+      </column>
+      <column name="hw_status" key="error" type='{"type": "string"}'>
+          Human readable error string, in case of validation error or failure
+          while programming the ASIC.
+      </column>
+      </group>
   </table>
 </database>
