@@ -6308,4 +6308,39 @@
       sed: 4.2.2
     </column>
   </table>
+
+  <table name="CPU_Rx">
+      <p>
+        Traffic types which are to be accepted by ASIC and copied to CPU
+        for further processing by respective daemons.
+        This table is populated by the daemon which want specific multicast
+        traffic to be delivered to it.
+      </p>
+      <column name="matches">
+        Key-Value pairs to match from the packet and allow them.
+        Something like ipv4,ipv6,mac,etc address/types. For example
+        OSPF protocol daemon will create an entry
+        dest_multicast_ipv4:224.0.0.5 for accepting OSPF protocol packets.
+        And depending on the use case, for multiple similar address types,
+        like range of mac, ip's different, user defined keys should be used.
+        For example mac_start, mac_end, etc.
+        Otherwise multiple rows should be inserted to identify unique
+        matching addresses.
+      </column>
+      <column name="ports">
+        Specifies the port <ref table="Port"/> only on which the matching
+        traffic should be allowed.
+        Default is NULL, which means allow on all ports.
+      </column>
+      <column name="other_info">
+        Other information like the socket-fd, process-id, protocol-type, etc
+        which is populated by the daemon/service interested in the above
+        matching traffic type.
+      </column>
+      <column name="status">
+        Status whether the entry is successfully programmed in asic.
+        And any other status information for user, like error string etc.
+      </column>
+  </table>
+
 </database>

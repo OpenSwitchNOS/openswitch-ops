@@ -7554,6 +7554,62 @@
         ]
       ],
       "isRoot": true
+    },
+    "CPU_Rx": {
+      "columns": {
+        "matches": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "dest_multicast_ipv4",
+                  "dest_multicast_ipv6",
+                  "dest_multicast_mac"
+                ]
+              ]
+            },
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ports": {
+          "category": "status",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port",
+            "refType" : "weak"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "other_info": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      },
+      "isRoot": true
     }
   }
 }
