@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# (c) Copyright [2015] Hewlett Packard Enterprise Development LP
+# (c) Copyright 2015 - 2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -36,7 +36,57 @@ class mgmtIntfTests(OpsVsiTest):
     # IPv4 and it's subnet mask which is obtained from DHCP server.
     Dhcp_Ipv4_submask = ''
 
+    # DHCP dhclient is not running on VSI image due to
+    # dhclient_apparmor_profile [/etc/apparmor.d/sbin.dhclient] file
+    # whcih is present on running host machine[VM].
+    # That Profile files will declare access rules to allow access to
+    # linux system resources, By implicitly the access is denied with
+    # logging when there is no matching rule in the profile.
+    # If want to run docker instance with dhclient on such a
+    # host machine,we disabling the dhclient_apparmor_profile file
+    # and enabling it once testcase execution is finished.
+
+    def disable_dhclient_profile(self):
+        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
+            os.system("sudo ln -s /etc/apparmor.d/sbin.dhclient "
+                      "  /etc/apparmor.d/disable/")
+            os.system('sudo apparmor_parser -R /etc/apparmor.d/sbin.dhclient')
+
+    def enable_dhclient_profile(self):
+        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
+            os.system('sudo rm /etc/apparmor.d/disable/sbin.dhclient')
+            os.system('sudo apparmor_parser -r /etc/apparmor.d/sbin.dhclient')
+
+    # If run this test file with multiple instance,there is a chance to get
+    # asynchronous enabling and disabling dhclient_profile file on
+    # running system.
+    # To protect asynchronous issue using the count variable to maintain
+    # number of mgmt-intf test file execution instace is created in temp file.
+    # whenever count is reached to zero than only allowing to enabling the
+    # profile file.
+    def file_read_for_mgmt_instance_count(self):
+        file_fd = open('mgmt_sys_var','r')
+        count = file_fd.read()
+        count = re.search('\d+',count)
+        num=int(count.group(0))
+        file_fd.close()
+        return num
+
+    def file_write_for_mgmt_instance_count(self,count_number):
+        file_fd = open('mgmt_sys_var','w+')
+        file_fd.write(str(count_number))
+        file_fd.close()
+
     def setupNet(self):
+        if os.path.exists('mgmt_sys_var') is False:
+            self.file_write_for_mgmt_instance_count(0)
+        else:
+            count = self.file_read_for_mgmt_instance_count()
+            num = count + 1
+            self.file_write_for_mgmt_instance_count(num)
+
+        self.disable_dhclient_profile()
+
         # If you override this function, make sure to
         # either pass getNodeOpts() into hopts/sopts of the topology that
         # you build or into addHost/addSwitch calls.
@@ -48,11 +98,6 @@ class mgmtIntfTests(OpsVsiTest):
                            host=Host,
                            link=OpsVsiLink, controller=None,
                            build=True)
-        # Disabling dhclient profile on VM.
-        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
-            os.system("sudo ln -s /etc/apparmor.d/sbin.dhclient "
-                      "  /etc/apparmor.d/disable/")
-            os.system('sudo apparmor_parser -R /etc/apparmor.d/sbin.dhclient')
 
     def numToDottedQuad(self, n):
         d = 256 * 256 * 256
@@ -510,7 +555,6 @@ class mgmtIntfTests(OpsVsiTest):
             s1.cmd("ip netns exec swns ip address flush dev 1")
 
 
-@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 631")
 class Test_mgmt_intf:
 
     def setup_class(cls):
@@ -521,10 +565,20 @@ class Test_mgmt_intf:
         # Stop the Docker containers, and
         # mininet topology.
         Test_mgmt_intf.test.net.stop()
+        Enable = False
+
+        if os.path.exists('mgmt_sys_var') is True:
+            num = Test_mgmt_intf.test.file_read_for_mgmt_instance_count()
+            if num == 0:
+                Enable = True
+            else:
+                num = num - 1
+                Test_mgmt_intf.test.file_write_for_mgmt_instance_count(num)
+
         # Enabling dhclient.profile on VM.
-        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
-            os.system('sudo rm /etc/apparmor.d/disable/sbin.dhclient')
-            os.system('sudo apparmor_parser -r /etc/apparmor.d/sbin.dhclient')
+        if Enable is True:
+            Test_mgmt_intf.test.enable_dhclient_profile()
+            os.system('rm mgmt_sys_var')
 
     def teardown_method(self, method):
         self.test.mgmt_intf_cleanup()
@@ -591,8 +645,6 @@ class Test_mgmt_intf:
              " ##########\n")
         self.test.config_set_hostname_from_cli()
 
-    @pytest.mark.skipif(True, reason="Disabling this testcase "
-                        "due to this Defect:181 dependencies")
     def test_set_hostname_by_dhclient(self):
         self.test.set_hostname_by_dhclient()
 
@@ -601,7 +653,5 @@ class Test_mgmt_intf:
              " ##########\n")
         self.test.config_set_domainname_from_cli()
 
-    @pytest.mark.skipif(True, reason="Disabling this testcase "
-                        "due to this Defect:181 dependencies")
     def test_set_domainname_by_dhclient(self):
         self.test.set_domainname_by_dhclient()
