@@ -26,6 +26,13 @@
 ##########################################################################
 
 import time
+from lacp_lib import create_lag_off
+from lacp_lib import delete_lag
+from lacp_lib import associate_interface_to_lag
+from lacp_lib import turn_on_interface
+from lacp_lib import turn_off_interface
+from lacp_lib import validate_turn_on_interfaces
+from lacp_lib import assign_ip_to_lag
 
 TOPOLOGY = """
 # +-------+     +-------+
@@ -41,46 +48,6 @@ sw1:1 -- sw2:3
 sw1:2 -- sw2:2
 sw1:3 -- sw2:1
 """
-
-
-def create_lag_off(sw, lag_id):
-    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
-        ctx.routing()
-
-
-def delete_lag(sw, lag_id):
-    with sw.libs.vtysh.Configure() as ctx:
-        ctx.no_interface_lag(lag_id)
-
-
-def associate_interface_to_lag(sw, interface, lag_id):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.lag(lag_id)
-
-
-def turn_on_interface(sw, interface):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.no_shutdown()
-
-
-def turn_off_interface(sw, interface):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.shutdown()
-
-
-def is_interface_up(sw, interface):
-    interface_status = sw('show interface {interface}'.format(**locals()))
-    lines = interface_status.split('\n')
-    for line in lines:
-        if "Admin state" in line and "up" in line:
-            return True
-    return False
-
-
-def assign_ip_to_lag(sw, lag_id, ip_address, ip_address_mask):
-    ip_address_complete = ip_address + "/" + ip_address_mask
-    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
-        ctx.ip_address(ip_address_complete)
 
 
 def test_l3_static_lag_ping_case_1(topology):
@@ -133,12 +100,8 @@ def test_l3_static_lag_ping_case_1(topology):
     time.sleep(20)
 
     print("Verify all interface are up")
-    for port in ports_sw1:
-        assert is_interface_up(sw1, port),\
-            "Interface " + port + " should be up"
-    for port in ports_sw2:
-        assert is_interface_up(sw2, port),\
-            "Interface " + port + " should be up"
+    validate_turn_on_interfaces(sw1, ports_sw1)
+    validate_turn_on_interfaces(sw2, ports_sw2)
 
     print("Assign IP to LAGs")
     assign_ip_to_lag(sw1, sw1_lag_id, sw1_lag_ip_address, ip_address_mask)
