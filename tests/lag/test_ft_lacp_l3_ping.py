@@ -26,10 +26,18 @@
 ##########################################################################
 
 import time
-from pytest import set_trace
+from lacp_lib import create_lag
+from lacp_lib import associate_interface_to_lag
+from lacp_lib import turn_on_interface
+from lacp_lib import validate_turn_on_interfaces
+from lacp_lib import validate_local_key
+from lacp_lib import validate_remote_key
+from lacp_lib import validate_lag_name
+from lacp_lib import validate_lag_state_sync
+from lacp_lib import assign_ip_to_lag
+from lacp_lib import LOCAL_STATE
+from lacp_lib import REMOTE_STATE
 
-LOCAL_STATE = 'local_state'
-REMOTE_STATE = 'remote_state'
 
 TOPOLOGY = """
 # +-------+     +-------+
@@ -41,85 +49,10 @@ TOPOLOGY = """
 [type=openswitch name="Switch 2"] sw2
 
 # Links
-sw1:1 -- sw2:3
+sw1:1 -- sw2:1
 sw1:2 -- sw2:2
-sw1:3 -- sw2:1
+sw1:3 -- sw2:3
 """
-
-
-def create_lag_active(sw, lag_id):
-    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
-        ctx.lacp_mode_active()
-
-
-def create_lag_passive(sw, lag_id):
-    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
-        ctx.lacp_mode_passive()
-
-
-def delete_lag(sw, lag_id):
-    with sw.libs.vtysh.Configure() as ctx:
-        ctx.no_interface_lag(lag_id)
-
-
-def associate_interface_to_lag(sw, interface, lag_id):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.lag(lag_id)
-
-
-def turn_on_interface(sw, interface):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.no_shutdown()
-
-
-def turn_off_interface(sw, interface):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.shutdown()
-
-
-def validate_local_key(map_lacp, lag_id):
-    assert map_lacp['local_key'] == lag_id,\
-        "Actor Key is not the same as the LAG ID"
-
-
-def validate_remote_key(map_lacp, lag_id):
-    assert map_lacp['remote_key'] == lag_id,\
-        "Partner Key is not the same as the LAG ID"
-
-
-def validate_lag_name(map_lacp, lag_id):
-    assert map_lacp['lag_id'] == lag_id,\
-        "LAG ID should be " + lag_id
-
-
-def validate_lag_state_sync(map_lacp, state):
-    assert map_lacp[state]['active'] is True,\
-        "LAG state should be active"
-    assert map_lacp[state]['long_timeout'] is True,\
-        "LAG state should have long timeout"
-    assert map_lacp[state]['aggregable'] is True,\
-        "LAG state should have aggregable enabled"
-    assert map_lacp[state]['in_sync'] is True,\
-        "LAG state should be In Sync"
-    assert map_lacp[state]['collecting'] is True,\
-        "LAG state should be in collecting"
-    assert map_lacp[state]['distributing'] is True,\
-        "LAG state should be in distributing"
-
-
-def is_interface_up(sw, interface):
-    interface_status = sw('show interface {interface}'.format(**locals()))
-    lines = interface_status.split('\n')
-    for line in lines:
-        if "Admin state" in line and "up" in line:
-            return True
-    return False
-
-
-def assign_ip_to_lag(sw, lag_id, ip_address, ip_address_mask):
-    ip_address_complete = ip_address + "/" + ip_address_mask
-    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
-        ctx.ip_address(ip_address_complete)
 
 
 def test_l3_dynamic_lag_ping_case_1(topology):
@@ -156,13 +89,11 @@ def test_l3_dynamic_lag_ping_case_1(topology):
     for port in ports_sw2:
         turn_on_interface(sw2, port)
 
-    set_trace()
-
     print("Create LAG in both switches")
-    create_lag_active(sw1, sw1_lag_id)
-    create_lag_active(sw2, sw2_lag_id)
+    create_lag(sw1, sw1_lag_id, 'active')
+    create_lag(sw2, sw2_lag_id, 'active')
 
-    print("Associate interfaces [1,2] to lag in both switches")
+    print("Associate interfaces [1,2,3] to lag in both switches")
     associate_interface_to_lag(sw1, p11, sw1_lag_id)
     associate_interface_to_lag(sw1, p12, sw1_lag_id)
     associate_interface_to_lag(sw1, p13, sw1_lag_id)
@@ -174,12 +105,8 @@ def test_l3_dynamic_lag_ping_case_1(topology):
     time.sleep(30)
 
     print("Verify all interface are up")
-    for port in ports_sw1:
-        assert is_interface_up(sw1, port),\
-            "Interface " + port + " should be up"
-    for port in ports_sw2:
-        assert is_interface_up(sw2, port),\
-            "Interface " + port + " should be up"
+    validate_turn_on_interfaces(sw1, ports_sw1)
+    validate_turn_on_interfaces(sw2, ports_sw2)
 
     print("Get information for LAG in interface 1 with both switches")
     map_lacp_sw1 = sw1.libs.vtysh.show_lacp_interface(p11)
@@ -213,13 +140,3 @@ def test_l3_dynamic_lag_ping_case_1(topology):
     assert ping['transmitted'] == ping['received'] == number_pings,\
         "Number of pings transmitted should be equal to the number" +\
         " of pings received"
-
-    print("Cleaning configuration")
-    for port in ports_sw1:
-        turn_off_interface(sw1, port)
-
-    for port in ports_sw2:
-        turn_off_interface(sw2, port)
-
-    delete_lag(sw1, sw1_lag_id)
-    delete_lag(sw2, sw2_lag_id)

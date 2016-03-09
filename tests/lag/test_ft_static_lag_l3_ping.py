@@ -26,6 +26,12 @@
 ##########################################################################
 
 import time
+from lacp_lib import create_lag
+from lacp_lib import associate_interface_to_lag
+from lacp_lib import turn_on_interface
+from lacp_lib import validate_turn_on_interfaces
+from lacp_lib import assign_ip_to_lag
+from lacp_lib import check_connectivity_between_switches
 
 TOPOLOGY = """
 # +-------+     +-------+
@@ -37,50 +43,10 @@ TOPOLOGY = """
 [type=openswitch name="Switch 2"] sw2
 
 # Links
-sw1:1 -- sw2:3
+sw1:1 -- sw2:1
 sw1:2 -- sw2:2
-sw1:3 -- sw2:1
+sw1:3 -- sw2:3
 """
-
-
-def create_lag_off(sw, lag_id):
-    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
-        ctx.routing()
-
-
-def delete_lag(sw, lag_id):
-    with sw.libs.vtysh.Configure() as ctx:
-        ctx.no_interface_lag(lag_id)
-
-
-def associate_interface_to_lag(sw, interface, lag_id):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.lag(lag_id)
-
-
-def turn_on_interface(sw, interface):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.no_shutdown()
-
-
-def turn_off_interface(sw, interface):
-    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
-        ctx.shutdown()
-
-
-def is_interface_up(sw, interface):
-    interface_status = sw('show interface {interface}'.format(**locals()))
-    lines = interface_status.split('\n')
-    for line in lines:
-        if "Admin state" in line and "up" in line:
-            return True
-    return False
-
-
-def assign_ip_to_lag(sw, lag_id, ip_address, ip_address_mask):
-    ip_address_complete = ip_address + "/" + ip_address_mask
-    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
-        ctx.ip_address(ip_address_complete)
 
 
 def test_l3_static_lag_ping_case_1(topology):
@@ -118,10 +84,10 @@ def test_l3_static_lag_ping_case_1(topology):
         turn_on_interface(sw2, port)
 
     print("Create LAG in both switches")
-    create_lag_off(sw1, sw1_lag_id)
-    create_lag_off(sw2, sw2_lag_id)
+    create_lag(sw1, sw1_lag_id, 'off')
+    create_lag(sw2, sw2_lag_id, 'off')
 
-    print("Associate interfaces [1,2] to lag in both switches")
+    print("Associate interfaces [1,2, 3] to lag in both switches")
     associate_interface_to_lag(sw1, p11, sw1_lag_id)
     associate_interface_to_lag(sw1, p12, sw1_lag_id)
     associate_interface_to_lag(sw1, p13, sw1_lag_id)
@@ -133,35 +99,13 @@ def test_l3_static_lag_ping_case_1(topology):
     time.sleep(20)
 
     print("Verify all interface are up")
-    for port in ports_sw1:
-        assert is_interface_up(sw1, port),\
-            "Interface " + port + " should be up"
-    for port in ports_sw2:
-        assert is_interface_up(sw2, port),\
-            "Interface " + port + " should be up"
+    validate_turn_on_interfaces(sw1, ports_sw1)
+    validate_turn_on_interfaces(sw2, ports_sw2)
 
     print("Assign IP to LAGs")
     assign_ip_to_lag(sw1, sw1_lag_id, sw1_lag_ip_address, ip_address_mask)
     assign_ip_to_lag(sw2, sw2_lag_id, sw2_lag_ip_address, ip_address_mask)
 
-    print("Ping switch2 from switch1")
-    ping = sw1.libs.vtysh.ping_repetitions(sw2_lag_ip_address, number_pings)
-    assert ping['transmitted'] == ping['received'] == number_pings,\
-        "Number of pings transmitted should be equal to the number" +\
-        " of pings received"
-
-    print("Ping switch1 from switch2")
-    ping = sw2.libs.vtysh.ping_repetitions(sw1_lag_ip_address, number_pings)
-    assert ping['transmitted'] == ping['received'] == number_pings,\
-        "Number of pings transmitted should be equal to the number" +\
-        " of pings received"
-
-    print("Cleaning configuration")
-    for port in ports_sw1:
-        turn_off_interface(sw1, port)
-
-    for port in ports_sw2:
-        turn_off_interface(sw2, port)
-
-    delete_lag(sw1, sw1_lag_id)
-    delete_lag(sw2, sw2_lag_id)
+    print("Ping switch2 from switch1 and viceversa")
+    check_connectivity_between_switches(sw1, sw1_lag_ip_address, sw2,
+                                        sw2_lag_ip_address, number_pings, True)
