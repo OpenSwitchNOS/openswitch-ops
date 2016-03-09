@@ -49,6 +49,11 @@ def create_lag_passive(sw, lag_id):
         ctx.lacp_mode_passive()
 
 
+def create_lag_off(sw, lag_id):
+    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
+        ctx.routing()
+
+
 def delete_lag(sw, lag_id):
     with sw.libs.vtysh.Configure() as ctx:
         ctx.no_interface_lag(lag_id)
@@ -57,9 +62,19 @@ def delete_lag(sw, lag_id):
 def associate_interface_to_lag(sw, interface, lag_id):
     with sw.libs.vtysh.ConfigInterface(interface) as ctx:
         ctx.lag(lag_id)
-    output = sw.libs.vtysh.show_lacp_interface(interface)
-    assert output['lag_id'] == lag_id,\
+    lag_name = "lag" + lag_id
+    output = sw.libs.vtysh.show_lacp_aggregates(lag_name)
+    assert interface in output[lag_name]['interfaces'],\
         "Unable to associate interface to lag"
+
+
+def remove_interface_from_lag(sw, interface, lag_id):
+    with sw.libs.vtysh.ConfigInterface(interface) as ctx:
+        ctx.no_lag(lag_id)
+    lag_name = "lag" + lag_id
+    output = sw.libs.vtysh.show_lacp_aggregates(lag_name)
+    assert interface not in output[lag_name]['interfaces'],\
+        "Unable to remove interface from lag"
 
 
 def associate_vlan_to_lag(sw, vlan_id, lag_id):
@@ -241,6 +256,11 @@ def create_vlan(sw, vlan_id):
         'Vlan is not up after turning it on'
 
 
+def delete_vlan(sw, vlan):
+    with sw.libs.vtysh.Configure() as ctx:
+        ctx.no_vlan(vlan)
+
+
 def associate_vlan_to_l2_interface(sw, vlan_id, interface):
     with sw.libs.vtysh.ConfigInterface(interface) as ctx:
         ctx.no_routing()
@@ -264,3 +284,10 @@ def validate_interface_not_in_lag(sw, interface, lag_id):
     print("Came back from show lacp interface")
     assert output['lag_id'] == "",\
         "Unable to associate interface to lag"
+
+
+def assign_ip_to_lag(sw, lag_id, ip_address, ip_address_mask):
+    ip_address_complete = ip_address + "/" + ip_address_mask
+    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
+        ctx.routing()
+        ctx.ip_address(ip_address_complete)
