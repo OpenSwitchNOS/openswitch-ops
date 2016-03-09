@@ -1,119 +1,565 @@
-# Testing for OPS-WEBUI
-The Web UI testing consists of:
-* automated REST feature tests (FT)
-* automated JavaScript unit tests
-* manual GUI tests
+Web UI Test Cases
+=================
+
+## Description
+The purpose of the Web UI feature tests are to ensure the REST calls the Web UI makes don't break due to changes in schema or data
 
 ## Contents
-- [Automated REST Feature Tests](#automated-rest-feature-tests)
-	- [Test_CreatePatch](#test_createpatch)
-		- [test_create_port](#test_create_port)
-		- [test_patch_port_int_admin](#test_patch_port_int_admin)
-- [Automated JavaScript unit tests](#automated-javascript-unit-tests)
-- [Shell test commands](#shell-test-commands)
-- [Unit Tests](#unit-tests)
+- [Interface Config](#interface-config)
+- [Overview Page](#overview-page)
+- [LLDP Verify](#lldp-verify)
+- [LAG Config](#lag-config)
+- [ECMP Page](#ecmp-page)
 
-## Automated REST Feature Tests
-The goal of the automated REST feature tests is to make sure that schema, data, or REST changes don't break the Web UI.
+## Interface Config
 
-### Test_CreatePatch
-#### test_create_port
-This test creates a basic port object and validates the data returned is what the Web UI expects.
+### Objective
+Verify the following:
 
-#### test_patch_port_int_admin
-This test patches the port and interface object to add the admin up state, and validates the returning data.
+- Basic port can be created
+- Interface and port can be patched to have admin state up
+- Interface can be patched to add other states:  duplex, auto-negotiation, and flow-control
+
+### Requirements
+
+- OpenSwitch
+- Ubuntu Workstation
+- Interface 1
+
+### Setup
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+
+|                |         |                |
+|                |         |                |
+|    Local Host  +---------+    Switch 1    |
+|                |         |                |
+|                |         |                |
++----------------+         +----------------+
+```
+
+### Description
+This test case will validate that a basic port can be configured, then that port along with the interface can be patched to set the admin state to 'up'.  The other interface configuration parameters are also patched:  duplex, auto-negotiation, and flow-control.
+
+### Test 1
+
+Create port 1 via POST then use PATCH to modify interface 1 and port 1.  Port patch:
+
+   ```
+   [{"op": "add","path": "/admin","value": "up"}]
+   ```
+
+Interface patch:
+
+   ```
+   [{"op": "add","path": "/user_config","value": {"admin": "up"}}]
+   ```
+
+### Test 2
+
+Create port 2 and patch using the following:
+
+   ```
+   [{"op": "add","path": "/user_config","value": {"autoneg": "off","duplex": "half","pause": "rxtx"}}]
+   ```
+### Test Result Criteria
+
+#### Test pass criteria
+
+Port creation should return a `201 CREATED`.  The patch commands should return a `204 NO CONTENT`.
+
+### Test fail criteria
+
+Any result other than the ones listed above.
+
+## Overview Page
+
+### Objective
+
+Verify the various database columns used by the overview page exist.
+
+### Requirements
+
+- OpenSwitch
+- Ubuntu Workstation
+- Interface 1
+
+### Setup
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+
+|                |         |                |
+|                |         |                |
+|    Local Host  +---------+    Switch 1    |
+|                |         |                |
+|                |         |                |
++----------------+         +----------------+
+```
+
+### Description
+This test will validate various database columns from the **system** table and the **system/subsystems/base** table.  Part of this test ensures the names haven't changed.
+
+### Test 1
+From **system/subsystems/base** validate the following columns exist:
 
 
-## Automated JavaScript unit tests
-This testing uses the following NodeJS modules:
-* [Node.js/npm](https://nodejs.org/en) - used to run the JavaScript development tools
-* [Webpack Module Bundler](https://webpack.github.io/) - module builder
-* [Karma](http://karma-runner.github.io/0.13/index.html) - unit test runner
-* [Jasmine](http://jasmine.github.io/) - unit test framework (see also [Jasmine introduction](http://jasmine.github.io/2.0/introduction.html))
+```
+'Product Name', 'part_number', 'onie_version','base_mac_address', 'serial_number', 'vendor','max_interface_speed', 'max_transmission_unit','interface_count'
+```
 
-Additionally, test support files are located in **tools/test**:
-* `karma.config.js` - Karma configuration file (resues webpack configuration)
-* `mock-ajax.js` - third-party library that provides a mocking of Ajax requests
-* `tests.webpack.js` - used by Karma to find and run all the test files
+### Test 2
+From **system** validate the following columns exist:
 
-All **Karma/Jasmine** tests are located in `\__tests__ directories`.
+```
+'hostname', 'switch_version'
+```
 
-## Shell test commands
-The Node.js/npm build commands (defined in package.json) can be run from the **ops-webui** root directory.  For example:
+### Test Result Criteria
 
-    ops-webui$ npm run test
+#### Test pass criteria
 
-The `aliases.sh` file in the ops-webui root directory can be sourced to provide aliases for each command.  For example:
+If all columns are present, test passes.
 
-    alias wt='npm run test'
+### Test fail criteria
 
-* **wt** - run the unit tests a single time (Karma/Jasmine tests are located in \__test__ directories)
-* **wtw** - continuous testing, same as test but reruns when files change
+If any column is missing test will fail.
 
-## Unit Tests
+## LLDP Verify
 
-    Start:
-     Test Suite For InterfaceActions
-       * completes correctly ignoring non-system interfaces
-       * fails the first pass correctly
-       * fails the second pass correctly
-     Test Suite For SystemInfoActions
-       * completes correctly
-       * fails correctly
-     Test Suite For SystemStatsActions
-       * completes correctly
-       * fails the first pass correctly
-       * fails the second pass correctly
-     Test Suite For InterfaceStatsStore
-       * correct initial settings
-       * works for the first stat update
-       * works for 2 stat updates
-       * works for 3 stat updates
-       * multi updates, half duplex, sort & truncing top utl
-       * handles duplex changes
-       * handles speed changes & 10 second interval
-     Test Suite For PortsMgmtStore
-       * correct initial state of the store
-       * sets single port into all ports into state.allPorts
-       * sets list of ports into all ports in state.allPorts
-       * sets the list of port status in state.portStatus
-     Test Suite For PortsMonitorStore
-       * correct initial state of the store
-       * correct state of dataSets on loadGraphs - half and full duplex
-       * correct state of graph show var when toggling display
-       * correct state of chart type and active details
-     Test Suite For RenderStore
-       * correct initial settings
-       * handles all actions correctly
-     Test Suite For VlanMgmtStore
-       * correct initial state of the store
-       * correct state of show port details
-       * correct state of close port details
-       * correct state of loading vlans
-     Test suite for calculations
-       * handles 2 normal data points
-       * handles prev 0
-       * handles curr 0
-       * handles speed 0
-       * handles string parameters and above 100%
-       * handles interval as 0
-     Test suite for conversions
-       * testing bps to gbps conversion
-       * testing bytes to mb conversion
-       * testing rounding to 1 decimal place
-     Test Suite For i18n
-       * handles keys & paths, unknown keys & paths
-       * has the correct default locale
-     Test Suite For restUtils
-       * get single URL
-       * get single URL with error
-       * get URL array in parallel
-       * get URL array in parallel with error
-       * 3 passes - single, parallel, parallel
-       * 3 passes - single, parallel, parallel with error
-       * differnt base URL array in parallel
+### Objective
+Verify the following: Given two connected switches with LLDP enabled
 
-    Finished in 0.098 secs / 0.131 secs
+- Basic port can be created
+- Interface and port can be patched to have admin state up
+- Interface can be patched to add other states:  duplex, auto-negotiation, and flow-control
 
-    SUMMARY:
-    * 47 tests completed
+### Requirements
+
+- OpenSwitches (2) - connected on interface 1
+- Ubuntu Workstation - send REST request, rcv response
+
+### Setup
+Two switches connected together on interface 1. Both switches configured with LLDP enabled and interface 1 up and connected.
+One host connected only to switch 1 will send a REST request then LLDP info in the response will be examined for expected return information.
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+          +---------------+
+|                |         |                |          |               |
+|                |         |                |          |               |
+|    Local Host  +---------+    Switch 1    +----------+    Switch 2   +
+|                |         |                |          |               |
+|                |         |                |          |               |
++----------------+         +----------------+          +---------------+
+```
+
+### Description
+These test cases will validate that LLDP info in the REST response is well formed.
+
+### Test 1
+Check to see if the LLDP Neighbor Info tag is present in the well-formed response expected by the webui:
+
+   ```
+   [{"status":..."lldp_neighbor_info"}]
+   ```
+
+### Test 2
+Check to see if the mgmt_ip_list tag is present in the well-formed response expected by the webui:
+   ```
+   [{"status":..."lldp_neighbor_info":{...{"mgmt_ip_list"}}}]
+   ```
+
+### Test 3
+Check to see if the mgmt_ip_list value matches expected value (i.e IP of switch 2):
+   ```
+   [{"status":..."lldp_neighbor_info":{...{"mgmt_ip_list":"10.10.10.3"}}}]
+   ```
+
+### Test 4
+Check to see if the LLDP statistics tag is present in the well-formed response expected by the webui:
+   ```
+   [{"statistics":{..."lldp_statistics"}}]
+   ```
+### Test 5
+Check to see if the LLDP statistics tag for XMIT is present in the well-formed response expected by the webui:
+   ```
+   [{"statistics":{..."lldp_statistics":...{"lldp_xmit"}}}]
+   ```
+### Test 6
+Check to see if the LLDP statistics tag for XMIT > 0 in the well-formed response expected by the webui:
+   ```
+   [{"statistics":{..."lldp_statistics":...{"lldp_xmit":"11"}}}]
+   ```
+### Test 7
+Check to see if the LLDP statistics tag for RCV is present in the well-formed response expected by the webui:
+   ```
+   [{"statistics":{..."lldp_statistics":...{"lldp_rcv"}}}]
+   ```
+### Test 8
+Check to see if the LLDP statistics tag for RCV > 0 in the well-formed response expected by the webui:
+   ```
+   [{"statistics":{..."lldp_statistics":...{"lldp_rcv":"11"}}}]
+```
+### Test Result Criteria
+
+#### Test pass criteria
+
+All tests should pass in order for response to be considered well-formed for LLDP configuration.
+
+### Test fail criteria
+
+Any of the tests to check for a well-formed LLDP response fails.
+
+## LAG Config
+
+### Objective
+Verify the following:
+
+- Basic L2 dynamic LAG port can be created
+- Interface can be patched to have admin state up and lacp-aggregation-key set to corresponding lagId
+- LAG port can be created with set of member interfaces and atributes:  lacp mode, vlan mode and admin
+
+### Requirements
+
+- OpenSwitch
+- Ubuntu Workstation h1 and h2
+- Interface 1 and 2
+- LAG 12
+
+### Setup
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+           +----------------+         +----------------+
+|                |         |                |           |                |         |                |
+|                |         |                |           |                |         |                |
+|   Local Host 1 +---------+    Switch 1    |           |   Switch 2     +---------+   Local Host 2 |
+|                |         |                |           |                |         |                |
+|                |         |                |           |                |         |                |
++----------------+         +----------------+           +----------------+         +----------------+
+```
+
+### Description
+This test case will create and validate that a basic LAG port can be configured and returns status 'OK', then that port along with the interface can be patched to set the admin state to 'up'.  The other LAG port configuration parameters are also created at the same time:  lacp mode, vlan mode and admin.
+
+### Test 1
+
+Patch interfaces 1 and 2 via PATCH.
+
+Interface patch:
+
+   ```
+   [{"op": "add","path": "/user_config","value": {"admin": "up"}}]
+   [{"op": "add","path": "/other_config","value": {"lacp-aggregation": "lag12"}}]
+   ```
+
+Post a new LAG 12 having 2 interfaces 1 and 2 via POST.`
+
+Create LAG port 12 using the following on both switches:
+
+   ```
+   {"configuration":
+      { "interfaces": ["/rest/v1/system/interfaces/1", "/rest/v1/system/interfaces/2"],
+        "name": "lag12",
+        "lacp": "active",
+        "vlan_mode": "trunk",
+      },
+      "referenced_by": [{"uri":"/rest/v1/system/bridges/bridge_normal" }]
+    }
+
+   ```
+### Test Result Criteria
+
+#### Test pass criteria
+
+Port creation should return a `201 CREATED`.  The patch commands should return a `204 NO CONTENT`.
+
+### Test fail criteria
+
+Any result other than the ones listed above.
+
+### Test 2
+
+Delete LAG lag12 on both switches.
+
+Interface patch:
+
+   ```
+   [{"op": "add","path": "/user_config","value": {"admin": "up"}}]
+   ```
+
+Send a DELETE request to delete the LAG 12 via the path /rest/v1/system/ports/lag12
+
+Patch interface 1 and 2 to remove lacp-aggregation-key on both switches:
+
+   ```
+   [{"op": "remove","path": "/other_config/lacp-aggregation-key"}]
+   ```
+### Test Result Criteria
+
+#### Test pass criteria
+
+Port deletion should return a `404 NOt Found`.  The port GET command should return a `404 Not Found`.
+
+### Test fail criteria
+
+Any result other than the ones listed above.
+
+## ECMP Page
+
+### Objective
+
+Verify ECMP status and it's load balancing options.
+
+### Requirements
+
+- OpenSwitch
+- Ubuntu Workstation
+
+
+### Setup
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+
+|                |         |                |
+|                |         |                |
+|    Local Host  +---------+    Switch 1    |
+|                |         |                |
+|                |         |                |
++----------------+         +----------------+
+```
+
+### Description
+This test will validate ECMP status, out of box behavior and dynamic configuration. Part of this test ensures the names haven't changed.
+
+### Test1
+Check ECMP initial configuration out of box:
+
+### Test Result Criteria
+
+#### Test pass criteria
+System configuration must not have ecmp data
+
+
+### Test fail criteria
+
+System configuration having ecmp data will fail the test
+
+### Test 2
+Enable ecmp
+
+ECMP enable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"enabled": "true"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "enabled" : "true"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "enabled" : "true"
+
+### Test 3
+Enable ecmp load balancing by destination ip
+
+ECMP load balancing by destination ip enable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_dstip_enabled": "true"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_dstip_enabled" : "true"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_dstip_enabled" : "true"
+
+### Test 4
+Enable ecmp load balancing by source ip
+
+ECMP load balancing by source ip enable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_srcip_enabled": "true"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_srcip_enabled" : "true"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_srcip_enabled" : "true"
+
+### Test 5
+Enable ecmp load balancing by destination port
+
+ECMP load balancing by destination port enable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_dstport_enabled": "true"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_dstport_enabled" : "true"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_dstport_enabled" : "true"
+
+### Test 6
+Enable ecmp load balancing by source port
+
+ECMP load balancing by source port enable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_srcport_enabled": "true"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_srcport_enabled" : "true"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_srcport_enabled" : "true"
+
+### Test 7
+Enable ecmp resilient hash
+
+ECMP resilient hash enable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"resilient_hash_enabled": "true"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "resilient_hash_enabled" : "true"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "resilient_hash_enabled" : "true"
+
+### Test 8
+Disable ecmp load balancing by destination ip
+
+ECMP load balancing by destination ip disable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_dstip_enabled": "false"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_dstip_enabled" : "false"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_dstip_enabled" : "false"
+
+### Test 9
+Disable ecmp load balancing by source ip
+
+ECMP load balancing by source ip disable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_srcip_enabled": "false"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_srcip_enabled" : "false"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_srcip_enabled" : "false"
+
+### Test 10
+Disable ecmp load balancing by destination port
+
+ECMP load balancing by destination port disable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_dstport_enabled": "false"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_dstport_enabled" : "false"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_dstport_enabled" : "false"
+
+### Test 11
+Disable ecmp load balancing by source port
+
+ECMP load balancing by source port disable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"hash_srcport_enabled": "false"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "hash_srcport_enabled" : "false"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "hash_srcport_enabled" : "false"
+
+### Test 12
+Disable ecmp resilient hash
+
+ECMP resilient hash disable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"resilient_hash_enabled": "false"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "resilient_hash_enabled" : "false"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "resilient_hash_enabled" : "false"
+
+### Test 13
+Disable ecmp
+
+ECMP disable patch: 
+```
+[{"op": "add", "path": "/ecmp_config", "value": {"enabled": "false"}}]
+```
+
+### Test Result Criteria
+
+#### Test pass criteria
+
+System configuration must have ecmp property "enabled" : "false"
+
+### Test fail criteria
+
+if System configuration doesn't have ecmp property "enabled" : "false"
