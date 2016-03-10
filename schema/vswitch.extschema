@@ -2970,9 +2970,7 @@
                   "flashing"
                 ]
               ]
-            },
-            "min": 0,
-            "max": 1
+            }
           }
         },
         "status": {
