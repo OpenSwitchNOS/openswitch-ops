@@ -8,6 +8,7 @@
 	- [ip address](#ip-address)
 	- [ipv6 address](#ipv6-address)
 	- [ip proxy-arp](#ip-proxy-arp)
+	- [ip local-proxy-arp](#ip-local-proxy-arp)
 	- [interface vlan](#interface-vlan)
 	- [interface](#interface)
 - [Display commands](#display-commands)
@@ -146,6 +147,30 @@ hostname(config)# interface 1
 hostname(config-if)# ip proxy-arp
 
 ```
+###ip local-proxy-arp
+
+#### Syntax
+
+Under the interface context.
+
+`[no] ip local-proxy-arp`
+
+#### Description
+The command enables/disables local proxy ARP on the specified interface. By default, it is disabled.
+
+#### Authority
+Admin
+
+#### Parameter
+none
+
+#### Example
+Configure local proxy ARP on an interface
+```
+hostname(config)# interface 1
+hostname(config-if)# ip local-proxy-arp
+
+```
 ### interface vlan
 
 #### Syntax
@@ -242,6 +267,7 @@ Interface 1 is up
  Admin state is up
  Hardware: Ethernet, MAC Address: 48:0f:cf:af:02:17
  Proxy ARP is enabled
+ Local Proxy ARP is enabled
  MTU 1500
  Full-duplex
  Speed 1000 Mb/s
