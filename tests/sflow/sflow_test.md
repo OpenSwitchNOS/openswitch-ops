@@ -651,3 +651,105 @@ This test is used to ensure that the agent interface configured is used by the O
 #### Test fail criteria
 - When sFlow is enabled, the agent IP address in the FLOW packets does not match the configured agent interface's IP address.
 - When agent interface configuration is removed, the agent IP address in the FLOW packets does not match any of the IP addresses on the switch.
+
+## Changing polling interval
+### Objective
+This test verifies that the configured polling interval is used by the sFlow packets.
+### Requirements
+- Physical switch/workstations test setup
+- **FT File**: `ops/tests/sflow/test_sflow_ft_agent_interface.py`
+### Setup
+#### Topology diagram
+```ditaa
+                    +----------------+
+                    |                |
+                    |                |
+                    |   sflowtool    |
+                    |                |
+                    +-+--------------+
+                      |
+                      |
+         +------------+--+
+         |               |
+         |               |
+         |    Switch     |
+         |               |
+         |               |
+         |               |
+         +-+-------------+
+           |
+           |
++----------+--+
+|             |
+|             |
+|  Host-1     |
+|             |
++-------------+
+```
+### Description
+This test is used to ensure that the polling interval configured is used by the OpenSwitch.
+
+1. Connect Host-1 to the switch. Configure IP address and route.
+    ```
+    ip addr add 10.10.10.2/24 dev eth1
+    ip route add 10.10.11.0/24 via 10.10.10.1
+    ```
+
+2. Connect another host which has sflowtool (the sFlow collector) to the switch. Configure an IP address on it.
+    ```
+    ip addr add 10.10.11.2/24 dev eth1
+    ```
+
+3. Configure the interfaces on the switch that are connected to these hosts.
+    ```
+    ops-as5712# configure terminal
+    ops-as5712(config)# interface 1
+    ops-as5712(config-if)# ip address 10.10.10.1/24
+    ops-as5712(config-if)# no shut
+    ops-as5712(config-if)# exit
+    ops-as5712(config)# interface 2
+    ops-as5712(config-if)# ip address 10.10.11.1/24
+    ops-as5712(config-if)# no shut
+    ops-as5712(config-if)# exit
+    ```
+
+4. Enable the global sFlow feature on the switch.
+    ```
+    ops-as5712(config)# sflow enable
+    ```
+
+5. Configure the collector IP address (attached to interface 2 of the switch).
+   Set the agent-interface (interface 1) and the sampling rate at 20 (One in 20 packets are sampled)
+   Set the polling interval to 10 seconds.
+   ```
+    ops-as5712(config)# sflow collector 10.10.11.2
+    ops-as5712(config)# sflow agent-interface 1
+    ops-as5712(config)# sflow sampling 20
+    ops-as5712(config)# sflow polling 10
+    ```
+
+6. Ping between Host-1 and the switch. The sflowtool is able to see CNTR packets from the switch with the agent address 10.10.10.1 (IP address of interface 1) and atleast 2 if_index.
+    ```
+    ping 10.10.10.1 -c 200 -i 0.1
+    ```
+
+7. Change the polling interval to default(30 seconds).
+    ```
+    ops-as5712(config)# no sflow polling
+    ```
+
+8. Ping between Host-1 and the switch. The sflowtool is able to see CNTR packets from the switch with agent address 10.10.10.1(IP address of inte    rface 1) and atleast 2 if_index.
+    ```
+    ping 10.10.10.1 -c 200 -i 0.1
+    ```
+
+9. Check if number of counter packets with polling rate of 10 is greater than twice of the number with polling rate as 30 seconds.
+
+### Test result criteria
+#### Test pass criteria
+- At least 2 interfaces must be present in the counter packets in both polling intervals.
+- CNTR packets for 10 second polling interval must be greater than twice the number of counter packets with 30 second polling interval.
+#### Test fail criteria
+- When sFlow is enabled, the polling interval set does not match the polling interval in sflow show cli.
+- The CNTR packets for polling interval 10 is less than twice the CNTR packets for polling interval 30.
+- The CNTR packet has less than 2 interfaces.
