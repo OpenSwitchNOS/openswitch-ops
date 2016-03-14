@@ -49,6 +49,10 @@ def create_lag_passive(sw, lag_id):
         ctx.lacp_mode_passive()
 
 
+def create_lag(sw, lag_id):
+    sw.libs.vtysh.ConfigInterfaceLag(lag_id)
+
+
 def delete_lag(sw, lag_id):
     with sw.libs.vtysh.Configure() as ctx:
         ctx.no_interface_lag(lag_id)
@@ -159,6 +163,21 @@ def validate_lag_state_alfn(map_lacp, state):
 def validate_lag_state_default_neighbor(map_lacp, state):
     assert map_lacp[state]['neighbor_state'] is True,\
         "LAG state should have default neighbor state"
+
+
+def set_lag_lb_hash(sw, lag_id, lb_hash):
+    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
+        if lb_hash == 'l2-src-dst':
+            ctx.hash_l2_src_dst()
+        elif lb_hash == 'l3-src-dst':
+            ctx.hash_l3_src_dst()
+        elif lb_hash == 'l4-src-dst':
+            ctx.hash_l4_src_dst()
+
+
+def check_lag_lb_hash(sw, lag_id, lb_hash):
+    lag_info = sw.libs.vtysh.show_lacp_aggregates()
+    assert lag_info['lag' + lag_id]['hash'] == lb_hash
 
 
 def get_device_mac_address(sw, interface):
