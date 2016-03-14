@@ -187,6 +187,21 @@ def validate_lag_state_default_neighbor(map_lacp, state):
         "LAG state should have default neighbor state"
 
 
+def set_lag_lb_hash(sw, lag_id, lb_hash):
+    with sw.libs.vtysh.ConfigInterfaceLag(lag_id) as ctx:
+        if lb_hash == 'l2-src-dst':
+            ctx.hash_l2_src_dst()
+        elif lb_hash == 'l3-src-dst':
+            ctx.hash_l3_src_dst()
+        elif lb_hash == 'l4-src-dst':
+            ctx.hash_l4_src_dst()
+
+
+def check_lag_lb_hash(sw, lag_id, lb_hash):
+    lag_info = sw.libs.vtysh.show_lacp_aggregates()
+    assert lag_info['lag' + lag_id]['hash'] == lb_hash
+
+
 def get_device_mac_address(sw, interface):
     cmd_output = sw('ifconfig'.format(**locals()),
                     shell='bash_swns')
@@ -259,9 +274,6 @@ def set_debug(sw):
 def create_vlan(sw, vlan_id):
     with sw.libs.vtysh.ConfigVlan(vlan_id) as ctx:
         ctx.no_shutdown()
-    output = sw.libs.vtysh.show_vlan(vlan_id)
-    assert output[vlan_id]['status'] == 'up',\
-        'Vlan is not up after turning it on'
 
 
 def delete_vlan(sw, vlan):
