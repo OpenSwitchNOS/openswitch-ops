@@ -142,6 +142,7 @@ switch# show ntp associations
    3    198.55.111.50    198.55.111.50    4      -           .INIT.  16  -     -  1024      0    0.000   0.000   0.000
 ----------------------------------------------------------------------------------------------------------------------
 ```
+Please note that under "NAME" column, only the first 14 characters of the server name is displayed.
 
 ### Viewing NTP authentication keys
 The `show ntp authentication-keys` command displays the configured authentication keys.
