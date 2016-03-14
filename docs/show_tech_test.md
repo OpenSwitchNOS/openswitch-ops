@@ -126,6 +126,40 @@ Show tech feature runs successfully and prints `Show Tech Commands Executed Succ
 Show tech feature completes with failure and prints `Show Tech Commands Executed with N Failures`
 
 
+## 1.7 Show tech LAG Feature Running Successfully
+### Objective
+This test case verifies that the show tech LAG is up and running successfully.
+
+### Requirements
+The requirements for this test case are:
+ - Switch running openswitch
+
+### Setup
+#### Topology Diagram
+
+```ditaa
++---------+
+|         |
+|  dut01  |
+|         |
++---------+
+
+```
+
+#### Test Setup
+Standalone Switch
+
+### Description
+*Steps*
+1. Run `show tech LAG` on vtysh shell
+
+### Test Result Criteria
+#### Test Pass Criteria
+Show tech feature runs successfully and prints `Show Tech Commands Executed Successfully`
+
+#### Test Fail Criteria
+Show tech feature completes with failure and prints `Show Tech Commands Executed with N Failures`
+
 
 ## 2. Negative Tests
 ## 2.1 Show tech Individual Command Failure
