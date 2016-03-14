@@ -57,53 +57,56 @@ switch(config)#ip udp-bcast-forward
 
 switch#show ip forward-protocol
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : enabled
 
-Interface    Server Ip    UDP Port
--------------------------------------
-
-
 switch#show running-config
 Current configuration:
+!
+!
+!
 ip udp-bcast-forward
-!
-!
-!
 
 switch(config)#interface 1
 switch(config-if)#ip forward-protocol udp 1.1.1.1 53
 
 switch#show ip forward-protocol
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : enabled
 
-Interface    Server Ip    UDP Port
--------------------------------------
-1            1.1.1.1        53
+Interface: 1
+  IP Forward Address    UDP Port
+  -----------------------------
+  1.1.1.1                53
 
 switch#show ip forward-protocol interface 1
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : enabled
 
-Server Ip    UDP Port
-----------------------------
-1.1.1.1       53
+Interface: 1
+  IP Forward Addresses    UDP Port
+  -------------------------------
+  1.1.1.1                53
 
 switch#show running-config
 Current configuration:
-ip udp-bcast-forward
 !
 !
 !
 interface 1
-    no shutdown
     ip forward-protocol udp 1.1.1.1 53
+ip udp-bcast-forward
 
 switch(config)#interface 1
 switch(config-if)#ip forward-protocol udp 8.1.1.1 161
@@ -113,28 +116,37 @@ switch(config-if)#ip forward-protocol udp 3.3.3.3 137
 
 switch#show ip forward-protocol
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : enabled
 
-Interface    Server Ip    UDP Port
--------------------------------------
-1            1.1.1.1        53
-1            8.1.1.1        161
-1            4.4.4.4        137
-2            3.3.3.3        137
+Interface: 1
+  IP Forward Address    UDP Port
+  -----------------------------
+  4.4.4.4                137
+  1.1.1.1                53
+  8.1.1.1                161
+Interface: 2
+  IP Forward Address    UDP Port
+  -----------------------------
+  3.3.3.3                137
 
 switch#show ip forward-protocol interface 1
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : enabled
 
-Server IP    UDP Port
---------------------
-1.1.1.1        53
-8.1.1.1        161
-4.4.4.4        137
+Interface: 1
+  IP Forward Addresses    UDP Port
+  -------------------------------
+  4.4.4.4                137
+  8.1.1.1                161
+  1.1.1.1                53
 
 switch#show running-config
 Current configuration:
@@ -143,7 +155,6 @@ Current configuration:
 !
 !
 interface 1
-	no shutdown
     ip forward-protocol udp 1.1.1.1 53
     ip forward-protocol udp 8.1.1.1 161
     ip forward-protocol udp 4.4.4.4 137
@@ -154,28 +165,37 @@ ip udp-bcast-forward
 switch(config)#no ip udp-bcast-forward
 switch#show ip forward-protocol
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : disabled
 
-Interface    Server Ip    UDP Port
--------------------------------------
-1            1.1.1.1        53
-1            8.1.1.1        161
-1            4.4.4.4        137
-2            3.3.3.3        137
+Interface: 1
+  IP Forward Address    UDP Port
+  -----------------------------
+  4.4.4.4                137
+  1.1.1.1                53
+  8.1.1.1                161
+Interface: 2
+  IP Forward Address    UDP Port
+  -----------------------------
+  3.3.3.3                137
 
 switch#show ip forward-protocol interface 1
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : disabled
 
-Server IP    UDP Port
---------------------
-1.1.1.1        53
-8.1.1.1        161
-4.4.4.4        137
+Interface: 1
+  IP Forward Addresses    UDP Port
+  -------------------------------
+  4.4.4.4                137
+  1.1.1.1                53
+  8.1.1.1                161
 
 switch#show running-config
 Current configuration:
@@ -183,7 +203,6 @@ Current configuration:
 !
 !
 interface 1
-	no shutdown
     ip forward-protocol udp 1.1.1.1 53
     ip forward-protocol udp 8.1.1.1 161
     ip forward-protocol udp 4.4.4.4 137
@@ -194,26 +213,35 @@ switch(config)#interface 1
 switch(config-if)#no ip forward-protocol udp 1.1.1.1 53
 switch#show ip forward-protocol
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : disabled
 
-Interface    Server Ip    UDP Port
--------------------------------------
-1            8.1.1.1        161
-1            4.4.4.4        137
-2            3.3.3.3        137
+Interface: 1
+  IP Forward Address    UDP Port
+  -----------------------------
+  4.4.4.4                137
+  8.1.1.1                161
+Interface: 2
+  IP Forward Address    UDP Port
+  -----------------------------
+  3.3.3.3                161
 
 switch#show ip forward-protocol interface 1
 
+IP Forwarder Addresses
+
 UDP Broadcast Forwarder
 -------------------------
 UDP Bcast Forwarder : disabled
 
-Server IP    UDP Port
---------------------
-8.1.1.1        161
-4.4.4.4        137
+Interface: 1
+  IP Forward Addresses    UDP Port
+  -------------------------------
+  4.4.4.4                137
+  8.1.1.1                161
 
 switch#show running-config
 Current configuration:
@@ -221,7 +249,6 @@ Current configuration:
 !
 !
 interface 1
-	no shutdown
     ip forward-protocol udp 8.1.1.1 161
     ip forward-protocol udp 4.4.4.4 137
 interface 2
