@@ -7637,6 +7637,81 @@
           "transport"
         ]
       ]
+    },
+    "SNMPv3_User" : {
+      "columns" : {
+        "user_name" : {
+          "category": "configuration",
+          "type" : {
+           "key" : {
+             "type" : "string",
+             "minLength" : 1,
+             "maxLength": 32
+           }
+          }
+        },
+
+        "auth_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "MD5",
+                  "SHA"
+                ]
+              ]
+            }
+          }
+        },
+
+        "priv_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "AES",
+                  "DES"
+                ]
+              ]
+            }
+          }
+        },
+
+        "auth_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8,
+              "maxLength" : 32
+            }
+          }
+        },
+
+        "priv_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8,
+              "maxLength" : 32
+            }
+          }
+        }
+      },
+      "maxRows" : 10,
+      "indexes" : [
+        [
+          "user_name"
+        ]
+      ],
+      "isRoot" : true
     }
   }
 }
