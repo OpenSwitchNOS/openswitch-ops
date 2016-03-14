@@ -96,7 +96,7 @@ ops-xxxx(config-lag-if)# lacp mode passive
 ops-xxxx(config-lag-if)# no lacp mode {active / passive}
 ```
 2. Setting the **hash type**.
-Hash type takes value **l2-src-dst**, **l2vid-src-dst**, **l3-src-dst** or **l4-src-dst** to control the selection of a interface from a group of aggregate interfaces with which to transmit a frame.
+Hash type takes value **l2-src-dst**, **l3-src-dst** or **l4-src-dst** to control the selection of a interface from a group of aggregate interfaces with which to transmit a frame.
 The default hash type is **l3-src-dst**.
 ```
 ops-xxxx(config-lag-if)# hash l2-src-dst
