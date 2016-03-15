@@ -33,6 +33,8 @@ Interface Commands
 	- [Show transceiver information for an interface](#show-transceiver-information-for-an-interface)
 	- [Show all interfaces running configuration](#show-all-interfaces-running-configuration)
 	- [Show interface running configuration](#show-interface-running-configuration)
+	- [Show transceiver DOM information for all interfaces](#show-transceiver-dom-information-for-all-interfaces)
+	- [Show transceiver-DOM information for an interface](#show-transceiver-dom-information-for-an-interface)
 
 ## Interface configuration commands
 In vtysh every command belongs to a particular context. All interface configuration commands, except `interface`, work in the interface context.
@@ -590,7 +592,8 @@ Interface                  Type       Status
  13             SFP+       --         --
  -------
  -------
- ```
+
+```
 ### Show transceiver information for an interface
 #### Syntax
 `show interface <interface> transceiver [brief]`
@@ -690,4 +693,285 @@ ops-as5712# do show running-config interface lag100
 interface lag 100
    no routing
    lacp mode active
+```
+
+### Show transceiver DOM information for all interfaces
+#### Syntax
+`show interface dom`
+#### Description
+This command displays diagnostics information, alarm and warning flags of optical transceivers(SFP, SFP+, QSFP+) on all interfaces.
+
+This  information is also known as DOM(Digital Optical Monitoring). DOM information also consists of vendor determined thresholds which trigger high/low alarm and warning flags.
+#### Authority
+All users.
+#### Examples
+```
+switch# sh int 1 dom
+Interface 1:
+ Connector: SFP+
+ Transceiver module: SFP_SR
+  Temperature: 18.00C
+  Temperature high alarm: Off
+  Temperature low alarm: Off
+  Temperature high warning: Off
+  Temperature low warning: Off
+  Temperature high alarm threshold: 73.00C
+  Temperature low alarm threshold: -3.00C
+  Temperature high warning threshold: 70.00C
+  Temperature low warning threshold: 0.00C
+  Voltage: 3.41V
+  Voltage high alarm: Off
+  Voltage high alarm: Off
+  Voltage high alarm: Off
+  Voltage low warning: Off
+  Voltage high alarm threshold: 3.80V
+  Voltage low alarm threshold: 2.81V
+  Voltage high warning threshold: 3.46V
+  Voltage low warning threshold: 3.13V
+  Bias current: 0.16mA
+  Bias current high alarm: Off
+  Bias current low alarm: On
+  Bias current high warning: Off
+  Bias current low warning: On
+  Bias current high alarm threshold: 13.20mA
+  Bias current low alarm threshold: 1.00mA
+  Bias current high warning threshold: 12.60mA
+  Bias current low warning threshold: 1.00mA
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: On
+  Rx power high warning: Off
+  Rx power low warning: On
+  Rx power high alarm threshold: 1.26mW
+  Rx power low alarm threshold: 0.11mW
+  Rx power high warning threshold: 0.79mW
+  Rx power low warning threshold: 0.18mW
+  Tx power: 0.01mW
+  Tx power high alarm: Off
+  Tx power low alarm: On
+  Tx power high warning: Off
+  Tx power low warning: On
+  Tx power high alarm threshold: 1.00mW
+  Tx power low alarm threshold: 0.09mW
+  Tx power high warning threshold: 0.79mW
+  Tx power low warning threshold: 0.19mW
+
+
+Interface 3:
+ Connector: SFP+
+ Transceiver module: SFP_DAC
+ % No DOM information available
+
+Interface 4:
+ Connector: SFP+
+ Transceiver module: SFP_DAC
+ % No DOM information available
+
+Interface 5:
+ Connector: SFP+
+ Transceiver module: not present
+
+Interface 6:
+ Connector: SFP+
+ Transceiver module: not present
+
+switch# sh int 49 dom
+Interface 49:
+ Connector: QSFP (splittable)
+ Transceiver module: QSFP_SR4
+  Temperature: 24.00C
+  Voltage: 3.37V
+
+ Lane 1:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
+ Lane 2:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
+ Lane 3:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
+ Lane 4:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
+
+Interface 50:
+ Connector: QSFP (splittable)
+ Transceiver module: QSFP_CR4
+ % No DOM information available
+
+Interface 50-1:
+ Connector: QSFP
+
+Interface 50-2:
+ Connector: QSFP
+
+Interface 50-3:
+ Connector: QSFP
+
+Interface 50-4:
+ Connector: QSFP
+
+Interface 51:
+ Connector: QSFP (splittable)
+ Transceiver module: not present
+
+```
+
+### Show transceiver DOM information for an interface
+#### Syntax
+`show interface <interface> dom`
+#### Description
+This command displays diagnostics information, alarm and warning flags of optical transceivers(SFP, SFP+, QSFP+) on a particular interface.
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax         | Description                           |
+|:-----------|:----------|:----------------:|:---------------------------------------|
+| *interface* | Required | System defined | Name of the interface. |
+|
+#### Examples
+```
+switch# sh int 1 dom
+Interface 1:
+ Connector: SFP+
+ Transceiver module: SFP_SR
+  Temperature: 18.00C
+  Temperature high alarm: Off
+  Temperature low alarm: Off
+  Temperature high warning: Off
+  Temperature low warning: Off
+  Temperature high alarm threshold: 73.00C
+  Temperature low alarm threshold: -3.00C
+  Temperature high warning threshold: 70.00C
+  Temperature low warning threshold: 0.00C
+  Voltage: 3.41V
+  Voltage high alarm: Off
+  Voltage high alarm: Off
+  Voltage high alarm: Off
+  Voltage low warning: Off
+  Voltage high alarm threshold: 3.80V
+  Voltage low alarm threshold: 2.81V
+  Voltage high warning threshold: 3.46V
+  Voltage low warning threshold: 3.13V
+  Bias current: 0.16mA
+  Bias current high alarm: Off
+  Bias current low alarm: On
+  Bias current high warning: Off
+  Bias current low warning: On
+  Bias current high alarm threshold: 13.20mA
+  Bias current low alarm threshold: 1.00mA
+  Bias current high warning threshold: 12.60mA
+  Bias current low warning threshold: 1.00mA
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: On
+  Rx power high warning: Off
+  Rx power low warning: On
+  Rx power high alarm threshold: 1.26mW
+  Rx power low alarm threshold: 0.11mW
+  Rx power high warning threshold: 0.79mW
+  Rx power low warning threshold: 0.18mW
+  Tx power: 0.01mW
+  Tx power high alarm: Off
+  Tx power low alarm: On
+  Tx power high warning: Off
+  Tx power low warning: On
+  Tx power high alarm threshold: 1.00mW
+  Tx power low alarm threshold: 0.09mW
+  Tx power high warning threshold: 0.79mW
+  Tx power low warning threshold: 0.19mW
+
+
+switch# sh int 50 dom
+Interface 50:
+ Connector: QSFP (splittable)
+ Transceiver module: QSFP_SR4
+  Temperature: 24.00C
+  Voltage: 3.37V
+
+ Lane 1:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
+ Lane 2:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
+ Lane 3:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
+ Lane 4:
+  Bias current: 0.00mA
+  Bias current high alarm: Off
+  Bias current low alarm: Off
+  Bias current high warning: Off
+  Bias current low warning: Off
+  Rx power: 0.00mW
+  Rx power high alarm: Off
+  Rx power low alarm: Off
+  Rx power high warning: Off
+  Rx power low warning: Off
+
 ```
