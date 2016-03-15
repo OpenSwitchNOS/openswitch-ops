@@ -34,6 +34,15 @@ NUM_HOSTS = 2
 ADM_PATCH_PRT = [{"op": "add",
                   "path": "/admin",
                   "value": "up"}]
+
+VLAN_MODE_PATCH_PRT = {"op": "add",
+                       "path": "/vlan_mode",
+                       "value": "access"}
+
+PATCH_PRT = {"op": "add",
+             "path": "/ports",
+             "value": []}
+
 ADM_PATCH_INT = [{"op": "add",
                   "path": "/user_config",
                   "value": {"admin": "up"}}]
@@ -105,6 +114,8 @@ class Test_CreateLag(OpsVsiTest):
         self.PATH = "/rest/v1/system"
         self.PATH_PORTS = self.PATH + "/ports"
         self.PATH_INT = self.PATH + "/interfaces"
+        self.PATH_VRF_DEFAULT = self.PATH + "/vrfs/vrf_default"
+        self.PATH_BRIDGE_NORMAL = self.PATH + "/bridges/bridge_normal"
 
     def create_topo_no_lag(self):
         # set up port 1, 2 and 3 on switch 1
@@ -122,10 +133,21 @@ class Test_CreateLag(OpsVsiTest):
         self.create_port(self.SWITCH_IP2, PORT_3)
         self.port_int_admin(self.SWITCH_IP2, PORT_3)
 
-    def test_create_lag(self):
+    def test_create_l2_lag(self):
         self.create_topo_no_lag()
         self.create_lag(self.SWITCH_IP1, LAG_ID, INTERFACES, "active")
+        self.set_vlan_mode(self.SWITCH_IP1, "lag" + LAG_ID, "trunk")
         self.create_lag(self.SWITCH_IP2, LAG_ID, INTERFACES, "passive")
+        self.set_vlan_mode(self.SWITCH_IP2, "lag" + LAG_ID, "trunk")
+        time.sleep(CREATION_SLEEP_SECS)
+        self.verify_lag_ok("lag" + LAG_ID)
+
+    def test_make_l3_lag(self):
+        #self.create_topo_no_lag()
+        #self.create_lag(self.SWITCH_IP1, LAG_ID, INTERFACES, "active")
+        #self.set_routing_lag(self.SWITCH_IP1, LAG_ID)
+        #self.create_lag(self.SWITCH_IP2, LAG_ID, INTERFACES, "passive")
+        self.set_routing_lag(self.SWITCH_IP2, LAG_ID)
         time.sleep(CREATION_SLEEP_SECS)
         self.verify_lag_ok("lag" + LAG_ID)
 
@@ -142,7 +164,6 @@ class Test_CreateLag(OpsVsiTest):
         port_data["configuration"]["name"] = "lag" + lagId
         port_data["configuration"]["admin"] = "up"
         port_data["configuration"]["lacp"] = mode
-        port_data["configuration"]["vlan_mode"] = "trunk"
 
         # build array of interfaces
         ints = []
@@ -189,6 +210,88 @@ class Test_CreateLag(OpsVsiTest):
             "Interface. Status code: %s Response data: %s "\
             % (status_code, response_data)
         info("### Interface Patched. Status code is 204 NO CONTENT  ###\n")
+
+    def set_vlan_mode(self, switch, port, mode):
+        self.PORT_PATH = self.PATH_PORTS + "/" + port
+        port_data = copy.deepcopy(VLAN_MODE_PATCH_PRT)
+        port_data["value"] = mode
+        status_code, response_data = execute_request(
+            self.PORT_PATH,
+            "PATCH",
+            json.dumps([port_data]),
+            switch,
+            False)
+        assert status_code == httplib.NO_CONTENT, "Error patching an "\
+            "Interface. Status code: %s Response data: %s "\
+            % (status_code, response_data)
+        info("### VLAN mode Patched. Status code is 204 NO CONTENT  ###\n")
+
+    def set_routing_lag(self, switch, lagId):
+        # Add this port to the vrf and bridge table ports column
+        # GET system/ports does not give indication of routing or not
+        self.update_vrf_ports(switch, "lag" + lagId)
+        self.update_bridge_ports(switch, "lag" + lagId)
+
+    def delete_port(self, switch, interface):
+        self.PORT_PATH = self.PATH_PORTS + interface
+        info("\n########## Switch " + switch + ": Delete Port " +
+             interface + " ##########\n")
+        status_code, response_data = execute_request(self.PORT_PATH, "DELETE",
+                                                     None, switch)
+        info("### Port Deleted. " + httplib.NO_CONTENT + ".  ###\n")
+
+    def create_port(self, switch, interface):
+        port_data = copy.deepcopy(PORT_DATA)
+        port_data["configuration"]["name"] = interface
+        port_data["configuration"]["admin"] = "up"
+        port_data["configuration"]["vlan_mode"] = "trunk"
+        ints = []
+        ints.append("/rest/v1/system/interfaces/" + interface)
+        port_data["configuration"]["interfaces"] = ints
+        info("\n########## Switch " + switch + ": Create LAG " +
+             lagId + " ##########\n")
+        status_code, response_data = execute_request(self.PATH_PORTS, "POST",
+                                                     json.dumps(port_data),
+                                                     switch)
+        assert status_code == httplib.CREATED, "Error creating a Port.Status" \
+            + " code: %s Response data: %s " % (status_code, response_data)
+        info("### Port Created. Status code is 201 CREATED  ###\n")
+
+    def update_vrf_ports(self, switch, port):
+        # Add thi sport to the existing ports
+        vrf_patch = [copy.deepcopy(PATCH_PRT)]
+        vrf_data = copy.deepcopy(PATCH_PRT)
+        # Get existing list, then add new interface
+        ports = self.get_vrf_ports(switch)
+        info("### VRF Ports ".join(ports))
+        ports.append("/rest/v1/system/ports/" + port)
+        vrf_data["value"] = ports
+        vrf_patch.append(vrf_data)
+        status_code, response_data = execute_request(
+            self.PATH_VRF_DEFAULT, "PATCH",
+            json.dumps(vrf_patch),
+            switch, False)
+        assert status_code == httplib.NO_CONTENT, "Error update  Ports" \
+            + " code: %s Response data: %s " % (status_code, response_data)
+        info("### VRF Port " + switch + " Status 204 NO CONTENT  ###\n")
+
+    def update_bridge_ports(self, switch, port):
+        # Remove this port from the existing ports
+        patch = [copy.deepcopy(PATCH_PRT)]
+        data = copy.deepcopy(PATCH_PRT)
+        # Get existing list, then remove this port
+        ports = self.get_bridge_ports(switch)
+        # info("### Bridge Ports ".join(ports))
+        ports.remove("/rest/v1/system/ports/" + port)
+        data["value"] = ports
+        patch.append(data)
+        status_code, response_data = execute_request(
+            self.PATH_BRIDGE_NORMAL, "PATCH",
+            json.dumps(patch),
+            switch, False)
+        assert status_code == httplib.NO_CONTENT, "Error update  Ports" \
+            + " code: %s Response data: %s " % (status_code, response_data)
+        info("### Bridge Port " + switch + " Status 204 NO CONTENT  ###\n")
 
     def remove_lacp_aggregation_key_ints(self, switch, lagId, interfaces):
         for interface in interfaces:
@@ -278,6 +381,34 @@ class Test_CreateLag(OpsVsiTest):
             % (status_code, response_data)
         info("### Interface Patched. Status code is 204 NO CONTENT  ###\n")
 
+    def get_vrf_ports(self, switch):
+        status_code, response_data = execute_request(
+            self.PATH_VRF_DEFAULT, "GET",
+            None,
+            switch)
+        assert status_code == httplib.OK,\
+            "Failed to query " + self.PATH_VRF_DEFAULT
+        json_data = get_json(response_data)
+        ports_info = json_data["configuration"].get("ports")
+        if ports_info:
+            return ports_info
+        else:
+            return []
+
+    def get_bridge_ports(self, switch):
+        status_code, response_data = execute_request(
+            self.PATH_BRIDGE_NORMAL, "GET",
+            None,
+            switch)
+        assert status_code == httplib.OK,\
+            "Failed to query " + self.PATH_VRF_DEFAULT
+        json_data = get_json(response_data)
+        ports_info = json_data["configuration"].get("ports")
+        if ports_info:
+            return ports_info
+        else:
+            return []
+
 
 class Test_WebUIREST:
     def setup(self):
@@ -303,8 +434,11 @@ class Test_WebUIREST:
     def __del__(self):
         del self.test_var
 
-    def test_run_create_lag(self):
-        self.test_var.test_create_lag()
+    def test_run_create_l2_lag(self):
+        self.test_var.test_create_l2_lag()
+
+    def test_run_create_l3_lag(self):
+        self.test_var.test_make_l3_lag()
 
     def test_run_delete_lag(self):
         self.test_var.test_delete_lag()
