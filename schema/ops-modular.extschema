@@ -1,0 +1,117 @@
+{
+  "id": "/ops-modular.extschema",
+  "name": "OpenSwitch",
+  "version": "0.1.8",
+  "description": [
+    "# OpenSwitch Configuration Database",
+    "A database with this schema holds the configuration for one OpenSwitch",
+    "system."
+    "",
+    "The schema is derived from Open vSwitch schema.",
+    "Tables/attributes which are not related to OpenSwitch first open source release",
+    "(OSR1) were removed. Additionally the schema was extended to include OSR1",
+    "features that don't exist in Open vSwitch, as well as information",
+    "specific to a physical switch.",
+    "Going forward, the expectation is to restore the Open vSwitch parts",
+    "of the schema that were removed as we implement additional features."
+    "",
+    "The top-level configuration is the",
+    "[`System` table](#system-table), which must have exactly one",
+    "record. Records that are not reachable from",
+    "the [`System` table](#system-table) are automatically deleted",
+    "from the database, except for records in a few distinguished",
+    "`root set` tables."
+    "",
+    "Note that a basic tenet of the OpenSwitch schema is that in the absence of any",
+    "configuration, the default behavior of the OpenSwitch switch is such that",
+    "no data traffic can be accepted or transmitted on any port or interface.",
+    "Any future additions to the OpenSwitch schema must adhere to this principle."
+    "",
+    "## Common Columns",
+    "Many tables contain two special columns, named `other_config`",
+    "and `external_ids`. These columns have the same form and",
+    "purpose each place that they appear, so we describe them here to save space",
+    "later."
+    "",
+    "### `other_config`: map of string-string pairs"
+    "Key-value pairs for configuring rarely used features. Supported keys,",
+    "along with the forms taken by their values, are documented individually",
+    "for each table."
+    "",
+    "### `external_ids`: map of string-string pairs"
+    "Key-value pairs for use by external frameworks that integrate with OpenSwitch,",
+    "rather than by OpenSwitch itself.  System integrators should",
+    "either use the OpenSwitch development mailing list to coordinate on",
+    "common key-value definitions, or choose key names that are likely to be",
+    "unique.  In some cases, where key-value pairs have been defined that are",
+    "likely to be widely useful, they are documented individually for each",
+    "table."
+  ],
+  "groups" : {
+    "Version Reporting" : {
+      "description" : [
+        "These columns report the types and versions of the hardware and",
+        "software running OpenSwitch.  We recommend in general that software",
+        "should test whether specific features are supported instead of relying",
+        "on version number checks.  These values are primarily intended for",
+        "reporting to human administrators."
+      ]
+    },
+    "Database Configuration" : {
+      "description" : [
+        "These columns primarily configure the OpenSwitch database",
+        "(`ovsdb-server`), not the OpenSwitch switch",
+        "(`pswitchd`).  The OVSDB database also uses the",
+        "[`ssl` column](#ssl-column) settings."
+        "",
+        "The OpenSwitch switch does read the database configuration to",
+        "determine remote IP addresses to which in-band control should apply."
+      ]
+    },
+    "ECMP configuration" : {
+      "description" : [
+        "Specifies the various ECMP (Equal Cost Multi-Path) configuration options."
+      ]
+    },
+    "NTP configuration" : {
+      "description" : [
+        "Specifies the NTP global configuration."
+      ]
+    },
+    "QoS configuration": {
+      "description" : [
+        "Specifies QoS (Quality of Service) configuration options that are",
+        "global or are the configured default to use if no per-port override",
+        "has been specified."
+      ]
+    },
+    "Common Columns": {
+      "description" : [
+        "The overall purpose of these columns is described under `Common Columns`",
+        "at the beginning of this document."
+      ]
+    }
+  },
+  "tables": [
+    {
+      "id": "/system.json#",
+      "System": {
+        "$ref": "#/tables/System"
+      },
+      "Subsystem": {
+        "$ref": "#/tables/Subsystem"
+      },
+      "id": "/bridge.json#",
+      "Bridge": {
+        "$ref": "#/tables/Bridge"
+      },
+      "VLAN": {
+        "$ref": "#/tables/VLAN"
+      },
+      "id": "/port.json#",
+      "Port": {
+        "$ref": "#/tables/Port"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1500 @@
+{
+  "id": "/system.json",
+  "name": "OpenSwitch",
+  "version": "0.1.8",
+  "tables": {
+    "System": {
+      "description" : [
+        "## OpenSwitch top level configuration.",
+        "### System Table",
+        "Configuration for an OpenSwitch system. There must be exactly",
+        "one record in the [`System` table](#system-table)."
+      ],
+      "isRoot": true,
+      "maxRows": 1,
+      "columns": {
+        "subsystems": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Subsystem"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "bridges": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "description": [
+            "Set of bridges."
+          ],
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Bridge"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "vrfs": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRF"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "management_vrf": {
+          "group": ["Configuration"],
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRF"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "management_mac": {
+          "category": "status",
+          "group": ["Configuration"],
+          "description" : [
+            "Ethernet MAC address for the management interface port for this system."
+          ],
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 17,
+              "maxLength": 17
+            }
+          }
+        },
+        "system_mac": {
+          "category": "status",
+          "group": ["Configuration"],
+          "description" : [
+            "Ethernet MAC address available to use anywhere a non-unique MAC is",
+            "needed."
+          ],
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 17,
+              "maxLength": 17
+            }
+          }
+        },
+        "daemons": {
+          "category": "status",
+          "group": ["Configuration"],
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Daemon"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ssl": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "SSL"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "hostname": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "type": "string"
+        },
+        "domain_name":{
+          "category": "configuration",
+          "group": ["Configuration"],
+          "description" : [
+            "Domain name as configured by the user."
+          ],
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "dns_servers": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "router_id": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "router_id_static" : {
+                "type": "boolean",
+                "description": [
+                  "This determines whether the system global router-ID is configured statically",
+                  "or selected by Routing Manager dynamically."
+                ],
+                "empty-value": "false"
+              },
+              "router_id_val": {
+                "type": "integer",
+                "minInteger": 1,
+                "maxInteger": 4294967295,
+                "description": [
+                  "The system global router identifier. Any routing protocol may pick up",
+                  "this as router id, if it doesn't have a specific one configured.",
+                  "The router-ID may be an IPv4 address of the router. It can be any",
+                  "arbitrary 32bit number. However it MUST be non-zero and unique within",
+                  "the entire Autonomus System domain."
+                ]
+              }
+            }
+          }
+        },
+        "asset_tag_number": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "type": "string"
+        },
+        "sflow": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "description": [
+            "sFlow(R) configuration."
+          ],
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "sFlow"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "other_config": {
+          "category": "configuration",
+          "group": ["Configuration", "Common Columns"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "stats-update-interval" : {
+                "type": "integer",
+                "minInteger": 5000,
+                "description": [
+                  "Interval for updating statistics to the database, in milliseconds.",
+                  "This option will affect the update of the statistics",
+                  "column in the following tables: [Port](#port-table) [Interface](#interface-table)."
+                ],
+                "empty-value": 5000
+              },
+              "min_internal_vlan": {
+                "type": "integer",
+                "minInteger": 1,
+                "maxInteger": 4094,
+                "description": [
+                  "This key specifies a lower bound of the VLAN range, which is being used for internal system purposes."
+                ],
+                "empty-value": 1024
+              },
+              "max_internal_vlan": {
+                "type": "integer",
+                "minInteger": 1,
+                "maxInteger": 4094,
+                "description": [
+                  "This key specifies an upper bound of the VLAN range, which is being used for internal system purposes."
+                ],
+                "empty-value": 4094
+              },
+              "internal_vlan_policy": {
+                "type": "string",
+                "enum": [
+                  "set",
+                  [
+                    "ascending",
+                    "descending"
+                  ]
+                ],
+                "description": [
+                  "This key indicates order of assignment of internal VLAN ID (ascending or descending)."
+                ],
+                "empty-value": "ascending"
+              },
+              "cli_session_timeout": {
+                "type": "integer",
+                "minInteger": 0,
+                "maxInteger": 43200,
+                "description": [
+                  "This key specifies cli idle session timeout in minutes.",
+                  "Set this value to 0 to disable session timeout."
+                ],
+                "empty-value": 30
+              },
+              "tftp_server_enable": {
+                "type": "boolean",
+                "group": ["TFTP Server Configurations"],
+                "description": [
+                  "Set this value to true to enable TFTP server",
+                  "and set to false to disable it. If not set, TFTP server",
+                  "would be enabled."
+                ],
+                "empty-value": true
+              },
+              "tftp_server_secure": {
+                "type": "boolean",
+                "group": ["TFTP Server Configurations"],
+                "description": [
+                  "Set this value to true to enable TFTP secure mode",
+                  "and set to false to disable it. If not set, TFTP secure mode",
+                  "would be enabled. This config is valid only if TFTP server is enabled."
+                ],
+                "empty-value": true
+              },
+              "sftp_server_enable": {
+                "type": "boolean",
+                "group": ["SFTP Server Configurations"],
+                "description": [
+                  "Set this value to true to enable SFTP server",
+                  "and to set to false to disable it. If not set, SFTP server",
+                  "would be disabled by default."
+                ],
+                "empty-value": false
+              },
+              "tftp_source": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["Source Interface Selection Configurations"],
+                "description": [
+                  "Provides source interface or IP address for tftp client.",
+                  "If not present, regular routing rules take place."
+                ]
+              },
+              "protocols_source": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["Source Interface Selection Configurations"],
+                "description": [
+                  "Overrides source interface or IP address for all the protocols",
+                  "that support it. If not present, regular routing rules take place."
+                ]
+              },
+              "lldp_enable": {
+                "type": "boolean",
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "Set this value to true to enable System level LLDP",
+                  "or to false to explicitly disable it."
+                ],
+                "empty-value": false
+              },
+              "lldp_tlv_mgmt_addr_enable": {
+                "type": "boolean",
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "Set this value to true to enable transmission of LLDP",
+                  "Management Address TLV or set it to false to disable",
+                  "transmitting it."
+                ],
+                "empty-value": true
+              },
+              "lldp_tlv_port_desc_enable": {
+                "type": "boolean",
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "Set this value to true to enable transmission of LLDP",
+                  "Port Description TLV or set it to false to disable",
+                  "transmitting it."
+                ],
+                "empty-value": true
+              },
+              "lldp_tlv_port_vlan_enable": {
+                "type": "boolean",
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "Set this value to `true` to enable transmission of LLDP",
+                  "Port VLAN TLV or set it to `false` to disable",
+                  "transmitting it."
+                ],
+                "empty-value": true
+              },
+              "lldp_tlv_sys_cap_enable": {
+                "type": "boolean",
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "Set this value to `true` to enable transmission of LLDP",
+                  "System Capabilities TLV or set it to `false` to disable",
+                  "transmitting it."
+                ],
+                "empty-value": true
+              },
+              "lldp_tlv_sys_desc_enable": {
+                "type": "boolean",
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "Set this value to true to enable transmission of LLDP",
+                  "System Description TLV or set it to false to disable",
+                  "transmitting it."
+                ],
+                "empty-value": true
+              },
+              "lldp_tlv_sys_name_enable": {
+                "type": "boolean",
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "Set this value to true to enable transmission of LLDP",
+                  "System Name TLV or set it to false to disable",
+                  "transmitting it."
+                ],
+                "empty-value": true
+              },
+              "lldp_mgmt_addr": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Configurations"],
+                "description": [
+                    "LLDP Management IP Address to be sent in TLV."
+                  ]
+                }
+              },
+              "lldp_tx_interval": {
+                "type": "integer",
+                "minInteger": 5,
+                "maxInteger": 32768,
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "The interval in seconds at which LLDP status updates are",
+                  "transmitted to neighbors in seconds."
+                ],
+                "empty-value": 5
+              },
+              "lldp_hold": {
+                "type": "integer",
+                "minInteger": 2,
+                "maxInteger": 10,
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "The amount of time a receiving device should hold the information",
+                  "sent by your device before discarding it.",
+                  "This variable is used as a multiplier of lldp_tx_interval,",
+                  "to determine the value of TTL that is carried in LLDP frames."
+                ],
+                "empty-value": 4
+              },
+              "lldp_reinit": {
+                "type": "integer",
+                "minInteger": 1,
+                "maxInteger": 10,
+                "group": ["LLDP Configurations"],
+                "description": [
+                  "The amount of time in seconds to wait before performing LLDP",
+                  "initialization on any interface."
+                ],
+                "empty-value": 2
+              },
+              "enable-statistics": {
+                "type": "boolean",
+                "group": ["Statistics"],
+                "description": [
+                  "Statistics are disabled by default to avoid overhead in the common",
+                  "case when statistics gathering is not useful.  Set this value to",
+                  "true to enable populating the [`statistics`](#Statistics-column)",
+                  "column or to false to explicitly disable it."
+                ],
+                "empty-value": false
+              }
+            }
+          }
+        },
+        "lacp_config": {
+          "category": "configuration",
+          "group": ["Configuration"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "lacp-system-id" : {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LACP Configurations"],
+                "description": [
+                  "The LACP system ID of this [`Bridge` table](#bridge-table).  The system ID of a",
+                  "LACP bond is used to identify itself to its partners.  Must be a",
+                  "nonzero MAC address. Defaults to the bridge Ethernet address if",
+                  "unset."
+                ]
+              },
+              "lacp-system-priority": {
+                "type": "integer",
+                "minInteger": 0,
+                "maxInteger": 65535,
+                "group": ["LACP Configurations"],
+                "description": [
+                  "The LACP system priority of this [`Bridge` table](#bridge-table).  In LACP",
+                  "negotiations, link status decisions are made by the system with the",
+                  "numerically lower priority"
+                ],
+                "empty-value": 65534
+              }
+            }
+          }
+        },
+        "lacp_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "status": {
+          "category": "status",
+          "group": ["Status"],
+          "ephemeral": true,
+          "description": [
+            "System level status information per service like `LLDP`, etc."
+          ],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "lldp_local_mgmt_ip" : {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "Management IP Address currently being advertised by LLDP."
+                ]
+              },
+              "lldp_local_system_cap": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "System Capabilities currently being advertised by LLDP."
+                ]
+              },
+              "lldp_local_system_desc": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "System Description info currently being advertised by LLDP."
+                ]
+              },
+              "lldp_local_system_name": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "System Name currently being advertised by LLDP."
+                ]
+              },
+              "lldp_last_table_change_time": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "Last time when LLDP neighbor table was changed."
+                ]
+              },
+              "lldp_num_clear_counters_requested": {
+                "type": "integer",
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "Number of times clear statistic counters was requested by user."
+                ]
+              },
+              "lldp_last_clear_counters_performed": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "Last time when clear statistic counters was perfomed."
+                ]
+              },
+              "lldp_num_clear_table_requested": {
+                "type": "integer",
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "Number of times clearing of neighbor table was requested by user."
+                ]
+              },
+              "lldp_last_clear_table_performed": {
+                "type": "string",
+                "maxLength":256,
+                "group": ["LLDP Status Info"],
+                "description": [
+                  "Last time when neighbor table was cleared."
+                ]
+              }
+            }
+          }
+        },
+        "mgmt_intf_status": {
+          "category": "status",
+          "group": ["Status"],
+          "description" : [
+            "This column holds the status of the management interface IP parameters.",
+            "This column contains key-value pairs that report the mangement interface",
+            "IP attributes like IP address, subnet, default gateway, primary and",
+            "secondary name server. These values are either statically configured by",
+            "the user or populated by the DHCP client.",
+            "The keys of this column is same as that of mgmt_intf column."
+          ],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "hostname" : {
+                "type": "string",
+                "maxLength":256,
+                "description": [
+                  "Hostname the system is configured with. Hostname can be configured",
+                  "through CLI, or specified in DHCP messages. If none of these are",
+                  "available"
+                ],
+                "empty-value": "switch"
+              },
+              "dhcp_hostname" : {
+                "type": "string",
+                "maxLength":256,
+                "description": [
+                  "Holds hostname configured by dhcp client."
+                ]
+              },
+              "domain_name" : {
+                "type": "string",
+                "maxLength":256,
+                "description": [
+                  "This key contains the domain name configured for the system.",
+                  "It can be configured by the user or through dhcp messages.",
+                  "If none of these are present the key itself ceases to exist."
+                ]
+              },
+              "dhcp_domain_name" : {
+                "type": "string",
+                "maxLength":256,
+                "description": [
+                  "The domain name as it was received from dhcp."
+                ]
+              }
+            }
+          }
+        },
+        "ntp_status": {
+          "category": "status",
+          "ephemeral": true,
+          "group": ["Status"],
+          "description": [
+            "This column holds the global status information for NTP."
+          ],
+          "type": {
+            "type": {
+              "key": "string",
+              "value-map": {
+                "uptime" : {
+                  "type": "string",
+                  "maxLength":256,
+                  "description": [
+                    "Time in hours since the system was last rebooted."
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "next_cfg": {
+          "type": "integer",
+          "group": ["Status"],
+          "description": [
+            "Sequence number for client to increment.  When a client modifies",
+            "any part of the database configuration and wishes to wait for",
+            "OpenSwitch to finish applying the changes, it may increment",
+            "this sequence number."
+          ]
+        },
+        "cur_cfg": {
+          "type": "integer",
+          "group": ["Status"],
+          "description": [
+            "Sequence number that OpenSwitch sets to the current value of",
+            "[`next_cfg`](#next_cfg-column) after it finishes applying a set of",
+            "configuration changes."
+          ]
+        },
+        "next_hw": {
+          "type": "integer",
+          "group": ["Status"],
+          "description": [
+            "Sequence number to indicate that a change has occurred in the hardware",
+            "configuration (e.g., a subsystem has been added or removed)."
+          ]
+        },
+        "cur_hw": {
+          "type": "integer",
+          "group": ["Status"],
+          "description": [
+            "Sequence number that indicates the current change level for the h/w",
+            "configuration. When [`cur_hw`](#cur_hw-column) is the same as [`next_hw`](#next_hw-column),",
+            "then all platform daemon processing has completed",
+            "in response to the hardware addition or removal. This is not used for",
+            "transceiver pluggable module insertion/removal."
+          ]
+        },
+        "boot_time": {
+          "category": "status",
+          "type": "integer",
+          "group": ["Status"],
+          "description": [
+            "Boot time of the machine, represented in seconds since 1970-01-01 00:00:00 UTC.",
+            "OVSDB integers are 64 bit, which means it will take some time until we roll over."
+          ]
+        },
+        "statistics": {
+          "category": "statistics",
+          "ephemeral": true,
+          "group": ["Statistics"],
+          "description": [
+            "The statistics column contains key-value pairs that",
+            "report statistics about a system running OpenSwitch.  These are",
+            "updated periodically (by default, every 5 seconds).  Key-value pairs",
+            "that cannot be determined or that do not apply to a platform are",
+            "omitted."
+          ],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "cpu" : {
+                "type": "integer",
+                "minInteger": 1,
+                "description": [
+                  "Number of CPU processors, threads, or cores currently online and",
+                  "available to the operating system,",
+                  "as an integer.  This may be less than the number installed, if some",
+                  "are not online or if they are not available to the operating",
+                  "system."
+                ]
+              },
+              "load_average" : {
+                "type": "string",
+                "maxLength": 256,
+                "description": [
+                  "A comma-separated list of three floating-point numbers,",
+                  "representing the system load average over the last 1, 5, and 15",
+                  "minutes, respectively"
+                ]
+              },
+              "memory" : {
+                "type": "string",
+                "maxLength": 256,
+                "description": [
+                  "A comma-separated list of integers, each of which represents a",
+                  "quantity of memory in kilobytes that describes the operating",
+                  "system.  In respective order,",
+                  "these values are:"
+                  "*Total amount of RAM allocated to the OS.",
+                  "*RAM allocated to the OS that is in use.",
+                  "*RAM that can be flushed out to disk or otherwise discarded",
+                  "if that space is needed for another purpose.  This number is",
+                  "necessarily less than or equal to the previous value.",
+                  "*Total disk space allocated for swap.",
+                  "*Swap space currently in use."
+                ]
+              },
+              "process_NAME" : {
+                "type": "string",
+                "maxLength": 256,
+                "description": [
+                  "One such key-value pair, with <code>NAME</code> replaced by",
+                  "a process name, will exist for each running OpenSwitch",
+                  "daemon process, with `name` replaced by the",
+                  "daemon's name (e.g. `process_sysd`).  The",
+                  "value is a comma-separated list of integers.  The integers",
+                  "represent the following, with memory measured in kilobytes",
+                  "and durations in milliseconds:"
+                  "*The process's virtual memory size.",
+                  "  *The process's resident set size.",
+                  "  *The amount of user and system CPU time consumed by the",
+                  "  process.",
+                  "  *The number of times that the process has crashed and been",
+                  "  automatically restarted by the monitor.",
+                  "  *The duration since the process was started.",
+                  "  *The duration for which the process has been running."
+                  "",
+                  "The interpretation of some of these values depends on whether the",
+                  "process was started with the <option>--monitor</option>.  If it",
+                  "was not, then the crash count will always be 0 and the two",
+                  "durations will always be the same.  If ``--monitor`",
+                  "was given, then the crash count may be positive; if it is, the",
+                  "latter duration is the amount of time since the most recent crash",
+                  "and restart."
+                  "",
+                  "There will be one key-value pair for each file in OpenSwitch's",
+                  "``run directory'' (usually `/var/run/openvswitch`)",
+                  "whose name ends in `.pid`, whose contents are a",
+                  "process ID, and which is locked by a running process.  The",
+                  "`name` is taken from the pidfile's name."
+                ]
+              },
+              "file_systems" : {
+                "type": "string",
+                "maxLength": 256,
+                "description": [
+                  "A space-separated list of information on local, writable file",
+                  "systems.  Each item in the list describes one file system and",
+                  "consists in turn of a comma-separated list of the following:"
+                  "",
+                  "*Mount point, e.g. `/`` or `/var/log`.",
+                  "Any spaces or commas in the mount point are replaced by",
+                  "underscores.",
+                  "*Total size, in kilobytes, as an integer.",
+                  "*Amount of storage in use, in kilobytes, as an integer."
+                  "",
+                  "This key-value pair is omitted if there are no local, writable",
+                  "file systems or if OpenSwitch cannot obtain the needed",
+                  "information"
+                ]
+              }
+            }
+          }
+        },
+        "lldp_statistics": {
+          "category": "statistics",
+          "ephemeral": true,
+          "group": ["Statistics"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "lldp_table_inserts" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["LLDP Statistics"],
+                "description": [
+                  "Number of neighbor entries inserted to LLDP neighbor table."
+                ],
+                "empty-value": 0
+              },
+              "lldp_table_deletes" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["LLDP Statistics"],
+                "description": [
+                  "Number of neighbor entries deleted from LLDP neighbor table."
+                ],
+                "empty-value": 0
+              },
+              "lldp_table_drops" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["LLDP Statistics"],
+                "description": [
+                  "Number of neighbor entries that could not be added to LLDP",
+                  "neighbor table and dropped."
+                ],
+                "empty-value": 0
+              },
+              "lldp_table_ageouts" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["LLDP Statistics"],
+                "description": [
+                  "Number of times neighbor info was deleted from LLDP neighbor",
+                  "table because of the TTL timer associated with a neighbor",
+                  "has expired."
+                ],
+                "empty-value": 0
+              }
+            }
+          }
+        },
+        "ntp_statistics": {
+          "category": "statistics",
+          "ephemeral": true,
+          "group": ["Statistics"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "ntp_pkts_received" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Total number of packets received."
+                ]
+              },
+              "ntp_pkts_with_current_version" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of packets matching the current NTP version."
+                ]
+              },
+              "ntp_pkts_with_older_version" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of packets matching the previous NTP version."
+                ]
+              },
+              "ntp_pkts_with_bad_length_or_format" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of packets with invalid length, format or port number."
+                ]
+              },
+              "ntp_pkts_with_auth_failed" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of packets not verified as authentic."
+                ]
+              },
+              "ntp_pkts_declined" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of packets denied access for any reason."
+                ]
+              },
+              "ntp_pkts_restricted" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of packets restricted for any reason."
+                ]
+              },
+              "ntp_pkts_rate_limited" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of packets discarded due to rate limitation."
+                ]
+              },
+              "ntp_pkts_kod_responses" : {
+                "type": "integer",
+                "minInteger": 0,
+                "group": ["NTP Statistics"],
+                "description": [
+                  "Number of KoD packets from the server."
+                ]
+              }
+            }
+          }
+        },
+        "switch_version": {
+          "category": "status",
+          "group": ["Version Reporting"],
+          "description": [
+            "The OpenSwitch version number, e.g. `0.1.0`."
+          ],
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "db_version": {
+          "category": "status",
+          "group": ["Version Reporting"],
+          "description": [
+            "The database schema version number in the form",
+            "`_major.minor.tweak_`,",
+            "e.g. `1.2.3`.  Whenever the database schema is changed in",
+            "a non-backward compatible way (e.g. deleting a column or a table),",
+            "_major_ is incremented.  When the database schema is changed",
+            "in a backward compatible way (e.g. adding a new column),",
+            "_minor_ is incremented.  When the database schema is changed",
+            "cosmetically (e.g. reindenting its syntax), _tweak_ is",
+            "incremented."
+            "",
+            "The schema version is part of the database schema, so it can also be",
+            "retrieved by fetching the schema using the Open vSwitch database",
+            "protocol."
+          ],
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "software_info": {
+          "category": "status",
+          "group": ["Version Reporting"],
+          "description": [
+            "This column is used for the software info. The value of the key",
+            "'os_name' will identify the operating system, without a version",
+            "component, and suitable for presentation to the user. If not set,",
+            "defaults to <code>os_name=OpenSwitch</code>. Example:",
+            "`os_name=Fedora` or",
+            "`os_name='Debian GNU/Linux'``.  This is equivalent of",
+            "`NAME` variable of the `/etc/os-release`",
+            "file.  Please refer to",
+            "`http://www.freedesktop.org/software/systemd/man/os-release.html`",
+            "for more detailed information."
+          ],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "bios_release_date" : {
+                "type": "string",
+                "maxLength": 256
+              },
+              "bios_vendor" : {
+                "type": "string",
+                "maxLength": 256
+              },
+              "bios_version" : {
+                "type": "string",
+                "maxLength": 256
+              },
+              "bios_loader" : {
+                "type": "string",
+                "maxLength": 256
+              },
+              "bios_loader_version" : {
+                "type": "string",
+                "maxLength": 256
+              },
+              "diag_version" : {
+                "type": "string",
+                "maxLength": 256
+              },
+              "install_env" : {
+                "type": "string",
+                "maxLength": 256
+              },
+              "install_env_version" : {
+                "type": "string",
+                "maxLength": 256
+              }
+            }
+          }
+        },
+        "aaa": {
+          "category": "configuration",
+          "group": ["Database Configuration"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "radius" : {
+                "type": "boolean",
+                "description" : [
+                  "This column used for AAA feature. The valid values for the key 'radius'",
+                  "are true or false based on the user request for authentication.",
+                  "If radius=true, radius based authentication is enabled. By default",
+                  "authentication is local."
+                ],
+                "empty-value": false
+              },
+              "fallback" : {
+                "type": "boolean",
+                "description" : [
+                  "This column used for AAA feature. The valid values for the key 'fallback'",
+                  "are true or false based on the user request for authentication. If",
+                  "fallback=true, fall to local authentication if radius server is not reachable."
+                ],
+                "empty-value": true
+              },
+              "ssh_passkeyauthentication_enable" : {
+                "type": "boolean",
+                "description" : [
+                  "Controls whether ssh password based authentication is enabled."
+                ],
+                "empty-value": true
+              },
+              "ssh_publickeyauthentication_enable" : {
+                "type": "boolean",
+                "description" : [
+                  "Controls whether ssh public key authentication is enabled."
+                ],
+                "empty-value": true
+              },
+              "ssh_publickeyauthentication_enable" : {
+                "type": "boolean",
+                "description" : [
+                  "Controls whether ssh public key authentication is enabled."
+                ],
+                "empty-value": true
+              }
+            }
+          }
+        },
+        "manager_options": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "group": ["Database Configuration"],
+          "description" : [
+            "Database clients to which the OpenSwitch database server should",
+            "connect or to which it should listen, along with options for how these",
+            "connection should be configured.  See the [`Manager` table](#manager-table)",
+            "for more information."
+          ],
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Manager"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "mgmt_intf": {
+          "category": "configuration",
+          "group": ["Database Configuration"],
+          "description" : [
+            "This column is a map of string-string pairs",
+            "Management interface column contains the attributes of management",
+            "interface. The keys are name, mode, ip, subnet mask, default gateway,",
+            "dns server IPv4 addresses. This column holds values that are configured",
+            "by the user."
+          ],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "name" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The value for this key is a valid interface name that is to be",
+                  "configured as management interface"
+                ],
+                "empty-value": true
+              },
+              "mode" : {
+                "type": "string",
+                "enum": [
+                  "set",
+                  [
+                    "dhcp",
+                    "static"
+                  ]
+                ],
+                "description" : [
+                  "The value is static or dhcp based on the mode in which the management",
+                  "ip is to be obtained."
+                ],
+                "empty-value": "dhcp"
+              },
+              "ip" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The value for this key is interface IPv4 address of the management interface."
+                ]
+              },
+              "subnet_mask" : {
+                "type": "integer",
+                "minInteger": 1,
+                "maxInteger": 31,
+                "description" : [
+                  "The value for this key is subnet mask of the interface IP of management",
+                  "interface in CIDR format"
+                ]
+              },
+              "default_gateway" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The value for this key is default gateway IPv4 address."
+                ]
+              },
+              "dns_server_1" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The value for this key is Primary nameserver IPv4 address."
+                ]
+              },
+              "dns_server_2" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The value for this key is Secondary nameserver IPv4 address."
+                ]
+              },
+              "ipv6" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The value for this key is IPv6 address of the management interface.",
+                  "Possible value X:X::X:X/M."
+                ]
+              },
+              "default_gateway_v6" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The value for this key is default gateway IPv6 address."
+                ]
+              }
+            }
+          }
+        },
+        "radius_servers": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "group": ["Database Configuration"],
+          "description" : [
+            "Specifies radius servers configuration. See the [`Radius_Server` table](#radius_server-table)",
+            "for more information."
+          ],
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Radius_Server"
+            },
+            "min": 0,
+            "max": 64
+          }
+        },
+        "auto_provisioning_status": {
+          "category": "status",
+          "group": ["Database Configuration"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "performed" : {
+                "type": "boolean",
+                "description" : [
+                  "Specifies whether auto-provisioning was performed."
+                ],
+                "empty-value": "false"
+              },
+              "url" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "SSpecifies the URL that was used to fetch auto-provisioning script. Would not be",
+                  "present if auto-provisioning was not performed."
+                ]
+              }
+            }
+          }
+        },
+        "logrotate_config": {
+          "category": "configuration",
+          "group": ["Logrotate configuration"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "period" : {
+                "type": "string",
+                "enum": [
+                  "set",
+                  [
+                    "hourly",
+                    "daily",
+                    "weekly",
+                    "monthly"
+                  ]
+                ],
+                "description" : [
+                  "The user configured period of logrotation."
+                ],
+                "empty-value": "daily"
+              },
+              "maxsize" : {
+                "type": "integer",
+                "minInteger": 1,
+                "maxInteger": 200,
+                "description" : [
+                  "Log size (in megabytes), which would trigger rotation."
+                ],
+                "empty-value": 10
+              },
+              "target" : {
+                "type": "string",
+                "maxLength": 256,
+                "description" : [
+                  "The user configured URI of the remote host .The valid value is",
+                  "'tftp://A.B.C.D'.If not specified log files will be rotated locally."
+                ]
+              }
+            }
+          }
+        },
+        "bufmon_config": {
+          "category": "configuration",
+          "group": ["Bufmon configuration"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "enabled" : {
+                "type": "boolean",
+                "description" : [
+                  "Specifies whether the bufmon feature is enabled on the system."
+                ],
+                "empty-value": false
+              },
+              "counters_mode": {
+                "period" : {
+                  "type": "string",
+                  "enum": [
+                    "set",
+                    [
+                      "peak",
+                      "current"
+                    ]
+                  ],
+                  "description" : [
+                    "Specifies whether counters should report their current values or peak values",
+                    "since last collection."
+                  ],
+                  "empty-value": "current"
+                },
+                "periodic_collection_enabled" : {
+                  "type": "boolean",
+                  "description" : [
+                    "Specifies whether periodic collection of the counters is enabled."
+                  ],
+                  "empty-value": false
+                },
+                "collection_period" : {
+                  "type": "integer",
+                  "minInteger": 1,
+                  "description" : [
+                    "Specifies the period of collection in seconds."
+                  ],
+                  "empty-value": 5
+                },
+                "threshold_trigger_collection_enabled" : {
+                  "type": "boolean",
+                  "description" : [
+                    "Specifies whether counters should be collected immediately",
+                    "when one of the thresholds is crossed."
+                  ],
+                  "empty-value": true
+                },
+                "threshold_trigger_rate_limit" : {
+                  "type": "integer",
+                  "minInteger": 1,
+                  "maxInteger": 600,
+                  "description" : [
+                    "Specifies maximum number of trigger generated reports per minute.",
+                    "The limit will be averaged and imposed on a per second basis.",
+                    "For example, value of 600 will allow report every 100ms."
+                  ],
+                  "empty-value": 60
+                },
+                "snapshot_on_threshold_trigger" : {
+                  "type": "boolean",
+                  "description" : [
+                    "Specifies whether counters should be frozen when one of the thresholds is crossed."
+                  ],
+                  "empty-value": true
+                }
+              }
+            }
+          }
+        },
+        "bufmon_info": {
+          "category": "status",
+          "group": ["information"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "cap_mode_peak" : {
+                "type": "boolean",
+                "description" : [
+                  "Specifies whether the system is capable of collecting peak values of",
+                  "the counters."
+                ],
+                "empty-value": false
+              },
+              "cap_mode_current" : {
+                "type": "boolean",
+                "description" : [
+                  "Specifies whether the system is capable of collecting current values of",
+                  "the counters."
+                ],
+                "empty-value": false
+              },
+              "cap_snapshot_on_threshold_trigger" : {
+                "type": "boolean",
+                "description" : [
+                  "Specifies whether the system is capable of freezing counters values on",
+                  "threshold crossing."
+                ],
+                "empty-value": false
+              },
+              "cap_threshold_trigger_collection" : {
+                "type": "boolean",
+                "description" : [
+                  "Specifies whether the system is capable of immediately collecting values on",
+                  "threshold crossing."
+                ],
+                "empty-value": false
+              },
+              "last_collection_timestamp" : {
+                "type": "integer",
+                "minInteger": 0,
+                "description" : [
+                  "Specifies the timestamp of the last collection in seconds from Jan 1, 1970."
+                ]
+              }
+            }
+          }
+        },
+        "ecmp_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value-map": {
+              "enabled" : {
+                "type": "boolean",
+                "description" : [
+                  "Determines whether ECMP is enabled in the system."
+                ],
+                "empty-value": true
+              },
+              "hash_srcip_enabled" : {
+                "type": "boolean",
+                "description" : [
+                  "Determines whether source IP participates in ECMP hash calculation."
+                ],
+                "empty-value": true
+              },
+              "hash_dstip_enabled" : {
+                "type": "boolean",
+                "description" : [
+                  "Determines whether destination IP participates in ECMP hash",
+                  "calculation."
+                ],
+                "empty-value": true
+              },
+              "hash_srcport_enabled" : {
+                "type": "boolean",
+                "description" : [
+                  "Determines whether source TCP/UDP port participates in ECMP hash",
+                  "calculation"
+                ],
+                "empty-value": true
+              },
+              "hash_dstport_enabled" : {
+                "type": "boolean",
+                "description" : [
+                  "Determines whether destination TCP/UDP port participates in ECMP",
+                  "hash calculation."
+                ],
+                "empty-value": true
+              },
+              "resilient_hash_enabled" : {
+                "type": "boolean",
+                "description" : [
+                  "Determines whether ECMP hashing preserves traffic flows when ECMP group membership changes."
+                ],
+                "empty-value": true
+              }
+            }
+          }
+        },
+        "ntp_config": {
+          "category": "configuration",
+          "group": ["NTP configuration"],
+          "type": {
+            "key": "string",
+            "value-map": {
+              "authentication_enable" : {
+                "type": "boolean",
+                "description" : [
+                  "Determines whether NTP Authentication is enabled in the system."
+                ],
+                "empty-value": true
+              }
+            }
+          },
+          "qos_config": {
+            "category": "configuration",
+            "group": ["QoS configuration"],
+            "type": {
+              "map": {
+                "qos_trust" : {
+                  "type": "string",
+                  "enum": [
+                    "set",
+                    [
+                      "none",
+                      "cos",
+                      "dscp"
+                    ]
+                  ],
+                  "description" : [
+                    "Specifies the global default QoS Trust Mode. A value of 'none' will",
+                    "not trust any packet code point fields, and remark all of them to 0.",
+                    "A value of 'cos' will trust the 802.1Q priority code point and",
+                    "preserve DSCP or IP-ToS. A value of 'dscp' will trust DSCP, and",
+                    "optionally remark the 802.1Q priority code point to match."
+                  ],
+                  "empty-value": "none"
+                },
+                "qos_dscp_map_entries" : {
+                  "type": "string",
+                  "description" : [
+                    "Contains references to each entry in the global DSCP map used by",
+                    "port trust mode DSCP."
+                  ]
+                },
+                "qos_cos_map_entries" : {
+                  "type": "string",
+                  "description" : [
+                    "Contains references to each entry in the global COS map used by",
+                    "port trust mode COS."
+                  ]
+                }
+              }
+            }
+          },
+          "external_ids": {
+            "category": "configuration",
+            "group": ["Common Columns"],
+            "type": {
+              "key": "string",
+              "value": "string",
+              "min": 0,
+              "max": "unlimited"
+            }
+          }
+        }
+      }
+    }
+  }
+}
