@@ -23,6 +23,7 @@ REST API Test Cases
 - [REST API get method with pagination for ports](#rest-api-get-method-with-pagination-for-ports)
 - [REST API get method and sort by field for ports](#rest-api-get-method-and-sort-by-field-for-ports)
 - [REST API get method and sort by field combination for ports](#rest-api-get-method-and-sort-by-field-combination-for-ports)
+- [REST API get method with specific column retrieval for interfaces](#rest-api-get-method-with-specific-column-retrieval-for-interfaces)
 - [REST API patch method for system](#rest-api-patch-method-for-system)
 - [REST API VLANs Resource test cases](#rest-api-vlans-resource-test-cases)
   - [Query Bridge Normal](#query-bridge-normal)
@@ -152,7 +153,7 @@ The test case is fails if the standard REST API GET method does not return the H
 
 ## REST API get method for an interface
 ### Objective
-The objective of the test case is to validate the `/rest/v1/system/interfaces/{id}` through the standard REST API GET method.
+The objective of the test case is to validate the `/rest/v1/system/interfaces/<id>` through the standard REST API GET method.
 
 ### Requirements
 The requirements for this test case are:
@@ -171,7 +172,7 @@ The requirements for this test case are:
 ```
 
 ### Description
-The objective of the test case is to validate the `/rest/v1/system/interfaces/{id}` through the standard REST API GET method.
+The objective of the test case is to validate the `/rest/v1/system/interfaces/<id>` through the standard REST API GET method.
 
 #### Steps
 
@@ -180,33 +181,33 @@ The objective of the test case is to validate the `/rest/v1/system/interfaces/{i
 3. Configure the IPV4 address on the Ubuntu workstation.
 
 ##### Test 1
-1. Configure the `/rest/v1/system/interfaces/{id}` through Standard REST API PUT method.
-2. Validate the `/rest/v1/system/interfaces/{id}` configuration with the HTTP return code.
+1. Configure the `/rest/v1/system/interfaces/<id>` through Standard REST API PUT method.
+2. Validate the `/rest/v1/system/interfaces/<id>` configuration with the HTTP return code.
 
 ##### Test 2
-1. Execute the Standard REST API GET method for URI `/rest/v1/system/interfaces/{id}`.
-2. Validate the GET Method HTTP return code for `/rest/v1/system/interfaces/{id}` and its respective values.
+1. Execute the Standard REST API GET method for URI `/rest/v1/system/interfaces/<id>`.
+2. Validate the GET Method HTTP return code for `/rest/v1/system/interfaces/<id>` and its respective values.
 
 ##### Test 3
-1. Execute Standard REST API DELETE method for URI `/rest/v1/system/interfaces/{id}`.
-2. Validate the DELETE method HTTP return code for `/rest/v1/system/interfaces/{id}`.
+1. Execute Standard REST API DELETE method for URI `/rest/v1/system/interfaces/<id>`.
+2. Validate the DELETE method HTTP return code for `/rest/v1/system/interfaces/<id>`.
 
 ##### Test 4
-1. Execute Standard REST API GET Method for URI `/rest/v1/system/interfaces/{id}`.
-2. Validate the GET method HTTP return code for `/rest/v1/system/interfaces/{id}`.
+1. Execute Standard REST API GET Method for URI `/rest/v1/system/interfaces/<id>`.
+2. Validate the GET method HTTP return code for `/rest/v1/system/interfaces/<id>`.
 
 ### Test result criteria
 #### Test pass criteria
-- The first test passes if the standard REST API PUT method returns HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/{id}`.
-- The second test passes if the standard REST API GET method returns HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/{id}` and the returned data is identical to the date used for the PUT.
-- The third test passes if the standard REST API DELETE method returns HTTP code `204 NO CONTENT` for the URI `/rest/v1/system/interfaces/{id}`.
-- The fourth test passes, if the standard REST API GET method does not return HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/{id}`.
+- The first test passes if the standard REST API PUT method returns HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/<id>`.
+- The second test passes if the standard REST API GET method returns HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/<id>` and the returned data is identical to the date used for the PUT.
+- The third test passes if the standard REST API DELETE method returns HTTP code `204 NO CONTENT` for the URI `/rest/v1/system/interfaces/<id>`.
+- The fourth test passes, if the standard REST API GET method does not return HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/<id>`.
 
 #### Test fail criteria
-- The first test fails if the standard REST API PUT method does not return HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/{id}`.
-- The second test fails if the standard REST API GET method does not return HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/{id}` or the returned data is not identical to the data used for PUT.
-- The third test fails if the standard REST API DELETE method does not return HTTP code `204 NO CONTENT` for the URI `/rest/v1/system/interfaces/{id}`.
-- The fourth test fails if the standard REST API GET method returns HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/{id}`.
+- The first test fails if the standard REST API PUT method does not return HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/<id>`.
+- The second test fails if the standard REST API GET method does not return HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/<id>` or the returned data is not identical to the data used for PUT.
+- The third test fails if the standard REST API DELETE method does not return HTTP code `204 NO CONTENT` for the URI `/rest/v1/system/interfaces/<id>`.
+- The fourth test fails if the standard REST API GET method returns HTTP code `200 OK` for the URI `/rest/v1/system/interfaces/<id>`.
 
 ## REST API get method for VRFS
 ### Objective
@@ -248,7 +249,7 @@ The test case fails if the standard REST API GET method does not return HTTP cod
 
 ## REST API get method for route maps
 ### Objective
-The objective of this test case is to validate the `/rest/v1/system/route_maps/{id}` through the standard REST API GET method.
+The objective of this test case is to validate the `/rest/v1/system/route_maps/<id>` through the standard REST API GET method.
 
 ### Requirements
 The requirements for this test case are:
@@ -267,22 +268,22 @@ The requirements for this test case are:
 ```
 
 ### Description
-The test case validates the `/rest/v1/system/route_maps/{id}` through the standard REST API GET method.
+The test case validates the `/rest/v1/system/route_maps/<id>` through the standard REST API GET method.
 
 #### Steps
 
 1. Connect OpenSwitch to the Ubuntu workstation as shown in the topology diagram.
 2. Configure the IPV4 address on the switch management interfaces.
 3. Configure the IPV4 address on the Ubuntu workstation.
-4. Execute the Standard REST API GET Method for URI `/rest/v1/system/route_maps/{id}`.
-5. Validate the GET method HTTP return code for `/rest/v1/system/route_maps/{id}` and its respective values.
+4. Execute the Standard REST API GET Method for URI `/rest/v1/system/route_maps/<id>`.
+5. Validate the GET method HTTP return code for `/rest/v1/system/route_maps/<id>` and its respective values.
 
 ### Test result criteria
 #### Test pass criteria
-This test case passes if the standard REST API GET method returns HTTP code `200 OK` for the URI `/rest/v1/system/route_maps/{id}` and the returned data is identical.
+This test case passes if the standard REST API GET method returns HTTP code `200 OK` for the URI `/rest/v1/system/route_maps/<id>` and the returned data is identical.
 
 #### Test fail criteria
-This test case fails if the standard REST API GET method does not return HTTP code `200 OK` for the URI `/rest/v1/system/route_maps/{id}`.
+This test case fails if the standard REST API GET method does not return HTTP code `200 OK` for the URI `/rest/v1/system/route_maps/<id>`.
 
 ## REST API get method for interfaces
 ### Objective
@@ -476,22 +477,22 @@ The requirements for this test case are:
 
 The test case validates the `/rest/v1/system/users` through the standard REST API GET method.
 
-1. Verify if the GET method returns a json object with a list of users by creating 100 new users that are part of ovsdb_users group.
+1. Verify if the GET method returns a json object with a list of users by creating 100 new users that are part of ovsdb-client group.
     a. Execute the GET request over `/rest/v1/system/users?depth=1`.
     b. Verify if the HTTP response is `200 OK`.
     c. Confirm that the returned user list has the expected data.
 
-2. Verify if the GET method returns an users URI list by creating 100 new users that are part of ovsdb_users group.
+2. Verify if the GET method returns an users URI list by creating 100 new users that are part of ovsdb-client group.
     a. Execute the GET request over `/rest/v1/system/users`.
     b. Verify if the HTTP response is `200 OK`.
     c. Confirm that the returned user list has the expected data.
 
-3. Verify if the GET method returns a json object with a list of users by creating 11 new users and only 10 are part of ovsdb_users group.
+3. Verify if the GET method returns a json object with a list of users by creating 11 new users and only 10 are part of ovsdb-client group.
     a. Execute the GET request over `/rest/v1/system/users?depth=1`.
     b. Verify if the HTTP response is `200 OK`.
     c. Confirm that the returned user list has the expected data.
 
-4. Verify if the GET method returns a json object with a list of users by creating 10 new users that are part of ovsdb_users group and have extra arguments in the creation command.
+4. Verify if the GET method returns a json object with a list of users by creating 10 new users that are part of ovsdb-client group and have extra arguments in the creation command.
     a. Execute the GET request over `/rest/v1/system/users?depth=1`.
     b. Verify if the HTTP response is `200 OK`.
     c. Confirm that the returned user list has the expected data.
@@ -502,12 +503,12 @@ The test case validates the `/rest/v1/system/users` through the standard REST AP
     c. Confirm that the returned user list has the expected data.
 
 6. Verify if the GET method returns a json object when querying an specific user.
-    a. Execute the GET request over `/rest/v1/system/users/{username}`.
+    a. Execute the GET request over `/rest/v1/system/users/<username>`.
     b. Verify if the HTTP response is `200 OK`.
     c. Confirm that the returned user object has the expected data.
 
 7. Verify if the GET method not returns a json object when querying an non existent user.
-    a. Execute the GET request over `/rest/v1/system/users/{username}`.
+    a. Execute the GET request over `/rest/v1/system/users/<username>`.
     b. Verify if the HTTP response is `404 NOT FOUND`.
 
 
@@ -658,7 +659,7 @@ The test case validates the `/rest/v1/system/users` through the standard REST AP
 
     b. Verify if the HTTP response is `400 BAD REQUEST`.
 
-6. Verify that the request fails when trying to create a new user with a username that contains the following not allowed symbols: `#(){}[]?\~/+-*=|^$%.;,:"´`
+6. Verify that the request fails when trying to create a new user with a username that contains disallowed characters
     a. Execute the POST request over `/rest/v1/system/users` with each of the not allowed symbols
     b. Verify if the HTTP response is `400 BAD REQUEST`.
 
@@ -821,7 +822,7 @@ This test fails when:
 ## REST API delete method for users
 
 ### Objective
-The objective of the test case is to validate the `/rest/v1/system/users/{id}` through the standard REST API DELETE method.
+The objective of the test case is to validate the `/rest/v1/system/users/<id>` through the standard REST API DELETE method.
 
 ### Requirements
 The requirements for this test case are:
@@ -843,29 +844,29 @@ The requirements for this test case are:
 ```
 
 ### Description
-The test case validates the `/rest/v1/system/users/{id}` through the standard REST API DELETE method.
+The test case validates the `/rest/v1/system/users/<id>` through the standard REST API DELETE method.
 
-1. Verify that the request passes when trying to delete a new user who is part of ovsdb_users group and is not logged in.
-    a. Execute the DELETE request over `/rest/v1/system/users/{id}`.
+1. Verify that the request passes when trying to delete a new user who is part of ovsdb-client group and is not logged in.
+    a. Execute the DELETE request over `/rest/v1/system/users/<id>`.
     b. Verify if the HTTP response is `204 NO CONTENT`.
     c. Confirm that the returned user list has the expected data.
 
-2. Verify that the request fails when trying to delete a new user who is part of ovsdb_users group and is logged in.
-    a. Execute the DELETE request over `/rest/v1/system/users/{id}`.
+2. Verify that the request fails when trying to delete a new user who is part of ovsdb-client group and is logged in.
+    a. Execute the DELETE request over `/rest/v1/system/users/<id>`.
     b. Verify if the HTTP response is `400 BAD REQUEST`.
     c. Confirm that the returned user list has the expected data.
 
 3. Verify that the request fails when trying to delete the current user and is logged in.
-    a. Execute the DELETE request over `/rest/v1/system/users/{id}`.
+    a. Execute the DELETE request over `/rest/v1/system/users/<id>`.
     b. Verify if the HTTP response is `400 BAD REQUEST`.
     c. Confirm that the returned user list has the expected data.
 
 4. Verify that the request fails after trying to delete a nonexistent user.
-    a. Execute the DELETE request over `/rest/v1/system/users/{id}`.
+    a. Execute the DELETE request over `/rest/v1/system/users/<id>`.
     b. Verify if the HTTP response is `404 NOT FOUND`.
 
-5. Verify that the request fails after trying to delete a new user who is not part of the ovsdb_users group.
-    a. Execute the DELETE request over `/rest/v1/system/users/{id}`.
+5. Verify that the request fails after trying to delete a new user who is not part of the ovsdb-client group.
+    a. Execute the DELETE request over `/rest/v1/system/users/<id>`.
     b. Verify if the HTTP response is `404 NOT FOUND`.
     c. Confirm that the returned user list has the expected data.
 
@@ -886,7 +887,7 @@ This test passes by meeting the following criteria:
 
     A `404 NOT FOUND` HTTP response.
 
-- The following error message is displayed when trying to delete a user who is not part of ovsdb_users group:
+- The following error message is displayed when trying to delete a user who is not part of ovsdb-client group:
 
     A `404 NOT FOUND` HTTP response.
 
@@ -904,14 +905,14 @@ This test fails when:
 
 - Deleting a nonexistent user anything other than a `404 NOT FOUND` HTTP response is displayed.
 
-- Deleting a user who is not part of the ovsdb_users group, the following error message or anything other than a `404 NOT FOUND` HTTP response is displayed:
+- Deleting a user who is not part of the ovsdb-client group, the following error message or anything other than a `404 NOT FOUND` HTTP response is displayed:
 
     A `204 NO CONTENT` HTTP response.
 
 ## REST API put method for users
 
 ### Objective
-The objective of the test case is to validate the `/rest/v1/system/users/{id}` through the standard REST API PUT method.
+The objective of the test case is to validate the `/rest/v1/system/users/<id>` through the standard REST API PUT method.
 
 ### Requirements
 The requirements for this test case are:
@@ -947,10 +948,10 @@ The requirements for this test case are:
 ```
 
 ### Description
-The test case validates the `/rest/v1/system/users/{id}` through the standard REST API PUT method.
+The test case validates the `/rest/v1/system/users/<id>` through the standard REST API PUT method.
 
-1. Verify that the request passes when trying to update the password of a user, who is also part of ovsdb_users group but is not logged in.
-    a. Execute the PUT request over `/rest/v1/system/users/{id}` with the following data:
+1. Verify that the request passes when trying to update the password of a user, who is also part of ovsdb-client group but is not logged in.
+    a. Execute the PUT request over `/rest/v1/system/users/<id>` with the following data:
 
         ```
         {
@@ -964,8 +965,8 @@ The test case validates the `/rest/v1/system/users/{id}` through the standard RE
     b. Verify if the HTTP response is `200 OK`.
     c. Confirm that the user can log in with the new password.
 
-2. Verify that the request fails when trying to update a user with an empty password, and the user is part of the ovsdb_users group.
-    a. Execute the PUT request over `/rest/v1/system/users/{id}` with the following data:
+2. Verify that the request fails when trying to update a user with an empty password, and the user is part of the ovsdb-client group.
+    a. Execute the PUT request over `/rest/v1/system/users/<id>` with the following data:
 
         ```
         {
@@ -980,7 +981,7 @@ The test case validates the `/rest/v1/system/users/{id}` through the standard RE
     c. Confirm that the user can still log in with the current password.
 
 3. Verify that the request fails when trying to update a nonexistent user.
-    a. Execute the PUT request over `/rest/v1/system/users/{id}` with the following data:
+    a. Execute the PUT request over `/rest/v1/system/users/<id>` with the following data:
 
         ```
         {
@@ -993,8 +994,8 @@ The test case validates the `/rest/v1/system/users/{id}` through the standard RE
 
     b. Verify if the HTTP response is `404 NOT FOUND`.
 
-4. Verify that the request fails after trying to update the password of a user who is not part of the ovsdb_users group.
-    a. Execute the PUT request over `/rest/v1/system/users/{id}` with the following data:
+4. Verify that the request fails after trying to update the password of a user who is not part of the ovsdb-client group.
+    a. Execute the PUT request over `/rest/v1/system/users/<id>` with the following data:
 
         ```
         {
@@ -1007,8 +1008,8 @@ The test case validates the `/rest/v1/system/users/{id}` through the standard RE
 
     b. Verify if the HTTP response is `404 NOT FOUND`.
 
-5. Verify that the request fails after trying to update the password of a user who is part of the ovsdb_users group and then try to log in with the old password.
-    a. Execute the PUT request over `/rest/v1/system/users/{id}` with the following data:
+5. Verify that the request fails after trying to update the password of a user who is part of the ovsdb-client group and then try to log in with the old password.
+    a. Execute the PUT request over `/rest/v1/system/users/<id>` with the following data:
 
         ```
         {
@@ -1949,7 +1950,7 @@ The test case validates the recursivity through the standard REST API GET method
     b. Verify if the HTTP response is `200 OK`.
     c. Validate the first level depth returned interface object has Configuration, Statistics and Status keys present.
     d. Validate the second level depth returned interface object has Configuration, Statistics and Status keys present.
-    e. Ensure that second level of depth inner data has the URIs `/rest/v1/system/interfaces/50-{1-4}` in the response data.
+    e. Ensure that second level of depth inner data has the URIs `/rest/v1/system/interfaces/50-<1-4>` in the response data.
 
 5. Verify if response has a `400 BAD REQUEST` HTTP response status code by using a negative depth value.
     a. Execute the GET request over `/rest/v1/system/interfaces?depth=-1`
@@ -1970,7 +1971,7 @@ The test case validates the recursivity through the standard REST API GET method
     b. Verify if the HTTP response is `200 OK`.
     c. Validate the first level depth returned interface object has Configuration, Statistics and Status keys present.
     d. Validate the second level depth returned interface object has Configuration, Statistics and Status keys present.
-    e. Ensure that second level of depth inner data has the URIs `/rest/v1/system/interfaces/50-{1-4}` in the response data.
+    e. Ensure that second level of depth inner data has the URIs `/rest/v1/system/interfaces/50-<1-4>` in the response data.
 
 9. Verify if returns a `400 BAD REQUEST` HTTP response status code by using a negative depth value with an specific URI.
     a. Execute the GET request over `/rest/v1/system/interfaces/50-1?depth=-1`
@@ -2264,14 +2265,14 @@ Sort by allowed sort field (ascending mode).
 
 For each allowed sort field exececute the following steps:
 
-1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort={field_name}` and verify that response is `200 OK`.
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=<field_name>` and verify that response is `200 OK`.
 2. Verify if the result is being ordered by the provided field name.
 
 Sort by allowed sort field (descending mode).
 
 For each allowed sort field exececute the following steps:
 
-1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=-{field_name}` and verify that response is `200 OK`.
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=-<field_name>` and verify that response is `200 OK`.
 2. Verify if the result is being ordered by the provided field name.
 
 ### Test result criteria
@@ -2420,6 +2421,128 @@ The test fails when:
 - The HTTP response is not `200 OK`.
 - The response doesn't have 10 ports.
 - The result is not sorted ascending/descending by the combination of fields.
+
+## REST API get method with specific column retrieval for interfaces
+
+### Objective
+The test case verifies queries for:
+
+- Single column retrieval
+- Multiple column retrieval
+- Column retrieval without depth argument
+- Column retrieval with empty columns argument
+- Column retrieval with nonexistent column key
+- Column retrieval with filter
+- Column retrieval with pagination
+- Column retrieval with depth greater than one
+- Column retrieval in requests other than GET
+- Column retrieval with all applicable arguments
+- Column retrieval by adding columns argument by separate
+
+### Requirements
+- OpenSwitch
+- Ubuntu Workstation
+
+### Setup
+
+#### Topology diagram
+```ditaa
++----------------+         +----------------+
+|                |         |                |
+|                |         |                |
+|    Local Host  +---------+    Switch 1    |
+|                |         |                |
+|                |         |                |
++----------------+         +----------------+
+```
+
+### Description
+The test case validates if the interface list retrieved it shows only the data with the specified columns through the standard REST API GET method.
+
+1. Verify if specific column retrieval is applied in the GET request by using the columns argument for a single column.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;columns=name`.
+    b. Verify if the HTTP response is `200 OK`.
+    c. Validate if the list of interfaces has the exact amount of columns specified in the request.
+    d. Confirm that interface resource returned the expected data.
+
+2. Verify if specific column retrieval is applied in the GET request by using the columns argument for multiple columns.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;columns=name,type`.
+    b. Verify if the HTTP response is `200 OK`.
+    c. Validate if the list of interfaces has the exact amount of columns specified in the request.
+    d. Confirm that interface resource returned the expected data.
+
+3. Verify if specific column retrieval is invalid in the GET request by using the columns argument and no depth argument.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;sort=name;columns=name`.
+    b. Verify if the HTTP response is `400 BAD REQUEST`.
+
+4. Verify if specific column retrieval is invalid in the GET request by using the columns argument and no value.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;columns=`.
+    b. Verify if the HTTP response is `400 BAD REQUEST`.
+
+5. Verify if specific column retrieval is invalid in the GET request by using the columns argument and nonexistent key.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;columns=foo`.
+    b. Verify if the HTTP response is `400 BAD REQUEST`.
+
+6. Verify if specific column retrieval is applied in the GET request by using the columns and filter arguments.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;name=10;columns=name,type`.
+    b. Verify if the HTTP response is `200 OK`.
+    c. Validate if the list of interfaces has the exact amount of columns specified in the request.
+    d. Confirm that interface resource returned the expected data.
+
+7. Verify if specific column retrieval is applied in the GET request by using the columns and pagination arguments.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;limit=10;offset=10;columns=name,type`.
+    b. Verify if the HTTP response is `200 OK`.
+    c. Validate if the list of interfaces has the exact amount of columns specified in the request.
+    d. Confirm that interface resource returned the expected data.
+
+8. Verify if specific column retrieval is applied in the GET request by using the columns argument and depth argument equals 2.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=2;sort=name;columns=name,type`.
+    b. Verify if the HTTP response is `200 OK`.
+    c. Validate if the list of interfaces has the exact amount of columns specified in the request.
+    d. Confirm that interface resource returned the expected data.
+
+9. Verify if specific column retrieval is invalid in requests other than GET.
+    a. Execute the POST, PUT and DELETE request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;columns=name`.
+    b. Verify if the HTTP response is `400 BAD REQUEST`.
+
+10. Verify if specific column retrieval is applied in the GET request by using the columns argument in combination with filter, sort and pagination.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;name=10;limit=1;columns=name,type`.
+    b. Verify if the HTTP response is `200 OK`.
+    c. Validate if the list of interfaces has the exact amount of columns specified in the request.
+    d. Confirm that interface resource returned the expected data.
+
+11. Verify if specific column retrieval is applied in the GET request by using the columns argument more than once as separate arguments.
+    a. Execute the GET request over `/rest/v1/system/interfaces?selector=configuration;depth=1;sort=name;columns=name;columns=type`.
+    b. Verify if the HTTP response is `200 OK`.
+    c. Validate if the list of interfaces has the exact amount of columns specified in the request.
+    d. Confirm that interface resource returned the expected data.
+
+### Test result criteria
+#### Test pass criteria
+
+This test passes by meeting the following criteria:
+
+- Using the columns argument with the specified correct value and depth greater than zero in the request:
+    - A `200 OK` HTTP response.
+
+- Using the columns argument with invalid values or a nonexistent keys results in the request:
+    - A `400 BAD REQUEST` HTTP response.
+
+- Using the columns argument in requests other than GET:
+    - A `400 BAD REQUEST` HTTP response.
+
+#### Test fail criteria
+
+This test fails when:
+
+- Using the columns argument with the specified correct value and depth greater than zero in the request:
+    - A `400 BAD REQUEST` HTTP response or anything other than `200 OK` HTTP RESPONSE.
+
+- Using the columns argument with invalid values or a nonexistent keys results in the request:
+    - A `200 OK` HTTP response or anything other than `400 BAD REQUEST` HTTP RESPONSE.
+
+- Using the columns argument in requests other than GET:
+    - A `200 OK` HTTP response or anything other than `400 BAD REQUEST` HTTP RESPONSE.
 
 ## REST API patch method for system
 
@@ -5537,7 +5660,7 @@ This test fails when:
 ## Update VLAN using If Match header with star Etag
 
 ### Objective
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans/{id}` through the standard REST API PUT method using If-Match header with the field value `*`.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans/<id>` through the standard REST API PUT method using If-Match header with the field value `*`.
 
 ###  Requirements
 
@@ -5605,7 +5728,7 @@ This test fails when:
 ## Update VLAN using If Match header with a matching Etag
 
 ### Objective
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans/{id}` through the standard REST API PUT method using If-Match header with a matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans/<id>` through the standard REST API PUT method using If-Match header with a matching Etag.
 
 ###  Requirements
 
@@ -5674,7 +5797,7 @@ This test fails when:
 ## Update VLAN using If Match header with a not matching Etag
 
 ### Objective
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans/{id}` through the standard REST API PUT method using If-Match header with a not matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans/<id>` through the standard REST API PUT method using If-Match header with a not matching Etag.
 
 ###  Requirements
 
@@ -5737,7 +5860,7 @@ This test fails when the HTTP response is not equal to `412 Precondition Failed`
 
 ### Objective
 
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans` through the standard REST API POST method using If-Match header with a matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans` through the standard REST API POST method using If-Match header with a matching Etag.
 
 ###  Requirements
 
@@ -5816,7 +5939,7 @@ This test fails when:
 ## Create VLAN using If Match header with a not matching Etag
 
 ### Objective
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans` through the standard REST API POST method using If-Match header with a not matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans` through the standard REST API POST method using If-Match header with a not matching Etag.
 
 ###  Requirements
 
@@ -5877,7 +6000,7 @@ This test fails when the HTTP response is not equal to `412 Precondition Failed`
 
 ### Objective
 
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans` through the standard REST API GET method using If-Match header with a matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans` through the standard REST API GET method using If-Match header with a matching Etag.
 
 ###  Requirements
 
@@ -5942,7 +6065,7 @@ This test fails when:
 ## Query all VLANs using If Match header with a not matching Etag
 
 ### Objective
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans` through the standard REST API GET method using If-Match header with a not matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans` through the standard REST API GET method using If-Match header with a not matching Etag.
 
 ###  Requirements
 
@@ -6003,7 +6126,7 @@ This test fails when the HTTP response is not equal to `412 Precondition Failed`
 
 ### Objective
 
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans/{id}` through the standard REST API GET method using If-Match header with a matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans/<id>` through the standard REST API GET method using If-Match header with a matching Etag.
 
 ###  Requirements
 
@@ -6068,7 +6191,7 @@ This test fails when:
 ## Query VLAN using If Match header with a not matching Etag
 
 ### Objective
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans/{id}` through the standard REST API GET method using If-Match header with a not matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans/<id>` through the standard REST API GET method using If-Match header with a not matching Etag.
 
 ###  Requirements
 
@@ -6129,7 +6252,7 @@ This test fails when the HTTP response is not equal to `412 Precondition Failed`
 
 ### Objective
 
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans/{id}` through the standard REST API DELETE method using If-Match header with a matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans/<id>` through the standard REST API DELETE method using If-Match header with a matching Etag.
 
 ###  Requirements
 
@@ -6207,7 +6330,7 @@ This test fails when:
 ## Delete VLAN using If Match header with a not matching Etag
 
 ### Objective
-The objective of the test is to validate `rest/{version}/system/bridges/{id}/vlans/{id}` through the standard REST API DELETE method using If-Match header with a not matching Etag.
+The objective of the test is to validate `rest/<version>/system/bridges/<id>/vlans/<id>` through the standard REST API DELETE method using If-Match header with a not matching Etag.
 
 ###  Requirements
 
@@ -6277,7 +6400,7 @@ A `412 Precondition Failed` HTTP response.
 
 This test fails when the HTTP response is not equal to `412 Precondition Failed`.
 
-##  Declarative configuration schema validations
+## Declarative configuration schema validations
 ### Objective
 The test case verifies that the schema validations for the declarative configuration including incorrect data type, out of range, missing mandatory field, and invalid reference checking prevents invalid configurations from reaching the database.
 
@@ -6402,7 +6525,7 @@ The test case is considered passing if the PUT request using the valid data is s
 #### Test fail criteria
 The test is considered failing if the PUT request using the invalid data is successful. A successful response indicates that the schema validations did not detect errors in the data.
 
-##  Custom validators
+## Custom validators
 ### Objective
 This test case verifies that the custom validation framework invokes an implemented custom validator upon a POST request and also returns any issues.
 
