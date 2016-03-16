@@ -456,7 +456,7 @@ class bgpTest(OpsVsiTest):
 
         info("### ipv6 prefix-list configs were successfully removed ###\n")
 
-
+@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 671")
 class Test_bgpd_ipv6:
     def setup(self):
         pass
