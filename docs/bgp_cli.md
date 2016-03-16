@@ -66,6 +66,15 @@
 	- [IPv6 prefix-list](#ipv6-prefix-list)
 - [Community lists configuration commands](#community-lists-configuration-commands)
 - [Extended community lists configuration commands](#extended-community-lists-configuration-commands)
+- [Clear commands](#clearcommands)
+        - [clear bgp (A.B.C.D) soft in](#clear-bgp-peer-soft-in)
+        - [clear bgp (A.B.C.D) soft out](#clear-bgp-peer-soft-out)
+        - [clear bgp * soft in](#clear-bgp-all-soft-in)
+        - [clear bgp * soft out](#clear-bgp-all-soft-out)
+        - [clear bgp <1-4294967295> soft in](#clear-bgp-as-soft-in)
+        - [clear bgp <1-4294967295> soft out](#clear-bgp-as-soft-out)
+        - [clear bgp peer-group WORD soft in](#clear-bgp-peer-group-soft-in)
+        - [clear bgp peer-group WORD soft out](#clear-bgp-peer-group-soft-out)
 - [Display commands](#display-commands)
 	- [show ip bgp](#show-ip-bgp)
 	- [show ip bgp summary](#show-ip-bgp-summary)
@@ -1639,6 +1648,181 @@ Admin user.
 ```
 s1(config)# ip extcommunity-list expanded ROUTES permit REGULAR_EXPRESSION
 s1(config)# no ip extcommunity-list expanded ROUTES
+```
+
+##Clear commands
+
+### clear bgp peer soft in
+#### Syntax
+```
+clear bgp (A.B.C.D) soft in
+```
+
+#### Description
+This command performs soft reset for inbound routing updates from specified neighbor.
+
+#### Authority
+Admin user.
+
+#### Parameters
+| Parameter | Status   | Syntax |       Description          |
+|-----------|----------|----------------------|
+| *A.B.C.D*  | Required | A.B.C.D | The IPv4 address. |
+
+#### Examples
+```
+s1(config)# clear bgp 10.10.10.1 soft in
+```
+
+### clear bgp peer soft out
+#### Syntax
+```
+clear bgp (A.B.C.D) soft out
+```
+#### Description
+This command performs soft reset for outbound routing updates to specified neighbor.
+
+#### Authority
+Admin user.
+
+#### Parameters
+| Parameter | Status   | Syntax |       Description          |
+|-----------|----------|----------------------|
+| *A.B.C.D*  | Required | A.B.C.D | The IPv4 address. |
+
+#### Examples
+```
+s1(config)# clear bgp 10.10.10.1 soft out
+```
+
+### clear bgp all soft in
+#### Syntax
+```
+clear bgp * soft in
+```
+
+#### Description
+This command performs soft reset for inbound routing updates from all neighbors.
+
+#### Authority
+Admin user.
+
+#### Parameters
+
+#### Examples
+```
+s1(config)# clear bgp * soft in
+```
+
+### clear bgp all soft out
+#### Syntax
+```
+clear bgp * soft out
+```
+#### Description
+This command performs soft reset for outbound routing updates to all neighbors.
+
+#### Authority
+Admin user.
+
+#### Parameters
+
+#### Examples
+```
+s1(config)# clear bgp all soft out
+```
+
+### clear bgp as soft in
+#### Syntax
+```
+clear bgp <num> soft in
+```
+
+#### Description
+This command performs soft reset for inbound routing updates from neighbor with specified
+autonomous system number.
+
+#### Authority
+Admin user.
+
+#### Parameters
+| Parameter | Status   | Syntax |       Description          |
+|-----------|----------|----------------------|
+| *num*  | Required | 1-4294967295 | Autonomous system number of the neighbor. |
+
+
+#### Examples
+```
+s1(config)# clear bgp 1 soft in
+```
+
+### clear bgp as soft out
+#### Syntax
+```
+clear bgp <num> soft out
+```
+
+#### Description
+This command performs soft reset for outbound routing updates to neighbor with specified
+autonomous system number.
+
+#### Authority
+Admin user.
+
+#### Parameters
+| Parameter | Status   | Syntax |       Description          |
+|-----------|----------|----------------------|
+| *num*  | Required | 1-4294967295 | Autonomous system number of the neighbor. |
+
+
+#### Examples
+```
+s1(config)# clear bgp 1 soft out
+```
+
+### clear bgp peer group soft in
+#### Syntax
+```
+clear bgp peer-group <name> soft in
+```
+
+#### Description
+This command performs soft reset for inbound routing updates from neighbors
+for specified peer group.
+
+#### Authority
+Admin user.
+
+#### Parameters
+| Parameter | Status   | Syntax |       Description          |
+|-----------|----------|----------------------|
+| *name*  | Required | String of maximum length 80 characters. | The name of peer group. |
+
+#### Examples
+```
+s1(config)# clear bgp peer-group BGP_GROUP soft in
+```
+
+### clear bgp peer group soft out
+#### Syntax
+```
+clear bgp peer-group <name> soft out
+```
+#### Description
+This command performs soft reset for outbound routing updates to neighbors
+from specified peer group.
+
+#### Authority
+Admin user.
+
+#### Parameters
+| Parameter | Status   | Syntax |       Description          |
+|-----------|----------|----------------------|
+| *name*  | Required | String of maximum length 80 characters. | The name of peer group. |
+
+#### Examples
+```
+s1(config)# clear bgp peer-group BGP_GROUP soft out
 ```
 
 ##Display commands

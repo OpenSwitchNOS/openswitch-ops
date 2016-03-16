@@ -213,6 +213,30 @@ To set up the optional configuration:
 - The command `neighbor <ipv4_address | ipv6_address | peer_group_name>ebgp-multihop` attempts to connect to the external Autonomous System routers which are not directly connected. It takes either an IPv4 or IPv6 address or the peer-group name to establish a connection.
   To remove the ebgp-multihop configuration, use the `no neighbor <ipv4_address | ipv6_address | peer_group_name>ebgp-multihop` command.
 
+- The command `clear bgp <ipv4_address> soft in` attemps to perform soft reset for inbound routing updates from specified neighbor.
+   `clear bgp A.B.C.D soft in`
+
+- The command `clear bgp <ipv4_address> soft out` attemps to perform soft reset for outbound routing updates to specified neighbor.
+   `clear bgp A.B.C.D soft out`
+
+- The command `clear bgp * soft in` attemps to perform soft reset for inbound routing updates from all neighbors.
+   `clear bgp * soft in`
+
+- The command `clear bgp * soft out` attemps to perform soft reset for outbound routing updates to all neighbor.
+   `clear bgp * soft out`
+
+- The command `clear bgp <asn> soft in` attemps to perform soft reset for inbound routing updates from neighbor with specified autonomous system number.
+   `clear bgp <1-4294967295> soft in`
+
+- The command `clear bgp <asn> soft out` attemps to perform soft reset for outbound routing updates to neighbor with specified autonomous system number.
+   `clear bgp <1-4294967295> soft out`
+
+- The command `clear bgp peer-group <peer-group-name> soft in` attemps to perform soft reset for inbound routing updates from neighbors belonging to specified peer group.
+   `clear bgp peer-group WORD soft in`
+
+- The command `clear bgp peer-group <peer-group-name> soft out` attemps to perform soft reset for outbound routing updates to neighbors belonging to specified peer group.
+   `clear bgp peer-group WORD soft out`
+
 
 ## Verifying the configuration
 Use the `show running-config` command to verify the configuration. All active configurations are displayed with the show running-config command. See the sample output below:
