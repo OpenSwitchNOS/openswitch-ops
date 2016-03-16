@@ -284,6 +284,12 @@ class Test_template:
         rc = self.vtyconn.cmd("no shutdown")
 
     def test_statistics(self):
+        # Skip physical run due to failure reported Taiga 659
+        if self.topoObj.topoType == "physical":
+            LogOutput('info',
+                      "Skip physical run due to failure reported Taiga 659")
+            pytest.skip("Skip physical run due to failure reported Taiga 659")
+
         # Get everything initially configured
         LogOutput('info', "*****Testing statistics*****")
         self.startup_sequence()
