@@ -129,6 +129,10 @@
         sFlow(R) configuration.
       </column>
 
+      <column name="snmp_communities">
+        Community strings to be used by the system when communicating over SNMPv1/SNMPv2c.
+      </column>
+
       <column name="other_config" key="stats-update-interval"
               type='{"type": "integer", "minInteger": 5000}'>
         <p>
@@ -221,18 +225,6 @@
           Overrides source interface or IP address for all the protocols that support it. If not present, regular routing rules take place.
         </column>
       </group>
-
-    <group title="DHCP-Relay Configurations">
-        <column name="other_config" key="dhcp_relay_disabled"
-                type='{"type": "boolean"}'>
-          Set this value to <code>true</code> to disable DHCP-Relay functionality
-          globally and set it to <code>false</code> to enable it. DHCP-Relay is
-          enabled by default. If the key is missing, the configuration is assumed
-          to be enabled.
-          Though DHCP-Relay configuration is enabled globally, the functionality
-          is effective only after the port level server configuration.
-        </column>
-    </group>
 
     <group title="UDP Broadcast Forwarder Configurations">
         <column name="other_config" key="udp_bcast_forwarder_enabled"
@@ -358,6 +350,23 @@
       </column>
    </group>
 
+   <group title="SNMP configuration">
+     <column name="other_config" key="snmp_agent_port">
+        The port on which the SNMP agent listens for SNMP requests. The default port is 161.
+     </column>
+     <column name="other_config" key="system_location">This key represents the system location.</column>
+     <column name="other_config" key="system_contact">This key represents the system contact.</column>
+     <column name="other_config" key="system_description">This key represents the system description.</column>
+   </group>
+
+   <group title="Syslog Remotes Configurations">
+      <column name="syslog_remotes">
+        <p>
+          List of syslog servers to which syslog messages will be forwarded.
+          <ref table="Syslog_Remote"/>
+        </p>
+      </column>
+   </group>
    </group>
 
     <group title="Status">
@@ -942,6 +951,90 @@
          Default is false.
       </column>
     </group>
+
+    <group title="DHCP Configurations">
+      <column name="dhcp_config" key="v4relay_disabled"
+              type='{"type": "boolean"}'>
+        <p>
+        Set this value to <code>true</code> to disable DHCP-Relay functionality
+        globally and set it to <code>false</code> to enable it. DHCP-Relay is
+        enabled by default. If the key is missing, the configuration is assumed
+        to be enabled.
+        Though DHCP-Relay configuration is enabled globally, the functionality
+        is effective only after the port level server configuration.
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="v4relay_option82_policy"
+              type='{"type": "string", "enum": ["set", ["drop", "keep", "replace"]]}'>
+        <p>
+        Specifies the forwarding policy of DHCP-Relay Option 82.
+        </p><p><code>drop</code> -
+        Drop an inbound dhcp-client request with an Option 82 field already
+        appended. If no Option 82 fields are present, drop causes the router to add
+        an Option 82 field to dhcp request and forward.
+        </p><p><code>keep</code> -
+        If the relay agent receives a client request that already has one or more Option 82
+        fields, keep causes the relay agent to retain such fields and forward the request
+        without adding another Option 82 field. But if the incoming client request does not
+        already have any Option 82 fields, the relay agent appends an Option 82 field and
+        forwards the dhcp request.
+        </p><p><code>replace</code> -
+        Replace any existing Option 82 fields from downstream relay agents
+        (and/or the originating client) with an Option 82 field for the current relay agent.
+        </p><p>
+        If the keys is missing, Option 82 configuration is assumed to be disabled.
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="v4relay_option82_validation_enabled"
+              type='{"type": "boolean"}'>
+        <p>
+        Set this value to <code>true</code> to validate server response packets
+        and set it to <code>false</code> otherwise. This configuration is
+        disabled by default. If the key is missing, the configuration is assumed
+        to be disabled.
+        This configuration is valid only for drop or replace dhcp-relay Option 82 policy.
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="v4relay_option82_remote_id"
+              type='{"type": "string", "enum": ["set", ["ip", "mac"]]}'>
+        <p>
+        Specifies the remote ID suboption that the switch uses in Option 82 fields
+        added or appended to DHCP client packets. The type of remote ID defines DHCP policy
+        areas in the client requests sent to the DHCP server.
+        </p><p><code>ip</code> -
+        Specifies the IP address of the interface on which the client DHCP packet
+        enters the switch.
+        </p><p><code>mac</code> -
+        Specifies the router's MAC address. (The MAC address used is the same MAC address
+        that is assigned to all interfaces configured on the routing switch.)
+        </p><p>
+        If the key is not specified, configuration is assumed to be "mac".
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="v4relay_hop_count_increment_enabled"
+              type='{"type": "boolean"}'>
+        <p>
+        Set this value to <code>true</code> to enable the hop count increment in
+        the relayed DHCP requests and set it to <code>false</code> otherwise. This
+        configuration is disabled by default. If the key is missing, the configuration
+        is assumed to be disabled.
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="bootp_gateway"
+              type='{"type": "string", "maxLength":15}'>
+        <p>
+        Provides a way to configure a gateway address for the DHCP relay agent
+        to use for DHCP requests, rather than the DHCP relay agent automatically assigning
+        the lowest-numbered IP address.
+        </p>
+      </column>
+    </group>
+
     <group title="QoS configuration">
       <p>
         Specifies QoS (Quality of Service) configuration options that are
@@ -2647,9 +2740,9 @@
         Strict Priority will service all packets in the queue before any
         packets in lower numbered queues as long as there are no packets
         in any higher number queue.
-        </p><p><code>wrr</code> -
-        (Deficit) Weight Round Robin will apportion available bandwidth
-        amongst all non-empty wrr queues in relation to their queue weights.
+        </p><p><code>dwrr</code> -
+        Deficit Weight Round Robin will apportion available bandwidth
+        amongst all non-empty dwrr queues in relation to their queue weights.
         </p>
         <p>
         If this parameter is missing, it is assumed to be 'strict'.
@@ -3013,8 +3106,7 @@
           the selection of a interface from a group of aggregate interfaces
           with which to transmit a frame. This selection is performed with
           a hash function using either source and destination mac addresses
-          (l2), mac addresses plus VLAN ID (l2vid), ip addresses (l3) or
-          tcp/udp ports (l4) as parameters.
+          (l2), ip addresses (l3) or tcp/udp ports (l4) as parameters.
           Defaults to <code>l3-src-dst-hash</code> if not assigned.
         </p>
       </column>
@@ -3172,7 +3264,12 @@
         Default is true.
       </column>
       <column name="other_config" key="proxy_arp_enabled" type='{"type": "boolean"}'>
-        Enables proxy ARP feature on the interface.
+        Enables proxy ARP feature on the port.
+        Default is false. Port should be part of VRF in order for the feature
+        to be active.
+      </column>
+      <column name="other_config" key="local_proxy_arp_enabled" type='{"type": "boolean"}'>
+        Enables local proxy ARP feature on the port.
         Default is false. Port should be part of VRF in order for the feature
         to be active.
       </column>
@@ -6307,5 +6404,38 @@
       ops-openvswitch: ac19ac49778adf6cf011a3ef6e0675025f1945b5
       sed: 4.2.2
     </column>
+  </table>
+  <table name="Syslog_Remote" title="Syslog remote configuration">
+    <p>
+      Each entry contains the configuration of the remote syslog server to forward syslog messages.
+    </p>
+    <group title="Configuration">
+      <column name="remote_host">
+         FQDN or host name or IPv4 address or IPv6 address of the syslog server.
+      </column>
+      <column name="transport">
+         Transport layer protocol used to forward messages to the server.
+         Default is <code>udp</code>
+      </column>
+      <column name="port_number">
+         Port number on which syslog server is listening.
+         Default is <code>514</code> for UDP protocol and <code>1470</code> for TCP protocol.
+      </column>
+      <column name="severity">
+         Filter syslog messages with severity.  Only messages with severity higher than or equal to the specified value will be sent to the remote server.
+         Default is <code>debug</code>.
+      </column>
+    </group>
+  </table>
+  <table name="SNMP_Trap">
+    <group title="configuration">
+      <column name="receiver_address">The IP address of the trap receiver.</column>
+      <column name="receiver_udp_port">The UDP port of the trap receiver.</column>
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings. The default community string is "public".
+      </column>
+      <column name="type">Trap type. The default type is "trap".</column>
+      <column name="version">Trap/inform version. The default version is "v2c".</column>
+    </group>
   </table>
 </database>
