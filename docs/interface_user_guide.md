@@ -67,11 +67,14 @@ The `mtu` command sets the interface MTU (maximum transmission unit) to between 
 ops-as5712(config)# mtu 2000
 ops-as5712(config)#
 ```
-The `no mtu` commands reverts the mtu of the interface to default auto mode.
+Note:If you are using an IXIA port to send Jumbo traffic, please try setting the frame type to Ethernet II in IXIA. Else interface counters will show as input error packets for Jumbo packets. Maximum configurable MTU value for jumbo frame is 9192 which allows inbound jumbo packets up to 9216(9192+ 24 padding bit) bytes.
+
+ The `no mtu` commands reverts the mtu of the interface to default auto mode.
 ```
 ops-as5712(config-if)# no mtu
 ops-as5712(config-if)#
 ```
+
 
 6. Select the interface autonegotiation state.
 The `autonegotiation` command turns the autonegotiation state on or off. The `no autonegotiation` command sets the autonegotiation state to default.
