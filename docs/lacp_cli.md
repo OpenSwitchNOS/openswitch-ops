@@ -19,10 +19,12 @@
 		- [Configuring hash type](#configuring-hash-type)
 		- [Configuring LACP fallback mode](#configuring-lacp-fallback-mode)
 		- [Configuring LACP rate](#configuring-lacp-rate)
+		- [Configuring shutdown](#configuring-shutdown)
 - [LAG display commands](#lag-display-commands)
 	- [Display global LACP configuration](#display-global-lacp-configuration)
 	- [Display LACP aggregates](#display-lacp-aggregates)
 	- [Display LACP interface configuration](#display-lacp-interface-configuration)
+	- [LAG show running-config](#lag-show-running-config)
 
 ## LACP configuration commands
 ### Global context commands
@@ -324,6 +326,52 @@ switch(config)# interface lag 1
 switch(config-lag-if)# lacp rate fast
 ```
 
+##### Configuring no shutdown
+##### Syntax
+
+```
+    no shutdown
+```
+
+##### Description
+This command sets every interface in LAG to no shutdown.
+
+##### Authority
+all users
+
+##### Parameters
+no parameters.
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# no shutdown
+```
+
+##### Configuring shutdown
+##### Syntax
+
+```
+    shutdown
+```
+
+##### Description
+This command sets every interface in LAG to shutdown.
+
+##### Authority
+all users
+
+##### Parameters
+no parameters.
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# shutdown
+```
+
 ## LAG display commands
 ### Display global LACP configuration
 #### Syntax
@@ -461,4 +509,46 @@ System-id          |                    |
 System-priority    |                    |
 
 switch#
+```
+
+### LAG show running-config
+#### Syntax
+
+```
+    show running-config
+```
+
+#### Description
+This command displays the complete switch configuration, when the switch has
+LAGs configured it should display all the configuration specific to those interfaces.
+
+#### Authority
+all users
+
+#### Parameters
+No parameters
+
+#### Examples
+```
+switch# show running-config
+Current configuration:
+!
+!
+!
+!
+!
+vlan 1
+    no shutdown
+interface lag 2
+    no shutdown
+    ip address 10.2.2.2/24
+    ipv6 address 2001::1/64
+interface lag 3
+    no shutdown
+    lacp mode passive
+interface lag 1
+    no shutdown
+    lacp mode active
+    ip address 10.1.1.1/24
+    ipv6 address 2001:db8:a0b:12f0::1/64
 ```

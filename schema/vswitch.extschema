@@ -447,6 +447,39 @@
             "max": "unlimited"
           },
           "ephemeral": true
+        },
+        "syslog_remotes": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Syslog_Remote"
+            },
+            "min": 0,
+            "max": 4
+          }
+        },
+        "dhcp_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "snmp_communities": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1 ,
+              "maxLength": 32
+            },
+            "min": 0,
+            "max": 10
+          }
         }
       },
       "isRoot": true,
@@ -3520,7 +3553,6 @@
                 "set",
                 [
                   "l2-src-dst-hash",
-                  "l2vid-src-dst-hash",
                   "l3-src-dst-hash",
                   "l4-src-dst-hash"
                 ]
@@ -5800,7 +5832,7 @@
           "type": {
             "key": {
               "type": "string",
-              "enum": ["set", ["strict", "wrr"] ]
+              "enum": ["set", ["strict", "dwrr"] ]
             },
             "min": 0,
             "max": 1
@@ -7553,6 +7585,161 @@
         ]
       ],
       "isRoot": true
+    },
+    "Syslog_Remote": {
+      "columns": {
+        "remote_host": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          }
+        },
+        "transport": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "udp",
+                  "tcp"
+                ]
+              ]
+            },
+            "min":0,
+            "max":1
+          }
+        },
+        "port_number": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 65535
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "severity": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "debug",
+                  "info",
+                  "notice",
+                  "warning",
+                  "err",
+                  "crit",
+                  "alert",
+                  "emerg"
+                ]
+              ]
+            },
+            "min":0,
+            "max":1
+          }
+        }
+      },
+      "indexes": [
+        [
+          "remote_host",
+          "transport"
+        ]
+      ]
+    },
+    "SNMP_Trap" : {
+      "columns" : {
+        "receiver_address" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+            "type" : "string",
+            "maxLength" : 45
+            }
+          }
+        },
+
+        "receiver_udp_port" : {
+          "category"  : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "integer",
+              "minInteger" : 1,
+              "maxInteger" : 65535
+            }
+          }
+        },
+        "type" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+               "type"  : "string",
+               "enum": [
+                "set",
+                [
+                  "trap",
+                  "inform"
+                ]
+              ]
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        },
+
+        "version" : {
+          "category" : "configuration",
+          "type" : {
+            "key" : {
+               "type"  : "string",
+               "enum": [
+                "set",
+                [
+                  "v1",
+                  "v2c",
+                  "v3"
+                ]
+              ]
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        },
+
+        "community_name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+
+              "minLength": 1 ,
+              "maxLength": 32
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        }
+      },
+      "indexes": [
+        [
+          "receiver_address",
+          "receiver_udp_port"
+        ]
+      ],
+
+      "maxRows" : 10,
+      "isRoot" : true
     }
   }
 }
