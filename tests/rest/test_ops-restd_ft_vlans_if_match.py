@@ -22,9 +22,11 @@ from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 
 import json
-
-from opsvsiutils.restutils.fakes import *
-from opsvsiutils.restutils.utils import *
+import httplib
+from opsvsiutils.restutils.fakes import create_fake_vlan, FAKE_VLAN_DATA
+from opsvsiutils.restutils.utils import execute_request, login, \
+    rest_sanity_check, get_switch_ip, compare_dict
+from copy import deepcopy
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -49,7 +51,6 @@ test_vlan_data["one_string"] = deepcopy(base_vlan_data)
 test_vlan_data["multiple_string"] = deepcopy(base_vlan_data)
 test_vlan_data["None"] = deepcopy(base_vlan_data)
 test_vlan_data["boolean"] = deepcopy(base_vlan_data)
-
 DEFAULT_BRIDGE = "bridge_normal"
 
 TEST_HEADER = "Test to validate If-Match"
@@ -62,6 +63,11 @@ class myTopo(Topo):
         self.hsts = hsts
         self.sws = sws
         self.addSwitch("s1")
+
+
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.switch_ip)
 
 
 class IfMatchVlanTest(OpsVsiTest):
@@ -85,6 +91,7 @@ class IfMatchVlanTest(OpsVsiTest):
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
         self.config_selector = "?selector=configuration"
+        self.cookie_header = None
 
     def test_put_vlan_with_star_etag(self):
         info(TEST_START % "PUT VLAN with star Etag")
@@ -104,8 +111,8 @@ class IfMatchVlanTest(OpsVsiTest):
                                                      self.switch_ip,
                                                      False,
                                                      {'"If-Match"': '"*"'})
-        assert status_code == httplib.OK, "Error modifying a VLAN using if-match "\
-            "option. Status code: %s Response data: %s "\
+        assert status_code == httplib.OK, "Error modifying a VLAN using "\
+            "if-match option. Status code: %s Response data: %s "\
             % (status_code, response_data)
         info("### VLAN Modified. Status code 200 OK  ###\n")
 
@@ -123,8 +130,8 @@ class IfMatchVlanTest(OpsVsiTest):
 
         post_put_data = post_put_get_data["configuration"]
 
-        assert compare_dict(post_put_data, put_data), "Configuration data is not "\
-            "equal that posted data"
+        assert compare_dict(post_put_data, put_data), "Configuration data is "\
+            "not equal that posted data"
         info("### Configuration data validated %s ###\n" % response_data)
 
         info(TEST_END % "PUT VLAN with star Etag")
@@ -166,8 +173,8 @@ class IfMatchVlanTest(OpsVsiTest):
 
         post_put_data = post_put_get_data["configuration"]
 
-        assert compare_dict(post_put_data, put_data), "Configuration data is not "\
-            "equal that posted data"
+        assert compare_dict(post_put_data, put_data), "Configuration data is "\
+            "not equal that posted data"
         info("### Configuration data validated %s ###\n" % response_data)
 
         info(TEST_END % "PUT VLAN with matching Etag")
@@ -194,8 +201,8 @@ class IfMatchVlanTest(OpsVsiTest):
                                                      self.switch_ip,
                                                      False,
                                                      {'If-Match': etag})
-        assert status_code == httplib.OK, "Error modifying a VLAN using if-match "\
-            "option. Status code: %s Response data: %s "\
+        assert status_code == httplib.OK, "Error modifying a VLAN using "\
+            "if-match option. Status code: %s Response data: %s "\
             % (status_code, response_data)
         info("### VLAN Modified. Status code 200 OK  ###\n")
 
@@ -298,9 +305,9 @@ class IfMatchVlanTest(OpsVsiTest):
                                                      self.switch_ip,
                                                      False,
                                                      {"If-Match": etag})
-        assert status_code == httplib.PRECONDITION_FAILED, "Error creating a VLAN "\
-            "using if-match using invalid etag. Status code: %s Response data: %s "\
-            % (status_code, response_data)
+        assert status_code == httplib.PRECONDITION_FAILED, "Error creating "\
+            "using if-match using invalid etag. Status code: %s "\
+            "Response data: %s " % (status_code, response_data)
         info("### VLAN No Created. Status code 412 Precondition Failed  ###\n")
 
         info(TEST_END % "POST VLAN with not matching Etag")
@@ -318,8 +325,9 @@ class IfMatchVlanTest(OpsVsiTest):
                                                      self.switch_ip,
                                                      False,
                                                      {"If-Match": etag})
-        assert status_code == httplib.OK, "Error retrieving VLANs using valid etag. "\
-            "Status code: %s Response data: %s " % (status_code, response_data)
+        assert status_code == httplib.OK, "Error retrieving VLANs using " \
+            "valid etag Status code: %s Response data: %s " % \
+            (status_code, response_data)
         info("### VLANs retrieved. Status code 200 OK  ###\n")
 
         info(TEST_END % "GET all VLANs with  matching Etag")
@@ -363,8 +371,9 @@ class IfMatchVlanTest(OpsVsiTest):
                                                      self.switch_ip,
                                                      False,
                                                      {"If-Match": etag})
-        assert status_code == httplib.OK, "Error retrieving VLAN using valid etag. "\
-            "Status code: %s Response data: %s " % (status_code, response_data)
+        assert status_code == httplib.OK, "Error retrieving VLAN using "\
+            "valid etag Status code: %s Response data: %s " % \
+            (status_code, response_data)
         info("### VLANs retrieved. Status code 200 OK  ###\n")
 
         info(TEST_END % "GET VLAN with matching Etag")
@@ -417,8 +426,9 @@ class IfMatchVlanTest(OpsVsiTest):
                                                      False,
                                                      {"If-Match": etag})
 
-        assert status_code == httplib.NO_CONTENT, "Error deleting VLAN using valid etag. "\
-            "Status code: %s Response data: %s " % (status_code, response_data)
+        assert status_code == httplib.NO_CONTENT, "Error deleting VLAN using "\
+            "valid etag Status code: %s Response data: %s " % \
+            (status_code, response_data)
         info("### VLAN deleted. Status code NOT CONTENT 204  ###\n")
 
         info(TEST_END % "DELETE VLAN with matching Etag")
@@ -521,38 +531,38 @@ class Test_IfMatchVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run_call_put_vlan_with_star_etag(self):
+    def test_run_call_put_vlan_with_star_etag(self, netop_login):
         self.test_var.test_put_vlan_with_star_etag()
 
-    def test_run_call_put_vlan_etag_match(self):
+    def test_run_call_put_vlan_etag_match(self, netop_login):
         self.test_var.test_put_vlan_etag_match()
 
-    def test_run_call_put_vlan_same_state_not_matching_etag(self):
+    def test_run_call_put_vlan_same_state_not_matching_etag(self, netop_login):
         self.test_var.test_put_vlan_same_state_not_matching_etag()
 
-    def test_run_call_put_vlan_etag_not_match(self):
+    def test_run_call_put_vlan_etag_not_match(self, netop_login):
         self.test_var.test_put_vlan_etag_not_match()
 
-    def test_run_call_post_vlan_etag_match(self):
+    def test_run_call_post_vlan_etag_match(self, netop_login):
         self.test_var.test_post_vlan_etag_match()
 
-    def test_run_call_post_vlan_etag_not_match(self):
+    def test_run_call_post_vlan_etag_not_match(self, netop_login):
         self.test_var.test_post_vlan_etag_not_match()
 
-    def test_run_call_get_all_vlan_etag_match(self):
+    def test_run_call_get_all_vlan_etag_match(self, netop_login):
         self.test_var.test_get_all_vlan_etag_match()
 
-    def test_run_call_get_all_vlan_etag_not_match(self):
+    def test_run_call_get_all_vlan_etag_not_match(self, netop_login):
         self.test_var.test_get_all_vlan_etag_not_match()
 
-    def test_run_call_get_vlan_etag_match(self):
+    def test_run_call_get_vlan_etag_match(self, netop_login):
         self.test_var.test_get_vlan_etag_match()
 
-    def test_run_call_get_vlan_etag_not_match(self):
+    def test_run_call_get_vlan_etag_not_match(self, netop_login):
         self.test_var.test_get_vlan_etag_not_match()
 
-    def test_run_call_delete_vlan_etag_match(self):
+    def test_run_call_delete_vlan_etag_match(self, netop_login):
         self.test_var.test_delete_vlan_etag_match()
 
-    def test_run_call_delete_vlan_etag_not_match(self):
+    def test_run_call_delete_vlan_etag_not_match(self, netop_login):
         self.test_var.test_delete_vlan_etag_not_match()

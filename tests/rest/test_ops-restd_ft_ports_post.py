@@ -22,9 +22,12 @@ import json
 import httplib
 import subprocess
 
-from opsvsiutils.restutils.utils import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, get_container_id, PORT_DATA, \
+    execute_port_operations
 from copy import deepcopy
-from opsvsiutils.restutils.swagger_test_utility import *
+from opsvsiutils.restutils.swagger_test_utility import \
+    swagger_model_verification
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -35,6 +38,11 @@ class myTopo(Topo):
         self.hsts = hsts
         self.sws = sws
         self.switch = self.addSwitch("s1")
+
+
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
 
 
 class CreatePortTest (OpsVsiTest):
@@ -49,6 +57,7 @@ class CreatePortTest (OpsVsiTest):
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
         self.PATH = "/rest/v1/system/ports"
         self.PORT_PATH = self.PATH + "/Port1"
+        self.cookie_header = None
 
     def create_port_with_depth(self):
         info("\n########## Test to Validate Create "
@@ -114,8 +123,7 @@ class CreatePortTest (OpsVsiTest):
                 ("tag", "675", httplib.BAD_REQUEST),
                 ("tag", 675, httplib.CREATED),
                 ("trunks", "654, 675", httplib.BAD_REQUEST),
-                ("trunks", [654, 675], httplib.CREATED)
-        ]
+                ("trunks", [654, 675], httplib.CREATED)]
         results = execute_port_operations(data, "PortTypeTest", "POST",
                                           self.PATH, self.SWITCH_IP)
 
@@ -147,8 +155,7 @@ class CreatePortTest (OpsVsiTest):
                 ("tag", 675, httplib.CREATED),
                 ("interfaces", interfaces_out_of_range, httplib.BAD_REQUEST),
                 ("interfaces", ["/rest/v1/system/interfaces/1"],
-                 httplib.CREATED)
-        ]
+                 httplib.CREATED)]
         results = execute_port_operations(data, "PortRangesTest", "POST",
                                           self.PATH, self.SWITCH_IP)
 
@@ -169,10 +176,9 @@ class CreatePortTest (OpsVsiTest):
 
         info("\nAttempting to create port with invalid value in attributes\n")
 
-        data = [
-                ("vlan_mode", "invalid_value", httplib.BAD_REQUEST),
-                ("vlan_mode", "access", httplib.CREATED)
-        ]
+        data = [("vlan_mode", "invalid_value", httplib.BAD_REQUEST),
+                ("vlan_mode", "access", httplib.CREATED)]
+
         results = execute_port_operations(data, "PortValidValueTest", "POST",
                                           self.PATH, self.SWITCH_IP)
 
@@ -236,10 +242,9 @@ class CreatePortTest (OpsVsiTest):
 
         info("\nAttempting to create a port with an unknown attribute\n")
 
-        data = [
-                ("unknown_attribute", "unknown_value", httplib.BAD_REQUEST),
-                ("vlan_mode", "access", httplib.CREATED)
-        ]
+        data = [("unknown_attribute", "unknown_value", httplib.BAD_REQUEST),
+                ("vlan_mode", "access", httplib.CREATED)]
+
         results = execute_port_operations(data, "PortUnknownAttributeTest",
                                           "POST", self.PATH, self.SWITCH_IP)
 
@@ -320,7 +325,7 @@ class Test_CreatePort:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.create_port_with_depth()
         self.test_var.create_port()
         self.test_var.create_same_port()

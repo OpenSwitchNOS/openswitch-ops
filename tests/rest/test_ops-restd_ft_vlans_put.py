@@ -26,9 +26,11 @@ import httplib
 import urllib
 import subprocess
 
-from opsvsiutils.restutils.fakes import *
-from opsvsiutils.restutils.utils import *
-from opsvsiutils.restutils.swagger_test_utility import *
+from opsvsiutils.restutils.fakes import create_fake_vlan
+from opsvsiutils.restutils.utils import get_switch_ip, execute_request, \
+    rest_sanity_check, get_json, login, get_container_id
+from opsvsiutils.restutils.swagger_test_utility import \
+    swagger_model_verification
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -74,6 +76,11 @@ class myTopo(Topo):
 #   Basic update to existing VLAN                                             #
 #                                                                             #
 ###############################################################################
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
+
+
 class UpdateExistingVlan(OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -94,6 +101,8 @@ class UpdateExistingVlan(OpsVsiTest):
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(base_vlan_data)
@@ -148,7 +157,7 @@ class TestPutExistingVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         info("container_id_test %s\n" % self.container_id)
         swagger_model_verification(self.container_id,
                                    "/system/bridges/{pid}/vlans/{id}",
@@ -161,6 +170,8 @@ class TestPutExistingVlan:
 #   Update VLAN name field with invalid values                                #
 #                                                                             #
 ###############################################################################
+
+
 class UpdateVlanInvalidName(OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -181,6 +192,8 @@ class UpdateVlanInvalidName(OpsVsiTest):
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -249,7 +262,7 @@ class TestPutVlanInvalidName:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -278,6 +291,8 @@ class UpdateVlanInvalidId(OpsVsiTest):
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -346,7 +361,7 @@ class TestPutVlanInvalidId:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -375,6 +390,8 @@ class UpdateVlanInvalidDescription(OpsVsiTest):
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -443,7 +460,7 @@ class TestPutVlanInvalidDescription:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -472,6 +489,8 @@ class UpdateVlanInvalidAdmin(OpsVsiTest):
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -540,7 +559,7 @@ class TestPutVlanInvalidAdmin:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -569,6 +588,8 @@ class UpdateVlanInvalidOtherConfig(OpsVsiTest):
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -637,7 +658,7 @@ class TestPutVlanInvalidOtherConfig:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -666,6 +687,8 @@ class UpdateVlanInvalidExternalIds(OpsVsiTest):
         self.vlan = "%s/%s/vlans/%s" % (self.path,
                                         DEFAULT_BRIDGE,
                                         self.vlan_name)
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -734,5 +757,5 @@ class TestPutVlanInvalidExternalIds:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()

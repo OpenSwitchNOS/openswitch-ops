@@ -28,7 +28,8 @@ import subprocess
 import time
 import datetime
 
-from opsvsiutils.restutils.utils import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, get_json
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -43,6 +44,11 @@ class myTopo(Topo):
         switch = self.addSwitch("s1")
 
 
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
+
+
 class LogsSinceUntilTest (OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -54,6 +60,7 @@ class LogsSinceUntilTest (OpsVsiTest):
 
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
         self.PATH = "/rest/v1/logs"
+        self.cookie_header = None
 
     def verify_timestamp(self, json_data):
         for t in json_data:
@@ -140,7 +147,8 @@ class LogsSinceUntilTest (OpsVsiTest):
 
         assert status_code == httplib.BAD_REQUEST, "Wrong status code %s " \
             % status_code
-        info("### Status code for since 0000-00-00 00:00:00 case is okay ###\n")
+        info("### Status code for since 0000-00-00 00:00:00 "
+             "case is okay ###\n")
 
         since_test = "2050-01-01%2001:00:00"
         self.LOGS_PATH = self.PATH + "?since=%s&offset=%s&limit=%s" \
@@ -163,7 +171,8 @@ class LogsSinceUntilTest (OpsVsiTest):
 
         assert status_code == httplib.BAD_REQUEST, "Wrong status code %s "\
             % status_code
-        info("### Status code for since parameter with negative value is okay ###\n")
+        info("### Status code for since parameter with negative "
+             "value is okay ###\n")
 
         info("\n########## End Test to Validate negative test case for logs" +
              " with since timestamp ##########\n")
@@ -260,17 +269,17 @@ class Test_LogsSinceUntil:
     def __del__(self):
         del self.test_var
 
-    def test_logs_with_since_relative_filter(self):
+    def test_logs_with_since_relative_filter(self, netop_login):
         self.test_var.logs_with_since_relative_filter()
 
-    def test_logs_with_since_timestamp_filter(self):
+    def test_logs_with_since_timestamp_filter(self, netop_login):
         self.test_var.logs_with_since_timestamp_filter()
 
-    def test_logs_with_since_negative_test_cases(self):
+    def test_logs_with_since_negative_test_cases(self, netop_login):
         self.test_var.logs_with_since_negative_test_cases()
 
-    def test_logs_with_until_relative_filter(self):
+    def test_logs_with_until_relative_filter(self, netop_login):
         self.test_var.logs_with_until_relative_filter()
 
-    def test_logs_with_until_timestamp_filter(self):
+    def test_logs_with_until_timestamp_filter(self, netop_login):
         self.test_var.logs_with_until_timestamp_filter()

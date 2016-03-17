@@ -25,8 +25,9 @@ import json
 import httplib
 import urllib
 
-from opsvsiutils.restutils.fakes import *
-from opsvsiutils.restutils.utils import *
+from opsvsiutils.restutils.fakes import create_fake_vlan
+from opsvsiutils.restutils.utils import execute_request, login, \
+    rest_sanity_check, get_switch_ip
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -51,6 +52,11 @@ class myTopo(Topo):
 #   Basic Delete for non-existent VLAN                                        #
 #                                                                             #
 ###############################################################################
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.switch_ip)
+
+
 class DeleteNonExistentVlan(OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -67,6 +73,7 @@ class DeleteNonExistentVlan(OpsVsiTest):
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_name = "not_found"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.cookie_header = None
 
     def test(self):
         delete_path = "%s/%s" % (self.vlan_path, self.vlan_name)
@@ -113,7 +120,7 @@ class TestDeleteNonExistentVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -139,6 +146,7 @@ class DeleteExistentVlan(OpsVsiTest):
         self.vlan_id = 1
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.cookie_header = None
 
     def test(self):
         delete_path = "%s/%s" % (self.vlan_path, self.vlan_name)
@@ -210,5 +218,5 @@ class TestDeleteExistentVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()

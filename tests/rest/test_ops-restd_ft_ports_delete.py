@@ -22,7 +22,8 @@ from opsvsi.opsvsitest import *
 import json
 import httplib
 
-from opsvsiutils.restutils.utils import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, create_test_port
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
@@ -35,6 +36,11 @@ class myTopo(Topo):
         self.hsts = hsts
         self.sws = sws
         self.switch = self.addSwitch("s1")
+
+
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
 
 
 class DeletePortTest (OpsVsiTest):
@@ -52,6 +58,7 @@ class DeletePortTest (OpsVsiTest):
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
         self.PATH = "/rest/v1/system/ports"
         self.PORT_PATH = self.PATH + "/Port1"
+        self.cookie_header = None
 
     def delete_port_with_depth(self):
         info("\n########## Test delete Port with depth ##########\n")
@@ -148,7 +155,7 @@ class Test_DeletePort:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.delete_port_with_depth()
         self.test_var.delete_port()
         self.test_var.verify_deleted_port_from_port_list()

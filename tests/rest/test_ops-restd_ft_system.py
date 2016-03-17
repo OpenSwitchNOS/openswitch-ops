@@ -26,8 +26,10 @@ import httplib
 import urllib
 import subprocess
 
-from opsvsiutils.restutils.utils import *
-from opsvsiutils.restutils.swagger_test_utility import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, get_container_id
+from opsvsiutils.restutils.swagger_test_utility import \
+    swagger_model_verification
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -40,6 +42,11 @@ class myTopo(Topo):
         self.sws = sws
 
         switch = self.addSwitch("s1")
+
+
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
 
 
 class systemTest(OpsVsiTest):
@@ -55,6 +62,7 @@ class systemTest(OpsVsiTest):
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
         self.SWITCH_PORT = 8091
         self.PATH = "/rest/v1/system"
+        self.cookie_header = None
 
     def test_call_system_get(self):
         global response_global
@@ -123,8 +131,8 @@ class systemTest(OpsVsiTest):
             ##########\n" % self.PATH)
 
     def test_call_system_put(self):
-        info("\n########## Executing PUT request on %s ##########\n" \
-            % self.PATH)
+        info("\n########## Executing PUT request on %s ##########\n"
+             % self.PATH)
 
         # # Get initial data
         response, pre_put_json_string = execute_request(self.PATH, "GET",
@@ -157,11 +165,11 @@ class systemTest(OpsVsiTest):
         put_data['asset_tag_number'] = "1"
 
         other_config = {
-                'stats-update-interval': "5001",
-                'min_internal_vlan': "1024",
-                'internal_vlan_policy': 'ascending',
-                'max_internal_vlan': "4094",
-                'enable-statistics': "false"
+            'stats-update-interval': "5001",
+            'min_internal_vlan': "1024",
+            'internal_vlan_policy': 'ascending',
+            'max_internal_vlan': "4094",
+            'enable-statistics': "false"
         }
         if 'other_config' in put_data:
             put_data['other_config'].update(other_config)
@@ -171,11 +179,11 @@ class systemTest(OpsVsiTest):
         put_data['external_ids'] = {"id1": "value1"}
 
         ecmp_config = {
-                'hash_srcip_enabled': "false",
-                'hash_srcport_enabled': "false",
-                'hash_dstip_enabled': "false",
-                'enabled': "false",
-                'hash_dstport_enabled': "false"
+            'hash_srcip_enabled': "false",
+            'hash_srcport_enabled': "false",
+            'hash_dstip_enabled': "false",
+            'enabled': "false",
+            'hash_dstport_enabled': "false"
         }
         if 'ecmp_config' in put_data:
             put_data['ecmp_config'].update(ecmp_config)
@@ -183,23 +191,23 @@ class systemTest(OpsVsiTest):
             put_data['ecmp_config'] = ecmp_config
 
         bufmon_config = {
-                'collection_period': "5",
-                'threshold_trigger_rate_limit': "60",
-                'periodic_collection_enabled': "false",
-                'counters_mode': 'current',
-                'enabled': "false",
-                'snapshot_on_threshold_trigger': "false",
-                'threshold_trigger_collection_enabled': "false"
+            'collection_period': "5",
+            'threshold_trigger_rate_limit': "60",
+            'periodic_collection_enabled': "false",
+            'counters_mode': 'current',
+            'enabled': "false",
+            'snapshot_on_threshold_trigger': "false",
+            'threshold_trigger_collection_enabled': "false"
         }
         if 'bufmon_config' in put_data:
             put_data['bufmon_config'].update(bufmon_config)
         else:
             put_data['bufmon_config'] = bufmon_config
 
-        logrotate_config =  {
-                'maxsize': "10",
-                'period': 'daily',
-                'target': ''
+        logrotate_config = {
+            'maxsize': "10",
+            'period': 'daily',
+            'target': ''
         }
         if 'logrotate_config' in put_data:
             put_data['logrotate_config'].update(logrotate_config)
@@ -207,8 +215,10 @@ class systemTest(OpsVsiTest):
             put_data['logrotate_config'] = logrotate_config
 
         response_global = {"configuration": put_data}
-        response, json_string = execute_request(self.PATH, "PUT", \
-            json.dumps({'configuration': put_data}), self.SWITCH_IP, True)
+        response, json_string = \
+            execute_request(self.PATH, "PUT",
+                            json.dumps({'configuration': put_data}),
+                            self.SWITCH_IP, True)
 
         assert response.status == httplib.OK, "PUT request failed: {0} \
             {1}".format(response.status, response.reason)
@@ -249,8 +259,8 @@ class systemTest(OpsVsiTest):
             did not yield BAD_REQUEST: {0} {1}".format(response.status,
                                                        response.reason)
 
-        info("\n########## Finished executing PUT request on %s ##########\n" \
-            % self.PATH)
+        info("\n########## Finished executing PUT request on %s ##########\n"
+             % self.PATH)
 
 
 class Test_system:
@@ -277,14 +287,14 @@ class Test_system:
     def __del__(self):
         del self.test_var
 
-    def test_run_call_sytem_get(self):
+    def test_run_call_sytem_get(self, netop_login):
         self.test_var.test_call_system_get()
         info("container_id_test_get_id %s\n" % self.container_id)
         swagger_model_verification(self.container_id, "/system", "GET_ID",
                                    response_global)
 
-    def test_run_call_sytem_options(self):
+    def test_run_call_sytem_options(self, netop_login):
         self.test_var.test_call_system_options()
 
-    def test_run_call_sytem_put(self):
+    def test_run_call_sytem_put(self, netop_login):
         self.test_var.test_call_system_put()

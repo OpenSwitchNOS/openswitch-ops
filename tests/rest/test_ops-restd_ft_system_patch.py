@@ -22,9 +22,10 @@ from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 
 import json
-
-from opsvsiutils.restutils.fakes import *
-from opsvsiutils.restutils.utils import *
+import httplib
+#from opsvsiutils.restutils.fakes import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check
 
 
 NUM_OF_SWITCHES = 1
@@ -42,6 +43,11 @@ class myTopo(Topo):
         self.addSwitch("s1")
 
 
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.switch_ip)
+
+
 class PatchSystemTest(OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -56,6 +62,7 @@ class PatchSystemTest(OpsVsiTest):
 
         self.path = "/rest/v1/system?selector=configuration"
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def check_malformed_json(self, response_data):
         try:
@@ -310,7 +317,7 @@ class PatchSystemTest(OpsVsiTest):
         data = "true"
         patch = [{"op": "add", "path": "/other_config", "value": {}},
                  {"op": "add", "path": "/other_config/enable-statistics",
-                 "value": data}]
+                  "value": data}]
         # 1 - Query Resource
         response, response_data = execute_request(self.path, "GET", None,
                                                   self.switch_ip, True)
@@ -362,7 +369,7 @@ class PatchSystemTest(OpsVsiTest):
         data = ["true", ["1.1.1.1"], "bar"]
         patch = [{"op": "add", "path": "/other_config", "value": {}},
                  {"op": "add", "path": "/other_config/enable-statistics",
-                 "value": data[0]},
+                  "value": data[0]},
                  {"op": "add", "path": "/dns_servers", "value": data[1]},
                  {"op": "add", "path": "/other_config/foo", "value": data[2]}]
         # 1 - Query Resource
@@ -998,53 +1005,57 @@ class Test_PatchSystem:
     def __del__(self):
         del self.test_var
 
-    def test_run_call_test_patch_add_new_value(self):
+    def test_run_call_test_patch_add_new_value(self, netop_login):
         self.test_var.test_patch_add_new_value()
 
-    def test_run_call_test_patch_add_replace_existing_field(self):
+    def test_run_call_test_patch_add_replace_existing_field(self, netop_login):
         self.test_var.test_patch_add_replace_existing_field()
 
-    def test_run_call_test_patch_add_an_array_element(self):
+    def test_run_call_test_patch_add_an_array_element(self, netop_login):
         self.test_var.test_patch_add_an_array_element()
 
-    def test_run_call_test_patch_add_an_object_member(self):
+    def test_run_call_test_patch_add_an_object_member(self, netop_login):
         self.test_var.test_patch_add_an_object_member()
 
-    def test_run_call_test_patch_add_value_with_malformed_patch(self):
+    def test_run_call_test_patch_add_value_with_malformed_patch(self,
+                                                                netop_login):
         self.test_var.test_patch_add_value_with_malformed_patch()
 
-    def test_run_call_test_patch_add_new_value_for_boolean_field(self):
+    def test_run_call_test_patch_add_new_value_for_boolean_field(self,
+                                                                 netop_login):
         self.test_var.test_patch_add_new_value_for_boolean_field()
 
-    def test_run_call_test_patch_add_multiple_fields(self):
+    def test_run_call_test_patch_add_multiple_fields(self, netop_login):
         self.test_var.test_patch_add_multiple_fields()
 
-    def test_run_call_test_patch_test_operation_nonexistent_value(self):
+    def test_run_call_test_patch_test_operation_nonexistent_value(self,
+                                                                  netop_login):
         self.test_var.test_patch_test_operation_nonexistent_value()
 
-    def test_run_call_test_patch_test_operation_for_existent_value(self):
+    def test_run_call_test_patch_test_operation_for_existent_value(self,
+                                                                   netop_login):
         self.test_var.test_patch_test_operation_for_existent_value()
 
-    def test_run_call_test_patch_copy_existing_value(self):
+    def test_run_call_test_patch_copy_existing_value(self, netop_login):
         self.test_var.test_patch_copy_existing_value()
 
-    def test_run_call_test_patch_copy_nonexistent_value(self):
+    def test_run_call_test_patch_copy_nonexistent_value(self, netop_login):
         self.test_var.test_patch_copy_nonexistent_value()
 
-    def test_run_call_test_patch_move_existent_value(self):
+    def test_run_call_test_patch_move_existent_value(self, netop_login):
         self.test_var.test_patch_move_existent_value()
 
-    def test_run_call_test_patch_move_nonexistent_value(self):
+    def test_run_call_test_patch_move_nonexistent_value(self, netop_login):
         self.test_var.test_patch_move_nonexistent_value()
 
-    def test_run_call_test_patch_move_value_to_invalid_path(self):
+    def test_run_call_test_patch_move_value_to_invalid_path(self, netop_login):
         self.test_var.test_patch_move_value_to_invalid_path()
 
-    def test_run_call_test_patch_replace_existent_value(self):
+    def test_run_call_test_patch_replace_existent_value(self, netop_login):
         self.test_var.test_patch_replace_existent_value()
 
-    def test_run_call_test_patch_replace_nonexistent_value(self):
+    def test_run_call_test_patch_replace_nonexistent_value(self, netop_login):
         self.test_var.test_patch_replace_nonexistent_value()
 
-    def test_run_call_test_patch_remove_existent_value(self):
+    def test_run_call_test_patch_remove_existent_value(self, netop_login):
         self.test_var.test_patch_remove_existent_value()

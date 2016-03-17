@@ -25,7 +25,8 @@ import json
 import httplib
 import urllib
 import subprocess
-from opsvsiutils.restutils.utils import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, get_json, rest_sanity_check
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -40,6 +41,11 @@ class myTopo(Topo):
         switch = self.addSwitch("s1")
 
 
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
+
+
 class LogsInvalidFiltersTest (OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -52,6 +58,7 @@ class LogsInvalidFiltersTest (OpsVsiTest):
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
         self.PATH = "/rest/v1/logs"
         self.LOGS_PATH = self.PATH
+        self.cookie_header = None
 
     def logs_with_invalid_filters(self):
         info("\n########## Test to Validate logs with invalid filters \
@@ -147,8 +154,8 @@ class Test_LogsInvalidFilters:
     def __del__(self):
         del self.test_var
 
-    def test_logs_with_invalid_filters(self):
+    def test_logs_with_invalid_filters(self, netop_login):
         self.test_var.logs_with_invalid_filters()
 
-    def test_logs_with_invalid_data(self):
+    def test_logs_with_invalid_data(self, netop_login):
         self.test_var.logs_filters_with_invalid_data()

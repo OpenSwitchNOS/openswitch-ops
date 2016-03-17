@@ -25,7 +25,8 @@ import json
 import httplib
 import urllib
 
-from opsvsiutils.restutils.utils import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, create_test_ports
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -39,24 +40,23 @@ class myTopo(Topo):
         switch = self.addSwitch("s1")
 
 
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
+
+
 class QueryPortPaginationTest(OpsVsiTest):
     def setupNet(self):
-        self.net = Mininet(
-                    topo=myTopo(
-                        hsts=NUM_HOSTS_PER_SWITCH,
-                        sws=NUM_OF_SWITCHES,
-                        hopts=self.getHostOpts(),
-                        sopts=self.getSwitchOpts()
-                    ),
-                    switch=VsiOpenSwitch,
-                    host=None,
-                    link=None,
-                    controller=None,
-                    build=True
-        )
+        self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
+                                       sws=NUM_OF_SWITCHES,
+                                       hopts=self.getHostOpts(),
+                                       sopts=self.getSwitchOpts()),
+                           switch=VsiOpenSwitch, host=None, link=None,
+                           controller=None, build=True)
 
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
         self.PATH = "/rest/v1/system/ports"
+        self.cookie_header = None
 
     def test_pagination_empty_offset(self, path):
         info("### Attempting to fetch first 5 ports in the list with" +
@@ -396,6 +396,6 @@ class Test_QueryPortPagination:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test_pagination_indexes()
         self.test_var.test_query_ports_paginated()

@@ -27,7 +27,8 @@ import urllib
 
 import inspect
 
-from opsvsiutils.restutils.utils import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, get_json, rest_sanity_check
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -38,6 +39,11 @@ class myTopo(Topo):
         self.hsts = hsts
         self.sws = sws
         switch = self.addSwitch("s1")
+
+
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
 
 
 class QueryInterfaceDepthTest(OpsVsiTest):
@@ -54,6 +60,7 @@ class QueryInterfaceDepthTest(OpsVsiTest):
 
         self.SWITCH_IP = get_switch_ip(self.net.switches[0])
         self.PATH = "/rest/v1/system/interfaces"
+        self.cookie_header = None
 
     def get_json(self, response_data):
         json_data = {}
@@ -434,5 +441,5 @@ class Test_QueryInterfaceDepth:
     def _del_(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.run_tests()
