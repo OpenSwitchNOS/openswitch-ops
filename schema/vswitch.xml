@@ -3312,6 +3312,63 @@
         This key value should be treated as opaque handle by application
         daemons while updating LAG member interfaces in hardware.
       </column>
+
+      <column name="forwarding_state">
+        <p>
+          The Port's forwarding state is determined by the state of the
+          interface or interfaces in case of LAG and by the information provided
+          by protocols working at the logical port level, MSTP for example.
+        </p>
+      </column>
+      <column name="forwarding_state" key="state"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked",
+                      "listening",
+                      "learning",
+                      "down"
+                     ]]}'>
+        Enumeration that summarizes the state of the interface.
+        Default value is down.
+      </column>
+      <column name="forwarding_state" key="port_health"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked",
+                      "down"]]}'>
+        Port health is set based on the information provided by protocols.
+        The asserting protocol setting the value of this key is defined
+        in the Port health owner key.
+      </column>
+      <column name="forwarding_state" key="port_health_owner"
+          type='{ "type": "string", "enum": ["set",
+                       ["aggregation"
+                       ]]}'>
+        Enumeration that identifies the reason why the port health is
+        different from "forwarding".
+        * aggregation: This means that the aggregated state of the interfaces
+          is driving the forwarding state of the Port, for example, all interfaces
+          are down or blocked.
+      </column>
+      <column name="forwarding_state" key="port_loop_protection"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked",
+                      "listening",
+                      "learning"
+                      ]]}'>
+        Port loop protection is set based on the information provided by protocols.
+        The asserting protocol setting the value of this key is defined
+        in the interface loop protection owner key.
+      </column>
+      <column name="forwarding_state" key="port_loop_protection_owner"
+          type='{ "type": "string", "enum": ["set",
+                       ["mstp"
+                       ]]}'>
+        Enumeration that identifies the reason why the port loop protection is
+        different from "forwarding".
+      </column>
+
       <column name="lacp_status">
         Key-value pairs that report lacp-specific port status.
       </column>
@@ -3325,6 +3382,31 @@
       </column>
       <column name="lacp_status" key="bond_status_reason">
         String identifying the reason why the bond_status is "down".
+      </column>
+
+      <column name="bond_status">
+        Key-value pairs that report bond-specific port status (both static and
+        dynamic).  This column complements the <ref column="lacp_status">
+        column.
+      </column>
+
+      <column name="bond_status" key="forwarding_state"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked",
+                      "down""
+                     ]]}'>
+        Enumeration summarizing the fowarding state of the bond.  It is based on
+        the aggregate state of the individual member interfaces.
+        * Forwarding: At least one member interface is eligible and should be
+          fowarding traffic according to LACP
+        * Blocked:  All member interfaces are either not eligible or should be
+          blocked according to LACP.
+          If LACP-fallback-ab is enabled, and the <ref column="lacp_status"> is
+          defaulted, then the bond state is forwarding.  If the LACP-fallback-ab
+          is disable, then the state is blocked.
+        * Down:  All member interfaces configured to be a member of a LAG are
+          either administratively or operatively down
       </column>
     </group>
 
@@ -3604,6 +3686,50 @@
         </p>
       </column>
 
+      <column name="forwarding_state" key="state"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked",
+                      "down",
+                      "tx_disable"
+                     ]]}'>
+        Enumeration that summarizes the state of the interface.
+        Default value is down.
+      </column>
+
+      <column name="forwarding_state" key="interface_health"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked",
+                      "tx_disable"]]}'>
+        Interface health is set based on the information provided by protocols.
+        The asserting protocol setting the value of this key is defined
+        in the interface health owner key.
+      </column>
+
+      <column name="forwarding_state" key="interface_health_owner"
+          type='{ "type": "string", "enum": ["set",
+                       ["lacp"]]}'>
+        Enumeration that identifies the reason why the interface health is
+        different from "forwarding".
+      </column>
+
+      <column name="forwarding_state" key="interface_security"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked"]]}'>
+        Interface security is based on the information provided by security
+        related protocols or configuration.  The asserting feature setting the
+        value of this field is defined in the interface security owner key.
+      </column>
+
+      <column name="forwarding_state" key="interface_security_owner"
+        type='{ "type": "string", "enum": ["set",
+                     ["acls"]]}'>
+         Enumeration that identifies the reason why the interface health is
+         different from "forwarding".
+      </column>
+
       <column name="error">
         If the configuration of the <ref table="Interface"/> failed,
         OpenSwitch sets this column to an error
@@ -3659,6 +3785,44 @@
           This column will be empty for an interface that does not
           have an MTU as, for example, some kinds of tunnels do not.
         </p>
+      </column>
+
+      <column name="bond_status">
+        Key-value pairs that report the status of a bond.  This applies to both
+        static or LACP bonds.
+      </column>
+
+      <column name="bond_status" key="eligible"
+        type='{ "type": "boolean" }' >
+        Boolean indicating if the interface is eligible to participate in the
+        LAG.  If the interface is configured as a LAG member (static or dynamic)
+        but it is not eligible, then it gets blocked and for dynamic LAGs it
+        doesn't run LACP.
+        Eligibility is evaluated based on the admin and link state and in the
+        configuration of the interface compared with the other interfaces in the
+        LAG.  Only interfaces with the same speed mode are eligible to participate
+        in the LAG.
+      </column>
+
+      <column name="bond_status" key="forwarding_state"
+        type='{ "type": "string", "enum": ["set",
+                     ["forwarding",
+                      "blocked",
+                      "down",
+                      "tx_disable"
+                     ]]}'>
+        Enumeration indicating the fowarding state of the interface when it is
+        configured as a member of a LAG.
+        * Forwarding: The interface is eligible and should be fowarding traffic
+          according to LACP
+        * Blocked:  The interface is either not eligible or should be blocked
+          according to LACP.  If an interface if Rx disable, it is also Tx disable,
+          thus, it is blocked
+        * Down:  The interface is configured to be a member of a LAG, but it is
+          either administratively or operatively down
+        * tx_disable:  The interface is eligible to participate, but lacp
+          negociation indicates that it should not send traffic over this member
+          but that the member can receive traffic
       </column>
 
       <column name="lacp_current">

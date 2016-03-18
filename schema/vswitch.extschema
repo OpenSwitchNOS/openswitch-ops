@@ -3633,6 +3633,26 @@
           },
           "ephemeral": true
         },
+        "forwarding_state": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "bond_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
         "lacp_status": {
           "category": "status",
           "type": {
@@ -4075,6 +4095,15 @@
           },
           "ephemeral": true
         },
+        "forwarding_state": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "link_resets": {
           "category": "statistics",
           "type": {
@@ -4187,6 +4216,15 @@
           }
         },
         "hw_intf_config": {
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "bond_status": {
+          "category": "status",
           "type": {
             "key": "string",
             "value": "string",
