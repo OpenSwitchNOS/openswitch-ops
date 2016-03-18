@@ -6377,7 +6377,6 @@
       </column>
     </group>
   </table>
-
   <table name="Package_Info">
     <p>
       Each entry contains metadata related to package which is part of the image
@@ -6424,6 +6423,118 @@
       <column name="severity">
          Filter syslog messages with severity.  Only messages with severity higher than or equal to the specified value will be sent to the remote server.
          Default is <code>debug</code>.
+      </column>
+    </group>
+  </table>
+  <table name="System_Health" title="System monitoring information">
+    <group title="System Monitoring Configuration">
+      <column name="monitoring_config" key="poll_timer"
+        type='{"type": "integer", "minInteger": 1, "maxInteger": 5}'>
+          Parameter defines how much time sysmon daemon should take between two successive updates.
+          Default is 1.
+      </column>
+    </group>
+    <group title="System Health status info">
+      <group title="Global System CPU usage status info">
+        <column name="cpu_usage">
+          Key-value pairs that report global system cpu usage.
+        </column>
+        <column name="cpu_usage" key="avg_for_last_1_min">
+          Provides average CPU load (in %) for the last 1 min.
+        </column>
+        <column name="cpu_usage" key="avg_for_last_5_min">
+          Provides average CPU load (in %) for the last 1 min.
+        </column>
+        <column name="cpu_usage" key="avg_for_last_15_min">
+          Provides average CPU load (in %) for the last 1 min.
+        </column>
+        <column name="cpu_usage" key="user_process_run">
+          Provides CPU utilization (in %) for running user applications.
+        </column>
+        <column name="cpu_usage" key="kernel_process_run">
+          Provides CPU utilization (in %) for running kernel processes.
+        </column>
+        <column name="cpu_usage" key="waiting_on_io_completion">
+          Provides CPU time (in %) waiting for I/O completion.
+        </column>
+        <column name="cpu_usage" key="servicing_hw_interrupts">
+          Provides CPU utilization (in %) for servicing hardware interrupts.
+        </column>
+        <column name="cpu_usage" key="servicing_sw_interrupts">
+          Provides CPU utilization (in %) for servicing software interrupts.
+        </column>
+      </group>
+      <group title="Global System Memory usage status info">
+        <column name="memory_usage">
+          Key-value pairs that report global system memory usage.
+        </column>
+        <column name="memory_usage" key="phys_total_memory_size">
+          Provides total physical memory (in KiB) available within the system.
+        </column>
+        <column name="memory_usage" key="phys_free_memory_size">
+          Provides physical memory free (in KiB) available within the system.
+        </column>
+        <column name="memory_usage" key="phys_used_memory_size">
+          Provides physical memory used (in KiB) available within the system.
+        </column>
+        <column name="memory_usage" key="phys_buffer_size">
+          Provides physical buffers (in KiB) available within the system.
+        </column>
+        <column name="memory_usage" key="virt_total_memory_size">
+          Provides total virtual memory (in KiB) available within the system.
+        </column>
+        <column name="memory_usage" key="virt_free_memory_size">
+          Provides virtual memory free (in KiB) available within the system.
+        </column>
+        <column name="memory_usage" key="virt_used_memory_size">
+          Provides virtual memory used (in KiB) available within the system.
+        </column>
+        <column name="memory_usage" key="virt_buffer_size">
+          Provides virtual buffers (in KiB) available within the system.
+        </column>
+      </group>
+      <group title="System process usage information">
+        <column name="process_info">
+          Provides detailed usage of process usage within the system.
+        </column>
+      </group>
+    </group>
+  </table>
+  <table name="Process_Info">
+    <group title="Per process status information">
+      <column name="name">
+        Provides Name/Command used by the running process.
+        For eg: "python /usr/bin/ops_dhcp_tftp" or "/usr/bin/dnsmasq"
+      </column>
+      <column name="details">
+        Key-value pairs that report per process system information.
+      </column>
+      <column name="details" key="pid">
+        Provides the unique process ID for the process.
+      </column>
+      <column name="details" key="user">
+        Provides the effective user name of the task's owner.
+      </column>
+      <column name="details" key="virtual_memory_size">
+        Provides total amount of virtual memory (in KiB) used by the task.
+      </column>
+      <column name="details" key="resident_memory_size">
+        Provides non-swapped physical memory (in KiB) used by the task.
+      </column>
+      <column name="details" key="shared_memory_size">
+        Provides the amount of shared memory available (in KiB) for this task.
+      </column>
+      <column name="details" key="process_status"
+        type='{"type": "string", "enum": ["set", ["uinterruptible_sleep", "running",
+        "sleeping", "traced_or_stopped", "stopped_by_debugger", "zombie"]]}'>
+        Provides the amount of shared memory available (in KiB) for this task.
+        By default <code>D</code> is used.
+      </column>
+      <column name="details" key="memory_usage">
+        Provides the percentage of task's currently used share of available physical memory.
+      </column>
+      <column name="details" key="last_cpu_usage">
+        Provides the percentage of task's share of the elapsed CPU time since the last update.
       </column>
     </group>
   </table>
