@@ -399,7 +399,7 @@ class Test_vlan_state_removed_from_middle_of_table:
         # Add port 4 to vlan 2
         returnStr = AddPortToVlan(
             deviceObj=self.dut01Obj, vlanId=2,
-            interface=self.dut01Obj.linkPortMapping['lnk03'], access=True,
+            interface=self.dut01Obj.linkPortMapping['lnk02'], access=True,
             allowed=False, tag=False, config=True)
         if returnStr.returnCode() != 0:
             LogOutput('error', "Failed to add port to vlan " + str(2))
@@ -412,15 +412,15 @@ class Test_vlan_state_removed_from_middle_of_table:
         LogOutput(
             'info', "Step 11- Verify ports re-assign correctly")
         LogOutput('info', "############################################")
-        # Verify port assigned to vlan 4
-        if verifyVlanPorts(self.dut01Obj, 4,
-                           self.dut01Obj.linkPortMapping['lnk01']) != 0:
+        # Verify port assigned to vlan 2
+        if verifyVlanPorts(self.dut01Obj, 2,
+                           self.dut01Obj.linkPortMapping['lnk02']) != 0:
             LogOutput('error', "Failed to verify port {pPort}".format(
-                pPort=self.dut01Obj.linkPortMapping['lnk01']))
+                pPort=self.dut01Obj.linkPortMapping['lnk02']))
             assert(False)
         else:
             LogOutput('info', "Passed verifying port {pPort}".format(
-                pPort=self.dut01Obj.linkPortMapping['lnk01']))
+                pPort=self.dut01Obj.linkPortMapping['lnk02']))
 
     def test_sendTraffic_after(self):
         LogOutput('info', "############################################")
