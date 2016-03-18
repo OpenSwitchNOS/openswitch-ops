@@ -493,6 +493,18 @@
             "max": "unlimited"
           }
         },
+        "system_health": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "System_Health"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "snmp_communities": {
           "category": "configuration",
           "type": {
@@ -7691,6 +7703,80 @@
         ]
       ]
     },
+    "System_Health": {
+      "columns": {
+         "poll_timer" : {
+             "category": "configuration",
+             "type": {
+                "key": {
+                    "type": "integer",
+                    "minInteger": 5,
+                    "maxInteger": 15
+                  },
+                  "min": 0,
+                  "max": 1
+             }
+         },
+        "cpu_usage": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "memory_usage": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "process_info" : {
+            "category": "status",
+            "relationship": "1:m",
+            "type": {
+                "key": {
+                    "type": "uuid",
+                    "refTable": "Process_Info",
+                    "refType" : "weak"
+                },
+                "min": 0,
+                "max": 1
+            }
+        }
+      },
+      "maxRows": 1
+    },
+    "Process_Info": {
+      "columns": {
+        "pid": {
+          "category": "status",
+          "type": "integer",
+          "mutable": false
+        },
+        "details": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      },
+      "indexes": [
+        [
+          "pid"
+        ]
+      ]
+    },
     "SNMP_Trap" : {
       "columns" : {
         "receiver_address" : {
@@ -7702,7 +7788,6 @@
             }
           }
         },
-
         "receiver_udp_port" : {
           "category"  : "configuration" ,
           "type" : {
