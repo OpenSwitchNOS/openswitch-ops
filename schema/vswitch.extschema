@@ -8159,6 +8159,61 @@
           "direction"
         ]
       ]
+    },
+    "MAC_Flush" : {
+      "columns" : {
+        "vlan": {
+          "category": "status",
+          "type": {
+            "key": {
+            "type": "integer",
+            "minInteger": 1,
+            "maxInteger": 4094
+            },
+          "min" : 0,
+          "max" : "unlimited"
+          },
+          "mutable": false
+        },
+        "port_name": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min" : 0,
+            "max" : "unlimited"
+          },
+          "mutable": false
+        },
+        "action": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "flush_initiator": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "ops-l2macd",
+                  "ops-mstpd"
+                ]
+              ]
+            }
+          },
+          "mutable": false
+        }
+      },
+      "isRoot": true
     }
   }
 }

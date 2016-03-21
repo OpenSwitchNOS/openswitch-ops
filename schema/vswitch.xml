@@ -6612,4 +6612,31 @@
       <column name="version">Trap/inform version. The default version is "v2c".</column>
     </group>
   </table>
+  <table name="MAC_Flush">
+     <p>
+        MAC entries in the ASIC can be flushed based on VLAN or port or a combination of VLAN/port that they have been learnt on.
+     </p>
+    <group title="MAC Flush Options">
+      <column name="vlan">MAC entries learnt on this VLAN need to be flushed from the ASIC.</column>
+      <column name="port_name">MAC entries learnt on this port need to be flushed from the ASIC.</column>
+      <group title="action">
+      <p>
+        This column specifies current status of the MAC entries flush request.
+      </p>
+      <column name="action" key="flush_request" type='{"type": "boolean"}'>
+        This is set to <code>true</code> to initiate a MAC entries flush request in the ASIC.
+      </column>
+      <column name="action" key="flush_request_completed" type='{"type": "boolean"}'>
+        Will be set to <code>true</code> when the MAC entries flush request has been successfully handled by the ASIC.
+      </column>
+      <column name="action" key="flush_request_failed_reason" type='{"type": "string"}'>
+        This indicates a reason why the MAC entries flush request failed.
+      </column>
+      <column name="flush_initiator">
+        The name of the daemon that initiates this flush MAC entries request. The value is
+      <code>ops-l2macd</code> for L2 MAC daemon and <code>ops-mstpd</code> for MSTP daemon.
+      </column>
+    </group>
+    </group>
+  </table>
 </database>
