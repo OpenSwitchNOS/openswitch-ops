@@ -6612,4 +6612,28 @@
       <column name="version">Trap/inform version. The default version is "v2c".</column>
     </group>
   </table>
+  <table name="MAC_Flush">
+     <p>
+      MAC entries belong to the MAC table which is learnt from ASIC, Can be cleared by setting the vlan, port_name entries
+      on this table to perform the flush operations in the ASIC MAC table.
+    </p>
+    <group title="MAC Flush Options">
+      <column name="vlan">The VLAN associated to the MAC entries has to be cleared from the ASIC L2 MAC table.</column>
+      <column name="port_name">The port name associated to the MAC entries has to be cleared from the ASIC L2 MAC table.</column>
+      <group title="action">
+      <p>
+        Key-value pair(s) this column specifies the MAC table flush request operation current status of each entry in the table.
+      </p>
+      <column name="action" key="flush_request" type='{"type": "boolean"}'>
+          Flush request to clear the MAC entries from the ASIC MAC table.
+      </column>
+      <column name="action" key="flush_request_completed" type='{"type": "boolean"}'>
+          MAC entries Successfully flushed from the ASIC MAC table if it is set.
+      </column>
+      <column name="action" key="flush_request_failed_reason" type='{"type": "string"}'>
+          Flush request to clear the MAC entries from the ASIC MAC table failed reason.
+      </column>
+    </group>
+    </group>
+  </table>
 </database>
