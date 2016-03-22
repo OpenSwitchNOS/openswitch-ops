@@ -652,6 +652,7 @@ def configure(**kwargs):
     exitContext(switch3)
 
 
+@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 703")
 class Test_bgp_ip_prefix_list_configuration:
     def setup_class(cls):
         Test_bgp_ip_prefix_list_configuration.testObj = \
