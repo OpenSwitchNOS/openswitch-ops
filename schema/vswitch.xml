@@ -1274,6 +1274,10 @@
         Set this value to specify the configuration revision number.
         Default value is 0.
       </column>
+      <column name="other_config" key="mstp_config_digest">
+        The configuration digest for the MSTP bridge.
+        Change in VLANID to MSTID mapping will modify the configuration digest.
+      </column>
    </group>
 
     <group title="Other Features">
