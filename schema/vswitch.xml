@@ -1274,6 +1274,9 @@
         Set this value to specify the configuration revision number.
         Default value is 0.
       </column>
+      <column name="other_config" key="mstp_config_digest">
+        The configuration digest for the MSTP bridge that is derived based on the VLAN membership of the MST instance.
+      </column>
    </group>
 
     <group title="Other Features">
