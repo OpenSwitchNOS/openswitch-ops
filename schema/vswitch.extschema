@@ -3842,6 +3842,53 @@
             "min": 0,
             "max": "unlimited"
           }
+        },
+        "loop_protect_enable": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "boolean"
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "loop_protect_status": {
+            "category": "status",
+            "type": {
+                "key": "string",
+                "value": "string",
+                "min": 0,
+                "max": "unlimited"
+            },
+            "ephemeral": true
+        },
+        "loop_protect_rx_action": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "string",
+                    "enum": [
+                        "set",
+                        [
+                         "do-not-disable",
+                         "send-disable",
+                         "send-receive-disable"
+                        ]
+                    ]
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "loop_protect_statistics": {
+            "category": "statistics",
+            "type": {
+                "key": "string",
+                "value": "integer",
+                "min": 0,
+                "max": "unlimited"
+            }
         }
       },
       "indexes": [
@@ -3849,6 +3896,77 @@
           "name"
         ]
       ]
+    },
+    "Loop_protect": {
+        "columns": {
+            "mode": {
+                "category": "configuration",
+                "type": {
+                    "key": {
+                        "type": "string",
+                        "enum": [
+                            "set", [
+                                "port",
+                                "vlan"
+                            ]
+                        ]
+                    }
+                }
+            },
+            "disable_timer": {
+                "category": "configuration",
+                "type": {
+                    "key":{
+                        "type": "integer",
+                        "minInteger": 0,
+                        "maxInteger": 604800
+                    }
+                }
+            },
+            "transmit_interval": {
+                "category": "configuration",
+                "type": {
+                    "key":{
+                        "type": "integer",
+                        "minInteger": 1,
+                        "maxInteger": 10
+                    }
+                }
+            },
+            "vlans": {
+                "category": "configuration",
+                "relationship": "reference",
+                "type": {
+                    "key": {
+                        "type": "uuid",
+                        "refTable": "VLAN",
+                        "refType" : "weak"
+                    },
+                    "min": 0,
+                    "max": 4094
+                }
+            },
+            "other_config": {
+                "category": "configuration",
+                "type": {
+                    "key": "string",
+                    "value": "string",
+                    "min": 0,
+                    "max": "unlimited"
+                }
+            },
+            "external_ids": {
+                "category": "configuration",
+                "type": {
+                    "key": "string",
+                    "value": "string",
+                    "min": 0,
+                    "max": "unlimited"
+                }
+
+            }
+        },
+        "isRoot": true
     },
     "Interface": {
       "columns": {
