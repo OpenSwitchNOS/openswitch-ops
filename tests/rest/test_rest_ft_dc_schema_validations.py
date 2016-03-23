@@ -209,7 +209,7 @@ def restTestDcInvalidData(wrkston01):
     info("### Verifying there was an error for each tampered field ###\n")
     response_body = json.loads(retStruct.data["response_body"].strip())
 
-    assert len(response_body["error"]) >= len(erroneous_fields), \
+    assert len(response_body["message"]) >= len(erroneous_fields), \
            'The number of errors in the response does not match\n'
     info("### Received the expected number of errors ###\n")
 

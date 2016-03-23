@@ -283,7 +283,7 @@ def dcTestCustomValidatorInvalidPut(wrkston01):
     info("### Received expected non-successful HTTP status code ###\n")
 
     response_body = json.loads(retStruct.data["response_body"])
-    response_error = response_body["error"][0]
+    response_error = response_body["message"][0]
 
     assert "exceeded" in retStruct.data["response_body"], \
         'Error does not contain resources exceeded error\n'
