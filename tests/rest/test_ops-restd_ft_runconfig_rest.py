@@ -59,6 +59,8 @@ class configTest(OpsVsiTest):
         self.net = Mininet(ecmp_topo, switch=VsiOpenSwitch, host=Host,
                            link=OpsVsiLink, controller=None, build=True)
 
+        self.switch_ip = get_switch_ip(self.net.switches[0])
+
     def verify_startup_config(self):
         info('''"\n########## Verify startup config writes and reads the
              config to startup config db ##########\n"''')
@@ -99,6 +101,7 @@ class Test_config:
 
     def setup_class(cls):
         Test_config.test_var = configTest()
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         Test_config.test_var.net.stop()
