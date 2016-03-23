@@ -5057,6 +5057,80 @@
     </group>
   </table>
 
+  <table name="COPP_Statistics">
+    <p>
+      Control Plane Policing protocol class statistics.
+    </p>
+    <p>
+      The current implementation updates these counters periodically.
+      The update period is controlled by <ref column="other_config"
+      key="stats-update-interval"/> in the <ref table="System"/> table.
+     </p>
+     <p>
+       Entries should only be created for supported COPP Classes.
+       Omit unsupported classes.
+     </p>
+     <p>
+       Only supported counts for a COPP Class should be provided.
+       Omit unsupported counts.
+     </p>
+    <group title="Identification">
+      <column name="hw_unit_id">
+        Identifies the ASIC for which the counts pertain.
+      </column>
+      <column name="class_name">
+        Name of the protocol class for which these counts pertain:
+        <column name="class_name" key="ACL_logging"/>
+        <column name="class_name" key="ARP_broadcast"/>
+        <column name="class_name" key="ARP_my_unicast"/>
+        <column name="class_name" key="ARP_snoop"/>
+        <column name="class_name" key="BGP"/>
+        <column name="class_name" key="Default"/>
+        <column name="class_name" key="DHCPv4"/>
+        <column name="class_name" key="DHCPv6"/>
+        <column name="class_name" key="Exception_IPv4_header"/>
+        <column name="class_name" key="Exception_IPv6_header"/>
+        <column name="class_name" key="ICMPv4_multidest"/>
+        <column name="class_name" key="ICMPv4_unicast"/>
+        <column name="class_name" key="ICMPv6_multicast"/>
+        <column name="class_name" key="LACP"/>
+        <column name="class_name" key="LLDP"/>
+        <column name="class_name" key="OSPFv4_multicast"/>
+        <column name="class_name" key="OSPFv4_unicast"/>
+        <column name="class_name" key="OSPFv6_multicast"/>
+        <column name="class_name" key="OSPFv6_broadcast"/>
+        <column name="class_name" key="sFLOW_samples"/>
+        <column name="class_name" key="STP_BPDU"/>
+        <column name="class_name" key="Unknown_IP_unicast"/>
+      </column>
+    </group>
+    <group title="COPP Statistic Counters">
+      <column name="packets_passed">
+        Last collected count of packets passed to the management processor.
+      </column>
+      <column name="bytes_passed">
+        Last collected count of bytes passed to the management processor.
+      </column>
+      <column name="packets_dropped">
+        Last collected count of packets prevented from reaching the
+        management processor.
+      </column>
+      <column name="bytes_dropped">
+        Last collected count of bytes prevented from reaching the
+        management processor.
+      </column>
+    </group>
+    <group title="Hardware Status">
+      The key-value pairs document hardware settings for the protocol class.
+      <column name="hw_status" key="rate">
+        The rate in packets-per-second.
+      </column>
+      <column name="hw_status" key="queue">
+        ASIC queue this protocol class uses.
+      </column>
+    </group>
+  </table>
+
   <table name="DHCP_Server">
 
     <p>

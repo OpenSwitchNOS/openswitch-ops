@@ -4867,6 +4867,122 @@
       ],
       "isRoot": true
     },
+     "COPP_Statistics": {
+      "columns": {
+        "hw_unit_id": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            }
+          },
+          "mutable": false
+        },
+        "class_name": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "ACL_logging",
+                  "ARP_broadcast",
+                  "ARP_my_unicast",
+                  "ARP_snoop",
+                  "BGP",
+                  "Default",
+                  "DHCPv4",
+                  "DHCPv6",
+                  "Exception_IPv4_header",
+                  "Exception_IPv6_header",
+                  "ICMPv4_multidest",
+                  "ICMPv4_unicast",
+                  "ICMPv6_multicast",
+                  "LACP",
+                  "LLDP",
+                  "OSPFv4_multicast",
+                  "OSPFv4_unicast",
+                  "OSPFv6_multicast",
+                  "OSPFv6_broadcast",
+                  "SFLOW_samples",
+                  "STP_BPDU",
+                  "Unknown_IP_unicast"
+                ]
+              ]
+            }
+          }
+        },
+        "packets_passed": {
+          "category": "statistics",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "bytes_passed": {
+          "category": "statistics",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "packets_dropped": {
+          "category": "statistics",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "bytes_dropped": {
+          "category": "statistics",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "hw_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        }
+      },
+      "indexes": [
+        [
+          "hw_unit_id",
+          "class_name"
+        ]
+      ],
+      "isRoot": true
+    },
     "DHCP_Server":{
       "columns":{
         "ranges":{
