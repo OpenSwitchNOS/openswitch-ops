@@ -343,7 +343,6 @@ class Test_ft_framework_rest:
 
         info('### Successful in testing REST custom validators ###\n')
 
-    @pytest.mark.skipif(True,reason="Disabling due to DC error format change")
     def test_declarativeConfigTestCustomValidators(self):
         info('########################################################\n')
         info('######   Testing DC Custom Validators Framework   ######\n')
