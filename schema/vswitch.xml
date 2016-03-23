@@ -3251,6 +3251,47 @@
       </group>
     </group>
 
+   <group title="Loop-protect per port Configuration">
+      <column name="loop_protect_enable">
+        This determines whether loop-protect is enabled or not.The value is <code>true</code>,
+        if loop-protect feature is enabled on the port.
+        Default value is <code>false</code>.
+      </column>
+      <column name="loop_protect_rx_action">
+        This determines receiver action for loop-protect feature.The value is set to
+        "send-disable" for disabling the sending port on detecting a loop,
+        "send-receive-disable" disables both sending and receiving ports when loop
+        is detected and "do-not-disable" will not disable any port.
+        Default value is <code>send-disable</code>.
+      </column>
+   </group>
+
+   <group title="Loop-protect Status">
+      <column name="loop_protect_status" key="loop_protect_port">
+        This value will be set to <code>disable</code>if the port is disabled
+        after loop detection.
+      </column>
+      <column name="loop_protect_status" key="loop_detected" type='{"type": "boolean"}'>
+        This value is "yes" if a loop is detected by loop-protect feature for this port.
+        The value is "no" if loop-protect is enabled on the port and no loop has been detected.
+        It gets cleared,when loop-protect is disabled on this port.
+      </column>
+      <column name="loop_protect_status" key="detected_on_vlan">
+        Displays the VLAN on which the loop is detected if the mode is "vlan".
+        In "port" mode,the value is NA.
+      </column>
+      <column name="loop_protect_status" key="last_loop_detected_time">
+        This has the last timestamp when the loop was detected by loop-protect
+        feature.
+      </column>
+   </group>
+
+   <group title="Loop-protect Statistics">
+      <column name="loop_protect_statistics" key="loop_count">
+        Number of times a loop has been detected on this port.
+      </column>
+   </group>
+
    <group title="Other Features">
       <column name="mac">
         The MAC address to use for this port for the purpose of choosing the
@@ -3357,6 +3398,33 @@
 
       <column name="other_config"/>
       <column name="external_ids"/>
+    </group>
+  </table>
+
+  <table name="Loop_protect" title="Loop-protect configuration">
+    <p>Contains global configuration for loop-protect feature.</p>
+
+    <group title="Configuration">
+      <column name="mode">
+        This determines the mode of the loop-protect feature.This value is "port"
+        to run loop-protect feature on loop-protect enabled access ports.
+        If the value is "vlan",it will enable loop-protect on trunk VLANs configured
+        on loop-protect enabled trunk ports.
+        Default mode is <code>port</code>.
+      </column>
+      <column name="disable_timer">
+        This specifies the time in seconds for which the ports are to be disabled on
+        detecting a loop.Default value is 0 i.e the port is disabled indefinitely.
+      </column>
+      <column name="transmit_interval">
+        This specifies the time interval in seconds between successive
+        loop-protect packets sent on every port.
+        Default value is 5 seconds.
+      </column>
+      <column name="vlans">
+        Contains a list of VLANs on which loop-protect feature has to send the
+        loop-protect packets on every transmit interval.
+      </column>
     </group>
   </table>
 
