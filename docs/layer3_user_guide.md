@@ -7,6 +7,7 @@ This document provides a step-by-step reference for configuration of basic layer
 * [Static routes](#static-routes)
 * [ECMP](#ecmp)
 * [Internal VLAN Management](#internal-vlan-management)
+* [References](#references)
 
 ## Layer3 Interfaces
 OpenSwitch supports configuring IPv4 and IPv6 addresses to layer3 interfaces. Every layer3 interfaces is associated with one VRF. In the first version, only one VRF is supported and hence the association with the VRF is not necessary.
@@ -236,3 +237,9 @@ Assigned Interfaces:
 
 ops-as5712#
 ```
+
+## References
+* [Layer 3 Design]`layer3_design.md`
+* [Layer 3 Interfaces]`layer3_interface_cli.md`
+* [ECMP]`layer3_ecmp_cli.md`
+* [Internal VLAN Management]`vlan_user_guide.md`

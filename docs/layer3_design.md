@@ -5,7 +5,7 @@
 OpenSwitch is designed to support layer3 features and protocols. To facilitate this, the following capabilities have been added.
 
 - [**VRF**](#vrf)
-- [**Layer3 Interfaces**](#layer3-interfaces-1)
+- [**Layer3 Interfaces**](#layer3-interfaces)
 - [**Static Routes**](#static-routes)
 - [**Slow-path Routing (Routing in kernel)**](#slow-path-routing)
 - [**Fast-path Routing (Hardware based routing)**](#fast-path-routing)
