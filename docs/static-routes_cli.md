@@ -7,7 +7,7 @@
 - [Display commands](#display-commands)
 	- [show ip route](#show-ip-route)
 	- [show ipv6 route](#show-ipv6-route)
-
+- [References](#references)
 ## Configuration commands
 
 ### ip route
@@ -37,14 +37,32 @@ Admin
 IP route with nexthop (nexthop: 10.10.10.1):
 ```
 hostname(config)# ip route 172.16.32.0/24 10.10.10.1
-hostname(config)#
 ```
 IP route with interface (interface: 32):
 ```
 hostname(config)# ip route 172.16.32.0/24 32
-hostname(config)#
 ```
-
+IP route with interface vlan (interface: vlan10):
+```
+hostname(config)# interface vlan10
+hostname(config-if-vlan)# ip address 10.10.10.2/24
+hostname(config-if-vlan)# exit
+hostname(config)# ip route 172.16.32.0/24 vlan10
+```
+IP route with subinterface (interface: 1.1):
+```
+hostname(config)# interface 1.1
+hostname(config-subif)# ip address 10.10.10.3/24
+hostname(config-subif)# exit
+hostname(config)# ip route 172.16.32.0/24 1.1
+```
+IP route with interface LAG (interface: lag10):
+```
+hostname(config)# interface lag10
+hostname(config-lag-if)# ip address 10.10.10.3/24
+hostname(config-lag-if)# exit
+hostname(config)# ip route 172.16.32.0/24 lag10
+```
 ### ipv6 route
 
 ##### Syntax
@@ -72,14 +90,32 @@ Admin
 IP route with nexthop (nexthop: 2010:bda::):
 ```
 hostname(config)# ipv6 route fde1:87a5:2185:a5fc::/64 2010:bda::
-hostname(config)#
 ```
 IP route with interface (interface: 32):
 ```
 hostname(config)# ipv6 route fde1:87a5:2185:a5fc::/64 32
-hostname(config)#
 ```
-
+IP route with interface vlan (interface: vlan10):
+```
+hostname(config)# interface vlan10
+hostname(config-if-vlan)# ipv6 address 2001::1/120
+hostname(config-if-vlan)# exit
+hostname(config)# ipv6 route fde1:87a5:2185:a5fc::/64 vlan10
+```
+IP route with subinterface (interface: 1.1):
+```
+hostname(config)# interface 1.1
+hostname(config-subif)# ipv6 address 2001::2/120
+hostname(config-subif)# exit
+hostname(config)# ipv6 route fde1:87a5:2185:a5fc::/64 1.1
+```
+IP route with interface LAG (interface: lag10):
+```
+hostname(config)# interface lag10
+hostname(config-lag-if)# ipv6 address 2001::3/120
+hostname(config-lag-if)# exit
+hostname(config)# ipv6 route fde1:87a5:2185:a5fc::/64 lag10
+```
 
 ## Display commands
 
@@ -145,3 +181,9 @@ fde1:87a5:2185:a5fc::/64,  1 unicast next-hops
         via  2,  [0/0],  connected
 
 ```
+## References
+* [Layer 3 Design]`layer3_design.md`
+* [Layer 3 User Guide]`layer3_user_guide.md`
+* [Interface VLAN]`layer3_interface_cli.md`
+* [Subinterface]:`sub-interfaces_cli.md`
+* [LAG]:`interface_cli.md`
