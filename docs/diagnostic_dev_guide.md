@@ -21,7 +21,7 @@ The Diagnostic CLI captures internal diagnostic information about the requested 
 ## Defining the mapping between a feature and its daemons
 
 ### YAML configuration
-Feature owners are required to define the mapping between the feature and the daemons that implement the feature, so that the diagnostic module can understand which daemons it has to communicate to. This mapping should be defined in the configuration file in the ops-supportability repo under the path `ops-supportability/conf/ops_diagdump.yaml`.
+Feature owners are required to define the mapping between the feature and the daemons that implement the feature, so that the diagnostic module can understand which daemons it has to communicate to. This mapping should be defined in the configuration file in the ops-supportability repo under the path `ops-supportability/conf/ops_featuremapping.yaml`.
 
 Example mappings:
 

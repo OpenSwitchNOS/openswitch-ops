@@ -39,19 +39,19 @@ The 'diag-dump' command results in the following error
 
 
 #### Cause
-1. The ops_diagdump.yaml file is not present in the `/etc/openswitch/supportability/ops_diagdump.yaml` path.
+1. The ops_featuremapping.yaml file is not present in the `/etc/openswitch/supportability/ops_featuremapping.yaml` path.
 2. The user may not have read permission.
 3. The content of the yaml file is incorrect.
 
 
 #### Remedy
-1. Ensure that the yaml file is present in its `/etc/openswitch/supportability/ops_diagdump.yaml` path.
+1. Ensure that the yaml file is present in its `/etc/openswitch/supportability/ops_featuremapping.yaml` path.
 2. Ensure that the user has read permission for the yaml file.
 3. Verify that the content of the yaml file is correct using the yaml lint tool.
 4. Verify that the structure of the configuration is valid.
 
 ### Feature to daemon mapping
-The `/etc/openswitch/supportability/ops_diagdump.yaml` file contains "feature to daemon mapping" configurations.
+The `/etc/openswitch/supportability/ops_featuremapping.yaml` file contains "feature to daemon mapping" configurations.
 
 ## References
 * [Reference 1] 'diagnostic_user_guide.md'

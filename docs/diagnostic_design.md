@@ -54,7 +54,7 @@ The diagnostic infrastructure is responsible for capturing information from one 
 The OVSDB-schema is not used for this feature.
 
 ## Diagnostic dump configuration YAML file
-Diag-dump uses a feature to a daemon mapping file whose absolute path is the following: `/etc/openswitch/supportability/ops_diagdump.yaml`
+Diag-dump uses a feature to a daemon mapping file whose absolute path is the following: `/etc/openswitch/supportability/ops_featuremapping.yaml`
 
 This YAML file is structured with the following elements:
 
@@ -105,7 +105,7 @@ A sample YAML file with two features defined:
 
 ### Data structures
 
-The diagnostic dump CLI parses information from the configuration file (`ops_diagdump.yaml`) and stores it in the following data structures.
+The diagnostic dump CLI parses information from the configuration file (`ops_featuremapping.yaml`) and stores it in the following data structures.
 
 ```ditaa
 
