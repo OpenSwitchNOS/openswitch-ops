@@ -154,7 +154,6 @@
             "max": "unlimited"
           }
         },
-        "router_id": {
           "category": "configuration",
           "type": {
             "key": "string",
@@ -2193,9 +2192,17 @@
       "isRoot": true
     },
     "Route": {
+      "dynamic-category": {
+        "source-column": "from",
+        "value": {
+          "connected": "status",
+          "static": "configuration",
+          "bgp": "status",
+          "ospf": "status"
+      },
       "columns": {
         "vrf": {
-          "category": "configuration",
+          "category": "dynamic-category",
           "relationship": "m:1",
           "type": {
             "key": {
@@ -2207,7 +2214,7 @@
           "mutable": false
         },
         "prefix": {
-          "category": "configuration",
+          "category": "dynamic-category",
           "type": {
             "key": {
               "type": "string",
@@ -2255,7 +2262,7 @@
           }
         },
         "address_family": {
-          "category": "configuration",
+          "category": "dynamic-category",
           "type": {
             "key": {
               "type": "string",
@@ -2273,7 +2280,7 @@
           "mutable": false
         },
         "sub_address_family": {
-          "category": "configuration",
+          "category": "dynamic-category",
           "type": {
             "key": {
               "type": "string",
@@ -2292,7 +2299,7 @@
           "mutable": false
         },
         "distance": {
-          "category": "configuration",
+          "category": "dynamic-category",
           "type": {
             "key": {
               "type": "integer",
@@ -2305,7 +2312,7 @@
           "mutable": false
         },
         "metric": {
-          "category": "status",
+          "category": "dynamic-category",
           "type": {
             "key": {
               "type": "integer",
@@ -2318,7 +2325,7 @@
           "mutable": false
         },
         "nexthops": {
-          "category": "configuration",
+          "category": "dynamic-category",
           "relationship": "1:m",
           "type": {
             "key": {
