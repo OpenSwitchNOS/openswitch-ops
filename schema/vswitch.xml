@@ -63,6 +63,46 @@
     </dd>
   </dl>
 
+  <h2>Category</h2>
+
+  <p>
+    All columns in the schema, except those related to hardware configuration, include
+    a "category" element. This element is used to define the data that is contained in
+    the column.  There are four category types:
+  </p>
+
+  <ol>
+    <li>
+      Status: Represent state data that the system writes as a result of its operation.
+      The data can come from protocols or system daemons. Hardware information columns
+      should use this category.  Columns using this category cannot be configured by
+      the user.
+    </li>
+    <li>
+      Statistics: Represent statistic data, usually counters, that the system reports.
+      This data can come from protocols, hardware or system daemons.  Columns using
+      this category cannot be configured by the user.
+    </li>
+    <li>
+      Configuration: Represent configuration data that comes from the user.  Only columns
+      using this category can be modified by the users.
+    </li>
+    <li>
+      <p>
+        Dynamic Category: Some columns in the schema can represent either status or
+        configuration data. Dynamic categories are used as a mechanism to identify
+        when a column can be modified by the users and when the data comes from
+        the system and should not be modified externally.
+      </p>
+      <p>
+        When dynamic category is used, a "dynamic-category" element must be added
+        to the table.  This elements must include a "source-column" reference and
+        "value-category" pairs to asign either status or configuration categories based
+        on the "source-column" values.
+      </p>
+    </li>
+  </ol>
+
   <table name="System" title="OpenSwitch top level configuration.">
     Configuration for an OpenSwitch system. There must be exactly
     one record in the <ref table="System"/> table.
