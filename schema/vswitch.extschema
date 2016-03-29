@@ -2195,7 +2195,7 @@
     "Route": {
       "columns": {
         "vrf": {
-          "category": "configuration",
+          "category": "dynamic",
           "relationship": "m:1",
           "type": {
             "key": {
@@ -2207,7 +2207,7 @@
           "mutable": false
         },
         "prefix": {
-          "category": "configuration",
+          "category": "dynamic",
           "type": {
             "key": {
               "type": "string",
@@ -2232,6 +2232,12 @@
               ]
             }
           },
+          "value-category": {
+            "connected": "status",
+            "static": "configuration",
+            "bgp": "status",
+            "ospf": "status"
+          },
           "mutable": false
         },
        "protocol_private": {
@@ -2255,7 +2261,7 @@
           }
         },
         "address_family": {
-          "category": "configuration",
+          "category": "dynamic",
           "type": {
             "key": {
               "type": "string",
@@ -2273,7 +2279,7 @@
           "mutable": false
         },
         "sub_address_family": {
-          "category": "configuration",
+          "category": "dynamic",
           "type": {
             "key": {
               "type": "string",
@@ -2292,7 +2298,7 @@
           "mutable": false
         },
         "distance": {
-          "category": "configuration",
+          "category": "dynamic",
           "type": {
             "key": {
               "type": "integer",
@@ -2305,7 +2311,7 @@
           "mutable": false
         },
         "metric": {
-          "category": "status",
+          "category": "dynamic",
           "type": {
             "key": {
               "type": "integer",
@@ -2318,7 +2324,7 @@
           "mutable": false
         },
         "nexthops": {
-          "category": "configuration",
+          "category": "dynamic",
           "relationship": "1:m",
           "type": {
             "key": {
