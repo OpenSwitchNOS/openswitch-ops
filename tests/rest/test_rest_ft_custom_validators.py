@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+u (C) Copyright 2015 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -343,6 +343,7 @@ class Test_ft_framework_rest:
 
         info('### Successful in testing REST custom validators ###\n')
 
+    @pytest.mark.skipif(True, reason="new DC module does not have this feature.")
     def test_declarativeConfigTestCustomValidators(self):
         info('########################################################\n')
         info('######   Testing DC Custom Validators Framework   ######\n')
