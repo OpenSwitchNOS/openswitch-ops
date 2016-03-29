@@ -7840,8 +7840,7 @@
       },
       "indexes": [
         [
-          "remote_host",
-          "transport"
+          "remote_host"
         ]
       ]
     },
