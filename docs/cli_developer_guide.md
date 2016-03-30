@@ -24,7 +24,7 @@
  -   [Example](#example)
 - [Show running support for a command](#show-running-support-for-a-command)
 - [User Interface Guidelines](#user-interface-guidelines)
-
+- [Audit Framwork support for CLI config-commands](#Audit-Framwork-support-for-CLI-config-commands)
 
 
 ##Overview
@@ -629,3 +629,29 @@ Add enum in the right order to sub-context the enum list.
 Refer to the CLI guidelines at:
 http://openswitch.net/documents/dev/ui-guidelines
 https://github.com/openvswitch/ovs/blob/master/CodingStyle.md
+
+##Audit Framwork support for config-commands:
+The Audit Framework is a tool, that is used to create audit events for tracking configuartion changes made by users to switch.
+
+When users execute CLI config-commands, the audit events have been logged as below format into /var/log/audit/audit.log file.
+####Example:
+	switch(config)# session-timeout 100
+
+####Log Format:
+	type = USYS_CONFIG msg=audit(1456270989.650:31): pid=1507 uid=0 auid=4294967295 ses=4425671256  	msg = 'op=CLI:command data=73657373696F6E2D74696D656F757420313030 exec="/usr/bin/vtysh" 			hostname=switch add=fe80::40af:cfff:feaf:d17c terminal=ttyS1 res=success'
+
+
+Note:
+		1) "data" field has encoded user executed command.
+        2) To decode the encoded data use the "ausearch -i" command.
+
+The "ausearch" utility used to display audit events.
+#### Example:
+
+	$ausearch -i -a 31
+
+	type = USYS_CONFIG msg=audit(03/22/16 08:29:57.452:10) : pid=604 uid=netop auid=unset ses=unset 	msg='op=CLI:command  data="session-timeout 100 " exe=/usr/bin/vtysh hostname=switch 				addr=fe80::4a0f:cfff:feaf:81dc terminal=ttyS1 res=success'
+
+where
+    "-a" or "--event"                :   Display events based on given event ID.
+    "-i" or "--interpret"            :   Interpret the numeric values into text. Decodes uid/gid to the actual user/group name and displays encoded strings as their original ascii text.
