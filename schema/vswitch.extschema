@@ -5909,17 +5909,15 @@
       "columns": {
         "vrf": {
           "category": "configuration",
-          "relationship": "m:1",
+          "relationship": "1:m",
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "VRF",
-              "refType" : "weak"
-            },
-            "min":0,
-            "max":1
-          },
-          "mutable": false
+              "refTable": "VRF"
+             },
+            "min": 1,
+            "max": 1 
+          }
         },
         "address": {
           "category": "configuration",
