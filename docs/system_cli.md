@@ -15,6 +15,8 @@ System commands
 	- [Showing system temperature information](#showing-system-temperature-information)
 	- [Showing system LED information](#showing-system-led-information)
 	- [Showing system power-supply information](#showing-system-power-supply-information)
+	- [Showing system cpu information using top](#showing-system-cpu-information-using-top)
+	- [Showing system memory information using top](#showing-system-memory-information-using-top)
 
 
 ## System configuration commands
@@ -379,4 +381,71 @@ Name           Status
 -----------------------------
 base-1         ok
 base-2         Input Fault
+```
+
+### Showing system cpu information
+
+#### Syntax
+`top cpu`
+
+#### Description
+This command displays detailed cpu information sorted by CPU usage.
+
+#### Authority
+All users.
+
+#### Parameters
+This command does not require a parameter.
+
+#### Examples
+```
+switch# top cpu
+top - 23:06:26 up 16:21,  0 users,  load average: 0.85, 0.56, 0.67
+Tasks:  45 total,   1 running,  42 sleeping,   0 stopped,   2 zombie
+%Cpu(s):  5.7 us,  1.2 sy,  0.0 ni, 93.0 id,  0.0 wa,  0.0 hi,  0.1 si,  0.0 st
+KiB Mem : 10221884 total,  1566952 free,   853212 used,  7801720 buff/cache
+KiB Swap:  8385532 total,  8368236 free,    17296 used.  9044772 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+    1 root      20   0   29996   4644   3488 S   0.0  0.0   0:00.19 /sbin/init
+   16 root      20   0   23352   5796   5524 S   0.0  0.1   0:00.34 /lib/systemd/systemd-journald
+   65 root      20   0   32452   2924   2492 S   0.0  0.0   0:00.02 /lib/systemd/systemd-udevd
+  138 systemd+  20   0   18276   2688   2484 S   0.0  0.0   0:00.00 /lib/systemd/systemd-resolved
+  142 root      20   0  259676   2936   2588 S   0.0  0.0   0:00.06 /usr/sbin/rsyslogd -n
+  150 message+  20   0   13180   2496   2272 S   0.0  0.0   0:00.00 /usr/bin/dbus-daemon --system +
+  151 root      20   0   13108   2352   2144 S   0.0  0.0   0:00.00 /lib/systemd/systemd-logind
+  153 root      20   0   15712   2216   1652 S   0.0  0.0   0:00.00 /usr/sbin/crond -n
+```
+
+### Showing system memory information
+
+#### Syntax
+`top memory`
+
+#### Description
+This command displays detailed memory information sorted by memory usage.
+
+#### Authority
+All users.
+
+#### Parameters
+This command does not require a parameter.
+
+#### Examples
+```
+switch# top memory
+top - 23:08:08 up 16:23,  0 users,  load average: 0.32, 0.45, 0.62
+Tasks:  45 total,   1 running,  42 sleeping,   0 stopped,   2 zombie
+%Cpu(s):  5.7 us,  1.2 sy,  0.0 ni, 93.1 id,  0.0 wa,  0.0 hi,  0.1 si,  0.0 st
+KiB Mem : 10221884 total,  1546164 free,   873572 used,  7802148 buff/cache
+KiB Swap:  8385532 total,  8368236 free,    17296 used.  9024352 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+  321 root      20   0  161984  38516   8848 S   0.0  0.4   0:02.75 python /usr/bin/restd
+  236 root      20   0  182212  18520   7176 S   0.0  0.2   0:00.81 python /usr/bin/ops_ntpd
+  253 root      20   0  101828  18052   7108 S   0.0  0.2   0:00.29 python /usr/bin/ops_dhcp_tftp
+  312 root      20   0  112496  17312   3992 S   0.0  0.2   0:00.07 python /usr/bin/ops_mgmtintfcf+
+  405 root      20   0  109908  16208   3344 S   0.0  0.2   0:00.66 python /usr/bin/ops_ntpd
+  313 root      20   0  101564  14008   3244 S   0.0  0.1   0:00.00 python /usr/bin/ops_aaautilspa+
+  188 root      20   0   40288  13300   4636 S   0.0  0.1   0:00.35 /usr/sbin/ovsdb-server --remot+
 ```
