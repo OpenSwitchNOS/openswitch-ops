@@ -27,7 +27,7 @@ import urllib
 
 import inspect
 
-from utils.utils import *
+from opsvsiutils.restutils.utils import *
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -77,8 +77,6 @@ class QueryInterfaceDepthTest(OpsVsiTest):
     def validate_keys_inner_object(self, json_data, json_expected_data):
         assert json_data["split_parent"] is not None, \
             "split_parent key is not present"
-        assert json_data["split_children"] is not None, \
-            "split_children key is not present"
         info("### split_parent, split_children keys present ###\n")
         assert json_data == json_expected_data, \
             "Configuration data is not equal that posted data"

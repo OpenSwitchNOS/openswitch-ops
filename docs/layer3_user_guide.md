@@ -7,6 +7,7 @@ This document provides a step-by-step reference for configuration of basic layer
 * [Static routes](#static-routes)
 * [ECMP](#ecmp)
 * [Internal VLAN Management](#internal-vlan-management)
+* [References](#references)
 
 ## Layer3 Interfaces
 OpenSwitch supports configuring IPv4 and IPv6 addresses to layer3 interfaces. Every layer3 interfaces is associated with one VRF. In the first version, only one VRF is supported and hence the association with the VRF is not necessary.
@@ -22,7 +23,7 @@ ops-as5712(config-if)# end
 ops-as5712#
 ```
 ### VLAN Interfaces
-To achieve interVLAN routing, VLAN interfaces are created. VLAN interfaces are configured similar to physical interfaces. In addition to configuring IPv4 or IPv6 addresses, these interfaces are associated with a VLAN. The VLAN ID is part of the name of the vlan interface being configured.
+To achieve interVLAN routing, VLAN interfaces are created. VLAN interfaces are configured similar to physical interfaces. In addition to configuring IPv4 or IPv6 addresses, these interfaces are associated with a VLAN. The VLAN ID is part of the name of the VLAN interface being configured.
 
 To configure a VLAN interface for VLAN ID 100:
 
@@ -59,6 +60,19 @@ Interface 1 is up
             0 input error                0 dropped
             0 collision
 
+ops-as5712# show ip interface
+
+Interface 1 is up
+ Admin state is up
+ Hardware: Ethernet, MAC Address: 70:72:cf:77:06:df
+ IPv4 address: 192.168.1.1/24
+ MTU 0
+ RX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
+ TX
+          ucast: 10 packets, 750 bytes
+          mcast: 0 packets, 0 bytes
 
 ops-as5712# show interface brief
 
@@ -138,13 +152,13 @@ To disable ECMP on OpenSwitch:
 ops-as5712# configure terminal
 ops-as5712(config)# ip ecmp disable
 ```
-To re-enable ECMP
+To re-enable ECMP:
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# no ip ecmp disable
 ```
 
-By default, ECMP uses 4 tuple in the hash calculation:
+By default, ECMP uses four tuple in the hash calculation:
  - SrcIP
  - DstIP
  - SrcPort
@@ -202,7 +216,7 @@ Destination Port   : Enabled
 ```
 
 ## Internal VLAN Management
-Every layer3 interface is associated with a unique VLAN ID. By default, OpenSwitch uses VLAN IDs from the range 1024-4094 for this purpose. However this range is configurable. The order in which the VLAN IDs are used in this range is also be specified using "ascending" or "descending" in the CLI
+Every layer3 interface is associated with a unique VLAN ID. By default, OpenSwitch uses VLAN IDs from the range 1024-4094 for this purpose. However, this range is configurable. The order in which the VLAN IDs are used in this range is also be specified using "ascending" or "descending" in the CLI.
 To configure the VLAN range for internal use:
 ```
 ops-as5712# configure terminal
@@ -223,3 +237,9 @@ Assigned Interfaces:
 
 ops-as5712#
 ```
+
+## References
+* [Layer 3 Design](layer3_design)
+* [Layer 3 Interfaces](layer3_interface_cli)
+* [ECMP](layer3_ecmp_cli)
+* [Internal VLAN Management](vlan_user_guide)

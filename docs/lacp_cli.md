@@ -19,10 +19,12 @@
 		- [Configuring hash type](#configuring-hash-type)
 		- [Configuring LACP fallback mode](#configuring-lacp-fallback-mode)
 		- [Configuring LACP rate](#configuring-lacp-rate)
+		- [Configuring shutdown](#configuring-shutdown)
 - [LAG display commands](#lag-display-commands)
 	- [Display global LACP configuration](#display-global-lacp-configuration)
 	- [Display LACP aggregates](#display-lacp-aggregates)
 	- [Display LACP interface configuration](#display-lacp-interface-configuration)
+	- [LAG show running-config](#lag-show-running-config)
 
 ## LACP configuration commands
 ### Global context commands
@@ -34,7 +36,7 @@
 ```
 
 ##### Description
-This command creates a LAG interface represented by an ID.
+This command creates a Link Aggregation Group (LAG) interface represented by an ID.
 
 ##### Authority
 all users
@@ -80,7 +82,7 @@ switch(config)# no interface lag 100
 ```
 
 ##### Description
-This command sets an LACP system priority.
+This command sets a Link Aggregation Control Protocol (LACP) system priority.
 
 ##### Authority
 all users
@@ -258,11 +260,13 @@ switch(config-lag-if)# no lacp mode active
 
 #### Configuring hash type
 ##### Syntax
-    hash l2-src-dst
+
+```
+    hash {l2-src-dst/l3-src-dst/l4-src-dst}
+```
 
 ##### Description
-This command sets an LACP hash type to l2-src-dst. The default is l3-src-dst.
-The **no** form of the command sets an LACP hash type to l3-src-dst.
+This command sets an LACP hash type to l2-src-dst, l3-src-dst or l4-src-dst. The default is l3-src-dst.
 
 ##### Authority
 all users
@@ -275,7 +279,6 @@ no parameters.
 ```
 switch(config)# interface lag 1
 switch(config-lag-if)# hash l2-src-dst
-switch(config-lag-if)# no hash l2-src-dst
 ```
 
 #### Configuring LACP fallback mode
@@ -326,6 +329,52 @@ switch(config)# interface lag 1
 switch(config-lag-if)# lacp rate fast
 ```
 
+##### Configuring no shutdown
+##### Syntax
+
+```
+    no shutdown
+```
+
+##### Description
+This command sets every interface in LAG to no shutdown.
+
+##### Authority
+all users
+
+##### Parameters
+no parameters.
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# no shutdown
+```
+
+##### Configuring shutdown
+##### Syntax
+
+```
+    shutdown
+```
+
+##### Description
+This command sets every interface in LAG to shutdown.
+
+##### Authority
+all users
+
+##### Parameters
+no parameters.
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# shutdown
+```
+
 ## LAG display commands
 ### Display global LACP configuration
 #### Syntax
@@ -359,7 +408,7 @@ System-priority : 65534
 ```
 
 #### Description
-This command displays all LACP aggregate information if no parameter is passed. If a LAG name is passed as an argument, it shows information of the specified LAG
+This command displays all LACP aggregate information if no parameter is passed. If a LAG name is passed as an argument, it shows information of the specified LAG.
 
 #### Authority
 all users
@@ -463,4 +512,46 @@ System-id          |                    |
 System-priority    |                    |
 
 switch#
+```
+
+### LAG show running-config
+#### Syntax
+
+```
+    show running-config
+```
+
+#### Description
+This command displays the complete switch configuration, when the switch has
+LAGs configured it should display all the configuration specific to those interfaces.
+
+#### Authority
+all users
+
+#### Parameters
+No parameters
+
+#### Examples
+```
+switch# show running-config
+Current configuration:
+!
+!
+!
+!
+!
+vlan 1
+    no shutdown
+interface lag 2
+    no shutdown
+    ip address 10.2.2.2/24
+    ipv6 address 2001::1/64
+interface lag 3
+    no shutdown
+    lacp mode passive
+interface lag 1
+    no shutdown
+    lacp mode active
+    ip address 10.1.1.1/24
+    ipv6 address 2001:db8:a0b:12f0::1/64
 ```

@@ -25,8 +25,8 @@ import json
 import httplib
 import urllib
 
-from utils.fakes import *
-from utils.utils import *
+from opsvsiutils.restutils.fakes import *
+from opsvsiutils.restutils.utils import *
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -170,18 +170,14 @@ class DeleteExistentVlan(OpsVsiTest):
         info("\n########## Executing GET for %s ##########\n" % self.vlan_path)
         info("Testing Path: %s\n" % self.vlan_path)
 
-        response_status, response_data = execute_request(self.vlan_path,
+        response_status, response_data = execute_request(delete_path,
                                                          "GET",
                                                          None,
                                                          self.switch_ip)
 
-        assert response_status == httplib.OK, \
+        assert response_status == httplib.NOT_FOUND, \
             "Response status received: %s\n" % response_status
         info("Response status received: \"%s\"\n" % response_status)
-
-        assert json.loads(response_data) == [], \
-            "Response data received: %s\n" % response_data
-        info("Response data received: %s\n" % response_data)
 
         info("########## Executing GET for %s DONE "
              "##########\n" % self.vlan_path)
