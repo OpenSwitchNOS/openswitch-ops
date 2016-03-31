@@ -13,6 +13,7 @@ LLDP Test Cases
   - [snmpgetNext](#snmpgetnext)
   - [snmpgetBulk](#snmpgetBulk)
   - [snmpwalk](#snmpwalk)
+  - [snmptraps](#lldp-snmp-traps)
 
 ##CLI
 ### LLDP enable disable
@@ -291,3 +292,29 @@ The test case checks if LLDP wait and hold timers can be set.
    - The query walks through all the OIDs.
 - The test case is failed if
    - The query fails to walk through all the OIDs.
+
+##  LLDP SNMP Traps
+### Objective
+The test case checks if lldpRemTablesChange trap is being sent by the LLDP daemon to the
+trap receiver.
+### Requirements
+- Physical Host/Switch/Switch Test setup
+- **FT File**: `ops/tests/lldp/test_lldp_ft_enable_disable.py`(LLDP Traps)
+
+### Setup
+#### Topology diagram
+```ditaa
+     +--------+     +--------+               +--------+
+     |        |     |        |               |        |
+     |   H1   | <-->|   S1   | <-----------> |   S2   |
+     |        |     |        |               |        |
+     +--------+     +--------+               +--------+
+```
+
+### Description
+1. Create a topology with a single link between two switches, switch 1 and switch 2, and a single link between host 1 and switch 1.
+2. Configure trap receiver daemon on the host H1 and set it as the trap receiver in S1.
+3. Configure **lldp** on switch 1 and switch 2 and enable the connected interfaces on both switches.
+4. Check if a trap has been received on H1 with an increase in lldpStatsRemTablesInserts value.
+5. Disable **lldp** on switch 2.
+6. Wait for 30 seconds and check if a trap has been received on H1.
