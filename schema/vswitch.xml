@@ -1283,7 +1283,15 @@
         Set this value to specify the configuration revision number.
         Default value is 0.
       </column>
-   </group>
+    </group>
+    <group title="MSTP Status">
+      <p>
+        MSTP global status for all MSTIs.
+      </p>
+      <column name="status" key="mstp_config_digest">
+        The configuration digest for the MSTP bridge that is derived based on the VLAN membership of MST instances.
+      </column>
+    </group>
 
     <group title="Other Features">
       <column name="mirrors">
@@ -2750,7 +2758,7 @@
         packets in lower numbered queues as long as there are no packets
         in any higher number queue.
         </p><p><code>dwrr</code> -
-        (Deficit) Weight Round Robin will apportion available bandwidth
+        Deficit Weight Round Robin will apportion available bandwidth
         amongst all non-empty dwrr queues in relation to their queue weights.
         </p>
         <p>
@@ -2926,6 +2934,11 @@
       </column>
       <column name="hw_config" key="internal-vlan">
         The VLAN associated with l3 interfaces.
+      </column>
+      <column name="hw_config" key="block_all_mstp"
+              type='{"type": "boolean"}'>
+        Indicates that the port should be blocked in all MSTP instances.
+        Defaults to <code>false</code>.
       </column>
     </group>
 
