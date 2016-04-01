@@ -226,6 +226,20 @@ that  no partner has been detected and the state of the LAG depends on the value
 of the `other_config:lacp-fallback` key. The `bond_status_reason` indicates why
 is the LAG _"down"_.
 
+To summarize the LAG status, the _Port_ table uses the `bond_status` column.
+This column defines a key called `state`.  This state reflects the state of the
+aggregation of all interfaces for static and dynamic LAGs.  The possible values
+are:
+* "up": At least one of the member interfaces is "up" and should be in a
+  forwarding state according to LACP state or LAG configuration.
+* "blocked": All member interfaces are blocked by LACP (not in the collecting /
+  distributing state) or not eligible to be members of the LAG.  When using
+  LACP and the `lacp_status` column is "defaulted", the `state` column depends
+  on the `other_config:lacp-fallback` key in the _Port_ table.  If it is true,
+  then the value of `state` is forwarding, if it is false, then it should be
+  blocked.
+* "down": All member interfaces are either admin or link "down".
+
 #### _Interface_ table
 The lacpd process fills in status information in the _Interface_ table's rows
 associated with a LAG. The `lacp_current` Boolean value indicates if lacpd has
@@ -251,6 +265,19 @@ current information from the peer for the interface (peer is sending timely
   Peer endpoint LAG key. Used to identify the LAG.
 * `partner_state`
   Peer endpoint LACP negotiation state information.
+
+At the interface level, a `bond_status` column is used to summarize the state of
+the aggregated link.  The `bond_state` column defines one key called `state`.
+If the interface is individual this column is empty.
+This key has four possible values:
+
+* "up": Indicates that the interface is up and should forwarding traffic
+  according to LACP or LAG configuration.
+* "blocked": Indicates that the interface should not be forwarding traffic in
+  neither rx or tx direction
+* "down": Indicates that the interface is down.  The main difference from
+  "blocked" state is that when the interface is down it doesn't allow control
+traffic like LACPDUs to be forwarded/sent to the CPU
 
 ### LAG hardware configuration
 When lacpd determines that an interface should be included in the operation of
