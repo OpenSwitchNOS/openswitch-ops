@@ -2544,6 +2544,14 @@
         The possible values are "true" and "false".
       </column>
     </group>
+   <group title="MACs Validity">
+      <column name="macs_invalid">
+        If <code>true</code>, indicates that MACs on this VLANs are invalid. Might be set by
+        any agent of the system that decides that MACs are indeed invalid. Eventually
+        those MACs will be cleared from the system and macs_invalid will indicate
+        revert to <code>false</code>.
+      </column>
+   </group>
    <group title="VLAN Status">
       <column name="oper_state">
         Operational state of this VLAN.
@@ -3465,6 +3473,20 @@
         Statistics for the ACL applied to this port for ACEs that have the
         'count' keyword specified.  Statistics are key/value pairs of
         ACL sequence number and integer representing the statistics for that entry.
+      </column>
+    </group>
+    <group title="MACs Validity">
+      <column name="macs_invalid_on_vlans">
+        If set of VLANs specified, indicates that MACs on this port and the set of VLANs
+        specified are invalid. Might be set by any agent of the system that decides that
+        MACs are indeed invalid. Eventually those MACs will be cleared from the system
+        and macs_invalid_on_vlans will indicate revert to empty.
+      </column>
+      <column name="macs_invalid">
+        If <code>true</code>, indicates that MACs on this port is invalid.
+        Might be set by any agent of the system that decides that MACs are indeed invalid.
+        Eventually those MACs will be cleared from the system and macs_invalid will
+        indicate revert to <code>false</code>.
       </column>
     </group>
     <group title="Common Columns">
