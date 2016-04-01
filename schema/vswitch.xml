@@ -1562,6 +1562,10 @@
       <column name="top_change_cnt">
         The total number of topology changes that have occurred for this instance.
       </column>
+      <column name="topology_change_disable">
+        Set this value to <code>true</code>, if there is a change in topology.
+        Default is <code>false</code>.
+      </column>
     </group>
   </table>
 
@@ -1665,6 +1669,9 @@
       </column>
       <column name="port_hello_time">
         The port's hello time value, for the CIST.
+      </column>
+      <column name="fwd_transition_cnt">
+        The total number of forward transitions occurred on this port.
       </column>
       <column name="protocol_migration_enable">
         Set this value to <code>true</code> to switch the STP working mode
