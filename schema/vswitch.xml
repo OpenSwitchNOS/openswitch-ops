@@ -2544,6 +2544,13 @@
         The possible values are "true" and "false".
       </column>
     </group>
+   <group title="Clear Learned MAC">
+      <column name="clear_learned_mac">
+        All the learned MAC address on this VLAN will be flushed from the ASIC,
+        If its set to <code>true</code>. After the MAC entries cleared from the ASIC will be reset
+        to <code>false</code>.
+      </column>
+   </group>
    <group title="VLAN Status">
       <column name="oper_state">
         Operational state of this VLAN.
@@ -3465,6 +3472,11 @@
         Statistics for the ACL applied to this port for ACEs that have the
         'count' keyword specified.  Statistics are key/value pairs of
         ACL sequence number and integer representing the statistics for that entry.
+    <group title="Invalid Learned MAC Entries">
+      <column name="mac_invalid_vlans">
+        MAC entries learned on this port with the specified vlans are not valid.
+        Those MAC entries can be removed from ASIC. If the special value <code>4095</code>
+        is set, then all the MAC entries learned on this port will be cleared from the ASIC.
       </column>
     </group>
     <group title="Common Columns">
