@@ -3356,6 +3356,22 @@
               type='{"type":"integer"}'>
         Number of IPv4 DHCP relay responses dropped.
       </column>
+      <column name="dhcp_relay_statistics" key="valid_v4client_requests_with_option82"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay with option 82 requests processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4client_requests_with_option82"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay with option 82 requests dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v4server_responses_with_option82"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay with option 82 responses processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4server_responses_with_option82"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay with option 82 responses dropped.
+      </column>
       <column name="dhcp_relay_statistics" key="valid_v6client_requests"
               type='{"type":"integer"}'>
         Number of valid IPv6 DHCP relay requests processed.
