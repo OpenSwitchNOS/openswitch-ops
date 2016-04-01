@@ -3349,6 +3349,16 @@
             "max": "unlimited"
           }
         },
+        "macs_invalid": {
+          "category": "status",
+            "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "oper_state": {
           "category": "status",
           "type": {
@@ -3966,6 +3976,18 @@
             "max": 512
           },
           "ephemeral": true
+        },
+        "macs_invalid_on_vlans": {
+          "category": "status",
+          "type": {
+            "key": {
+            "type": "integer",
+            "minInteger": 1,
+            "maxInteger": 4095
+            },
+            "min": 0,
+            "max": 4094
+          }
         },
         "other_config": {
           "category": "configuration",

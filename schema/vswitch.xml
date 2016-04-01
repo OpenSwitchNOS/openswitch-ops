@@ -2544,6 +2544,13 @@
         The possible values are "true" and "false".
       </column>
     </group>
+   <group title="Invalidate MACs">
+      <column name="macs_invalid">
+        When set to <code>true</code>, this indicates that all MAC addresses
+        learnt on this VLAN are invalid. This will subsequently result in
+        clearing of these MAC addresses. Default value is <code>false</code>.
+      </column>
+   </group>
    <group title="VLAN Status">
       <column name="oper_state">
         Operational state of this VLAN.
@@ -3465,6 +3472,15 @@
         Statistics for the ACL applied to this port for ACEs that have the
         'count' keyword specified.  Statistics are key/value pairs of
         ACL sequence number and integer representing the statistics for that entry.
+      </column>
+    </group>
+    <group title="Invalidate MACs">
+      <column name="macs_invalid_on_vlans">
+        When a set of VLANs is specified here, all MAC addresses learnt on
+        this port and the set of VLANs specified are invalid. This will subsequently
+        result in clearing of these MAC addresses. When the VLAN value is
+        set as <code>4095</code>, all MAC addresses learnt on this port and
+        any VLAN are invalid.
       </column>
     </group>
     <group title="Common Columns">
