@@ -1809,8 +1809,109 @@
       <column name="match">
         The match rule for route map. Default is deny.
       </column>
+      <column name="match" key="prefix_list"
+        type='{"type": "string"}'>
+        The match rule to filter IPv4 routes that have a destination network number address,
+        that is permitted or denied by a prefix list. The value is prefix list name.
+      </column>
+      <column name="match" key="ipv6_prefix_list"
+        type='{"type": "string"}'>
+        The match rule to filter IPv6 routes that have a destination network number address,
+        that is permitted or denied by a prefix list. The value is prefix list name.
+      </column>
+      <column name="match" key="community"
+        type='{"type": "string"}'>
+        The match rule to filter routes that is permitted or denied by a community list.
+        The value is community list name.
+      </column>
+      <column name="match" key="extcommunity"
+        type='{"type": "string"}'>
+        The match rule to filter routes that is permitted or denied by an extended community list.
+        The value is extended community list name.
+      </column>
+      <column name="match" key="as_path"
+        type='{"type": "string"}'>
+        The match rule to filter routes that is permitted or denied by an autonomous system path access list.
+        The value is as path access list name.
+      </column>
+      <column name="match" key="origin"
+        type='{"type": "string"}'>
+        Matches BGP routes based on the origin of the specified route.
+        The allowed values are the strings egp, igp ,and incomplete
+      </column>
+      <column name="match" key="metric"
+        type='{"type": "string"}'>
+        The match rule to redistributes routes with the specified metric.
+        The value is the metric value.
+      </column>
+      <column name="match" key="ipv6_next_hop"
+        type='{"type": "string"}'>
+        The match rule distributes IPv6 routes that have a specified next hop.
+        The value is the IPv6 address of the next hop.
+      </column>
+      <column name="match" key="probability"
+        type='{"type": "string"}'>
+        Matches the portion of BGP routes defined by a percentage value.
+        The value is the percentage of routes.
+      </column>
       <column name="set">
-        The set rule for route map
+        The set rule for route map.
+      </column>
+      <column name="set" key="community"
+        type='{"type": "string"}'>
+        Sets the community attributes for route-map.The value is community list name.
+      </column>
+      <column name="set" key="metric"
+        type='{"type": "string"}'>
+        Specifies the relative change of metric which is used with BGP route advertisement.
+        The value is the metric expression.
+      </column>
+      <column name="set" key="aggregator_as"
+        type='{"type": "string"}'>
+        Sets the originating AS of an aggregated route. The value is the AS value.
+      </column>
+      <column name="set" key="as_path_exclude"
+        type='{"type": "string"}'>
+        Excludes the AS number from the AS path. The value is the AS number.
+      </column>
+      <column name="set" key="as_path_prepend"
+        type='{"type": "string"}'>
+        Prepends the AS number to the AS path. The value is the AS number.
+      </column>
+      <column name="set" key="atomic_aggregate"
+        type='{"type": "string"}'>
+        Enables a notification to upstream routers that address aggregation has occurred on an aggregate route.
+        Allowed value is the string "atomic_aggregate", default value is NULL.
+      </column>
+      <column name="set" key="comm_list"
+        type='{"type": "string"}'>
+        Removes community list attributes from the BGP routes. The value is the community list name.
+      </column>
+      <column name="set" key="extcommunity rt"
+        type='{"type": "string"}'>
+        Sets the target extended community of a BGP route. The value is the community attribute.
+      </column>
+      <column name="set" key="extcommunity soo"
+        type='{"type": "string"}'>
+        Sets the site-of-origin extended community of a BGP route. The value is the community attribute.
+      </column>
+      <column name="set" key="ipv6_next_hop_global"
+        type='{"type": "string"}'>
+        Sets the BGP-4+ global IPv6 next hop address. The value is the IPv6 address.
+      </column>
+      <column name="set" key="local_preference"
+        type='{"type": "string"}'>
+        Sets the BGP local preference and the local preference value of an IBGP route.
+        The value is the local preference valuue.
+      </column>
+      <column name="set" key="origin"
+        type='{"type": "string"}'>
+        Sets the origin attribute of a local BGP route.
+        The allowed values are the strings egp, igp, and incomplete.
+      </column>
+      <column name="set" key="weight"
+        type='{"type": "string"}'>
+        Sets the weight of a BGP route. The value is the weight value.
       </column>
    </group>
    <group title="Status">
@@ -2349,6 +2450,17 @@
       BGP per neighbor timers - Connect timer/Keep-alive Interval.
       </column>
 
+      <column name="timers" key="keepalive"
+        type='{"type": "string"}'>
+        Set the keepalive interval for a specific BGP peer.
+        The value is keepalive interval in seconds.
+      </column>
+
+      <column name="timers" key="holdtime"
+        type='{"type": "string"}'>
+        Set the hold time for a specific BGP peer. The value is hold time in seconds.
+      </column>
+
       <column name="aspath_filters">
       Name and direction of the as-path filters.
       </column>
@@ -2392,6 +2504,27 @@
       These values describe various status information about this
       BGP neighbor or BGP Peer group entry.
       </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_out_performed"
+       type='{"type": "string"}'>
+       Performs soft reset for outbound routing updates to specified neighbor.
+       The value is the number of times soft clear is performed for outbound routing policy updates from the peer.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_out_requested"
+       type='{"type": "string"}'>
+       Requests soft reset for outbound routing updates to specified neighbor.
+       The value is the number of times soft clear is requested for outbound routing policy updates from the peer.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_in_performed"
+       type='{"type": "string"}'>
+       Performs soft reset for inbound routing updates from specified neighbor.
+       The value is the number of times soft clear is performed for inbound routing policy updates for the peer.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_in_requested"
+       type='{"type": "string"}'>
+       Requests soft reset for inbound routing updates from specified neighbor.
+       The value is the number of times soft clear is requested for inbound routing policy updates for the peer.
+      </column>
+
    </group>
 
    <group title="BGP Neighbor or Peer group Status Info">
