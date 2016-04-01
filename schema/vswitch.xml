@@ -6642,4 +6642,26 @@
       <column name="priv_pass_phrase">The key to be used by privacy protocol.</column>
     </group>
   </table>
+
+  <table name="REST_Event_Subscriber" title="REST event subscriber information">
+    <group title="Configuration">
+      <column name="name">
+        Name of the REST event subscriber.
+      </column>
+      <column name="type">
+        Event notification type. For WebSockets the type is "ws".
+      </column>
+      <column name="rest_event_subscriptions">
+        List of REST event subscriptions for this subscriber.
+      </column>
+    </group>
+  </table>
+
+  <table name="REST_Event_Subscription" title="REST event subscription information">
+    <group title="Configuration">
+      <column name="resource_uri">
+        URI of the resource being subscribed to for REST event notifications.
+      </column>
+    </group>
+  </table>
 </database>

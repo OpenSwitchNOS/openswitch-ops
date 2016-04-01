@@ -8243,6 +8243,55 @@
         ]
       ],
       "isRoot" : true
+    },
+    "REST_Event_Subscriber": {
+      "columns": {
+        "name": {
+          "category": "configuration",
+          "type": "string",
+          "mutable": false
+        },
+        "type": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set", [
+                  "ws"
+                ]
+              ]
+            }
+          },
+          "mutable": false
+        },
+        "rest_event_subscriptions": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "REST_Event_Subscription"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ]
+    },
+    "REST_Event_Subscription": {
+      "columns": {
+        "resource_uri": {
+          "category": "configuration",
+          "type": "string",
+          "mutable": false
+        }
+      }
     }
   }
 }
