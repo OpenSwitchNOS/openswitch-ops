@@ -1457,11 +1457,11 @@
         The time last topology change happened for this instance.
         The format for this is number of seconds from epoch.
       </column>
-      <column name="top_change_cnt">
+      <column name="topology_change_count">
         The total number of topology changes that have occurred for this instance.
       </column>
-      <column name="topology_change_disable">
-        Set this value to <code>true</code>, if there is a change in topology.
+      <column name="topology_stable">
+        This is set to <code>true</code> when a topology change has occurred and <code>false</code> if it has not.
         Default is <code>false</code>.
       </column>
     </group>
@@ -1559,8 +1559,13 @@
         The value used by the MSTP transmit state machine to limit the maximum
         transmission rate of MST BPDUs within the hello interval.
       </column>
-      <column name="top_change_cnt">
+      <column name="topology_change_count">
         The total number of topology changes that have occurred for this instance.
+      </column>
+      <column name="topology_stable">
+        This is set to <code>false</code> when a topology change has occurred.
+        Once topology stabilized it will set back to true.
+        Default is <code>true</code>.
       </column>
     </group>
   </table>
@@ -1665,6 +1670,9 @@
       </column>
       <column name="port_hello_time">
         The port's hello time value, for the CIST.
+      </column>
+      <column name="fwd_transition_count">
+        The number of times this port has transitioned to the forwarding state.
       </column>
       <column name="protocol_migration_enable">
         Set this value to <code>true</code> to switch the STP working mode
