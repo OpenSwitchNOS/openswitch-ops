@@ -3349,6 +3349,15 @@
             "max": "unlimited"
           }
         },
+        "mac_learning": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "oper_state": {
           "category": "status",
           "type": {
@@ -3966,6 +3975,18 @@
             "max": 512
           },
           "ephemeral": true
+        },
+        "mac_invalid_vlans": {
+          "category": "status",
+          "type": {
+            "key": {
+            "type": "integer",
+            "minInteger": 1,
+            "maxInteger": 4095
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
         },
         "other_config": {
           "category": "configuration",
