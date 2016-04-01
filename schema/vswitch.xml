@@ -2540,6 +2540,12 @@
         The possible values are "true" and "false".
       </column>
     </group>
+   <group title="MAC Learning State">
+      <column name="mac_learning_state">
+        MAC Learning state of this VLAN. Will be set to <code>flush</code> when the MAC entries learnt on this VLAN
+        need to be flushed from the ASIC.The MAC Learning state default value is <code>normal</code>
+      </column>
+   </group>
    <group title="VLAN Status">
       <column name="oper_state">
         Operational state of this VLAN.
@@ -3373,7 +3379,12 @@
         Number of IPv6 DHCP relay responses dropped.
       </column>
     </group>
-
+    <group title="Invalid Learned MAC Entries">
+      <column name="mac_invalid_vlans">
+        MAC entries learned on this port with the specified vlans are not valid.
+        Those MAC entries can be removed from ASIC.
+      </column>
+    </group>
     <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.

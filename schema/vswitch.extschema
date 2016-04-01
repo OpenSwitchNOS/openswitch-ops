@@ -3337,6 +3337,24 @@
             "max": "unlimited"
           }
         },
+        "mac_learning_state": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "flush_request",
+                  "normal",
+                  "unknown"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "oper_state": {
           "category": "status",
           "type": {
@@ -3824,6 +3842,18 @@
             "max": "unlimited"
           },
           "ephemeral": true
+        },
+        "mac_invalid_vlans": {
+          "category": "status",
+          "type": {
+            "key": {
+            "type": "integer",
+            "minInteger": 1,
+            "maxInteger": 4094
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
         },
         "other_config": {
           "category": "configuration",
