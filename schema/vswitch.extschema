@@ -4675,7 +4675,9 @@
                   "fault_absent",
                   "fault_input",
                   "fault_output",
-                  "unknown"
+                  "unknown",
+                  "unsupported",
+                  "warning"
                 ]
               ]
             },
@@ -4709,6 +4711,30 @@
             "min": 0,
             "max": "unlimited"
           }
+        },
+        "product_name": {
+          "category": "status",
+          "type": "string"
+        },
+        "serial_number": {
+          "category": "status",
+          "type": "string"
+        },
+        "warnings": {
+          "category": "status",
+          "type": "integer"
+        },
+        "failures": {
+          "category": "status",
+          "type": "integer"
+        },
+        "watts": {
+          "category": "status",
+          "type": "integer"
+        },
+        "watts_max": {
+          "category": "status",
+          "type": "integer"
         }
       },
       "indexes": [

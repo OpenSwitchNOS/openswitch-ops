@@ -4653,6 +4653,18 @@
       <column name="external_ids">
       </column>
    </group>
+      <column name="product_name">
+      </column>
+      <column name="serial_number">
+      </column>
+      <column name="warnings">
+      </column>
+      <column name="failures">
+      </column>
+      <column name="watts">
+      </column>
+      <column name="watts_max">
+      </column>
   </table>
 
   <table name="Radius_Server" title="Radius server configuration">
