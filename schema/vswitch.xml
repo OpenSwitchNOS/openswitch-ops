@@ -4653,6 +4653,43 @@
       <column name="external_ids">
       </column>
    </group>
+      <column name="product_name">
+          PSU product name to identify the type of PSU.  This field is used to
+          determine if the PSU is a supported type.  If the PSU does not have a
+          means to obtain the product name through SW then this field will
+          remain blank.
+      </column>
+      <column name="serial_number">
+          PSU serial number to uniquely identify the PSU.  If the PSU does not
+          have a means to obtain the serial number through SW then this field
+          will remain blank.
+      </column>
+      <column name="warnings">
+          Number of warnings the PSU has experienced since the most recent
+          power on of the PSU from an external source.  Warnings are any events
+          that do not impair the power delivery from the PSU but require
+          notification that service may be needed.  Some examples of warnings
+          are fan failures and over temperature.
+      </column>
+      <column name="failures">
+          Number of failures the PSU has experienced since the most recent
+          power on of the PSU from an external source.  Failures are any events
+          where power delivery from the PSU did not occur when expected.  This
+          includes unsupported PSU types since their power delivery is not
+          considered valid even though the PSU itself may not have an internal
+          failure.  Some examples of failures are over current, invalid input
+          power, and unsupported PSU type.
+      </column>
+      <column name="watts">
+          Current power supplied by the PSU in Watts.  If the PSU does not have
+          a means to obtain the current power supplied by the PSU through SW
+          then this field will remain blank.
+      </column>
+      <column name="watts_max">
+          Maximum power capacity that can be supplied by the PSU in Watts.  If
+          the PSU does not have a means to obtain the maximum power capacity of
+          the PSU through SW then this field will remain blank.
+      </column>
   </table>
 
   <table name="Radius_Server" title="Radius server configuration">
