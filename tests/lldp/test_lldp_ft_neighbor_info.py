@@ -440,7 +440,6 @@ def lldp_neighbor_info(**kwargs):
                            ['Neighbor_Entries_Deleted']).rstrip()
     assert int(neighbor_deleted) == 0, "Failed to clear counters"
 
-
 @pytest.mark.timeout(1000)
 @pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 787")
 class Test_lldp_configuration:
