@@ -4653,6 +4653,34 @@
       <column name="external_ids">
       </column>
    </group>
+      <column name="product_name">
+          PSU product name obtained from the FRU EEPROM.  This field is used to
+          determine if the PSU is a supported type.
+      </column>
+      <column name="serial_number">
+          PSU serial number obtained from the FRU EEPROM.
+      </column>
+      <column name="warnings">
+          Number of warnings the PSU has experienced from power on.  Warnings
+          are any events that do not impair the power delivery from the PSU but
+          require notification that service may be needed.  Some examples of
+          warnings are fan failures and over temperature.
+      </column>
+      <column name="failures">
+          Number of failures the PSU has experienced from power on.  Failures
+          are any critical events that impair the power delivery from the PSU.
+          Some examples of failures are over current, invalid input power,
+          and unsupported PSU type.
+      </column>
+      <column name="watts">
+          Current power usage of the PSU in Watts.  Obtained from the MCU of
+          the PSU.  If no MCU is availble on the PSU then this field will
+          remain blank.
+      </column>
+      <column name="watts_max">
+          Maximum power capacity of the PSU in Watts.  Obtained from the FRU
+          EEPROM.
+      </column>
   </table>
 
   <table name="Radius_Server" title="Radius server configuration">
