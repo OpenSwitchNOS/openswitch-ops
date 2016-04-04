@@ -4740,7 +4740,66 @@
       <column name="name">
       </column>
    <group title="Status">
+      If the PSU does not have a means through SW to obtain the information
+      required for a field in a Status column, then that field will remain
+      blank.
       <column name="status" >
+      </column>
+      <column name="identity">
+        There are two identities available for the PSUs.  These identities are
+        defined as:
+        <dl>
+          <dt>product name</dt>
+          <dd>
+            PSU product name to identify the type of PSU.  This field is used
+            to determine if the PSU is a supported type.
+          </dd>
+          <dt>serial number</dt>
+          <dd>
+            PSU serial number to uniquely identify the PSU.
+          </dd>
+        </dl>
+      </column>
+      <column name="watts">
+        There are two wattage statuses available for the PSUs.  These wattages
+        are defined as:
+        <dl>
+          <dt>current</dt>
+          <dd>
+            Total current power supplied by the PSU in Watts.
+          </dd>
+          <dt>maximum</dt>
+          <dd>
+            Total maximum power capacity that can be supplied by the PSU in
+            Watts.
+          </dd>
+        </dl>
+      </column>
+   </group>
+   <group title="Statistics">
+      <column name="statistics">
+        There are two statistics available for the PSUs.  These statistics are
+        defined as:
+        <dl>
+          <dt>warnings</dt>
+          <dd>
+            Number of warnings the PSU has experienced since the most recent
+            power on of the PSU from an external source.  Warnings are any
+            events that do not impair the power delivery from the PSU but
+            require notification that service may be needed.  Some examples of
+            warnings are fan failures and over temperature.
+          </dd>
+          <dt>failures</dt>
+          <dd>
+            Number of failures the PSU has experienced since the most recent
+            power on of the PSU from an external source.  Failures are any
+            events where power delivery from the PSU did not occur when
+            expected.  This includes unsupported PSU types since their power
+            delivery is not considered valid even though the PSU itself may not
+            have an internal failure.  Some examples of failures are over
+            current, invalid input power, and unsupported PSU type.
+          </dd>
+        </dl>
       </column>
    </group>
    <group title="Common Columns">

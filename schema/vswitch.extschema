@@ -4720,12 +4720,50 @@
                   "fault_absent",
                   "fault_input",
                   "fault_output",
-                  "unknown"
+                  "unknown",
+                  "unsupported",
+                  "warning"
                 ]
               ]
             },
             "min": 0,
             "max": 1
+          },
+          "ephemeral": true
+        },
+        "identity": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 2,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "watts": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 2,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 2,
+            "max": "unlimited"
           },
           "ephemeral": true
         },
