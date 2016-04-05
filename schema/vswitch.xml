@@ -6464,7 +6464,7 @@
 
     <column name="from">
       This column specifies who has configured this entry in the database.
-      Is it the hw-vtep controller, self learned from ASIC or statically configured.
+      Is it the hw-vtep controller, dynamically learned from ASIC or statically configured.
     </column>
 
     <column name="port">
