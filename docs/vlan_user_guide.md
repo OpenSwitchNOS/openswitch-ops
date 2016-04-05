@@ -102,17 +102,19 @@ switch(config-lag-if)#no vlan trunk allowed 1
 ```
 
 6. Add tagging on a native VLAN.
-The `vlan trunk allowed ID` command specifies the VLAN allowed in the trunk. Multiple VLANs can be allowed in a trunk.
+The `vlan trunk native tag` command enables tagging on native VLANs.
 ```
 switch# config terminal
 switch(config)# interface 21
 switch(config-if)#no routing
+switch(config-if)#vlan trunk native 1
 switch(config-if)#vlan trunk native tag
 ```
 ```
 switch# config terminal
 switch(config)# interface lag 21
 switch(config-lag-if)#no routing
+switch(config-lag-if)#vlan trunk native 1
 switch(config-lag-if)#vlan trunk native tag
 ```
 The `no vlan trunk native tag` command disables tagging on native VLANs.
