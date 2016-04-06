@@ -50,6 +50,26 @@
             "max": 1
           }
         },
+        "virtual_routers": {
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRRP"
+            },
+            "min": 0,
+            "max": 512
+          }
+        },
+        "track_interfaces": {
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRRP_Track_Entity"
+            },
+            "min": 0,
+            "max": 128
+          }
+        },
         "management_mac": {
           "category": "status",
           "type": {
@@ -1815,6 +1835,328 @@
                 }
             }
         }
+    },
+    "VRRP": {
+      "columns": {
+        "name": {
+          "category": "configuration",
+          "type": "string",
+          "mutable": false
+        },
+        "mode": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "owner",
+                  "backup",
+                  "unintialized"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "interface": {
+          "category": "configuration",
+          "relationship": "m:1",
+           "type": {
+              "key": {
+               "type": "uuid",
+               "refTable": "Port",
+               "refType" : "strong"
+              },
+              "min": 0,
+              "max": 1
+           }
+        },
+        "preempt": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "enable",
+                  "disable"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ip4_address": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 18
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ip4_address_secondary": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ip6_address": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 49
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "ip6_address_secondary": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 49
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "hw_config": {
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "vrrp_admin_status": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "enable",
+                  "disable"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "failover": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "enable_with_no_monitoring",
+                  "enable_with_monitoring",
+                  "disable"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "failback": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "enable",
+                  "disable"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "timers": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "integer",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "version": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 2,
+              "maxInteger": 3
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "priority": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 255
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "auth_type": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "null",
+                  "text",
+                  "md5"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "auth_text_key": {
+          "category": "configuration",
+          "type": {
+            "key": {
+             "type": "string",
+             "minLength": 1,
+             "maxLength": 8
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "auth_md5_keys": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 255
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16
+            },
+            "min": 0,
+            "max": 255
+          }
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ]
+    },
+    "VRRP_Track_Entity": {
+      "columns": {
+        "name": {
+          "category": "configuration",
+          "type": "string",
+          "mutable": false
+        },
+        "virtual_router": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRRP",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "track_entity_status": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "up",
+                  "down"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "track_interface": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Port",
+              "refType" : "strong"
+            },
+            "min": 0,
+            "max": 1
+          }
+        }
+      },
+      "indexes": [
+        [
+          "name"
+        ]
+      ]
     },
     "Daemon": {
       "columns": {
