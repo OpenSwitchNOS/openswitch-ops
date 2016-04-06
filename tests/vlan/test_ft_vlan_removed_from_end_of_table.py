@@ -95,7 +95,7 @@ def verifyVlanPorts(dut, vlanID, port):
     showVlanOutput = returnCLS.valueGet()
     for myDictionary in showVlanOutput:
         if myDictionary['VLAN'] == vlanID and \
-                port in myDictionary['Ports']:
+                port in myDictionary['Interfaces']:
             assigned = True
             return assigned
     return assigned
@@ -312,7 +312,6 @@ class Test_vlan_state_removed_from_end_of_table:
         else:
             LogOutput('info', "Passed enable interface {pInterface}".format(
                 pInterface=self.dut01Obj.linkPortMapping['lnk03']))
-
     def test_added_ports(self):
         LogOutput('info', "############################################")
         LogOutput('info', "Step 6- Verify ports assign correctly")
@@ -407,7 +406,6 @@ class Test_vlan_state_removed_from_end_of_table:
             assert(False)
         else:
             LogOutput('info', "Passed adding port to vlan " + str(2))
-
     def test_added_port(self):
         LogOutput('info', "############################################")
         LogOutput(

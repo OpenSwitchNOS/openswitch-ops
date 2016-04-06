@@ -964,7 +964,7 @@
              "type": {
                  "key": {
                      "type": "integer",
-                     "minInteger": 1,
+                     "minInteger": 0,
                      "maxInteger": 200000000
                  },
                  "min": 0,
@@ -1066,8 +1066,8 @@
                 "type": {
                     "key": {
                         "type": "integer",
-                        "minInteger": 1,
-                        "maxInteger": 20000000000
+                        "minInteger": 0,
+                        "maxInteger": 200000000
                     },
                     "min": 0,
                     "max": 1
@@ -1139,8 +1139,8 @@
                 "type": {
                     "key": {
                         "type": "integer",
-                        "minInteger": 1,
-                        "maxInteger": 20000000000
+                        "minInteger": 0,
+                        "maxInteger": 200000000
                     },
                     "min": 0,
                     "max": 1
@@ -1687,7 +1687,7 @@
                 "type": {
                     "key": {
                         "type": "integer",
-                        "minInteger": 1,
+                        "minInteger": 0,
                         "maxInteger": 200000000
                     },
                     "min": 0,
@@ -5427,8 +5427,8 @@
           "type": {
             "key": {
               "type": "string",
-              "minLength": 18,
-              "maxLength": 18
+              "minLength": 17,
+              "maxLength": 17
             }
           }
         },
@@ -5998,7 +5998,7 @@
           "type": {
             "key": {
               "type": "string",
-              "enum": ["set", ["strict", "wrr"] ]
+              "enum": ["set", ["strict", "dwrr"] ]
             },
             "min": 0,
             "max": 1
@@ -8300,6 +8300,91 @@
           "direction"
         ]
       ]
+    },
+    "SNMPv3_User" : {
+      "columns" : {
+        "user_name" : {
+          "category": "configuration",
+          "type" : {
+           "key" : {
+             "type" : "string",
+             "minLength" : 1,
+             "maxLength": 32
+           }
+          }
+        },
+
+        "auth_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "md5",
+                  "sha",
+                  "none"
+                ]
+              ]
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        },
+
+        "priv_protocol" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "enum" : [
+                "set",
+                [
+                  "aes",
+                  "des",
+                  "none"
+                ]
+              ]
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        },
+
+        "auth_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8,
+              "maxLength" : 32
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        },
+
+        "priv_pass_phrase" : {
+          "category" : "configuration" ,
+          "type" : {
+            "key" : {
+              "type" : "string",
+              "minLength" : 8,
+              "maxLength" : 32
+            },
+            "min" : 0,
+            "max" : 1
+          }
+        }
+      },
+      "maxRows" : 10,
+      "indexes" : [
+        [
+          "user_name"
+        ]
+      ],
+      "isRoot" : true
     },
     "ACL": {
       "columns": {
