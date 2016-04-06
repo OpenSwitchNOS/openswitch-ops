@@ -8,6 +8,7 @@
 * [LAG with cross links with same aggregation key using CLI](#LAG-with-cross-links-with-same-aggregation-key-using-CLI)
 * [LAG created with different aggregation key configured with CLI](#LAG-created-with-different-aggregation-key-configured-with-CLI)
 * [LACP aggregation key with hosts](#LACP-aggregation-key-with-hosts)
+* [LAG created to disable all ports or to fallback](#LAG-created-to-disable-all-ports-or-to-fallback)
 
 ## Transferring interface to another LAG with CLI
 ### Objective
@@ -518,3 +519,54 @@ connected to the switches
   - Validate Host 2 and Host 3 can't ping each other
 * Validate Host 2 and Host 3 can't ping each other after step 34
 * Validate Host 1 and Host 3 can't ping each other after step 37
+
+## LAG created to disable all ports or to fallback
+### Objective
+Verify that configured LAG to either disable all ports or to fallback to active/backup when dynamic LACP is configured and the LACP negotiation fail.
+### Requirements
+ - Script is in ops-lacpd/ops-tests/feature/test_ft_lacp_fallback.py
+
+### Setup
+#### Topology Diagram
+```
++--------+                  +--------+
+|        1------------------1        |
+|   s1   |                  |   s2   |
+|        2------------------2        |
++--------+                  +--------+
+```
+
+### Description
+1. Turn on interfaces in both switches
+*  Create LAG 100 in switch 1 with active state
+*  Create LAG 100 in switch 1 with active state
+*  Change rate mode to Fast in LAG in both switches
+*  Associate interfaces to the LAG from both switches
+*  Get LACP state from both interfaces in switch 1
+*  LACP should be in state false as default
+*  Convert LAG from switch 2 into static
+*  Get LACP state from both interfaces in switch 1
+*  Convert LAG from switch 2 to dynamic again with state active
+*  Change LACP fallback state to enabled in both switches
+*  Convert LAG from switch 2 into static
+*  Get state from interfaces in switch 1
+*  Convert LAG from switch 2 to dynamic with state active
+*  Get state from all interfaces in switch 1 and 2
+### Test Result Criteria
+#### Test Pass Criteria
+* Validate interfaces are in state Up after turned on
+* Validate all interfaces are In Sync, Collecting and Distributing when
+creating LAG between both switches
+* Validate interfaces in switch 1 is in LACP state afoex when fallback is false
+* Validate there is at least one interface in state In Sync, Collecting
+and Distributing when fallback is enabled. All other interfaces should be in state AFOE
+* Validate all interfaces get back to state In Sync, Collecting
+and Distributing when LAG in switch 2 gets back into dynamic
+#### Test Fail Criteria
+* Interfaces are not UP state when turned on
+* All or some interface is not In Sync, Collecting and Distributing state
+* All or some of the interfaces are not in state afoex
+* All interfaces are In Sync, Collecting and Distributing when fallback is enabled or
+all interfaces are Out of Sync
+* Not all interfaces get into state In Sync, Collecting and Distributing when LAG in
+switch 2 gets back into dynamic mode
