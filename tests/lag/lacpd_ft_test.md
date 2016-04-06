@@ -8,6 +8,7 @@
 * [LAG with cross links with same aggregation key using CLI](#LAG-with-cross-links-with-same-aggregation-key-using-CLI)
 * [LAG created with different aggregation key configured with CLI](#LAG-created-with-different-aggregation-key-configured-with-CLI)
 * [LACP aggregation key with hosts](#LACP-aggregation-key-with-hosts)
+* [LAG created to disable all ports or to fallback](#LAG-created-to-disable-all-ports-or-to-fallback)
 
 ## Transferring interface to another LAG with CLI
 ### Objective
@@ -518,3 +519,50 @@ connected to the switches
   - Validate Host 2 and Host 3 can't ping each other
 * Validate Host 2 and Host 3 can't ping each other after step 34
 * Validate Host 1 and Host 3 can't ping each other after step 37
+
+## LAG created to disable all ports or to fallback
+### Objective
+Verify that configured LAG to either disable all ports or to fallback to active/backup when dynamic LACP is configured and the LACP negotiation fail.
+### Requirements
+ - Script is in ops-lacpd/ops-tests/feature/test_ft_lacp_fallback.py
+
+### Setup
+#### Topology Diagram
+```
++--------+                  +--------+
+|        1------------------1        |
+|   s1   |                  |   s2   |
+|        2------------------2        |
++--------+                  +--------+
+```
+
+### Description
+1. Turn on interfaces 1-2 in both switches
+2. Create LAG 100 in switch 1 with active state
+3. Create LAG 100 in switch 1 with active state
+4. Associate interfaces 1 and 2 to the LAG from both switches
+5. Wait from 10 to 50 seconds for switches to negotiate LAG state
+6. Change lacp mode in port from "active" to "off" on switch 2
+7. Verify that interfaces on switch 1 are out of sync, using wait process same as step 5
+8. LACP mode back to active on switch 2
+9. Override port parameters on switch 1 and switch 2
+10. Change LACP mode in port from "active" to "off" on switch 2
+11. Get LAG information for interface 1 in switch 1
+12. Verify that one interface are In Sync for switch 1
+13. LACP mode back to active on switch 2
+14. Verify lacp_status in interfaces configured in LACP LAGs
+15. Clear all user configuration
+### Test Result Criteria
+#### Test Pass Criteria
+* LAGs are configured according with the specifications on both switches
+* Validations in step 7
+  - Validate local state, it must be Out of Sync on switch 1
+* Validations in step 12
+  - Validate local state of all interfaces, one interface must be In Sync on switch 1
+* Validations in step 14
+  - Validate local state, it must be In Sync for both switches
+#### Test Fail Criteria
+* LAGs are not configured according with the specifications on both switches
+* Validate LACP state for all interfaces in both switches according with switch 2 lacp mode
+* If switch 2 is "off", switch 1 with fallback true, doesn't keeps a single interface In Sync
+* Some interface in switch 1 is In Sync when fallback is false and LAG is not active.
