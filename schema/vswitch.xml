@@ -861,6 +861,31 @@
         </column>
     </group>
 
+    <group title="BroadView configuration">
+      <column name="broadview_config" key="enabled"
+              type='{"type": "boolean"}'>
+        Specifies whether the BroadView feature is enabled on the system.
+        False, if the value is not present.
+      </column>
+
+      <column name="broadview_config" key="bview_client_ip" >
+        Specifies BroadView client ip address.
+        If the value is not configured then default is 127.0.0.1.
+      </column>
+
+      <column name="broadview_config" key="bview_client_port"
+              type='{"type": "integer", "minInteger": 1, "maxInteger": 65536}'>
+        Specifies BroadView client tcp port number.
+        If no value is set, the default is 9070.
+      </column>
+
+      <column name="broadview_config" key="agent_port"
+              type='{"type": "integer", "minInteger": 1, "maxInteger": 65536}'>
+        Specifies BroadView agent tcp port number.
+        If no value is set, the default is 8080.
+      </column>
+    </group>
+
     <group title="Bufmon configuration">
       <column name="bufmon_config" key="enabled"
               type='{"type": "boolean"}'>
