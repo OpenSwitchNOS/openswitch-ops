@@ -3342,6 +3342,42 @@
       </group>
     </group>
 
+   <group title="Loop-protect per port Configuration">
+      <column name="loop_protect_enable">
+        This determines whether Loop-protect is enabled or not.The value is <code>true</code>,
+        if the Loop-protect feature is enabled on the port.
+        Default value is <code>false</code>.
+      </column>
+      <column name="loop_protect_port_state">
+        This value will be set to <code>disable</code>,if the port has to be disabled
+        after detecting a loop by the Loop-protect feature.
+      </column>
+      <column name="loop_protect_action">
+        This determines action for the Loop-protect feature.The value is set to
+        "tx-port-disable" for disabling the sending port on detecting a loop,
+        "tx-rx-disable" disables both sending and receiving ports when loop
+        is detected and "do-not-disable" will not disable any port.
+        Default value is <code>tx-port-disable</code>.
+      </column>
+   </group>
+
+   <group title="Loop-protect Status">
+      <column name="loop_protect_status" key="detected_on_vlan">
+        This contains the VLAN on which the loop is detected if the mode is "vlan".
+        In "port" mode,the value is <code>NA</code>.
+      </column>
+      <column name="loop_protect_status" key="last_loop_detected_time">
+        This has the last timestamp when the loop was detected by the Loop-protect
+        feature.
+      </column>
+   </group>
+
+   <group title="Loop-protect Statistics">
+      <column name="loop_protect_statistics" key="loop_count">
+        Number of times a loop has been detected on this port.
+      </column>
+   </group>
+
    <group title="Other Features">
       <column name="mac">
         The MAC address to use for this port for the purpose of choosing the
@@ -3509,6 +3545,31 @@
 
       <column name="other_config"/>
       <column name="external_ids"/>
+    </group>
+  </table>
+
+  <table name="Loop_protect" title="Loop-protect configuration">
+    <p>Contains global configuration for the Loop-protect feature.</p>
+
+    <group title="Configuration">
+      <column name="mode">
+        This determines the mode of the Loop-protect feature.This value is <code>port</code>
+        to run Loop-protect feature on Loop-protect enabled access ports.
+        If the value is <code>vlan</code>,it will enable Loop-protect on trunk VLANs.
+        Default mode is <code>port</code>.
+      </column>
+      <column name="disable_timer">
+        This specifies the time in seconds for which the ports are to be disabled on
+        detecting a loop.Default value is <code>0</code> i.e the port is disabled indefinitely.
+      </column>
+      <column name="transmit_interval">
+        This specifies the time interval in seconds between successive transmissions of
+        loop-protect packets.
+        Default value is <code>5</code> seconds.
+      </column>
+      <column name="vlans">
+        This contains a list of VLANs on which the Loop-protect feature has been enabled.
+      </column>
     </group>
   </table>
 
