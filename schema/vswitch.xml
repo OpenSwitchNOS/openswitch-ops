@@ -144,10 +144,10 @@
       <column name="other_config" key="stats-update-interval"
               type='{"type": "integer", "minInteger": 5000}'>
         <p>
-          Interval for updating statistics to the database, in milliseconds.
-          This option will affect the update of the <code>statistics</code>
-          column in the following tables: <code>Port</code>, <code>Interface
-          </code>.
+          Update interval for the statistics, in milliseconds.
+          This option will affect the update of <code>statistics</code>,
+          <code>DHCP-Relay Statistics</code> columns in the <code>Port</code> table,
+          <code>statistics</code> column in the <code>Interface</code> table.
         </p>
         <p>
           Default value is 5000 ms.
@@ -196,6 +196,25 @@
         </p>
       </column>
 
+      <column name="other_config" key="banner">
+        <p>
+            Banner to be displayed on CLI start. Maximum length 4095.
+        </p>
+
+        <p>
+            No banner by default.
+        </p>
+      </column>
+
+      <column name="other_config" key="banner_exec">
+        <p>
+            Banner to be displayed on CLI login. Maximum length 4095.
+        </p>
+
+        <p>
+            No banner by default.
+        </p>
+      </column>
 
       <group title="TFTP Server Configurations">
         <column name="other_config" key="tftp_server_enable"
@@ -817,6 +836,10 @@
       <column name="auto_provisioning_status" key="url">
         Specifies the URL that was used to fetch auto-provisioning script. Would not be
         present if auto-provisioning was not performed.
+      </column>
+      <column name="acls">
+        List of all Access Control Lists (ACLs) in the system.  The existence of the list is
+        not an indication that it has been applied.
       </column>
     </group>
 
@@ -1809,8 +1832,96 @@
       <column name="match">
         The match rule for route map. Default is deny.
       </column>
+      <column name="match" key="prefix_list" >
+        The match rule to filter IPv4 routes that have a destination network number address,
+        that is permitted or denied by a prefix list. The value is prefix list name.
+      </column>
+      <column name="match" key="ipv6_prefix_list" >
+        The match rule to filter IPv6 routes that have a destination network number address,
+        that is permitted or denied by a prefix list. The value is prefix list name.
+      </column>
+      <column name="match" key="community" >
+        The match rule to filter routes that is permitted or denied by a community list.
+        The value is community list name.
+      </column>
+      <column name="match" key="extcommunity" >
+        The match rule to filter routes that is permitted or denied by an extended community list.
+        The value is extended community list name.
+      </column>
+      <column name="match" key="as_path" >
+        The match rule to filter routes that is permitted or denied by an autonomous system path access list.
+        The value is as path access list name.
+      </column>
+      <column name="match" key="origin"
+        type='{"type": "string"}'>
+        Matches BGP routes based on the origin of the specified route.
+        The allowed values are <code>egp</code>,<code>igp</code>,<code>incomplete</code>
+      </column>
+      <column name="match" key="metric"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+        The match rule to redistributes routes with the specified metric.
+        The value is the metric value.
+      </column>
+      <column name="match" key="ipv6_next_hop" >
+        The match rule distributes IPv6 routes that have a specified next hop.
+        The value is the IPv6 address of the next hop.
+      </column>
+      <column name="match" key="probability"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 1}'>
+        Matches the portion of BGP routes defined by a percentage value.
+        The value is the percentage of routes.
+      </column>
       <column name="set">
-        The set rule for route map
+        The set rule for route map.
+      </column>
+      <column name="set" key="community" >
+        Sets the community attributes for route-map.The value is community list name.
+      </column>
+      <column name="set" key="metric"
+        type='{"type": "string", "maxLength": 80}' >
+        Specifies the relative change of metric which is used with BGP route advertisement.
+        The value is the metric expression.
+      </column>
+      <column name="set" key="aggregator_as"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+        Sets the originating AS of an aggregated route. The value is the Autonomous System  number.
+      </column>
+      <column name="set" key="as_path_exclude"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+        Excludes the AS number from the AS path. The value is the list of the Autonomous System  number.
+      </column>
+      <column name="set" key="as_path_prepend" >
+        Prepends the AS number to the AS path. The value is the list of AS numbers seperated by a space.
+      </column>
+      <column name="set" key="atomic_aggregate" >
+        Enables a notification to upstream routers that address aggregation has occurred on an aggregate route.
+        Allowed value is <code>atomic_aggregate</code> and default value is <code>NULL</code>.
+      </column>
+      <column name="set" key="comm_list" >
+        Removes community list attributes from the BGP routes. The value is the community list name.
+      </column>
+      <column name="set" key="extcommunity_rt" >
+        Sets the route target extended community of a BGP route. The value is the community attribute in the form AA:NN where AA can be either AS number or IP address and NN is the community identifier.
+      </column>
+      <column name="set" key="extcommunity_soo" >
+        Sets the site-of-origin extended community of a BGP route. The value is the community attribute in the form AA:NN where AA can be either AS number or IP address and NN is the community identifier.
+      </column>
+      <column name="set" key="ipv6_next_hop_global" >
+        Sets the BGP-4+ global IPv6 next hop address. The value is the IPv6 address.
+      </column>
+      <column name="set" key="local_preference"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+        Sets the BGP local preference and the local preference value of an IBGP route.
+        The value is the local preference valuue.
+      </column>
+      <column name="set" key="origin"
+        type='{"type": "string"}'>
+        Sets the origin attribute of a local BGP route.
+        The allowed values are <code>egp</code>,<code>igp</code>,<code>incomplete</code>
+      </column>
+      <column name="set" key="weight"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+        Sets the weight of a BGP route. The value is the weight value.
       </column>
    </group>
    <group title="Status">
@@ -2349,6 +2460,18 @@
       BGP per neighbor timers - Connect timer/Keep-alive Interval.
       </column>
 
+      <column name="timers" key="keepalive"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 65535}'>
+        Set the keepalive interval for a specific BGP peer.
+        The value is keepalive interval in seconds. Default value is 60 seconds.
+      </column>
+
+      <column name="timers" key="holdtime"
+        type='{"type":"integer", "minInteger": 0, "maxInteger" : 65535}'>
+        Set the hold time for a specific BGP peer.
+        The value is hold time in seconds. Default value is 180 seconds.
+      </column>
+
       <column name="aspath_filters">
       Name and direction of the as-path filters.
       </column>
@@ -2392,6 +2515,27 @@
       These values describe various status information about this
       BGP neighbor or BGP Peer group entry.
       </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_out_performed"
+       type='{"type":"integer"}'>
+       Performs soft reset for outbound routing updates to specified neighbor.
+       The value is the number of times soft clear is performed for outbound routing policy updates from the peer.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_out_requested"
+       type='{"type":"integer"}'>
+       Requests soft reset for outbound routing updates to specified neighbor.
+       The value is the number of times soft clear is requested for outbound routing policy updates from the peer.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_in_performed"
+       type='{"type":"integer"}'>
+       Performs soft reset for inbound routing updates from specified neighbor.
+       The value is the number of times soft clear is performed for inbound routing policy updates for the peer.
+      </column>
+      <column name="status" key="bgp_num_clear_counters_peer_soft_in_requested"
+       type='{"type":"integer"}'>
+       Requests soft reset for inbound routing updates from specified neighbor.
+       The value is the number of times soft clear is requested for inbound routing policy updates for the peer.
+      </column>
+
    </group>
 
    <group title="BGP Neighbor or Peer group Status Info">
@@ -2560,6 +2704,51 @@
       <column name="internal_usage" key="l3port">
           VLAN is used internally by ASIC to configure L3 behavior of the port.
           The value is the port name that uses this VLAN.
+      </column>
+    </group>
+    <group title="ACL Configuration">
+      <p>
+        ACL applied to vlans.
+      </p>
+      <column name="aclv4_in_cfg">
+        ACL, potentially in flight, desired to be applied to this vlan, as identified
+        in the <ref table="ACL"/>.
+      </column>
+      <column name="aclv4_in_cfg_version">
+        The version of the 'aclv4_in_cfg' column.
+        This value is incremented by the management interface each- CLI/REST/Web UI, etc.
+        every time it changes the 'aclv4_in_cfg' value.
+        An empty value means no ACL has been configured for the vlan.
+      </column>
+    </group>
+    <group title="ACL Status">
+      <p>
+        Status of applied ACLs and ACL statistics per vlan.
+      </p>
+      <column name="aclv4_in_applied">
+        Current, successfully applied ACL to this vlan, as identified in the
+        <ref table="ACL"/>
+      </column>
+      <column name="aclv4_in_status">
+        The status of the last version of 'aclv4_in_cfg' column, that has been
+        processed by switchd.
+      </column>
+      <column name="aclv4_in_status" key="version" type='{"type":"integer"}'>
+        The version of aclv4_in_cfg that corresponds to this status.
+      </column>
+      <column name="aclv4_in_status" key="state"
+            type='{"type":"string", "enum": ["set", ["applied", "in_progress", "canceled", "rejected"]]}'>
+      </column>
+      <column name="aclv4_in_status" key="code" type='{"type":"integer"}'>
+        Numeric error code.  Expected to be 0 when state is 'applied'
+      </column>
+      <column name="aclv4_in_status" key="message" type='{"type":"string"}'>
+        Detailed reason for error state.  Expected empty when state is 'applied'
+      </column>
+      <column name="aclv4_in_statistics" key="sequence_number" type='{"type":"integer"}'>
+        Statistics for the ACL applied to this port for ACEs that have the
+        'count' keyword specified.  Statistics are key/value pairs of
+        ACL sequence number and integer representing the statistics for that entry.
       </column>
     </group>
    <group title="Common Columns">
@@ -3337,9 +3526,10 @@
     </group>
 
     <group title="DHCP-Relay Statistics">
-      DHCP-Relay statistics counters for both IPv4 and IPv6. If certain key is missing,
-      then the assummed counter value is 0.
-
+      DHCP-Relay statistics counters for both IPv4 and IPv6. The update period
+      is controlled by <ref column="other_config" key="stats-update-interval"/>in
+      <ref table="System"/>. If certain key is missing, then the assummed
+      counter value is 0.
       <column name="dhcp_relay_statistics" key="valid_v4client_requests"
               type='{"type":"integer"}'>
         Number of valid IPv4 DHCP relay requests processed.
@@ -3355,6 +3545,22 @@
       <column name="dhcp_relay_statistics" key="dropped_v4server_responses"
               type='{"type":"integer"}'>
         Number of IPv4 DHCP relay responses dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v4client_requests_with_option82"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay requests with option 82 processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4client_requests_with_option82"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay requests with option 82 dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v4server_responses_with_option82"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay responses with option 82 processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4server_responses_with_option82"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay responses with option 82 dropped.
       </column>
       <column name="dhcp_relay_statistics" key="valid_v6client_requests"
               type='{"type":"integer"}'>
@@ -3373,7 +3579,51 @@
         Number of IPv6 DHCP relay responses dropped.
       </column>
     </group>
-
+    <group title="ACL Configuration">
+      <p>
+        ACL applied to ports.
+      </p>
+      <column name="aclv4_in_cfg">
+        ACL, potentially in flight, desired to be applied to this port, as identified
+        in the <ref table="ACL"/>.
+      </column>
+      <column name="aclv4_in_cfg_version">
+        The version of the 'aclv4_in_cfg' column.
+        This value is incremented by the management interface - CLI/REST/Web UI, etc.
+        every time it changes the 'aclv4_in_cfg' value.
+         An empty value means no ACL has been configured for the port.
+      </column>
+    </group>
+    <group title="ACL Status">
+      <p>
+        Status of applied ACLs and ACLs statistics per port.
+      </p>
+      <column name="aclv4_in_applied">
+        Current, successfully applied ACL to this port, as identified in the
+        <ref table="ACL"/>
+      </column>
+      <column name="aclv4_in_status">
+        The status of the last version of 'aclv4_in_cfg' column, that has been
+        processed by switchd.
+      </column>
+      <column name="aclv4_in_status" key="version" type='{"type":"integer"}'>
+        The version of aclv4_in_cfg that corresponds to this status.
+      </column>
+      <column name="aclv4_in_status" key="state"
+            type='{"type":"string", "enum": ["set", ["applied", "in_progress", "canceled", "rejected"]]}'>
+      </column>
+      <column name="aclv4_in_status" key="code" type='{"type":"integer"}'>
+        Numeric error code.  Expected to be 0 when state is 'applied'
+      </column>
+      <column name="aclv4_in_status" key="message" type='{"type":"string"}'>
+        Detailed reason for error state.  Expected empty when state is 'applied'
+      </column>
+      <column name="aclv4_in_statistics" key="sequence_number" type='{"type":"integer"}'>
+        Statistics for the ACL applied to this port for ACEs that have the
+        'count' keyword specified.  Statistics are key/value pairs of
+        ACL sequence number and integer representing the statistics for that entry.
+      </column>
+    </group>
     <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
@@ -6641,5 +6891,187 @@
       <column name="auth_pass_phrase">The key to be used by authentication protocol.</column>
       <column name="priv_pass_phrase">The key to be used by privacy protocol.</column>
     </group>
+  </table>
+  <table name="ACL" title="Access Control List">
+    <group title="Access Control List Configuration">
+      <column name="name">
+        Name of an Access Control List (ACL).
+      </column>
+      <column name="list_type">
+        Type of an Access Control List  Accepted values: 'ipv4'
+      </column>
+      <column name="cfg_aces" keyname="sequence_number">
+        The desired version of the Access Control List.  Access Control Entries
+        (ACE) specified in this version of the ACL are defined
+        in <ref table="ACL_Entry"/>
+      </column>
+      <column name="cfg_version">
+        The version of the 'cfg_aces' column.
+        This value is incremented by the management interface - CLI/REST/Web UI, etc.
+        every time it changes the 'cfg_aces' value.
+      </column>
+    </group>
+    <group title="Access Control List Status">
+      <column name="cur_aces" keyname="sequence_number">
+        The currently configured version of the Access Control List.  Access Control
+        Entries (ACE) specified in this version of the ACL are defined
+        in <ref table="ACL_Entry"/>
+      </column>
+      <column name="in_progress_aces" keyname="sequence_number">
+        The in flight version of the Access Control List.  Access Control Entries
+        (ACE) specified in this ACL are defined in <ref table="ACL_Entry"/>
+      </column>
+      <column name="status"  key="status_string" type='{"type":"string"}'>
+        The status of the last version of 'cfg_aces' column, that has been
+        processed by switchd.  Accepted values are: 'in_progress', 'applied', 'rejected',
+        and 'canceled'.
+      </column>
+      <column name="status" key="version" type='{"type":"integer"}'>
+        The version of cfg_aces that corresponds to this status.
+      </column>
+      <column name="status" key="state" type='{"type":"string"}'>
+        Valid values are 'applied', 'in_progress', 'canceled', 'rejected'
+      </column>
+      <column name="status" key="code" type='{"type":"integer"}'>
+        Numeric error code.  Expected to be 0 when state is 'applied'
+      </column>
+      <column name="status" key="message" type='{"type":"string"}'>
+        Detailed reason for error state.  Expected empty when state is 'applied'
+      </column>
+    </group>
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
+      </column>
+    </group>
+  </table>
+  <table name="ACL_Entry" title="Access Control Entry">
+    <column name="comment">
+      <p>
+        Comment to associate with the specified ACE.
+        Optional parameter.
+      </p>
+    </column>
+    <column name="action">
+      <p>
+         Match Action:
+         Optional parameter for IPv4 ACL entries.
+         There are two types: "permit" and "deny"
+         If no action is specified the ACE will not be programmed in hw.
+      </p>
+    </column>
+    <column name="src_ip">
+      <p>
+        Source IPv4 Address:
+        Optional parameter.  If no IP address is specified the ACE will not
+        match on source IP address.
+
+        The following IPv4 address formats are accepted:
+        X.X.X.X/X.X.X.X
+      </p>
+    </column>
+    <column name="dst_ip">
+      <p>
+        Destination IPv4 Address:
+        Optional parameter.  If no IP address is specified the ACE will not
+        match on destination IP address
+
+        The following IPv4 address formats are accepted:
+        X.X.X.X/X.X.X.X
+      </p>
+    </column>
+    <column name="protocol">
+      <p>
+        IPv4 Protocol
+        Optional parameter.  If no protocol is specified the ACE will
+        not match on protocol.
+      </p>
+    </column>
+    <group title="ACL L4 Port Configuration">
+        L4 Port: specifies the IPv4 L4 port to be used
+        as the minimum value.  It is used in conjunction with src/dst_l4_port_max
+        and src/dst_l4_port_range_reverse to determine the desired
+        L4 port functionality:
+
+        Applicable to TCP and UDP protocols.
+
+    <column name="src_l4_port_min">
+      <p>
+        Source L4 Port: specifies the IPv4 L4 source port to be used
+        as the minimum value.  It is used in conjunction with src_l4_port_max
+        and src_l4_port_range_reverse to determine the desired source
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+    <column name="src_l4_port_max">
+      <p>
+        Source L4 Port Max: specifies the maximum value
+        It is used in conjunction with src_l4_port_min
+        and src_l4_port_range_reverse to determine the desired source
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+     <column name="src_l4_port_range_reverse">
+      <p>
+        Specifies if the values in src_l4_port_min and src_l4_port_max
+        should be treated as specifying values not to be matched.
+        Optional parameter for IPv4 ACL entries.
+        Applicable to TCP and UDP protocols.
+      </p>
+    </column>
+    <column name="dst_l4_port_min">
+      <p>
+        Source L4 Port: specifies the IPv4 L4 source port to be used
+        as the minimum value.  It is used in conjunction with dst_l4_port_max
+        and dst_l4_port_range_reverse to determine the desired destination
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+    <column name="dst_l4_port_max">
+      <p>
+        Destination L4 Port Max: specifies the maximum value
+        It is used in conjunction with dst_l4_port_min
+        and dst_l4_port_range_reverse to determine the desired destination
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+     <column name="dst_l4_port_range_reverse">
+      <p>
+        Specifies if the values in dst_l4_port_min and dst_l4_port_max
+        should be treated as specifying values not to be matched.
+        Optional parameter for IPv4 ACL entries.
+        Applicable to TCP and UDP protocols.
+      </p>
+    </column>
+    </group>
+    <column name="log">
+      <p>
+        Log Action: enable ACL logging for packets that match this
+        ACL entry
+        Optional parameter for IPv4 ACL entries
+        The following value is accepted:
+        true
+      </p>
+    </column>
+    <column name="count">
+      <p>
+        Count Action: enable hit counts in hardware for packets that
+        match this ACL entry
+        Optional parameter for IPv4 ACL entries
+        The following value is accepted:
+        true
+      </p>
+    </column>
   </table>
 </database>
