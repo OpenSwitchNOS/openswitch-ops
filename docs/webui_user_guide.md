@@ -8,14 +8,14 @@ OpenSwitch Web User Interface (UI)
 	- [Login](#login)
 	- [Overview](#overview)
 		- [System](#system)
+		- [General](#general)
 		- [Hardware](#hardware)
-		- [Features](#features)
-		- [Traffic](#traffic)
+		- [Top Interface Utilization](#topinterfaceutilization)
 		- [Logs](#logs)
 	- [Interfaces](#interfaces)
 	- [LAGs](#lags)
 	- [ECMP](#ecmp)
-	- [Logs](#logs)
+	- [Log](#log)
 	- [Quick Guides](#quick-guides)
 	- [Links](#links)
 		- [REST API](#rest-api)
@@ -43,7 +43,16 @@ The system panel includes information about the switch, such as:
 - serial number
 - vendor
 - version
+- ONIE Version
 - base MAC address
+
+### General
+The features panel includes:
+- a listing of the switch features and their current state (enabled or disabled)
+- number of VLANs configured on the switch
+- number of interfaces on the switch
+- the maximum transmission unit (MTU)
+- the Max Interface Speed
 
 ### Hardware
 The hardware panel shows the status of:
@@ -51,18 +60,11 @@ The hardware panel shows the status of:
 - temperatures
 - fans
 
-### Features
-The features panel includes:
-- a listing of the switch features and their current state (enabled or disabled)
-- number of VLANs configured on the switch
-- number of interfaces on the switch
-- the maximum transmission unit (MTU)
+### Top Interface Utilization
+The Top Interface Utilization panel displays the ports with the top utilization (transmit or receive). The list automatically sorts, moving the port with the top utliization percentage to the top. Clicking the graph icon at the top of the gauge takes you to the Interfaces Monitor screen, displaying details for the top interface.
 
-### Traffic
-The traffic panel displays the ports with the top utilization (transmit or receive). The list automatically sorts, moving the port with the top utliization percentage to the top. Clicking the graph icon at the top of the gauge takes you to the Interfaces Monitor screen, displaying details for the top interface.
-
-### Logs
-The logs panel displays the last system log messages.
+### Log
+The log panel displays the last system log messages.
 
 ## Interfaces
 The interface screen displays the box graphic of the switch, interface table with search option.
@@ -91,7 +93,7 @@ The ECMP screen shows ECMP (Equal Cost Multi-Path) status and various load balan
 
 
 
-## Logs
+## Log
 
 ## Quick Guides
 
