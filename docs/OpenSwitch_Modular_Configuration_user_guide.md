@@ -205,17 +205,21 @@ The general guidelines are as follows:
 
 2. If an entity is untagged, it takes the tag of the immediate outer entity.
    For example:
-   If all columns within a table are untagged, but the table itself is tagged as feature-A, then all columns are implicitly tagged as feature-A.
+   If all columns within a table are untagged, but the table itself is tagged as feature-1, then all columns are implicitly tagged as feature-1.
    If the table itself is untagged, then it represents a generic table (like "System") which is used by multiple features.
    Such untagged tables will always be included in the schema.
 
 3. The feature-tag at innermost granularity overrides the feature-tag at outer granularities.
    For example:
-   Say feature-A is using Table-A which it has tagged.
-   Later feature-B is introduced which wants to add a column to Table-A. This column is exclusively used by feature-B.
-   So this new column will be tagged with feature-B.
-   What this means is feature-A owns the Table-A except for this new column. And feature-B merely owns this new column in Table-A.
-   If feature-A too wants to use this new column, it too must tag this new column.
+   Say feature-1 is exclusively using Table-A which it has tagged.
+   Later feature-2 is introduced which wants to add a column to Table-A. This column is exclusively used by feature-2.
+   So this new column will be tagged with feature-2.
+   What this means is feature-1 owns the Table-A except for this new column. And feature-2 merely owns this new column in Table-A.
+   If feature-1 too wants to use this new column, it too must tag this new column.
+   If Table-A is tagged with feature-1 as well as feature-2, then all columns within it will be implicitly tagged as feature-1 & feature-2.
+   To distinguish, the columns can be explicitly tagged (which will override any previous implicit tagging trickled due to tags at outer layers).
+   Note: If a table is untagged and a feature that wants to use it is unsure whether the Table is being used by other features besides it,
+         then it should not tag the table exclusively.
 
 #### Feature-tagging the JSON schema
 JSON schema can be feature-tagged at 3 levels: table, column, enum.
@@ -224,7 +228,7 @@ Hence the feature-tag of an enum within a column will override the feature-tag o
 
 The feature tag is defined as a list of features:
 ```ditaa
-    "feature_list": ["feature-A", "feature-B", ..., "feature-N"],
+    "feature_list": ["feature-1", "feature-2", ..., "feature-N"],
 ```
 
 ##### Feature-tagging a table
@@ -292,13 +296,13 @@ we need to define a dictionary type containing "val" and "feature_list"
                                 [
                                     {
                                          "val": "uninitialized",
-                                         "feature_list": ["featureA", "featureB"]
+                                         "feature_list": ["feature-1", "feature-2"]
                                     },
                                     "system",
                                     "chassis",
                                     {
                                         "val": "line_card",
-                                        "feature_list": ["featureA"]
+                                        "feature_list": ["feature-1"]
                                     },
                                     "mezz_card"
                                 ]
@@ -325,10 +329,10 @@ If a column within a table is not part of a group, then the feature-tag of the c
 The feature tag is defined as a list of features:
 ```ditaa
     <feature_list>
-        <feature>featureA</feature>
-        <feature>featureB</feature>
+        <feature>feature-1</feature>
+        <feature>feature-2</feature>
         ...
-        <feature>featureN</feature>
+        <feature>feature-N</feature>
     </feature_list>
 ```
 
@@ -424,8 +428,8 @@ The feature tag is defined as a list of features:
 ------------------------------------
 This is still work-in-progress. Nevertheless capturing details that have been discussed/implemented so far.
 
-The CIT framework deploys “pytest” to run the python test-scripts that are placed within the repos.
-As part of Kconfig, when a certain feature is disabled, the tests corresponding to it should not be run (as they’ll fail).
+The CIT framework deploys "pytest" to run the python test-scripts that are placed within the repos.
+As part of Kconfig, when a certain feature is disabled, the tests corresponding to it should not be run (as they will fail).
 A file containing the list of features enabled by Kconfig will be generated as part of "make" and will also be available as part of the manifest.
 This file and the manifest will act as inputs to the Test framework to create a global set of features (say "enabled_features") that will be available to all test-scripts (either through import of a module or by calling some function).
 ```ditaa
