@@ -984,13 +984,13 @@
     </group>
 
     <group title="DHCP Configurations">
-      <column name="dhcp_config" key="v4relay_disabled"
+      <column name="dhcp_config" key="v4relay_enabled"
               type='{"type": "boolean"}'>
         <p>
-        Set this value to <code>true</code> to disable DHCP-Relay functionality
-        globally and set it to <code>false</code> to enable it. DHCP-Relay is
-        enabled by default. If the key is missing, the configuration is assumed
-        to be enabled.
+        Set this value to <code>true</code> to enable DHCP-Relay functionality
+        globally and set it to <code>false</code> to disable it. DHCP-Relay is
+        disabled by default. If the key is missing, the configuration is assumed
+        to be disabled.
         Though DHCP-Relay configuration is enabled globally, the functionality
         is effective only after the port level server configuration.
         </p>
@@ -1063,6 +1063,28 @@
         the relayed DHCP requests and set it to <code>false</code> otherwise. This
         configuration is enabled by default. If the key is missing, the configuration
         is assumed to be enabled.
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="v6relay_enabled"
+              type='{"type": "boolean"}'>
+        <p>
+        Set this value to <code>true</code> to enable DHCPv6-Relay functionality
+        globally and set it to <code>false</code> to disable it. DHCPv6-Relay is
+        disabled by default. If the key is missing, the configuration is assumed
+        to be disabled.
+        Though DHCPv6-Relay configuration is enabled globally, the functionality
+        is effective only after the port level server configuration.
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="v6relay_option79_enabled"
+              type='{"type": "boolean"}'>
+        <p>
+        Set this value to <code>true</code> to enable the DHCPv6-Relay Option 79
+        and set it to <code>false</code> otherwise. This configuration is
+        disabled by default. If the key is missing, the configuration is assumed
+        to be disabled.
         </p>
       </column>
     </group>
@@ -3469,6 +3491,10 @@
               type='{"type":"integer"}'>
         Number of IPv6 DHCP relay requests dropped.
       </column>
+      <column name="dhcp_relay_statistics" key="failed_v6client_requests"
+              type='{"type":"integer"}'>
+        Number of IPv6 DHCP relay requests failed.
+      </column>
       <column name="dhcp_relay_statistics" key="valid_v6server_responses"
               type='{"type":"integer"}'>
         Number of valid IPv6 DHCP relay responses processed.
@@ -3476,6 +3502,10 @@
       <column name="dhcp_relay_statistics" key="dropped_v6server_responses"
               type='{"type":"integer"}'>
         Number of IPv6 DHCP relay responses dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="failed_v6server_responses"
+              type='{"type":"integer"}'>
+        Number of IPv6 DHCP relay responses failed.
       </column>
     </group>
     <group title="ACL Configuration">
