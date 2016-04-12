@@ -171,11 +171,28 @@ Yocto build as part of "make" target. A typical flow is summarized below:
 
 ### OVSDB-Schema
 ----------------
-Discuss enhacements to schema
+The schema is captured as part of the JSON format file (Ex: vswitch.extschema)
+and the corresponding XML format file (Ex: vswitch.xml).
+When certain features get disabled as part of OpenSwitch Modular Configuration,
+the corresponding fields in the schema used by those features need to be pruned.
+The fields used by the features are tagged with the feature (Kconfig symbol).
+The fields that need to be pruned could be Table/Column/Enum (JSON Format) or
+Table/Group/Column (XML Format).
+The ops recipe has been modified to trigger the schema pruning scripts that will
+take care of pruning the JSON & XML formats of the schema during "make".
+Refer to the user-guide for the exact steps to follow while tagging the schema.
 
 ### CIT Framework
 -----------------
-Discuss enhancements to CIT
+The CIT framework deploys “pytest” to run the component/feature test-scripts.
+As part of OpenSwitch Modular Configuration, when a certain feature is disabled,
+the tests corresponding to it should not be run (as they’ll fail).
+A file containing the list of enabled features will be generated as part of "make"
+and will also be available as a manifest file along with the released/periodic builds.
+These files will act as inputs to the test framework which will provide a mechanism
+for every test-script to know what features have been enabled.
+The test script needs to use pytest markers to skip certain tests.
+Refer to the user-guide for the exact steps to follow while skipping the tests.
 
 ## Design choices
 -----------------
