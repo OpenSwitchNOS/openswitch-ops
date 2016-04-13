@@ -75,6 +75,7 @@ classified into four categories. Details are covered in following sections:
 
 ## Participating modules
 ------------------------
+
 ### Kconfig System
 ------------------
 Kconfig front-end system is pulled into OpenSwitch Yocto build environment,
@@ -93,9 +94,9 @@ across platform selections. Symbolic links are used to facilitate this process.
 
 ### Kconfig files layout
 ------------------------
-Kconfig files dictate the UI layout and dependencies between Kconfig Symbols.
-These files follow standard kconfig language syntax. Following diagram shows
-how Kconfig files are organized in OpenSwitch repository.
+Kconfig files dictate the UI and dependencies between Kconfig Symbols. These
+files follow standard kconfig language syntax. Following diagram shows how
+Kconfig files are organized in OpenSwitch repository.
 
 ```
     +----------------------------------------------------------------------+
@@ -154,20 +155,10 @@ options of Yocto are used for this purpose. Yocto further works out package
 dependency tree and includes/excludes all dependent packages both external
 and OpenSwitch specific. In cases where a repository hosts multiple
 sub-features or if a key-value parameter has to be passed on, build flags are
-passed to repository level make environment.
+passed to repository level make environment via recipe files.
 
-The above tasks are handled by few custom scripts that run inside OpenSwitch
-Yocto build as part of "make" target. A typical flow is summarized below:
-
-* User runs "make menuconfig" and saves .ops-config
-* User kicks off "make"
-* Parse .ops-config. Enabled Kconfig symbols (=y) are added to IMAGE_FEATURES
-* Check if enabled feature maps directly to a repository. If yes, then add
-  FEATURE_PACKAGES and initialize it with one or more yocto packages
-* If enabled feature doesn't map to any repository (i.e. a sub-feature), then
-  modify repo specific recipe to pass relevant flags to make environment
-* If a Kconfig symbol is a key-value pair, then modify repo specific recipes
-  to pass relevant information to make environment
+The above tasks are handled by custom scripts that run inside OpenSwitch Yocto
+build as part of "make" target.
 
 ### OVSDB-Schema
 ----------------
@@ -234,5 +225,5 @@ select platform. Following disadvantages with the scheme:
 ## References
 -------------
 * [Kconfig Language Syntax](https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt)
-* [User Guide]()
+* [User Guide](http://git.openswitch.net/cgit/openswitch/ops/tree/docs/OpenSwitch_Modular_Configuration_user_guide.md?h=feature/ops_config)
 * [IRC Discussion](http://eavesdrop.openswitch.net/irclogs/%23openswitch/%23openswitch.2015-11-11.log.html)

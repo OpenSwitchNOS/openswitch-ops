@@ -46,8 +46,8 @@ involves adding 2 to 4 lines to an existing Kconfig file. Guidelines are:
    files.
 
 2. Adding a new feature into Kconfig front-end typically involves adding 2 to 4
-   lines into a Kconfig file. Refer to Kconfig language syntax which is simple
-   with small set of constructs:
+   constructs into a Kconfig file. Refer to Kconfig language syntax which is
+   simple with small set of constructs:
    https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt
 
    Example 1: NTP feature added to $(BUILD_ROOT)/yocto/openswitch/
@@ -93,24 +93,21 @@ involves adding 2 to 4 lines to an existing Kconfig file. Guidelines are:
           capabilities in Broadcom silicon.
 ```
 
-3. Kconfig symbol naming should follow below rule if the symbol being added is
-   for a feature/sub-feature. This rule does not apply to key-value pairs:
+3. Kconfig symbol naming should follow following rule if the symbol being added
+   is for a feature/sub-feature. This rule does not apply to key-value pairs:
    - If the feature repo name is ops-<repo-name>, then <repo-name> should be
      used as Kconfig symbol.
    - If the sub-feature directory name is <sub-feature> (inside ops-<repo-name>),
-     then use <sub-feature> as Kconfig symbol.
-   - Both <repo-name> and <sub-feature> can be added as Kconfig symbols with
-     proper dependencies. Its up to the feature owner how to group and present
-     features/sub-features to the user.
+     then use <sub-feature> as Kconfig symbol dependent on <repo-name>.
 
    Example 1: ops-dhcp-tftp will have DHCP-TFTP as Kconfig symbol
 
-   Example 2: ops-quagga having bgpd and ospfd subfeatures. Here either one can
-   add QUAGGA, BGPD and OSPFD as a Kconfig symbols and make BGPD and OSPFD as
-   dependent on QUAGGA. Or just specify BGPD and OSPFD. First method is
-   recommended as it can nicely group and present quagga routing protocol suite
-   to user and also user can disable entire quagga routing protocol suite with
-   a single selection instead of going and separately disabling BGPD and OSPFD.
+   Example 2: ops-quagga having bgpd and ospfd subfeatures. In this case add
+   QUAGGA, BGPD and OSPFD as a Kconfig symbols and make BGPD and OSPFD as
+   dependent on QUAGGA. In addition to providing parsing scripts clue about
+   feature package, this allows to nicely group and present quagga routing
+   protocol suite to user and also user can disable entire quagga routing
+   protocol suite with a single selection.
 
 4. Although Kconfig language has limited set of constructs, many advanced
    configuration options can be covered by intelligently using them. Refer to
