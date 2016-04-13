@@ -11,6 +11,7 @@
     - [Verify helper address configuration in the same subnet as relay interface](#verify-helper-address-configuration-in-the-same-subnet-as-relay-interface)
     - [Verify the DHCP relay functionality when IP routing is enabled or disabled](#verify-the-dhcp-relay-functionality-when-ip-routing-is-enabled-or-disabled)
     - [Verify the DHCP relay functionality when packet is received with hop count set to maximum value](#verify-the-dhcp-relay-functionality-when-packet-is-received-with-hop-count-set-to-maximum-value)
+    - [Verify the DHCP relay statistics](#verify-the-dhcp-relay-statistics)
 - [DHCP relay option 82 test cases](#dhcp-relay-option-82-test-cases)
     - [Verify that proper remote id is added when interface on which client request is received is configured with multiple IP addresses](#verify-that-proper-remote-id-is-added-when-interface-on-which-client-request-is-received-is-configured-with-multiple-ip-addresses)
     - [Verify the DHCP relay agent behavior on DHCP client request packets when DROP policy is enabled](#verify-the-dhcp-relay-agent-behavior-on-dhcp-client-request-packets-when-drop-policy-is-enabled)
@@ -25,6 +26,7 @@
     - [Verify the DHCP relay does not add or replace the option 82 field with ip address if option fields already exists in the client DHCP packet](#verify-the-dhcp-relay-does-not-add-or-replace-the-option-82-field-with-ip-address-if-option-fields-already-exists-in-the-client-dhcp-packet)
     - [Verify the DHCP relay does not add or replace the option 82 field if option fields already exists in the client DHCP packet](#verify-the-dhcp-relay-does-not-add-or-replace-the-option-82-field-if-option-fields-already-exists-in-the-client-dhcp-packet)
     - [Verify the DHCP relay functionality with option 82 enabled when the relay receives huge amount of DHCP request from the client](#verify-the-dhcp-relay-functionality-with-option-82-enabled-when-the-relay-receives-huge-amount-of-dhcp-request-from-the-client)
+    - [Verify the DHCP relay option 82 statistics](#verify-the-dhcp-relay-option-82-statistics)
 - [DHCP relay bootp gateway test cases](#dhcp-relay-bootp-gateway-test-cases)
     - [Verify that default gateway works when no gateway is specified](#verify-that-default-gateway-works-when-no-gateway-is-specified)
     - [Verify that set gateway is the interface that gets DHCP addresses](#verify-that-set-gateway-is-the-interface-that-gets-dhcp-addresses)
@@ -195,6 +197,20 @@ This test succeeds if the DHCP client does not recieve an IP address.
 #### Test fail criteria
 This test fails if the DHCP client recieves an IP address.
 
+### Verify the DHCP relay statistics
+### Description
+1. Configure an IP address on DHCP client, DHCP relay agent, and the DHCP Server. Add static routes and check connectivity from DHCP client to DHCP server.
+2. Configure server IP address as helper addresses on the DHCP relay agent.
+3. Configure the DHCP Server to assign IP address to the client.
+4. Request DHCP address on client and verify that the DHCP relay agent relays DHCP packets to client/server.
+5. Verify that the DHCP client has received an IP address.
+6. Verify that the DHCP relay statistcs are updated currectly.
+
+### Test results criteria
+#### Test pass criteria
+This test succeeds if the DHCP relay statistcs are updated currectly.
+#### Test fail criteria
+This test succeeds if the DHCP relay statistcs are not updated currectly.
 ## DHCP relay option 82 test cases
 
 ### Objective
@@ -569,6 +585,53 @@ This test fails if any of the above steps fail.
 This test succeeds if the DHCP client recieves an IP address.
 #### Test fail criteria
 This test fails if a the DHCP client does not recieve an IP address.
+
+### Verify the DHCP relay option 82 statistics
+### Description
+1. Configure an IP address on DHCP client, DHCP relay agent, and the DHCP Server. Add static routes and check connectivity from DHCP client to DHCP server.
+2. Configure server IP address as helper addresses on the DHCP relay agent.
+3. Enable dhcp-relay option 82 to append interface IP, with no server responses validation using `dhcp-relay option 82 replace ip` command.
+4. Request DHCP address from client in a configuration with single dhcp relay agent to DHCP server. DHCP request packet has:
+    - giaddr = NULL
+    - option 82 = NULL
+5. Use sniffer to verify that Option 82 is added with interface IP as remote ID field to DHCP client request (single option 82) and then forwarded to DHCP server.
+DHCP relay agent should process the client request and server response. DHCP client should receive an IP.
+6. Use ixia or other means to send DHCP request packets to DHCP relay agent with:
+    - giaddr != NULL and
+    - Option 82 = NULL
+7. Verify using sniffer that DHCP relay agent is adding option 82 filds as per configuration, without changing 'giaddr' and forward to DHCP server.
+8. With REPLACE policy enabled, use ixia or other means to send DHCP request packets to DHCP relay agent with:
+    - giaddr = NULL
+    - Option 82 != NULL
+9. Verify using sniffer that DHCP relay agent drops the packet.
+10. With REPLACE policy enabled, use ixia or other means to send DHCP request packets to DHCP relay agent with:
+    - giaddr != NULL and
+    - Option 82 != NULL
+11. Verify using sniffer that DHCP relay agent replaces option 82 fields as per configuration without changing 'giaddr' and forwarded to DHCP-server.
+12. Configure DHCP relay agent to NO validation on server responses using `no dhcp-relay option 82 validate` command.
+13. Use ixia or other means to send DHCP server responses packets to DHCP relay agent with:
+    - giaddr = DHCP relay agent's IP and
+    - Circuit ID = DHCP relay agent circuit IP
+14. Verify using sniffer that server response packets are received on DHCP relay agent and forwarded to interface after removing Option 82 field.
+15. Use ixia or other means to send DHCP server responses packets to DHCP relay agent with:
+    - giaddr = DHCP relay agent's IP and
+    - No option 82
+16. Verify using sniffer that server response packets are received on DHCP relay agent and forwarded to interface unchanged.
+17. Use ixia or other means to send DHCP server responses packets to DHCP relay agent with:
+    - giaddr = DHCP relay agent's IP and
+    - multiple option 82 field and at least one matches DHCP relay agent circuit ID AND remote ID
+18. Verify using sniffer that server response packets are received on DHCP relay agent and forwarded to port after removing all option 82 fields.
+19. Use ixia or other means to send DHCP server responses packets to DHCP relay agent with:
+    - giaddr ! = DHCP relay agent's IP and
+    - single/multiple option 82 field and at least one matches DHCP relay agent circuit ID AND remote ID
+20. Verify using sniffer that DHCP relay agent will not relay server response packets and DHCP relay counters will remain unaffected.
+21. Verify that the DHCP relay option 82 statistcs are updated currectly.
+
+### Test results criteria
+#### Test pass criteria
+This test succeeds if all the above steps are successful and the DHCP relay statistcs are updated currectly.
+#### Test fail criteria
+This test succeeds if all the above steps are not successful and the DHCP relay statistcs are not updated currectly.
 
 ## DHCP relay bootp gateway test cases
 ### Objective
