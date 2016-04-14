@@ -14,7 +14,7 @@
     - [passwd](#passwd)
     - [user remove](#user-remove)
 - [Display commands](#display-commands)
-    - [show aaa authentication](#show-aaa-authentication)
+    - [show aaa authentication login](#show-aaa-authentication-login)
     - [show radius-server](#show-radius-server)
     - [show SSH authentication-method](#show-ssh-authentication-method)
     - [show running-config](#show-running-config)
@@ -240,10 +240,10 @@ All users.
     switch# user remove openswitch-user
 ```
 ## Display commands
-### show aaa authentication
+### show aaa authentication login
 #### Syntax
 ```
-show aaa authentication
+show aaa authentication login
 ```
 #### Description
 Displays the authentication used for the switch login.
@@ -256,13 +256,13 @@ N/A
 
 #### Examples
 ```
-    switch# show aaa authentication
+    switch# show aaa authentication login
     AAA Authentication
      Local authentication                  : Enabled
      Radius authentication                 : Disabled
      Fallback to local authentication      : Enabled
 
-    switch# show aaa authentication
+    switch# show aaa authentication login
     AAA Authentication
      Local authentication                  : Disabled
      Radius authentication                 : Enabled
