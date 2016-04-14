@@ -11,6 +11,7 @@ OpenSwitch is designed to support layer3 features and protocols. To facilitate t
 - [**Fast-path Routing (Hardware based routing)**](#fast-path-routing)
 - [**Equal Cost Multipath (ECMP)**](#ecmp)
 - [**InterVLAN Routing and VLAN Interfaces**](#intervlan-routing-and-vlan-interfaces)
+- [**Statistics**](#statistics)
 - [**High Level Architecture and Design**](#high-level-architecture-and-design)
 
 ## VRF
@@ -50,6 +51,9 @@ InterVLAN routing is important in scenarios where routing is needed between two 
 - Switching happens between the physical layer2 interface and the corresponding virtual interface in that VLAN.
 - The virtual interface has an IP address associated with a VRF.
 - Routing happens between the two virtual interfaces.
+
+## Statistics
+FP packet qualification rules and other flex counters are implemented to count RX/TX packets and bytes, for unicast and multicast IPv4 and IPv6 packet types flowing through the switching ASIC. In addition, 'iptables' rules for  various packet types are programmed in the kernel to account for slow path egress traffic. All the statistics counters are periodically polled by switchd and are stored in the 'Statistics' column of the Interface table in OVSDB.
 
 # High Level Architecture and Design
 
