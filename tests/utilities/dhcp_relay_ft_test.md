@@ -74,7 +74,8 @@ The requirements for this test case are:
 2. Configure server IP address as helper addresses on the DHCP relay agent.
 3. Configure the DHCP Server to assign IP address to the client.
 4. Request DHCP address on client and verify that the DHCP relay agent relays DHCP packets to client/server.
-5. Verify that the DHCP client has received an IP address.
+5. Verify that the DHCP relay statistcs are updated currectly.
+6. Verify that the DHCP client has received an IP address.
 
 ### Test results criteria
 #### Test pass criteria
@@ -104,6 +105,7 @@ This test fails if a the DHCP client does not recieve an IP address.
 3. delete the static route from server2 to dhcp client.
 4. Configure the DHCP Servers to assign IP address to the client.
 5. Request DHCP address on client and verify that the DHCP relay agent receives response from server1.
+6. Verify that the DHCP relay drop counters are updated currectly on the interface connected to server2.
 6. Verify that the DHCP client has received an IP address.
 
 ### Test results criteria
@@ -138,7 +140,8 @@ This is a manual test. Configuration is below:
 5. Verify that the DHCP Client has received an IP address.
 6. Remove server IP address as helper addresses on DHCP relay agent.
 7. Request DHCP address on client.
-8. Verify that the DHCP Client has not received an IP address.
+8. Verify that all the DHCP relay statistics are reset to 0's.
+9. Verify that the DHCP Client has not received an IP address.
 
 ### Test results criteria
 #### Test pass criteria
@@ -236,9 +239,10 @@ interface 100
 to the address of the DHCP relay in the client interface for the desired subnet. ex: 10.10.10.1
 4. Do not add option 82 information on original request.
 5. Using Sniffer validate ethernet packets going/coming from DHCP server. DHCP relay should add Option 82 to DHCP request to server appending remote ID the IP address of the multinetted interface.
-6. Verify Client recieves IP address.
-7. Delete the configured IP address and configure a new IP.
-8. Verify in the successive request the new IP is used as remote ID.
+6. Verify that the DHCP relay option 82 statistcs are updated currectly.
+7. Verify Client recieves IP address.
+8. Delete the configured IP address and configure a new IP.
+9. Verify in the successive request the new IP is used as remote ID.
 
 ### Test results criteria
 #### Test pass criteria
