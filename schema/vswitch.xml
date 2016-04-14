@@ -2145,6 +2145,73 @@
           path selection.
           Default value is 0
       </column>
+      <column name="weight"
+          type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+          This is the weight of the BGP route.
+          Default value is 32768
+      </column>
+      <column name="flags"
+          type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+          This specifies flags attibute of the BGP route, reflecting the state of
+          thespecifies flags attibute.
+          Default value is 32768
+      </column>
+      <column name="origin">
+          This is the origin of the BGP route.
+          The allowed values are <code>egp</code>,<code>igp</code>,<code>incomplete</code>
+          Default value is igp.
+      </column>
+      <column name="local_preference"
+          type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+          This is the local preference of the BGP route.
+          Default value is 0.
+      </column>
+      <column name="atomic_aggregate">
+          This flag is a notification to upstream routers that address aggregation
+          has occurred on an aggregate route.
+          Allowed value is <code>atomic_aggregate</code>.
+          Default value is <code>NULL</code>.
+      </column>
+      <column name="set" key="aggregator_as"
+          type='{"type":"integer", "minInteger": 0, "maxInteger" : 4294967295}'>
+          This is the originating AS of an aggregated route. The value is the
+          Autonomous System  number.
+          Default value is 0.
+      </column>
+      <column name="community">
+          This specifies community attributes for route-map.
+          The value is community list name.
+          Default value is NULL.
+      </column>
+      <column name="ecommunity">
+          This specifies extended community attributes for route-map.
+          The value is extended community list name.
+          Default value is NULL.
+      </column>
+      <column name="aspath">
+          This specifies aspath for a BGP route. Aspath includes a space
+          delimited list of autonomous system numbers advertising the route.
+          Default value is NULL.
+      </column>
+      <column name="uptime">
+          This specifies the uptime for BGP session. Uptime is the elapsed time
+          since session establishment. Value is in <code>hour</code><code>minute
+          </code><code>seconds</code> format.
+          Default value is NULL.
+      </column>
+      <column name="protocol_ibgp" type='{"type":"boolean"}'>
+          This specifies ibgp protocol for the route.
+          Default value is false.
+      </column>
+       <column name="protocol_internal" type='{"type":"boolean"}'>
+          This specifies internal protocol for the route.
+          Default value is false.
+      </column>
+      <column name="aggregator_addr">
+          This specifies aggregator address for a BGP route. Aggregator address
+          is the ip address of the BGP node responsible for route aggregation.
+          Default value is NULL.
+      </column>
       <column name="bgp_nexthops">
           Represents nexthops for this entry. Each entry in the <ref table="BGP_Route"/>
           can have a reference to one or many(for ECMP) nexthop entries.
