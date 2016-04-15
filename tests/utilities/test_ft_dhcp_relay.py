@@ -37,6 +37,74 @@ topoDict = {"topoExecution": 1000,
                             wrkston01:system-category:workstation"}
 
 
+def configure_server1(server1):
+
+    LogOutput('info', "Configure DHCP server1")
+
+    #Entering vtysh server1
+    retStruct = server1.VtyshShell(enter=True)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to enter vtysh prompt"
+
+    devIntRetStruct = server1.DeviceInteract(command="conf t")
+    devIntRetStruct = server1.DeviceInteract(command="dhcp-server")
+    retCode = devIntRetStruct.get('returnCode')
+    assert retCode == 0, "Failed to enable dhcp-server"
+
+    cmd = "range pool1 start-ip-address 20.0.0.100 end-ip-address 20.0.0.200 \
+          netmask 255.0.0.0 broadcast 20.255.255.255 lease-duration 5"
+    devIntRetStruct = server1.DeviceInteract(command=cmd)
+    retCode = devIntRetStruct.get('returnCode')
+    assert retCode == 0, "Failed to configure ip pool1"
+
+    cmd = "range pool2 start-ip-address 1.0.0.100 end-ip-address 1.0.0.200 \
+          netmask 255.0.0.0 broadcast 1.255.255.255 lease-duration 5"
+    devIntRetStruct = server1.DeviceInteract(command=cmd)
+    retCode = devIntRetStruct.get('returnCode')
+    assert retCode == 0, "Failed to configure ip pool2"
+
+    devIntRetStruct = server1.DeviceInteract(command="exit")
+    devIntRetStruct = server1.DeviceInteract(command="exit")
+
+    #Exit vtysh server1
+    retStruct = server1.VtyshShell(enter=False)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to exit vtysh prompt"
+
+    return True
+
+
+def configure_server2(server2):
+
+    LogOutput('info', "Configure DHCP server2")
+
+    #Entering vtysh server2
+    retStruct = server2.VtyshShell(enter=True)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to enter vtysh prompt"
+
+    devIntRetStruct = server2.DeviceInteract(command="conf t")
+    devIntRetStruct = server2.DeviceInteract(command="dhcp-server")
+    retCode = devIntRetStruct.get('returnCode')
+    assert retCode == 0, "Failed to enable dhcp-server"
+
+    cmd = "range pool2 start-ip-address 20.0.0.1 end-ip-address 20.0.0.99 \
+          netmask 255.0.0.0 broadcast 20.255.255.255 lease-duration 10"
+    devIntRetStruct = server2.DeviceInteract(command=cmd)
+    retCode = devIntRetStruct.get('returnCode')
+    assert retCode == 0, "Failed to configure ip pool2"
+
+    devIntRetStruct = server2.DeviceInteract(command="exit")
+    devIntRetStruct = server2.DeviceInteract(command="exit")
+
+    #Exit vtysh server2
+    retStruct = server2.VtyshShell(enter=False)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to exit vtysh prompt"
+
+    return True
+
+
 def configure(**kwargs):
     host1 = kwargs.get('host1', None)
     relay = kwargs.get('switch1', None)
@@ -272,73 +340,11 @@ def configure(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode == 0, "Failed to exit vtysh prompt"
 
+    if configure_server1(server1) is False:
+        return False
 
-def configure_server1(server1):
-
-    LogOutput('info', "Configure DHCP server1")
-
-    #Entering vtysh server1
-    retStruct = server1.VtyshShell(enter=True)
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Failed to enter vtysh prompt"
-
-    devIntRetStruct = server1.DeviceInteract(command="conf t")
-    devIntRetStruct = server1.DeviceInteract(command="dhcp-server")
-    retCode = devIntRetStruct.get('returnCode')
-    assert retCode == 0, "Failed to enable dhcp-server"
-
-    cmd = "range pool1 start-ip-address 20.0.0.100 end-ip-address 20.0.0.200 \
-          netmask 255.0.0.0 broadcast 20.255.255.255 lease-duration 5"
-    devIntRetStruct = server1.DeviceInteract(command=cmd)
-    retCode = devIntRetStruct.get('returnCode')
-    assert retCode == 0, "Failed to configure ip pool1"
-
-    cmd = "range pool2 start-ip-address 1.0.0.100 end-ip-address 1.0.0.200 \
-          netmask 255.0.0.0 broadcast 1.255.255.255 lease-duration 5"
-    devIntRetStruct = server1.DeviceInteract(command=cmd)
-    retCode = devIntRetStruct.get('returnCode')
-    assert retCode == 0, "Failed to configure ip pool2"
-
-    devIntRetStruct = server1.DeviceInteract(command="exit")
-    devIntRetStruct = server1.DeviceInteract(command="exit")
-
-    #Exit vtysh server1
-    retStruct = server1.VtyshShell(enter=False)
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Failed to exit vtysh prompt"
-
-    return True
-
-
-def configure_server2(server2):
-
-    LogOutput('info', "Configure DHCP server2")
-
-    #Entering vtysh server2
-    retStruct = server2.VtyshShell(enter=True)
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Failed to enter vtysh prompt"
-
-    devIntRetStruct = server2.DeviceInteract(command="conf t")
-    devIntRetStruct = server2.DeviceInteract(command="dhcp-server")
-    retCode = devIntRetStruct.get('returnCode')
-    assert retCode == 0, "Failed to enable dhcp-server"
-
-    cmd = "range pool2 start-ip-address 20.0.0.1 end-ip-address 20.0.0.99 \
-          netmask 255.0.0.0 broadcast 20.255.255.255 lease-duration 10"
-    devIntRetStruct = server2.DeviceInteract(command=cmd)
-    retCode = devIntRetStruct.get('returnCode')
-    assert retCode == 0, "Failed to configure ip pool2"
-
-    devIntRetStruct = server2.DeviceInteract(command="exit")
-    devIntRetStruct = server2.DeviceInteract(command="exit")
-
-    #Exit vtysh server2
-    retStruct = server2.VtyshShell(enter=False)
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Failed to exit vtysh prompt"
-
-    return True
+    if configure_server2(server2) is False:
+        return False
 
 
 def getIpAddress(dump):
@@ -365,10 +371,7 @@ def getIpAddress(dump):
 def basic_dhcp_relay(**kwargs):
 
     host1 = kwargs.get('host1', None)
-    server1 = kwargs.get('switch2', None)
-
-    if configure_server1(server1) is False:
-        return False
+    relay = kwargs.get('switch1', None)
 
     LogOutput('info', "Configure DHCP client on host1")
     host1.cmd("ip addr del 20.0.0.1/8 dev wrkston01-eth0")
@@ -381,6 +384,13 @@ def basic_dhcp_relay(**kwargs):
     ifconfigHost1Ipv4Addr = getIpAddress(dump)
     if not getIpAddress(dump):
         return False
+
+    output = relay.cmd("ovs-appctl -t ops-udpfwd udpfwd/dump interface 1")
+    assert 'client request valid packets = 4' and \
+        'client request dropped packets = 0' and \
+        'server request valid packets = 3' and \
+        'server request dropped packets = 0' in output, " Basic dhcp relay"
+    " test failed"
 
     return True
 
@@ -461,10 +471,6 @@ def relay_with_two_servers(**kwargs):
 
     host1 = kwargs.get('host1', None)
     relay = kwargs.get('switch1', None)
-    server2 = kwargs.get('switch3', None)
-
-    if configure_server2(server2) is False:
-        return False
 
     if change_config(relay) is False:
         return False
@@ -514,6 +520,13 @@ def relay_option82_enable_with_replace_policy_mac(**kwargs):
     ifconfigHost1Ipv4Addr = getIpAddress(dump)
     if not getIpAddress(dump):
         return False
+
+    output = relay.cmd("ovs-appctl -t ops-udpfwd udpfwd/dump interface 1")
+    assert 'client request dropped packets with option 82 = 0' and \
+        'client request valid packets with option 82 = 2' and \
+        'server request dropped packets with option 82 = 0' and \
+        'server request valid packets with option 82 = 2' in output, "dhcp "
+    " relay test with option 82 failed"
 
     return True
 
@@ -674,8 +687,8 @@ class Test_dhcp_relay_configuration:
 
     def test_basic_dhcp_relay(self):
         wrkston01Obj = self.topoObj.deviceObjGet(device="wrkston01")
-        dut02Obj = self.topoObj.deviceObjGet(device="dut02")
-        if basic_dhcp_relay(host1=wrkston01Obj, switch2=dut02Obj) is True:
+        dut01Obj = self.topoObj.deviceObjGet(device="dut01")
+        if basic_dhcp_relay(host1=wrkston01Obj, switch1=dut01Obj) is True:
             LogOutput('info', "dhcp relay basic test passed")
         else:
             LogOutput('error', "dhcp relay basic test failed")
