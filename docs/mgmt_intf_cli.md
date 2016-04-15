@@ -13,8 +13,10 @@
   - [Show running configuration from interface level](#show-running-configuration-from-interface-level)
 - [Hostname configuration](#hostname-configuration)
   - [Hostname configuration commands](#hostname-configuration-commands)
+  - [Hostname Show commands](#hostname-show-commands)
 - [Domain name configurations](#domain-name-configuration)
   - [Domain name configuration commands](#domain-name-configuration-commands)
+  - [Domain name Show commands](#domain-name-show-commands)
 
 ## Management interface configuration commands
 ### Management interface context command
@@ -209,6 +211,23 @@ Users can configure the hostname as an alphanumeric string. The first character 
     switch(config)#
 
 ```
+### Hostname Show commands
+#### Syntax
+```
+show hostname
+```
+#### Description
+Command `show hostname ` is used to display the hostname configured in the system.
+#### Authority
+All users.
+#### Parameters
+No Parameters
+#### Examples
+```
+abc# show hostname
+abc
+```
+
 ## Domain name configuration
 ### Domain name configuration commands
 #### Syntax
@@ -226,6 +245,31 @@ Users can configure the domain name as an alphanumeric string. The first charact
 ```
   switch(config)# hostname abc
   abc(config)# domain-name example.com
-  abc.example.com(config)#no domain-name
+  abc(config)# do show domain-name
+  example.com
+  abc(config)# no domain-name
+  abc(config)# do show domain-name
+
   abc(config)#
+
+```
+### Domain name Show commands
+#### Syntax
+```
+show domain-name
+```
+#### Description
+Command `show domain-name ` is used to display the domain name configured in the system.
+#### Authority
+All users.
+#### Parameters
+No Parameters
+#### Examples
+```
+abc(config)# domain-name example.com
+abc(config)# exit
+abc# show domain-name
+example.com
+abc#
+
 ```
