@@ -7065,8 +7065,8 @@
       <column name="type">
         Notification transport type. For WebSockets the type is "ws".
       </column>
-      <column name="notification_subscriptions">
-        List of notification subscriptions for this subscriber.
+      <column name="notification_subscriptions" keyname="name">
+        List of notification subscriptions by name for this subscriber.
       </column>
     </group>
   </table>
