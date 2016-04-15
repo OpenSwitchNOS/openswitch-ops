@@ -4624,19 +4624,27 @@
       Boolean value indicating whether or not the interface has a fixed connector or
       a pluggable module socket.
     </column>
-    <column name="hw_intf_info" key="capability_enet1G">
+    <column name="hw_intf_info" key="enet1G">
       Boolean value indicating whether or not the interface supports Ethernet
       1G speed.
     </column>
-    <column name="hw_intf_info" key="capability_enet10G">
+    <column name="hw_intf_info" key="enet10G">
       Boolean value indicating whether or not the interface supports Ethernet
       10G speed.
     </column>
-    <column name="hw_intf_info" key="capability_enet40G">
+    <column name="hw_intf_info" key="enet25G">
+      Boolean value indicating whether or not the interface supports Ethernet
+      25G speed.
+    </column>
+    <column name="hw_intf_info" key="enet40G">
       Boolean value indicating whether or not the interface supports Ethernet
       40G speed.
     </column>
-    <column name="hw_intf_info" key="capability_split_4">
+    <column name="hw_intf_info" key="enet100G">
+      Boolean value indicating whether or not the interface supports Ethernet
+      100G speed.
+    </column>
+    <column name="hw_intf_info" key="split_4">
       Boolean value indicating whether or not the interface supports being
       split into four split ports. For example, a QSFP+ port can run as a
       single port or can be split into four 10G split ports using a QSFP+
@@ -4648,6 +4656,11 @@
       created for every bridge instance. The `bridge' interface receives all
       VLAN traffic and distributes to the vlan interfaces based on the VLAN
       tags. The default value is `false'
+    </column>
+    <column name="hw_intf_info" key="media_type"
+       type='{"type": "string", "enum": ["set", ["broadcast", "point-to-point"]]}'>
+      Boolean value indicating whether or not the interface supports Ethernet
+      100G speed.
     </column>
     <column name="split_parent">
       For a split child interface, this is the reference to the parent <ref table="Interface"/>.
@@ -6268,6 +6281,10 @@
         <column name="paths">
           The list of paths.
         </column>
+        <column name="route_info" key="cost" type='{"type": "integer", "maxInteger": 16777215}'>
+          The cost metric of the route.
+          The default value is 16777215, which is maximum metric value.
+        </column>
         <column name="route_info" key="area_id" type='{"type": "integer"}'>
           The area ID of the route.
         </column>
@@ -6286,7 +6303,7 @@
         </column>
         <column name="route_info" key="type2_cost" type='{"type": "integer", "maxInteger": 16777215}'>
           The External Type 2 route cost.
-          The default value is 16777215.
+          The default value is 16777215, which is maximum metric value.
         </column>
         <column name="route_info" key="ext_tag" type='{"type": "string"}'>
           The tag of the route.
