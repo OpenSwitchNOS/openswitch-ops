@@ -1,4 +1,4 @@
-# (C) Copyright 2015 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -13,10 +13,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-import pytest
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.host import *
+
 
 topoDict = {"topoExecution": 1500,
             "topoDevices": "dut01 dut02\
@@ -35,27 +35,7 @@ topoDict = {"topoExecution": 1500,
                             wrkston04:system-category:workstation"}
 
 
-def switch_reboot(dut01):
-    # Reboot switch
-    LogOutput('info', "Reboot switch")
-    dut01.Reboot()
-    rebootRetStruct = returnStruct(returnCode=0)
-    return rebootRetStruct
-
-
-def clean_up(dut01, dut02, wrkston01, wrkston02, wrkston03, wrkston04):
-
-    listDut = [dut01, dut02]
-    for currentDut in listDut:
-        devRebootRetStruct = switch_reboot(currentDut)
-        if devRebootRetStruct.returnCode() != 0:
-            LogOutput('error', "Failed to reboot Switch")
-            assert(False)
-    else:
-        LogOutput('info', "Passed Switch Reboot ")
-
-
-class Test_ft_LAG_Static_tagged_vlans:
+class Test_ft_LAG_Dynamic_vlan_settings_override_interface:
 
     listDut = None
     dut01Obj = None
@@ -69,15 +49,17 @@ class Test_ft_LAG_Static_tagged_vlans:
     l2IpGateway = None
     l2IpNetwork = None
     l2IpNetmask = None
-    vlanL2Id = None
+    vlanLagId = None
+    vlanIntId = None
 
     def setup_class(cls):
 
         # Create Topology object and connect to devices
-        Test_ft_LAG_Static_tagged_vlans.testObj = testEnviron(
-            topoDict=topoDict)
-        Test_ft_LAG_Static_tagged_vlans.topoObj = \
-            Test_ft_LAG_Static_tagged_vlans.testObj.topoObjGet()
+        Test_ft_LAG_Dynamic_vlan_settings_override_interface.testObj \
+            = testEnviron(topoDict=topoDict)
+        Test_ft_LAG_Dynamic_vlan_settings_override_interface.topoObj = \
+            Test_ft_LAG_Dynamic_vlan_settings_override_interface. \
+            testObj.topoObjGet()
 
         # Global definition
         global listDut
@@ -92,7 +74,8 @@ class Test_ft_LAG_Static_tagged_vlans:
         global l2IpGateway
         global l2IpNetwork
         global l2IpNetmask
-        global vlanL2Id
+        global vlanLagId
+        global vlanIntId
 
         # Var initiation
         lagId = 150
@@ -100,7 +83,8 @@ class Test_ft_LAG_Static_tagged_vlans:
         l2IpGateway = "10.2.2.1"
         l2IpNetwork = "10.2.2.255"
         l2IpNetmask = "255.255.255.0"
-        vlanL2Id = [900, 950]
+        vlanLagId = 800
+        vlanIntId = 850
         dut01Obj = cls.topoObj.deviceObjGet(device="dut01")
         dut02Obj = cls.topoObj.deviceObjGet(device="dut02")
 
@@ -113,40 +97,17 @@ class Test_ft_LAG_Static_tagged_vlans:
 
     def teardown_class(cls):
         # Terminate all nodes
-        clean_up(dut01Obj,
-                 dut02Obj,
-                 wrkston01Obj,
-                 wrkston02Obj,
-                 wrkston03Obj,
-                 wrkston04Obj)
-        Test_ft_LAG_Static_tagged_vlans.topoObj.terminate_nodes()
+        Test_ft_LAG_Dynamic_vlan_settings_override_interface.topoObj. \
+            terminate_nodes()
 
     ##########################################################################
-    # Step 1 - Reboot Switch
-    ##########################################################################
-
-    def test_reboot_switches(self):
-
-        LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 1 - Reboot the switches")
-        LogOutput('info', "###############################################")
-
-        for currentDut in listDut:
-            devRebootRetStruct = switch_reboot(currentDut)
-            if devRebootRetStruct.returnCode() != 0:
-                LogOutput('error', "Failed to reboot Switch")
-                assert(False)
-            else:
-                LogOutput('info', "Passed Switch Reboot ")
-
-    ##########################################################################
-    # Step 2 - Configured Lag
+    # Step 1 - Configured Lag
     ##########################################################################
 
     def test_configure_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 2 -Configure lag in the switch")
+        LogOutput('info', "# Step 1 -Configure lag in the switch")
         LogOutput('info', "###############################################")
 
         devLagRetStruct1 = lagCreation(
@@ -166,6 +127,32 @@ class Test_ft_LAG_Static_tagged_vlans:
             LogOutput('info', "Passed lag configured ")
 
     ##########################################################################
+    # Step 2 - Enable dynamic Lag
+    ##########################################################################
+
+    def test_enable_dynamic_lag(self):
+
+        LogOutput('info', "\n###############################################")
+        LogOutput('info', "# Step 2 - Enable dynamic Lag ")
+        LogOutput('info', "###############################################")
+
+        devLagDinRetStruct1 = lagMode(
+            deviceObj=dut01Obj,
+            lagId=lagId,
+            lacpMode="active")
+
+        devLagDinRetStruct2 = lagMode(
+            deviceObj=dut02Obj,
+            lagId=lagId,
+            lacpMode="active")
+        if devLagDinRetStruct1.returnCode() != 0 \
+                or devLagDinRetStruct2.returnCode() != 0:
+            LogOutput('error', "Failed to enable dynamic lag")
+            assert(False)
+        else:
+            LogOutput('info', "Enable dynamic lag")
+
+    ##########################################################################
     # Step 3 - Configured vlan
     ##########################################################################
 
@@ -175,7 +162,9 @@ class Test_ft_LAG_Static_tagged_vlans:
         LogOutput('info', "# Step 3 - Configure vlan  in the switch")
         LogOutput('info', "###############################################")
 
-        for currentVlan in vlanL2Id:
+        listVlan = [vlanIntId, vlanLagId]
+
+        for currentVlan in listVlan:
             devLagRetStruct1 = AddVlan(
                 deviceObj=dut01Obj,
                 vlanId=currentVlan,
@@ -193,7 +182,7 @@ class Test_ft_LAG_Static_tagged_vlans:
             else:
                 LogOutput('info', "Vlan created")
 
-        for currentVlan in vlanL2Id:
+        for currentVlan in listVlan:
             devLagRetStruct1 = VlanStatus(
                 deviceObj=dut01Obj,
                 vlanId=currentVlan,
@@ -211,18 +200,68 @@ class Test_ft_LAG_Static_tagged_vlans:
                 LogOutput('info', "Passed vlan enable ")
 
     ##########################################################################
-    # Step 4 - Add ports to vlan
+    # Step 4 - Add vlan to the interface that belong to the lag
+    ##########################################################################
+
+    def test_configure_vlan_lag_interface(self):
+
+        LogOutput('info', "\n###############################################")
+        LogOutput('info', "# Step 4 - Add vlan to the interface no lag")
+        LogOutput('info', "###############################################")
+
+        switchInterface1 = dut01Obj.linkPortMapping['lnk03']
+        switchInterface2 = dut01Obj.linkPortMapping['lnk04']
+
+        listSwitchInterfacesDut1 = [
+            switchInterface1,
+            switchInterface2]
+
+        switchInterface1 = dut02Obj.linkPortMapping['lnk03']
+        switchInterface2 = dut02Obj.linkPortMapping['lnk04']
+
+        listSwitchInterfacesDut2 = [
+            switchInterface1,
+            switchInterface2]
+
+        # Configured Vlan for device 1
+        for currentInterface in listSwitchInterfacesDut1:
+            devIntLagRetStruct1 = AddPortToVlan(
+                deviceObj=dut01Obj,
+                vlanId=vlanIntId,
+                interface=currentInterface,
+                access=True,
+                config=True)
+            if devIntLagRetStruct1.returnCode() != 0:
+                LogOutput('error',
+                          "Failed to configured vlan in the interface")
+                assert(False)
+
+        # Configured Vlan for device 2
+        for currentInterface in listSwitchInterfacesDut2:
+            devIntLagRetStruct1 = AddPortToVlan(
+                deviceObj=dut02Obj,
+                vlanId=vlanIntId,
+                interface=currentInterface,
+                access=True,
+                config=True)
+            if devIntLagRetStruct1.returnCode() != 0:
+                LogOutput('error',
+                          "Failed to configured vlan in the interface")
+                assert(False)
+        LogOutput('info', "Passed interface vlan configured")
+
+    ##########################################################################
+    # Step 5 - Add ports to vlan
     ##########################################################################
 
     def test_interface_vlan(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 4 - Configure vlan in  the interface")
+        LogOutput('info', "# Step 5 - Add ports to vlan")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk01']
         dut01Interface02 = dut01Obj.linkPortMapping['lnk02']
-        dut01Interface03 = "lag " + str(lagId)
 
         dut02Interface01 = dut02Obj.linkPortMapping['lnk05']
         dut02Interface02 = dut02Obj.linkPortMapping['lnk06']
@@ -231,14 +270,14 @@ class Test_ft_LAG_Static_tagged_vlans:
         # Configured Vlan for device 1
         devIntLagRetStruct1 = AddPortToVlan(
             deviceObj=dut01Obj,
-            vlanId=vlanL2Id[0],
+            vlanId=vlanLagId,
             interface=dut01Interface01,
             access=True,
             config=True)
 
         devIntLagRetStruct2 = AddPortToVlan(
             deviceObj=dut01Obj,
-            vlanId=vlanL2Id[1],
+            vlanId=vlanIntId,
             interface=dut01Interface02,
             access=True,
             config=True)
@@ -254,14 +293,14 @@ class Test_ft_LAG_Static_tagged_vlans:
         # Configured Vlan for device 2
         devIntLagRetStruct1 = AddPortToVlan(
             deviceObj=dut02Obj,
-            vlanId=vlanL2Id[0],
+            vlanId=vlanLagId,
             interface=dut02Interface01,
             access=True,
             config=True)
 
         devIntLagRetStruct2 = AddPortToVlan(
             deviceObj=dut02Obj,
-            vlanId=vlanL2Id[1],
+            vlanId=vlanIntId,
             interface=dut02Interface02,
             access=True,
             config=True)
@@ -274,37 +313,28 @@ class Test_ft_LAG_Static_tagged_vlans:
         else:
             LogOutput('info', "Passed interface vlan configured")
 
-        for currentVlan in vlanL2Id:
-            devIntLagRetStruct1 = AddPortToVlan(
-                deviceObj=dut01Obj,
-                vlanId=currentVlan,
-                interface=dut01Interface03,
-                allowed=True,
-                config=True)
-
-            devIntLagRetStruct2 = AddPortToVlan(
-                deviceObj=dut02Obj,
-                vlanId=currentVlan,
+        for currentDut in listDut:
+            devIntLagRetStruct = AddPortToVlan(
+                deviceObj=currentDut,
+                vlanId=vlanLagId,
                 interface=dut02Interface03,
                 allowed=True,
                 config=True)
-
-            if devIntLagRetStruct1.returnCode() != 0 \
-                    or devIntLagRetStruct2.returnCode() != 0:
+            if devIntLagRetStruct.returnCode() != 0:
                 LogOutput('error',
-                          "Failed to configured vlan in the Lag")
+                          "Failed to configured vlan in the interface")
                 assert(False)
             else:
-                LogOutput('info', "Passed Lag vlan configured")
+                LogOutput('info', "Passed interface vlan configured")
 
     ##########################################################################
-    # Step 5 - Add ports to lag
+    # Step 6 - Add ports to lag
     ##########################################################################
 
     def test_configure_interface_lag(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 5 - Configure lag id in the interface")
+        LogOutput('info', "# Step 6 - Configure lag id in the interface")
         LogOutput('info', "###############################################")
 
         dut01Interface01 = dut01Obj.linkPortMapping['lnk03']
@@ -342,13 +372,13 @@ class Test_ft_LAG_Static_tagged_vlans:
                 LogOutput('info', "Passed interface lag id configured ")
 
     ##########################################################################
-    # Step 6 - Configure Workstation
+    # Step 7 - Configure Workstation
     ##########################################################################
 
     def test_configure_workstations(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 6 - Configure Workstations")
+        LogOutput('info', "# Step 7 - Configure Workstations")
         LogOutput('info', "###############################################")
 
         # Client Side
@@ -396,13 +426,13 @@ class Test_ft_LAG_Static_tagged_vlans:
         LogOutput('info', "Complete workstation configuration")
 
     ##########################################################################
-    # Step 7 - Enable switch ports
+    # Step 8 - Enable switch ports
     ##########################################################################
 
     def test_enable_switch_interfaces(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 7 - Enable all the switchs interfaces")
+        LogOutput('info', "# Step 8 - Enable all the switchs interfaces")
         LogOutput('info', "###############################################")
 
         switchInterface1 = dut01Obj.linkPortMapping['lnk01']
@@ -451,13 +481,13 @@ class Test_ft_LAG_Static_tagged_vlans:
         LogOutput('info', "All ports in switches are enable")
 
     ##########################################################################
-    # Step 8 - Send Traffic
+    # Step 9 - Send Traffic
     ##########################################################################
 
     def test_send_traffic(self):
 
         LogOutput('info', "\n###############################################")
-        LogOutput('info', "# Step 8 - Send traffic betweem clients")
+        LogOutput('info', "# Step 9 - Send traffic betweem clients")
         LogOutput('info', "###############################################")
 
         # WorkStation 1 Ping other side
@@ -491,7 +521,7 @@ class Test_ft_LAG_Static_tagged_vlans:
         # Workstation 2 ping to other side
         retStructValid = wrkston02Obj.Ping(ipAddr=l2IpAddress[3])
         retStructInvalid = wrkston02Obj.Ping(ipAddr=l2IpAddress[2])
-        if retStructValid.returnCode() != 0 \
+        if retStructValid.returnCode() == 0 \
                 or retStructInvalid.returnCode() == 0:
             LogOutput('error',
                       "Failed to ping from workstation 2 to workstation1")
@@ -505,9 +535,6 @@ class Test_ft_LAG_Static_tagged_vlans:
             LogOutput('info', "Packets Sent:\t" + str(packets_sent))
             LogOutput('info', "Packets Recv:\t" + str(packets_received))
             LogOutput('info', "Packet Loss %:\t" + str(packet_loss))
-            if packet_loss != 0:
-                LogOutput('error', "Packet Loss > 0%")
-                # assert(False)
             packet_loss = retStructInvalid.valueGet(key='packet_loss')
             packets_sent = retStructInvalid.valueGet(
                 key='packets_transmitted')
