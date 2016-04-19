@@ -4624,19 +4624,27 @@
       Boolean value indicating whether or not the interface has a fixed connector or
       a pluggable module socket.
     </column>
-    <column name="hw_intf_info" key="capability_enet1G">
+    <column name="hw_intf_info" key="enet1G">
       Boolean value indicating whether or not the interface supports Ethernet
       1G speed.
     </column>
-    <column name="hw_intf_info" key="capability_enet10G">
+    <column name="hw_intf_info" key="enet10G">
       Boolean value indicating whether or not the interface supports Ethernet
       10G speed.
     </column>
-    <column name="hw_intf_info" key="capability_enet40G">
+    <column name="hw_intf_info" key="enet25G">
+      Boolean value indicating whether or not the interface supports Ethernet
+      25G speed.
+    </column>
+    <column name="hw_intf_info" key="enet40G">
       Boolean value indicating whether or not the interface supports Ethernet
       40G speed.
     </column>
-    <column name="hw_intf_info" key="capability_split_4">
+    <column name="hw_intf_info" key="enet100G">
+      Boolean value indicating whether or not the interface supports Ethernet
+      100G speed.
+    </column>
+    <column name="hw_intf_info" key="split_4">
       Boolean value indicating whether or not the interface supports being
       split into four split ports. For example, a QSFP+ port can run as a
       single port or can be split into four 10G split ports using a QSFP+
