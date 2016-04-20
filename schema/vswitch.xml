@@ -4686,6 +4686,10 @@
       VLAN traffic and distributes to the vlan interfaces based on the VLAN
       tags. The default value is `false'
     </column>
+    <column name="hw_intf_info" key="media_type"
+      type='{"type": "string", "enum": ["set", ["broadcast", "point-to-point"]]}'>
+      This describes the media type of the interface.
+    </column>
     <column name="split_parent">
       For a split child interface, this is the reference to the parent <ref table="Interface"/>.
     </column>
