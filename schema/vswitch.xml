@@ -302,6 +302,17 @@
         </column>
     </group>
 
+    <group title="DNS Client Configurations">
+        <column name="other_config" key="dns_client_enabled"
+              type='{"type": "boolean"}'>
+          Set this value to <code>true</code> to enable DNS Client functionality
+          and set it to <code>false</code> to disable it. DNS Client is enabled
+          by default. DNS Client domain name, domain list, host name and name
+          server configurations are present in
+          <ref table="DNS_Client"/>.
+        </column>
+    </group>
+
     <group title="LACP Configurations">
       <column name="lacp_config" key="lacp-system-id">
         The LACP system ID of this <ref table="Bridge"/>.  The system ID of a
@@ -6967,6 +6978,36 @@
       </column>
     </group>
   </table>
+
+  <table name="DNS_Client">
+    <p>
+      Placeholder for the DNS Client configurations of both IPv4 and IPv6.
+    </p>
+    <group title="DNS_Client">
+      <column name="domain_list" keyname="preference">
+        List of the domain names used for name resolution.
+      </column>
+      <column name="static_host_name_mapping" keyname="preference">
+        List of local hosts which will be checked by the DNS-Client
+        for name resolution prior to querying the domain list.
+      </column>
+      <column name="name_servers" keyname="preference">
+        List of name server address entries and the optional VRF associated
+        with them which the DNS-Client can use for name resolution.
+        If a VRF is associated with a name server address, then it is
+        appended with the name server address but seperated by a white space
+        and stored as a string.
+      </column>
+      <column name="vrf">
+        VRF to which the DNS Client configurations belong.
+      </column>
+    </group>
+        <column name="other_config"  key="domain_name" type='{"type": "string"}'>
+          Default domain name entry used for name resolution by the
+          DNS-Client incase domain list is not configured.
+        </column>
+  </table>
+
   <table name="ACL_Entry" title="Access Control Entry">
     <column name="comment">
       <p>
