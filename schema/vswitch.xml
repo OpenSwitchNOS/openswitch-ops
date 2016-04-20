@@ -302,6 +302,16 @@
         </column>
     </group>
 
+    <group title="DNS Client Configurations">
+        <column name="other_config" key="dns_client_disabled"
+              type='{"type": "boolean"}'>
+          Set this value to <code>true</code> to disable DNS-Client functionality
+          and set it to <code>false</code> to enable it. DNS-Client is enabled
+          by default. DNS-Client specific configuration is present in
+          <ref table="DNS_Client"/>.
+        </column>
+    </group>
+
     <group title="LACP Configurations">
       <column name="lacp_config" key="lacp-system-id">
         The LACP system ID of this <ref table="Bridge"/>.  The system ID of a
@@ -6967,6 +6977,36 @@
       </column>
     </group>
   </table>
+
+  <table name="DNS_Client">
+    <p>
+      Placeholder of per VRF DNS-Client configuration for both IPv4 and IPv6
+    </p>
+    <group title="DNS_Client">
+      <column name="vrf">
+        VRF to which the DNS Client configurations belong.
+      </column>
+      <column name="domain_list" keyname="preference">
+        List of the domain names used for name resolution.
+      </column>
+      <column name="static_host_address_mapping" keyname="preference">
+        List of static host address configurations.
+      </column>
+      <column name="name_servers" keyname="preference">
+        List of name server address entries and the optional
+        destination VRF for the address lookup. Destination VRF
+        configuration is forward referenced. Configuration is effective
+        only if the destination VRF is present. Server address and
+        destination VRF are stored as a string, separated by space.
+      </column>
+    </group>
+      <column name="other_config"  key="domain_name"
+              type='{"type": "string", "maxLength":64}'>
+        Default domain name entry used for name resolution by the
+        DNS-Client incase domain list is not configured.
+      </column>
+  </table>
+
   <table name="ACL_Entry" title="Access Control Entry">
     <column name="comment">
       <p>
