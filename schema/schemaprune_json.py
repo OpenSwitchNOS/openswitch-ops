@@ -55,10 +55,13 @@ for table in tables.keys():
     logging.debug("================================================================================")
     logging.debug("table: \"%s\"" % table)
     del_table = del_column = del_enum = UNTAGGED
+    table_tagged = False
+    table_features = column_features = enum_features = features = []
 
     table_data = tables[table]
     if 'feature_list' in table_data:
-        features = table_data['feature_list']
+        table_tagged = True
+        table_features = features = table_data['feature_list']
         logging.debug("features = %s" % features)
 
         if bool(set(features) & set(enabled_features)):
@@ -77,9 +80,12 @@ for table in tables.keys():
         for column in columns.keys():
             logging.debug("column = %s" % column)
             del_column = del_enum = UNTAGGED
+            column_tagged = False
+            column_features = features = []
             column_data = columns[column]
             if 'feature_list' in column_data:
-                features = column_data['feature_list']
+                column_tagged = True
+                column_features = features = column_data['feature_list']
                 logging.debug("features = %s" % features)
                 if bool(set(features) & set(enabled_features)):
                     logging.info("DELETE:N: (table: \"%s\"; column: \"%s\")" % (table, column))
@@ -92,6 +98,17 @@ for table in tables.keys():
                 del column_data['feature_list']
             else:
                 logging.debug("UNTAGGED: (table: \"%s\"; column: \"%s\")" % (table, column))
+                if (table_tagged == True):
+                    #Just inherit from the table feature-list
+                    features = table_features
+                    logging.debug("Inheriting table \"%s\" feature-list" % (table))
+                    if bool(set(features) & set(enabled_features)):
+                        logging.info("DELETE:N: (table: \"%s\"; column: \"%s\")" % (table, column))
+                        del_column = CANNOT_DELETE
+                        del_table = CANNOT_DELETE
+                    else:
+                        logging.info("DELETE:Y: (table: \"%s\"; column: \"%s\")" % (table, column))
+                        del_column = CAN_DELETE
 
             if 'type' in column_data:
                 type_data = column_data['type']
@@ -103,23 +120,24 @@ for table in tables.keys():
                         enum_data = key_data['enum']
                         logging.debug("enum_data = %s" % enum_data)
                         if 'set' in enum_data:
-                            enum_index = -1
-                            for elem in enum_data[1]:
-                                enum_index += 1
+                            enum_index = len(enum_data[1]) - 1
+                            while enum_index >= 0:
+                                elem = enum_data[1][enum_index]
                                 logging.debug("enum = %s" % elem)
+                                enum_features = features = []
+                                del_enum = UNTAGGED
                                 if type(elem) is DictType:
                                     if 'feature_list' and 'val' in elem:
-                                        features = elem['feature_list']
+                                        enum_features = features = elem['feature_list']
                                         enum_val = elem['val']
-                                        logging.debug("features = %s" % features)
-                                        logging.debug("enum_val = %s" % enum_val)
+                                        logging.debug("features = %s enum_val = %s" % (features, enum_val))
                                         if bool(set(features) & set(enabled_features)):
-                                            logging.info("DELETE:N: (table: \"%s\"; column: \"%s\; enum: \"%s\")" % (table, column, enum_val))
+                                            logging.info("DELETE:N: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, enum_val))
                                             del_enum = CANNOT_DELETE
                                             del_column = CANNOT_DELETE
                                             del_table = CANNOT_DELETE
                                         else:
-                                            logging.info("DELETE:Y: (table: \"%s\"; column: \"%s\; enum: \"%s\")" % (table, column, enum_val))
+                                            logging.info("DELETE:Y: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, enum_val))
                                             del_enum = CAN_DELETE
 
                                         # Now delete the DictType entry from the enum
@@ -128,9 +146,31 @@ for table in tables.keys():
                                             # Add regular entry to the enum
                                             enum_data[1].insert(enum_index, enum_val)
                                     else:
-                                        logging.debug("UNTAGGED: (table: \"%s\"; column: \"%s\; enum: \"%s\")" % (table, column, enum_val))
+                                        logging.info("ERROR: UNTAGGED: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, enum_val))
+                                        #This is not allowed & will be flagged as an error by "make" that will follow.
                                 else:
-                                    logging.debug("UNTAGGED: (table: \"%s\"; column: \"%s\; enum: \"%s\")" % (table, column, elem))
+                                    logging.debug("UNTAGGED: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, elem))
+                                    if (column_tagged == True):
+                                        #Just inherit from the column feature-list
+                                        logging.debug("Inheriting column \"%s\" feature-list" % (column))
+                                        features = column_features
+                                    elif (table_tagged == True):
+                                        #Just inherit from the table feature-list
+                                        logging.debug("Inheriting table \"%s\" feature-list" % (table))
+                                        features = table_features
+
+                                    if ((column_tagged == True) or (table_tagged == True)):
+                                        if bool(set(features) & set(enabled_features)):
+                                            logging.info("DELETE:N: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, elem))
+                                            del_enum = CANNOT_DELETE
+                                            del_column = CANNOT_DELETE
+                                            del_table = CANNOT_DELETE
+                                        else:
+                                            logging.info("DELETE:Y: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, elem))
+                                            del_enum = CAN_DELETE
+                                            enum_data[1].pop(enum_index)
+
+                                enum_index -= 1
 
             if (del_column == CAN_DELETE):
                 columns.pop(column, None)
