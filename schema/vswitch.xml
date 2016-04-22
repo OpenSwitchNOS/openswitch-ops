@@ -6903,6 +6903,10 @@
         The in flight version of the Access Control List.  Access Control Entries
         (ACE) specified in this ACL are defined in <ref table="ACL_Entry"/>
       </column>
+      <column name="in_progress_version">
+        The version of the 'in_progress_aces' column.
+        This value is incremented by the Classifier Daemon every time it changes the 'in_progress_aces' value.
+      </column>
       <column name="status"  key="status_string" type='{"type":"string"}'>
         The status of the last version of 'cfg_aces' column, that has been
         processed by switchd.  Accepted values are: 'in_progress', 'applied', 'rejected',

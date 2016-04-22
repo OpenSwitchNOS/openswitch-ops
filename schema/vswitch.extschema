@@ -8549,6 +8549,16 @@
             }
           }
         },
+        "in_progress_version": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            }
+          }
+        },
         "status": {
           "category": "status",
           "type": {
