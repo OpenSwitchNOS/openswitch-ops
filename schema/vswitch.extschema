@@ -3474,7 +3474,8 @@
             },
             "min": 0,
             "max": 1
-          }
+          },
+          "ephemeral": true
         },
         "aclv4_in_cfg_version": {
           "category": "configuration",
@@ -3486,7 +3487,8 @@
             },
             "min": 0,
             "max": 1
-          }
+          },
+          "ephemeral": true
         },
         "aclv4_in_status": {
           "category": "status",
@@ -3495,7 +3497,8 @@
             "value": "string",
             "min": 0,
             "max": "unlimited"
-          }
+          },
+          "ephemeral": true
         },
         "aclv4_in_statistics": {
           "category": "status",
@@ -3512,6 +3515,28 @@
             },
             "min": 0,
             "max": 512
+          },
+          "ephemeral": true
+        },
+        "aclv4_in_statistics_clear_requested": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "aclv4_in_statistics_clear_performed": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
           },
           "ephemeral": true
         },
@@ -3981,7 +4006,8 @@
             },
             "min": 0,
             "max": 1
-          }
+          },
+          "ephemeral": true
         },
         "aclv4_in_cfg_version": {
           "category": "configuration",
@@ -3993,7 +4019,8 @@
             },
             "min": 0,
             "max": 1
-          }
+          },
+          "ephemeral": true
         },
         "aclv4_in_status": {
           "category": "status",
@@ -4002,7 +4029,8 @@
             "value": "string",
             "min": 0,
             "max": "unlimited"
-          }
+          },
+          "ephemeral": true
         },
         "aclv4_in_statistics": {
           "category": "status",
@@ -4019,6 +4047,28 @@
             },
             "min": 0,
             "max": 512
+          },
+          "ephemeral": true
+        },
+        "aclv4_in_statistics_clear_requested": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true
+        },
+        "aclv4_in_statistics_clear_performed": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
           },
           "ephemeral": true
         },
@@ -8520,7 +8570,8 @@
             },
             "min": 0,
             "max": 512
-          }
+          },
+          "ephemeral": true
         },
         "in_progress_aces": {
           "category": "status",
@@ -8537,7 +8588,8 @@
             },
             "min": 0,
             "max": 512
-          }
+          },
+          "ephemeral": true
         },
         "cfg_version": {
           "category": "configuration",
@@ -8547,7 +8599,19 @@
               "minInteger": 0,
               "maxInteger": 4294967295
             }
-          }
+          },
+          "ephemeral": true
+        },
+        "in_progress_version": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            }
+          },
+          "ephemeral": true
         },
         "status": {
           "category": "status",
@@ -8556,7 +8620,8 @@
             "value": "string",
             "min": 0,
             "max": "unlimited"
-          }
+          },
+          "ephemeral": true
         },
         "other_config": {
           "category": "configuration",
