@@ -302,6 +302,11 @@
         </column>
     </group>
 
+    <column name="mclag">
+         Configuration of Inter switch link (ISL) port.
+         See the <ref table="MCLAG"/> for more information.
+    </column>
+
     <group title="LACP Configurations">
       <column name="lacp_config" key="lacp-system-id">
         The LACP system ID of this <ref table="Bridge"/>.  The system ID of a
@@ -3362,6 +3367,14 @@
           numerically lower priority.
         </column>
 
+        <column name="other_config" key="lag_type"
+          type='{"type": "string", "enum": ["set", ["not-a-lag", "point-to-point", "MCLAG"]]}'>
+          "not-a-lag”: This port is not a LAG or MCLAG.
+          “point-to-point”: This port is a LAG port.
+          “MCLAG”: This port is part of a MCLAG.
+          Default value is “not-a-lag”. When a LAG is created, the default is “point-to-point”.
+        </column>
+
         <column name="other_config" key="lacp-time"
           type='{"type": "string", "enum": ["set", ["fast", "slow"]]}'>
           <p>
@@ -3475,6 +3488,28 @@
         bridge's MAC address.  This column does not necessarily reflect the
         port's actual MAC address, nor will setting it change the port's actual
         MAC address.
+      </column>
+      <column name="mclag_remote_interfaces">
+          This references the <ref table="MCLAG_Remote_Interface"/> table
+          which contains information such as partner system_id, port_id,
+          partner_key, partner_state, admin_state, link_state, speed and
+          duplex information.
+      </column>
+      <column name="mac_learn_disable">
+          When set to 'true', mac learning will be disabled on the port.
+          The default value is <code>false</code>.
+      </column>
+      <column name="flood_block">
+          When set to ‘true’, all flood traffic going out of this port will be dropped.
+          The default value is <code>false</code>.
+      </column>
+      <column name="egress_redirect_to_port">
+          When set to a port UUID, all traffic egressing this port will be redirected to the specified port.
+          Default value is <code>empty</code>.
+        </column>
+      <column name="egress_blocked_to_ports">
+          When set to a port UUID, traffic which ingresses in this port and egressing on
+          specified ports will be blocked. Default value is <code>empty</code>.
       </column>
       <column name="other_config" key="sflow-enabled" type='{"type": "boolean"}'>
         Determines whether sflow sampling is enabled on this port.
@@ -4016,7 +4051,21 @@
         reporting status/state bit values. For example,
             (Actv:1,TmOut:1,Aggr:1,Sync:1,Col:1,Dist:1,Def:0,Exp:0)
       </column>
-
+      <column name="lacp_status" key="lacp_blocked">
+        lacp_blocked is set to 'true' if LACP decides to block the interface.
+        Default value is <code>false</code>.
+      </column>
+      <column name="mclag_status" key="actor_system_id">
+        actor system ID is in the form of device priority (2 bytes) followed by
+        device MAC address (6 bytes). Device priority range is 0 to 15.
+        Default device priority value is <code>8</code>.
+      </column>
+      <column name="mclag_status" key="actor_port_id">
+        actor port ID is in the form of device priority (2 bytes) followed by port id.
+      </column>
+      <column name="mclag_status" key="actor_key">
+        The MCLAG actor key in use.
+      </column>
       <column name="hw_bond_config">
         Key-value pairs that configure the interface as a member of bond.
       </column>
@@ -4761,6 +4810,168 @@
     </group>
       <column name="external_ids"/>
     </group>
+  </table>
+
+  <table name="MCLAG" title="MCLAG ISL Port">
+       <group title="MCLAG Port configuraiton">
+         <column name="isl_port">
+           References port to be used as inter switch link.
+         </column>
+       </group>
+
+       <group title="MCLAG ISL configuration">
+         <column name="isl_config" key="hello_interval"
+           type='{"type": "integer", "minInteger": 1, "maxInteger": 5}'>
+           ISLP hello interval in seconds. The default value is <code>1</code>.
+         </column>
+         <column name="isl_config" key="timeout"
+           type='{"type": "integer", "minInteger": 2, "maxInteger": 20}'>
+           Configures the amount of time to wait for hellos from peer in seconds.
+           The default value is <code>3</code>.
+         </column>
+         <column name="isl_config" key="hold_time"
+           type='{"type": "integer", "minInteger": 0, "maxInteger": 3}'>
+           Configures ISL port-flap hold time in seconds. The default value is <code>0</code>.
+         </column>
+       </group>
+
+       <group title="MCLAG Device configuration">
+         <column name="device_priority"
+           type='{"type": "integer", "minInteger": 1, "maxInteger": 16}'>
+           Configures MCLAG device priority. The default value is <code>1</code>.
+         </column>
+         <column name="split_brain"
+          type='{"type": "string", "enum": ["set", ["one-fragment-active", "dual-active"]]}'>
+           Configures how MCLAG split-brain is handled.
+           "one-fragment-active" means in case of a split, MCLAG links of primary will be active and secondary will be disabled.
+           "dual-active" means in case of a split, MCLAG links of both primary and secondary will be active.
+           The default value is <code>one-fragment-active</code>.
+         </column>
+       </group>
+
+       <group title="MCLAG Operational status">
+         <column name="oper_status" key="islp_state">
+           MCLAG ISL protocol state.
+           IN_SYNC means ISLP link is established. OUT_OF_SYNC means ISLP link is not established.
+           Default value is <code>OUT_OF_SYNC</code>.
+         </column>
+         <column name="oper_status" key="oper_system_id">
+           MCLAG operational system id.
+         </column>
+         <column name="oper_status" key="oper_device_priority">
+           MCLAG operational device priority. Determines primary and secondary MCLAG switch.
+         </column>
+       </group>
+
+       <group title="MCLAG Peer status">
+         <column name="peer_status" key="peer_isl_port">
+           MCLAG peer ISL port.
+         </column>
+         <column name="peer_status" key="peer_system_id">
+           MCLAG peer system id.
+         </column>
+         <column name="peer_status" key="peer_device_priority">
+           MCLAG peer device priority.
+         </column>
+       </group>
+
+       <group title="MCLAG Port statistics">
+         <column name="isl_statistics" key="hello_tx">
+           Number of ISLP hello packets transmitted.
+         </column>
+         <column name="isl_statistics" key="hello_rx">
+           Number of ISLP hello packets received.
+         </column>
+         <column name="isl_statistics" key="pdu_tx">
+           Number of ISLP PDUs transmitted.
+         </column>
+         <column name="isl_statistics" key="pdu_rx">
+           Number of ISLP PDUs received.
+         </column>
+       </group>
+
+       <group title="MCLAG Keepalive configuration">
+         <column name="keepalive_config" key="udp_port"
+           type='{"type": "integer", "minInteger": 1024, "maxInteger": 65535}'>
+           Configures UDP port number for keepalive. The default value is <code>7678</code>.
+         </column>
+         <column name="keepalive_config" key="source_ip">
+           IPv4 address of the MCLAG device.
+         </column>
+         <column name="keepalive_config" key="peer_ip">
+           IPv4 address of the MCLAG peer device.
+         </column>
+       </group>
+
+       <column name="vrf_id">
+         Configures VRF id for the keepalive. The default value is <code>1</code>.
+       </column>
+
+       <group title="MCLAG Keepalive timer configuration">
+         <column name="keepalive_timers" key="hello_interval"
+           type='{"type": "integer", "minInteger": 1, "maxInteger": 30}'>
+           Keepalive hello interval in seconds. The default value is <code>30</code>.
+         </column>
+         <column name="keepalive_timers" key="timeout"
+           type='{"type": "integer", "minInteger": 2, "maxInteger": 120}'>
+           Configures the amount of time to wait for keepalive packets from peer in seconds.
+           The default value is <code>90</code>.
+         </column>
+       </group>
+
+       <group title="MCLAG Keepalive status">
+         <column name="keepalive_port">
+           Specifies L3 port for keepalive <ref table="Port"/>.
+         </column>
+         <column name="keepalive_status" key="keepalive_state"
+        type='{"type": "string", "enum": ["set", ["init", "disabled", "keepalive_established", "keepalive_failure"]]}'>
+           State of the protocol.
+         </column>
+       </group>
+
+       <group title="MCLAG Keepalive packet statistics">
+         <column name="keepalive_statistics" key="tx">
+           Number of packets transmitted.
+         </column>
+         <column name="keepalive_statistics" key="rx">
+           Number of packets received.
+         </column>
+       </group>
+
+  </table>
+
+  <table name="MCLAG_Remote_Interface" title="Remote MCLAG information">
+    <group title="Remote MCLAG partner information">
+      <column name="name">
+        Remote MCLAG interface name.
+      </column>
+      <column name="lacp_partner_system_id">
+        Remote MCLAG LACP partner system ID.
+      </column>
+      <column name="lacp_partner_port_id">
+        Remote MCLAG partner port ID.
+      </column>
+      <column name="lacp_partner_key">
+        Remote MCLAG LACP partner key.
+      </column>
+     </group>
+     <group title="Remote MCLAG link status">
+      <column name="lacp_partner_state">
+        Remote MCLAG LACP partner state.
+      </column>
+      <column name="admin_state">
+        Remote MCLAG admin state.
+      </column>
+      <column name="link_state">
+        Remote MCLAG link state.
+      </column>
+      <column name="link_speed">
+        Remote MCLAG link speed.
+      </column>
+      <column name="duplex">
+        Remote MCLAG duplex information.
+      </column>
+     </group>
   </table>
 
   <table name="Fan" title="Fans on various subsystems">
