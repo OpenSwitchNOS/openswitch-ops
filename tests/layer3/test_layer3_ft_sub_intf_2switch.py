@@ -23,6 +23,7 @@ from opstestfw.switch import *
 
 # Topology definition
 topoDict = {"topoExecution": 1000,
+            "topoType": "physical",
             "topoTarget": "dut01 dut02",
             "topoDevices": "dut01 dut02 wrkston01 wrkston02",
             "topoLinks": "lnk01:dut01:dut02, \
@@ -348,7 +349,6 @@ def deviceCleanup(**kwargs):
         LogOutput('error', "Failed to configure IP on workstation")
     LogOutput('info', "Pinging between workstation1 and dut01")
 
-@pytest.mark.skipif(True, reason="skipped test case due to random gate job failures.")
 class Test_subInt:
     def setup_class(cls):
         # Test object will parse command line and formulate the env

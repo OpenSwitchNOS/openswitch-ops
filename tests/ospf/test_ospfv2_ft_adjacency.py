@@ -95,7 +95,7 @@ OSPF_DEAD_TIMER = 40
 # Topology definition
 # Topology 1
 topoDict = {"topoExecution": 5000,
-            "topoType": "virtual",
+            "topoType": "physical",
             "topoTarget": "dut01 dut02 dut03 dut04",
             "topoDevices": "dut01 dut02 dut03 dut04",
             "topoLinks": "lnk01:dut01:dut02, lnk02:dut02:dut03,\
@@ -107,7 +107,7 @@ topoDict = {"topoExecution": 5000,
 
 # Topology 2
 topoDict1 = {"topoExecution": 5000,
-             "topoType": "virtual",
+             "topoType": "physical",
              "topoTarget": "dut01 dut02 dut03 dut04",
              "topoDevices": "dut01 dut02 dut03 dut04",
              "topoLinks": "lnk01:dut01:dut04, lnk01:dut02:dut04,\
@@ -628,7 +628,6 @@ def Revert_profile():
         enable_tcpdump_profile()
         os.system('rm ospf_sys_var')
 
-@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 769")
 class Test_ospf_configuration:
 
     # Global variables
