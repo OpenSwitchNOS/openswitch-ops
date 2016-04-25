@@ -3,27 +3,38 @@
 ## Contents
 
 - [Configuration commands](#configuration-commands)
-- [Setting the session timeout](#setting-the-session-timeout)
-	- [Setting a command alias](#setting-a-command-alias)
-		- [Syntax](#syntax)
-		- [Description](#description)
-		- [Authority](#authority)
-			- [Parameters](#parameters)
-		- [Examples](#examples)
+    - [Setting the session timeout](#setting-the-session-timeout)
+        - [Syntax](#syntax)
+        - [Description](#description)
+        - [Authority](#authority)
+        - [Parameters](#parameters)
+        - [Examples](#examples)
+    - [Setting a command alias](#setting-a-command-alias)
+        - [Syntax](#syntax)
+        - [Description](#description)
+        - [Authority](#authority)
+        - [Parameters](#parameters)
+        - [Examples](#examples)
+    - [Setting the page break](#setting-the-page-break)
+        - [Syntax](#syntax)
+        - [Description](#description)
+        - [Authority](#authority)
+        - [Parameters](#parameters)
+        - [Examples](#examples)
 - [Display commands](#display-commands)
-	- [Displaying the session-timeout value](#displaying-the-session-timeout-value)
-		- [Syntax](#syntax)
-		- [Description](#description)
-		- [Authority](#authority)
-		- [Parameters](#parameters)
-		- [Examples](#examples)
-	- [Displaying the aliases](#displaying-the-aliases)
-		- [Syntax](#syntax)
-		- [Description](#description)
-		- [Authority](#authority)
-		- [Parameters](#parameters)
-		- [Examples](#examples)
-- [Audit framwork](#audit-framwork)
+    - [Displaying the session-timeout value](#displaying-the-session-timeout-value)
+        - [Syntax](#syntax)
+        - [Description](#description)
+        - [Authority](#authority)
+        - [Parameters](#parameters)
+        - [Examples](#examples)
+    - [Displaying the aliases](#displaying-the-aliases)
+        - [Syntax](#syntax)
+        - [Description](#description)
+        - [Authority](#authority)
+        - [Parameters](#parameters)
+        - [Examples](#examples)
+- [Audit framework](#audit-framework)
 
 
 ## Configuration commands
@@ -36,7 +47,7 @@ session-timeout <time>
 no session-timeout
 ```
 #### Description
-Use this commmand to set the amount of time a CLI session can be idle before it is automatically logged out.
+Use this command to set the amount of time a CLI session can be idle before it is automatically logged out.
 
 #### Authority
 All users.
@@ -75,7 +86,7 @@ switch(config)#
 #### Syntax
 
 ```
-alias <command> [ $1 $2 $3 ... $9 ${10} â€¦ ${N} ]
+alias <command> [ $1 $2 $3 ... $9 ${10} … ${N} ]
 no alias <command>
 ```
 
@@ -89,7 +100,7 @@ All users.
 | Parameter | Status   | Syntax         | Description                           |
 |:-----------|:----------|:----------------:|:---------------------------------------|
 | *command* | Required | String | Command for which to create an alias. |
-| *$1 $2 $3 ... $9 ${10} â€¦ ${N} * | Optional | String | These parameters are replaced by the corresponding arguments from the command line. Maximum length is 400 characters.|
+| *$1 $2 $3 ... $9 ${10} … ${N} * | Optional | String | These parameters are replaced by the corresponding arguments from the command line. Maximum length is 400 characters.|
 
 #### Examples
 ```
@@ -108,6 +119,46 @@ myhost(config)# do show hst
  -------------------------------------------------------------------------------
 myhost(config)#
 ```
+
+### Setting the page break
+
+#### Syntax
+```
+page
+page <screen-height>
+no page
+```
+#### Description
+Use this command to set the paging support for CLI. All outputs on the current session will wait for a user-input (key-press) to continue displaying the next page of data. This configuration is not persistent.
+
+#### Authority
+All users.
+
+##### Parameters
+| Parameter | Status   | Syntax         | Description                           |
+|:-----------|:----------|:----------------:|:---------------------------------------|
+| *screen-height* | Optional | 2-1000 | Height of the screen. If not specified, the current terminal height will be set as screen-height.|
+| *no* | Required | Literal | Removes the page-break. |
+
+
+#### Examples
+```
+switch(config)# page
+switch(config)#
+```
+
+
+```
+switch(config)# page 20
+switch(config)#
+```
+
+
+```
+switch(config)# no page
+switch(config)#
+```
+
 
 ## Display commands
 
@@ -151,9 +202,9 @@ switch# show alias
  abc                            hostname $1
 ```
 
-##Audit framwork
+##Audit framework
 
-The audit framework is used to create audit events for tracking configuaration changes made by users to switch. When users execute CLI configuration commands, the audit events are logged in the file: **/var/log/audit/audit.log**.
+The audit framework is used to create audit events for tracking configuration changes made by users to switch. When users execute CLI configuration commands, the audit events are logged in the file: **/var/log/audit/audit.log**.
 
 ####Example
 ```
