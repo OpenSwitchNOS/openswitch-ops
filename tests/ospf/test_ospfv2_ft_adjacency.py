@@ -90,7 +90,8 @@ OSPF_AREA_KEY = "area"
 
 VTYSH_CR = '\r\n'
 OSPF_DEAD_TIMER = 40
-
+OSPF_PKT_WAIT_INTERVAL = 50
+OSPF_DEFAULT_SLEEP_INTERVAL = 1
 
 # Topology definition
 # Topology 1
@@ -628,7 +629,25 @@ def Revert_profile():
         enable_tcpdump_profile()
         os.system('rm ospf_sys_var')
 
-@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 769")
+
+def is_nbr_id_present(dut01Obj, neighbor_ip, router_id):
+    found = False
+    for i in range(0, OSPF_PKT_WAIT_INTERVAL):
+        if(found is False):
+            sleep(OSPF_DEFAULT_SLEEP_INTERVAL)
+            dump_str = getTcpdump(dut01Obj)
+            neighbor_id = get_nbr_id_from_dump(dut01Obj,
+                                               neighbor_ip,
+                                               dump_str)
+            if (neighbor_id == router_id):
+                LogOutput('info', "Router-id found in hello packet "
+                                  "in %d iteration" % i)
+                return True
+
+    LogOutput('info', "**** Packet Captured **** %s" % dump_str)
+    return False
+
+
 class Test_ospf_configuration:
 
     # Global variables
@@ -745,11 +764,16 @@ class Test_ospf_configuration:
         if (neighbor_id == dict_01[OSPF_ROUTER_KEY]):
             LogOutput('info', "Router-id found in hello packet")
         else:
-            LogOutput('info', "Router-id not seen in hello packet")
-            LogOutput('info', "**** Packet Captured **** %s" % dump_str)
-            assert "Router-id not seen in hello packet"
-
-        LogOutput('info', "****** Passed ******")
+            # We are not asserting immediately and do a retry to fetch
+            # router-id again
+            neighbor_ip = str(dict02[OSPF_IP_ADDR_KEY])
+            found = is_nbr_id_present(dut01Obj, neighbor_ip,
+                                      dict_01[OSPF_ROUTER_KEY])
+            if(found is False):
+                LogOutput('info', "Router-id not seen in hello packet")
+                assert "Router-id not seen in hello packet"
+            else:
+                LogOutput('info', "****** Passed ******")
 
     # Latest router-id  configured should be retained
     # when instance level router-id is removed
@@ -782,10 +806,16 @@ class Test_ospf_configuration:
         if neighbor_id == OSPF_ROUTER_ID_DUT1:
             LogOutput('info', "Static Router-id found in hello packet")
         else:
-            LogOutput('info', "**** Packet Captured **** %s" % dump_str)
-            assert False, "Static router-id not found in hello packet"
-
-        LogOutput('info', "****** Passed ******")
+            # We are not asserting immediately and do a retry to fetch
+            # router-id again
+            neighbor_ip = str(dict02[OSPF_IP_ADDR_KEY])
+            found = is_nbr_id_present(dut01Obj, neighbor_ip,
+                                      OSPF_ROUTER_ID_DUT1)
+            if(found is False):
+                LogOutput('info', "Router-id not seen in hello packet")
+                assert "Router-id not seen in hello packet"
+            else:
+                LogOutput('info', "****** Passed ******")
 
     # Test case to verify that the
     #  hello packets are exchanged periodically and neighbors are discovered
@@ -826,9 +856,16 @@ class Test_ospf_configuration:
         if (neighbor_id == OSPF_ROUTER_ID_DUT1):
             LogOutput('info', "Router-id found in hello packet")
         else:
-            LogOutput('info', "Router-id not seen in hello packet")
-            LogOutput('info', "**** Packet Captured **** %s" % dump_str)
-            assert "Router-id not seen in hello packet"
+            # We are not asserting immediately and do a retry to fetch
+            # router-id again
+            neighbor_ip = str(dict02[OSPF_IP_ADDR_KEY])
+            found = is_nbr_id_present(dut01Obj, neighbor_ip,
+                                      OSPF_ROUTER_ID_DUT1)
+            if(found is False):
+                LogOutput('info', "Router-id not seen in hello packet")
+                assert "Router-id not seen in hello packet"
+            else:
+                LogOutput('info', "Router-id seen in hello packet")
 
         LogOutput('info', "Step 4 - verify adjacency is formed")
         OSPF_ROUTER_ID_DUT1 = dict01[OSPF_ROUTER_KEY]
