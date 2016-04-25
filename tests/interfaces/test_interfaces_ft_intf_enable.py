@@ -52,8 +52,7 @@ from opstestfw.switch.CLI import *
 
 # Topology definition
 
-topoDict = {"topoType" : "physical",
-            "topoExecution": 1000,
+topoDict = {"topoExecution": 1000,
             "topoTarget": "dut01",
             "topoDevices": "dut01 wrkston01 wrkston02",
             "topoLinks": "lnk01:dut01:wrkston01, \
@@ -72,6 +71,7 @@ WS1_IP = NET_1 + ".1"
 WS2_IP = NET_1 + ".2"
 NET1_MASK = "255.255.255.0"
 NET1_BCAST = NET_1 + ".0"
+PERCENT_80 = 0.8
 
 class Test_template:
 
@@ -166,7 +166,7 @@ class Test_template:
 
         LogOutput("info", "%s" % out.data)
         success = False;
-        if out.data['packets_transmitted'] == out.data['packets_received']:
+        if out.data['packets_received'] >= PERCENT_80 * out.data['packets_transmitted']:
             success = True;
 
         assert success == expected, "ping was %s, expected %s" % (success, expected)
@@ -220,7 +220,7 @@ class Test_template:
         rc = self.vtyconn.cmd("no shutdown")
 
         # Verify interface 1 is up
-        sleep(1)
+        sleep(3)
         LogOutput('info', "Verify that intf 1 is up")
         self.verify_intf_admin_state(self.vtyconn, "1", "up")
 
@@ -233,7 +233,7 @@ class Test_template:
         rc = self.vtyconn.cmd("shutdown")
 
         # Verify interface 1 is down
-        sleep(1)
+        sleep(3)
         LogOutput('info', "Verify that intf 1 is down")
         self.verify_intf_admin_state(self.vtyconn, "1", "down")
 
