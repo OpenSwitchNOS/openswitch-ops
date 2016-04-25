@@ -1,30 +1,14 @@
 # General CLI commands
 
 ## Contents
-
 - [Configuration commands](#configuration-commands)
-- [Setting the session timeout](#setting-the-session-timeout)
-	- [Setting a command alias](#setting-a-command-alias)
-		- [Syntax](#syntax)
-		- [Description](#description)
-		- [Authority](#authority)
-			- [Parameters](#parameters)
-		- [Examples](#examples)
+    - [Setting the session timeout](#setting-the-session-timeout)
+    - [Setting a command alias](#setting-a-command-alias)
+    - [Setting the screen size](#setting-the-screen-size)
 - [Display commands](#display-commands)
-	- [Displaying the session-timeout value](#displaying-the-session-timeout-value)
-		- [Syntax](#syntax)
-		- [Description](#description)
-		- [Authority](#authority)
-		- [Parameters](#parameters)
-		- [Examples](#examples)
-	- [Displaying the aliases](#displaying-the-aliases)
-		- [Syntax](#syntax)
-		- [Description](#description)
-		- [Authority](#authority)
-		- [Parameters](#parameters)
-		- [Examples](#examples)
-- [Audit framwork](#audit-framwork)
-
+    - [Displaying the session-timeout value](#displaying-the-session-timeout-value)
+    - [Displaying the aliases](#displaying-the-aliases)
+- [Audit framework](#audit-framework)
 
 ## Configuration commands
 
@@ -36,12 +20,12 @@ session-timeout <time>
 no session-timeout
 ```
 #### Description
-Use this commmand to set the amount of time a CLI session can be idle before it is automatically logged out.
+Use this command to set the amount of time a CLI session can be idle before it is automatically logged out.
 
 #### Authority
 All users.
 
-##### Parameters
+#### Parameters
 | Parameter | Status   | Syntax         | Description                           |
 |:-----------|:----------|:----------------:|:---------------------------------------|
 | *time* | Required | 0-4320 | Idle timeout in minutes. A value of 0 means no timeout.|
@@ -75,7 +59,7 @@ switch(config)#
 #### Syntax
 
 ```
-alias <command> [ $1 $2 $3 ... $9 ${10} … ${N} ]
+alias <command> [ $1 $2 $3 ... $9 ${10} ? ${N} ]
 no alias <command>
 ```
 
@@ -89,7 +73,7 @@ All users.
 | Parameter | Status   | Syntax         | Description                           |
 |:-----------|:----------|:----------------:|:---------------------------------------|
 | *command* | Required | String | Command for which to create an alias. |
-| *$1 $2 $3 ... $9 ${10} … ${N} * | Optional | String | These parameters are replaced by the corresponding arguments from the command line. Maximum length is 400 characters.|
+| *$1 $2 $3 ... $9 ${10} ? ${N} * | Optional | String | These parameters are replaced by the corresponding arguments from the command line. Maximum length is 400 characters.|
 
 #### Examples
 ```
@@ -108,6 +92,41 @@ myhost(config)# do show hst
  -------------------------------------------------------------------------------
 myhost(config)#
 ```
+
+### Setting the screen size
+
+#### Syntax
+```
+page [<lines>]
+no page
+```
+#### Description
+Use this command to set the number of output lines that the CLI commands will display before pausing to wait for a user key press. Typically, you would set this to the number of lines supported by your terminal session. This setting is not persistant and applies to the current session only.
+
+#### Authority
+All users.
+
+##### Parameters
+| Parameter | Status   | Syntax         | Description                           |
+|:-----------|:----------|:----------------:|:---------------------------------------|
+| *lines* | Optional | 2-1000 | Lines to display before pausing. If not specified, the number of lines supported by the current terminal session is used.|
+| *no* | Required | Literal | Sets no limit on the number of lines that are displayed. |
+
+
+#### Examples
+```
+switch# page
+switch#
+```
+```
+switch# page 20
+switch#
+```
+```
+switch# no page
+switch#
+```
+
 
 ## Display commands
 
@@ -130,9 +149,6 @@ None.
 ```
 switch# show session-timeout
 session-timeout: 2 minutes
-
-switch#
-
 ```
 ### Displaying the aliases
 #### Syntax
@@ -151,9 +167,9 @@ switch# show alias
  abc                            hostname $1
 ```
 
-##Audit framwork
+##Audit framework
 
-The audit framework is used to create audit events for tracking configuaration changes made by users to switch. When users execute CLI configuration commands, the audit events are logged in the file: **/var/log/audit/audit.log**.
+The audit framework is used to create audit events for tracking configuration changes made by users to switch. When users execute CLI configuration commands, the audit events are logged in the file: **/var/log/audit/audit.log**.
 
 ####Example
 ```
