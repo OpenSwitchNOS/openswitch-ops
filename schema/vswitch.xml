@@ -3643,6 +3643,56 @@
         those MACs will be cleared from the system and macs_invalid will revert to <code>false</code>.
       </column>
     </group>
+    <group title="ICMP Router Discovery">
+      <p>
+        The ICMP Router Discovery Protocol (IRDP) is used by router to
+        advertise the IPv4 addresses of its router interfaces to directly
+        attached hosts.
+      </p>
+
+      <column name="other_config" key="irdp_enabled"
+              type='{"type": "boolean"}'>
+        Set this value to <code>true</code> to enable ICMP router discovery
+        functionality and set the value to <code>false</code> to disable it.
+        ICMP router discovery is disabled by default.
+      </column>
+      <column name="other_config" key="irdp_packet_type"
+              type='{"type": "string", "enum": ["set", ["multicast", "broadcast"]]}'>
+        Specifies the packet type the routing switch uses to send the Router
+        Advertisement. Default configuration is multicast.
+        By setting the value to broadcast, the router sends advertisements as
+        IP broadcasts.
+        By setting the value to multicast, the router sends advertisements as
+        multicast packets addressed to IP multicast group 224.0.0.1.
+      </column>
+      <column name="other_config" key="irdp_hold_time"
+              type='{"type": "integer", "minInteger": 1, "maxInteger": 9000}'>
+        Specifies how long a host receiving a Router Advertisement considers
+        it to be valid. The value must be greater than 'maxadvertinterval'
+        parameter and cannot exceed 9000. The default is three times the
+        'maxadvertinterval' parameter.
+      </column>
+      <column name="other_config" key="irdp_maxadv_interval"
+              type='{"type": "integer", "minInteger": 1, "maxInteger": 9000}'>
+        Specifies the maximum amount of time router waits between sending
+        Router Advertisements.
+        Interval ranges from 1 to current value of 'holdtime' parameter. The
+        default is 600 seconds.
+      </column>
+      <column name="other_config" key="irdp_minadv_interval"
+              type='{"type": "integer", "minInteger": 1, "maxInteger": 9000}'>
+        Specifies the minimum amount of time router waits between sending
+        Router Advertisements.
+        Interval ranges from 1 to the current value of the
+        'maxadvertisementinterval' value. The default is three-fourths the
+        value of the 'maxadvertinterval' parameter.
+      </column>
+      <column name="other_config" key="irdp_preference"
+              type='{"type": "integer", "minInteger": -4294967296, "maxInteger": 4294967295}'>
+        Specifies the preference level of this routing switch. Higher value
+        indicates higher router preference. The default preference value is 0.
+      </column>
+    </group>
     <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
