@@ -7452,16 +7452,14 @@
         },
         "ipv6_mcast_server": {
           "category": "configuration",
-          "relationship": "reference",
           "type": {
             "key": {
               "type": "string",
               "maxLength": 49
             },
             "value": {
-              "type": "uuid",
-              "refTable": "Port",
-              "refType" : "weak"
+              "type": "string",
+              "maxLength": 2064
             },
             "min": 0,
             "max": 8
