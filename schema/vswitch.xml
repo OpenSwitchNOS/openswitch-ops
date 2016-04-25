@@ -6702,9 +6702,10 @@
       </column>
       <column name="ipv6_mcast_server" keyname="ipv6_address">
         List of IPv6 multicast or link local server destinations to which matching DHCP broadcast
-        packets received on the port are duplciated and forwarded. Value of this key referenes a
-        Port table entry, packets matching the criteria are forwarded to the server through
-        this port.
+        packets received on the port are duplicated and forwarded. Value of this key stores one
+        or more port names separated by space. Port names are allowed to be forward referenced
+        while configuration. Packet forwarding takes place based on the port availability/state
+        at the time of forwarding.
         A maximum of 8 IPv6 server configurations are allowed. This count includes IPv6 unicast
         server configurations from the column "ipv6_ucast_server".
       </column>
