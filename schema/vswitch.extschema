@@ -3023,8 +3023,7 @@
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "VRF",
-              "refType" : "weak"
+              "refTable": "VRF"
             }
           },
           "mutable": false
@@ -3109,8 +3108,7 @@
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "VRF",
-              "refType" : "weak"
+              "refTable": "VRF"
             }
           },
           "mutable": false
