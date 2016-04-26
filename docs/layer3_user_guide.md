@@ -84,6 +84,41 @@ Interface                                                          (Mb/s)    Ch#
 
 ```
 
+### LAG Interfaces
+To achieve LAG routing, LAG interfaces are created. LAG L3 interfaces are configured similar to LAG L2 interfaces, in addition to configuring IPv4 or IPv6 addresses.
+
+To configure a LAG routing interface:
+
+```
+ops-as5712# configure terminal
+ops-as5712(config)# interface lag 1
+ops-as5712(config-if)# routing
+ops-as5712(config-if)# ip address 192.168.1.1/24
+ops-as5712(config-if)# ipv6 address 2000::1/120
+ops-as5712(config-if)# end
+ops-as5712#
+```
+
+To view the interface configured:
+```
+ops-as5712# show interface lag1
+
+Aggregate-name lag1
+ Aggregated-interfaces :
+ Aggregation-key : 1
+ IPv4 address 192.168.1.1/24
+ IPv6 address 2000::1/120
+ Speed 0 Mb/s
+ RX
+            0 input packets              0 bytes
+            0 input error                0 droppd
+            0 CRC/FCS
+ TX
+            0 output packets             0 bytes
+            0 input error                0 dropped
+            0 collision
+```
+
 ## Static routes
 OpenSwitch supports the configuration of IPv4 and IPv6 static routes.
 
