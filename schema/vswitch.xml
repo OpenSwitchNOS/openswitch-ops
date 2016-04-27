@@ -3384,6 +3384,28 @@
           </p>
         </column>
 
+        <column name="other_config" key="lacp_fallback_mode"
+          type='{"type": "string", "enum": ["set", ["priority", "all_active"]]}'>
+          <p>
+            Specifies the mode used when fallback is enabled.  Priority mode uses
+            the LACP interface priority to decide which port remains forwarding
+            when no partner is detected.  The all_active mode keeps all interfaces
+            forwarding when no partner is detected.
+            The default value is <code>priority</code>.
+          </p>
+        </column>
+
+        <column name="other_config" key="lacp_fallback_timeout"
+          type='{"type": "integer", "minInteger": 0, "maxInteger": 900}'>
+          <p>
+            Defines the time period during which fallback reamains active.  The
+            timer starts at the point when the interface state machine expires
+            and configures the default partner.  The unit is seconds.
+            A value of 0 means that the timer doesn't run and fallback is active
+            until it is disabled by the user or a partner is detected.
+            The default value is <code>0</code>.
+          </p>
+        </column>
       </group>
     </group>
    <group title="L3 Configuration">
