@@ -1674,6 +1674,7 @@ The test case verifies queries for:
 - An interface with specific URI with string depth value
 - An interface with specific URI with depth equals zero
 - An interface with specific URI with no depth parameter
+- An interface with specific URI and depth out of range
 
 ### Requirements
 
@@ -1781,6 +1782,10 @@ The test case validates the recursivity through the standard REST API GET method
     b. Verify if the HTTP response is `200 OK`.
     c. Validate the first level depth returned interface object has Configuration, Statistics and Status keys present.
     d. Ensure that inner data has the URI `/rest/v1/system/interfaces/50` in the response data.
+
+13. Verify if returns an interface with specific URI by using a depth value out of range.
+    a. Execute the GET request over `/rest/v1/system/interfaces/50-1`
+    b. Verify if the HTTP response is `400 BAD REQUEST`.
 
 ### Test result criteria
 #### Test pass criteria
