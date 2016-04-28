@@ -828,6 +828,16 @@
           },
           "mutable": false
         },
+        "table_id" : {
+          "category": "status",
+          "type": {
+            "key": {
+               "type": "integer"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "ports": {
           "category": "configuration",
           "relationship": "reference",
