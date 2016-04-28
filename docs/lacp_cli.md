@@ -25,6 +25,7 @@
 	- [Display LACP aggregates](#display-lacp-aggregates)
 	- [Display LACP interface configuration](#display-lacp-interface-configuration)
 	- [LAG show running-config](#lag-show-running-config)
+        - [show interface lag##](#show-interface-lag##)
 - [LAG diagnostic dump commands](#lag-diagnostic-dump-commands)
 	- [LAG diag-dump basic](#lag-diag-dump-basic)
 
@@ -117,7 +118,7 @@ no parameters
 ##### Examples
 
 ```
-switch(config)# lacp system-priority 100
+switch(config)# no lacp system-priority
 ```
 
 ### Interface context commands
@@ -129,13 +130,15 @@ switch(config)# lacp system-priority 100
 ```
 
 ##### Description
-This command adds an interface to a LAG interface specified by an ID.
+This command adds an interface to the specified LAG in ID.
+If specified LAG ID does not exist, an error will be displayed.
 
 ##### Authority
 all users
 
 ##### Parameters
-This command takes an ID as a parameter which represents a LAG interface. The LAG interface ID can be in the range of 1 to 2000.
+This command takes an ID as a parameter which represents a LAG interface.
+The LAG interface ID can be in the range of 1 to 2000.
 
 ##### Examples
 
@@ -171,11 +174,12 @@ switch(config-if)# no lag 100
 ##### Syntax
 
 ```
-    lacp port-id <1-65535>
+    [no] lacp port-id <1-65535>
 ```
 
 ##### Description
 This command sets an LACP port-id value of the interface.
+The **no** command removes the interface LACP port-id stored value.
 
 ##### Authority
 all users
@@ -193,11 +197,13 @@ switch(config-if)# lacp port-id 10
 ##### Syntax
 
 ```
-    lacp port-priority <1-65535>
+    [no] lacp port-priority <1-65535>
 ```
 
 ##### Description
-This command sets an LACP port-priority value for the interface.
+This command sets interface LACP port-priority value
+used in LACP negotiation.
+The **no** command removes the interface LACP port-priority stored value.
 
 ##### Authority
 all users
@@ -312,7 +318,7 @@ switch(config-lag-if)# no lacp fallback
 ##### Syntax
 
 ```
-    lacp rate fast
+    lacp rate {fast/slow}
 ```
 
 ##### Description
@@ -514,6 +520,67 @@ System-id          |                    |
 System-priority    |                    |
 
 switch#
+```
+
+### show interface lag##
+
+#### Syntax
+Under privileged mode.
+
+`show interface lag## [brief | transceiver]`
+
+#### Description
+This command displays information for lag interfaces, including statistics,
+configuration and LAG state.
+
+#### Authority
+Operator.
+
+#### Parameters
+|Parameter      |Status  |Syntax |Description                                 |
+|---------------|--------|-------|--------------------------------------------|
+|**brief**      |Optional|Literal|Displays brief information of lag interfaces|
+|**transceiver**|Optional|Literal|Display the pluggable module information.   |
+
+#### Example
+
+```
+Show specific lag interface in detail mode (interface: lag1).
+```
+hostname# show interface lag1
+
+Aggregate-name lag1
+ Aggregated-interfaces : 4,5
+ Aggregation-key : 1
+ Aggregate mode : active
+ IPv4 address 10.2.1.2/24
+ IPv6 address 2002::1/64
+ Speed 1000 Mb/s
+ RX
+            0 input packets              0 bytes
+            0 input error                0 dropped
+            0 short frame                0 overrun
+            0 CRC/FCS
+ TX
+            0 output packets             0 bytes
+            0 input error               21 dropped
+            0 collision
+```
+Show specific lag interface in brief mode (interface: lag45).
+```
+hostname# show interface lag45 brief
+
+--------------------------------------------------------------------------------
+Ethernet      VLAN    Type Mode   Status  Reason                   Speed     Port
+Interface                                                          (Mb/s)    Ch#
+--------------------------------------------------------------------------------
+ lag45         --      eth  --     up     --                        auto     --
+```
+Show specific lag interface transceiver (interface: lag45).
+```
+hostname# show interface lag45 transceiver
+Interface lag45:
+ Connector: RJ45
 ```
 
 ### LAG show running-config
