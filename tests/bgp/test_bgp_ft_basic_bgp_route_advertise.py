@@ -18,6 +18,7 @@
 import pytest
 from opsvsiutils.vtyshutils import *
 from opsvsiutils.bgpconfig import *
+import time
 
 #
 # This case tests the most basic configuration between two BGP instances by
@@ -161,6 +162,8 @@ class bgpTest(OpsVsiTest):
         assert found, "Could not find route (%s -> %s) on %s" % \
                       (network, next_hop, switch.name)
 
+    def mininet_cli(self):
+        CLI(self.net)
 
 class Test_bgpd_basic_bgp_route_advertise:
     def setup(self):
@@ -185,8 +188,11 @@ class Test_bgpd_basic_bgp_route_advertise:
         del self.test_var
 
     def test_bgp_full(self):
+        info("Sleep for 10 seconds for systems to be up\n")
+        time.sleep(10)
         self.test_var.configure_switch_ips()
         self.test_var.verify_bgp_running()
         self.test_var.configure_bgp()
         self.test_var.verify_configs()
+        time.sleep(10)
         self.test_var.verify_bgp_routes()

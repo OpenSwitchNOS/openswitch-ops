@@ -18,7 +18,8 @@
 from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 from opsvsiutils.systemutil import *
-
+import time
+import pdb
 
 class slowRoutingTests(OpsVsiTest):
 
@@ -31,6 +32,7 @@ class slowRoutingTests(OpsVsiTest):
         self.net = Mininet(slowpath_topo, switch=VsiOpenSwitch,
                            host=Host, link=OpsVsiLink,
                            controller=None, build=True)
+        time.sleep(20)  # wait for systems to come up
 
     def slow_routing_direct_connected(self):
         info("########## Verify slow path routing for "
@@ -44,7 +46,7 @@ class slowRoutingTests(OpsVsiTest):
 
         # Configure interface 1 on switch s1
         s1.cmdCLI("interface 1")
-        # s1.cmdCLI("no shutdown")
+        s1.cmdCLI("no shutdown")
         s1.cmdCLI("ip address 192.168.1.1/24")
         time.sleep(2)
         s1.cmdCLI("ipv6 address 2000::1/120")
@@ -52,7 +54,7 @@ class slowRoutingTests(OpsVsiTest):
 
         # Configure interface 2 on switch s1
         s1.cmdCLI("interface 2")
-        # s1.cmdCLI("no shutdown")
+        s1.cmdCLI("no shutdown")
         s1.cmdCLI("ip address 192.168.2.1/24")
         time.sleep(2)
         s1.cmdCLI("ipv6 address 2002::1/120")
@@ -70,8 +72,10 @@ class slowRoutingTests(OpsVsiTest):
         # Bring interface 2 up
         s1.ovscmd("/usr/bin/ovs-vsctl set interface 2 user_config:admin=up")
 
+
         # Configure host 1
         info("Configuring host 1 with 192.168.1.2/24\n")
+        h1.cmd("ip addr del 10.0.0.1/8 dev h1-eth0")
         h1.cmd("ip addr add 192.168.1.2/24 dev h1-eth0")
         h1.cmd("ip route add 192.168.2.0/24 via 192.168.1.1")
         info("Configuring host 1 with 2000::2/120\n")
@@ -80,11 +84,15 @@ class slowRoutingTests(OpsVsiTest):
 
         # Configure host 2
         info("Configuring host 2 with 192.168.2.2/24\n")
+        h1.cmd("ip addr del 10.0.0.2/8 dev h1-eth0")
         h2.cmd("ip addr add 192.168.2.2/24 dev h2-eth0")
         h2.cmd("ip route add 192.168.1.0/24 via 192.168.2.1")
         info("Configuring host 2 with 2002::2/120\n")
         h2.cmd("ip addr add 2002::2/120 dev h2-eth0")
         h2.cmd("ip route add 2000::0/120 via 2002::1")
+
+        #CLI(self.net)
+        time.sleep(10)
 
         # Ping from host 1 to switch
         info("Ping s1 from h1\n")
