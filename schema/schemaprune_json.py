@@ -1,14 +1,21 @@
 from types import *
-import json
-import sys
-import logging
+import sys, json, logging, getopt
 
 # Globals
 enabled_features = []
 CAN_DELETE, CANNOT_DELETE, UNTAGGED = range(0, 3)
 
+# Command-line arguments
+infile = outfile = featurefile = ''
+logfile = "./schemaprune_json.log"
+loglevel = "CRITICAL"
+sanitize_only = False
+
+# ================================================================================
+# Go through the file containing the list of (space separated) enabled-features
+# and populate the list
 def get_enabled_features():
-    with open(sys.argv[3]) as f:
+    with open(featurefile) as f:
         for line in f:
             for entry in line.split():
                 enabled_features.append(entry)
@@ -18,35 +25,54 @@ def get_enabled_features():
         logging.info("enabled feature: %s" % feature)
     logging.info("================================================================================")
 
+# ================================================================================
 if __name__ == '__main__':
     exit
 
-# sanitize the arguments
-if len(sys.argv) < 4:
-    logging.critical("This script takes 3 arguments:")
-    logging.critical("1. input-schema json file")
-    logging.critical("2. output-schema json file")
-    logging.critical("3. file containing the enabled-features (space separated)")
-    logging.critical("The 4th argument is optional:")
-    logging.critical("4. Log-level for the script: DEBUG, INFO, WARNING, ERROR, CRITICAL")
-    sys.exit(0)
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "hi:o:f:l:L:S:", ["ifile=","ofile=","featurefile=","logfile=","loglevel=","sanitize_only="])
+except getopt.GetoptError:
+    logfile.critical("schemaprune_json.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel> -S <SanitizeOnly:True/False>")
+    sys.exit(2)
+
+for opt, arg in opts:
+    if opt == '-h':
+        print 'schemaprune_json.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel; default CRITICAL> -S <sanitize_only; True/False>'
+        sys.exit()
+    elif opt in ("-i", "--ifile"):
+        infile = arg
+    elif opt in ("-o", "--ofile"):
+        outfile = arg
+    elif opt in ("-f", "--featurefile"):
+        featurefile = arg
+    elif opt in ("-l", "--logfile"):
+        logfile = arg
+    elif opt in ("-L", "--loglevel"):
+        loglevel = arg
+    elif opt in ("-S", "--sanitize_only"):
+        sanitize_only = arg
+
+logging.debug ("infile = %s, outfile = %s, featurefile = %s, logfile = %s, loglevel = %s, sanitize_only = %s" % \
+              (infile, outfile, featurefile, logfile, loglevel, sanitize_only))
+
+if (sanitize_only == "False"):
+    if (infile is '' or outfile is '' or featurefile is ''):
+        logging.critical("Incorrect usage")
+        sys.exit(2)
 
 # Set the logging level
 log_level_list = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-if ((sys.argv[4:]) and (sys.argv[4] in log_level_list)):
-    logging.basicConfig(level=logging.sys.argv[4])
+if ((loglevel) and (loglevel in log_level_list)):
+    logging.basicConfig(filename=logfile, filemode='w', level=loglevel)
 else:
-    logging.basicConfig(level=logging.CRITICAL)
+    logging.basicConfig(filename=logfile, filemode='w', level="INFO")
 
-# Create enabled_feature_list
-# Here we'll go thru the IMAGE_FEATURES variable & create the list.
-# For now we're testing with the following static list
 get_enabled_features()
 
 # read the json ovs schema
-with open(sys.argv[1]) as x:
+with open(infile) as x:
     fs = x.read()
-    ovsschema =  json.loads(fs)
+    ovsschema = json.loads(fs)
 
 # Walk the JSON file containing the schema in JSON format & delete items
 # corresponding to features that have not been enabled
@@ -181,6 +207,6 @@ for table in tables.keys():
 logging.info("================================================================================")
 
 # Generate the output schema file
-with open(sys.argv[2], 'w') as fo:
+with open(outfile, 'w') as fo:
     json.dump(ovsschema, fo, sort_keys = True, indent=4, separators=(',', ': '))
     fo.write('\n')
