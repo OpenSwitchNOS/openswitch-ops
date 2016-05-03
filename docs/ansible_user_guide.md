@@ -5,15 +5,15 @@
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Ansible installation](#ansible-installation)
-	- [Setting up the basic configuration on a control machine](#setting-up-the-basic-configuration-on-a-control-machine)
-		- [Default configuration for Ansible](#default-configuration-for-ansible)
-		- [Declaring an inventory/hosts file](#declaring-inventory/hosts-file)
-	- [Verifying Ansible installation](#verifying-ansible-installation)
+        - [Setting up the basic configuration on a control machine](#setting-up-the-basic-configuration-on-a-control-machine)
+                - [Default configuration for Ansible](#default-configuration-for-ansible)
+                - [Declaring an inventory/hosts file](#declaring-inventory/hosts-file)
+        - [Verifying Ansible installation](#verifying-ansible-installation)
 - [Playbooks](#playbooks)
 - [Roles](#roles)
-	- [Ansible galaxy](#ansible-galaxy)
+        - [Ansible galaxy](#ansible-galaxy)
 - [Communicating with Openswitch](#communicating-with-openswitch)
-	- [SSH communication with Openswitch](#ssh-communiation-with-openswitch)
+        - [SSH communication with Openswitch](#ssh-communiation-with-openswitch)
 - [References](#references)
 
 ## Overview
@@ -150,8 +150,8 @@ This role can be executed on the host by running the site.yml file, which is sho
 ```
 ---
 - hosts: OpenSwitch
-     roles:
-     - switch
+  roles:
+    - switch
 ```
 
 For more detailed information about writing roles, refer to:
