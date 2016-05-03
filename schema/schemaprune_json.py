@@ -9,7 +9,7 @@ CAN_DELETE, CANNOT_DELETE, UNTAGGED = range(0, 3)
 infile = outfile = featurefile = ''
 logfile = "./schemaprune_json.log"
 loglevel = "CRITICAL"
-sanitize_only = False
+sanitize_only = "FALSE"
 
 # ================================================================================
 # Go through the file containing the list of (space separated) enabled-features
@@ -32,12 +32,12 @@ if __name__ == '__main__':
 try:
     opts, args = getopt.getopt(sys.argv[1:], "hi:o:f:l:L:S:", ["ifile=","ofile=","featurefile=","logfile=","loglevel=","sanitize_only="])
 except getopt.GetoptError:
-    logfile.critical("schemaprune_json.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel> -S <SanitizeOnly:True/False>")
+    print("schemaprune_json.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel> -S <SanitizeOnly:TRUE/FALSE>")
     sys.exit(2)
 
 for opt, arg in opts:
     if opt == '-h':
-        print 'schemaprune_json.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel; default CRITICAL> -S <sanitize_only; True/False>'
+        print 'schemaprune_json.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel; default CRITICAL> -S <sanitize_only; TRUE/FALSE>'
         sys.exit()
     elif opt in ("-i", "--ifile"):
         infile = arg
@@ -52,20 +52,21 @@ for opt, arg in opts:
     elif opt in ("-S", "--sanitize_only"):
         sanitize_only = arg
 
-logging.debug ("infile = %s, outfile = %s, featurefile = %s, logfile = %s, loglevel = %s, sanitize_only = %s" % \
-              (infile, outfile, featurefile, logfile, loglevel, sanitize_only))
-
-if (sanitize_only == "False"):
+if (sanitize_only == "FALSE"):
     if (infile is '' or outfile is '' or featurefile is ''):
-        logging.critical("Incorrect usage")
+        print("Incorrect usage")
         sys.exit(2)
 
 # Set the logging level
+# Note: DO NOT use "logging.XYZ()" before this
 log_level_list = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 if ((loglevel) and (loglevel in log_level_list)):
     logging.basicConfig(filename=logfile, filemode='w', level=loglevel)
 else:
     logging.basicConfig(filename=logfile, filemode='w', level="INFO")
+
+logging.debug("infile = %s, outfile = %s, featurefile = %s, logfile = %s, loglevel = %s, sanitize_only = %s" % \
+              (infile, outfile, featurefile, logfile, loglevel, sanitize_only))
 
 get_enabled_features()
 
@@ -93,6 +94,10 @@ for table in tables.keys():
         if bool(set(features) & set(enabled_features)):
             logging.info("DELETE:N: (table: \"%s\")" % table)
             del_table = CANNOT_DELETE
+        elif sanitize_only == "TRUE":
+            logging.info("sanitize_only set. Hence cannot delete (table: \"%s\")" % table)
+            logging.info("DELETE:N: (table: \"%s\")" % table)
+            del_table = CANNOT_DELETE
         else:
             logging.info("DELETE:Y: (table: \"%s\")" % table)
             del_table = CAN_DELETE
@@ -117,6 +122,11 @@ for table in tables.keys():
                     logging.info("DELETE:N: (table: \"%s\"; column: \"%s\")" % (table, column))
                     del_column = CANNOT_DELETE
                     del_table = CANNOT_DELETE
+                elif sanitize_only == "TRUE":
+                    logging.info("sanitize_only set. Hence cannot delete (table: \"%s\"; column: \"%s\")" % (table, column))
+                    logging.info("DELETE:N: (table: \"%s\"; column: \"%s\")" % (table, column))
+                    del_column = CANNOT_DELETE
+                    del_table = CANNOT_DELETE
                 else:
                     logging.info("DELETE:Y: (table: \"%s\"; column: \"%s\")" % (table, column))
                     del_column = CAN_DELETE
@@ -129,6 +139,11 @@ for table in tables.keys():
                     features = table_features
                     logging.debug("Inheriting table \"%s\" feature-list" % (table))
                     if bool(set(features) & set(enabled_features)):
+                        logging.info("DELETE:N: (table: \"%s\"; column: \"%s\")" % (table, column))
+                        del_column = CANNOT_DELETE
+                        del_table = CANNOT_DELETE
+                    elif sanitize_only == "TRUE":
+                        logging.debug("sanitize_only set. Hence cannot delete (table: \"%s\"; column: \"%s\")" % (table, column))
                         logging.info("DELETE:N: (table: \"%s\"; column: \"%s\")" % (table, column))
                         del_column = CANNOT_DELETE
                         del_table = CANNOT_DELETE
@@ -162,6 +177,12 @@ for table in tables.keys():
                                             del_enum = CANNOT_DELETE
                                             del_column = CANNOT_DELETE
                                             del_table = CANNOT_DELETE
+                                        elif sanitize_only == "TRUE":
+                                            logging.debug("sanitize_only set. Hence cannot delete (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, enum_val))
+                                            logging.info("DELETE:N: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, enum_val))
+                                            del_enum = CANNOT_DELETE
+                                            del_column = CANNOT_DELETE
+                                            del_table = CANNOT_DELETE
                                         else:
                                             logging.info("DELETE:Y: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, enum_val))
                                             del_enum = CAN_DELETE
@@ -187,6 +208,12 @@ for table in tables.keys():
 
                                     if ((column_tagged == True) or (table_tagged == True)):
                                         if bool(set(features) & set(enabled_features)):
+                                            logging.info("DELETE:N: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, elem))
+                                            del_enum = CANNOT_DELETE
+                                            del_column = CANNOT_DELETE
+                                            del_table = CANNOT_DELETE
+                                        elif sanitize_only == "TRUE":
+                                            logging.debug("sanitize_only set. Hence cannot delete (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, elem))
                                             logging.info("DELETE:N: (table: \"%s\"; column: \"%s\"; enum: \"%s\")" % (table, column, elem))
                                             del_enum = CANNOT_DELETE
                                             del_column = CANNOT_DELETE

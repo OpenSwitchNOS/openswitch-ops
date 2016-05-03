@@ -9,7 +9,7 @@ CAN_DELETE, CANNOT_DELETE, UNTAGGED = range(0, 3)
 infile = outfile = featurefile = ''
 logfile = "./schemaprune_xml.log"
 loglevel = "CRITICAL"
-sanitize_only = False
+sanitize_only = "FALSE"
 
 # ================================================================================
 # Go through the file containing the list of (space separated) enabled-features
@@ -54,6 +54,9 @@ def check_delete_object(obj, up_level_features):
                 if bool(set(local_features) & set(enabled_features)):
                     logging.debug("There is at least 1 feature in the feature_list that has been enabled. Cannot delete object")
                     return CANNOT_DELETE, local_features
+                elif sanitize_only == "TRUE":
+                    logging.debug("sanitize_only set. Cannot delete object")
+                    return CANNOT_DELETE, local_features
                 else:
                     return CAN_DELETE, local_features
 
@@ -62,6 +65,9 @@ def check_delete_object(obj, up_level_features):
         logging.debug("Inheriting upper_level features %s" % up_level_features)
         if bool(set(up_level_features) & set(enabled_features)):
             logging.debug("There is at least 1 feature in the feature_list that has been enabled. Cannot delete object")
+            return CANNOT_DELETE, up_level_features
+        elif sanitize_only == "TRUE":
+            logging.debug("sanitize_only set. Cannot delete object")
             return CANNOT_DELETE, up_level_features
         else:
             return CAN_DELETE, up_level_features
@@ -133,12 +139,12 @@ if __name__ == '__main__':
 try:
     opts, args = getopt.getopt(sys.argv[1:], "hi:o:f:l:L:S:", ["ifile=","ofile=","featurefile=","logfile=","loglevel=","sanitize_only="])
 except getopt.GetoptError:
-    logfile.critical("schemaprune_xml.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel> -S <SanitizeOnly:True/False>")
+    print("schemaprune_xml.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel> -S <SanitizeOnly:TRUE/FALSE>")
     sys.exit(2)
 
 for opt, arg in opts:
     if opt == '-h':
-        print 'schemaprune_xml.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel; default CRITICAL> -S <sanitize_only; True/False>'
+        print 'schemaprune_xml.py -i <infile> -o <outfile> -f <featurefile> -l <logfile> -L <loglevel; default CRITICAL> -S <sanitize_only; TRUE/FALSE>'
         sys.exit()
     elif opt in ("-i", "--ifile"):
         infile = arg
@@ -153,20 +159,21 @@ for opt, arg in opts:
     elif opt in ("-S", "--sanitize_only"):
         sanitize_only = arg
 
-logging.debug ("infile = %s, outfile = %s, featurefile = %s, logfile = %s, loglevel = %s, sanitize_only = %s" % \
-              (infile, outfile, featurefile, logfile, loglevel, sanitize_only))
-
-if (sanitize_only == "False"):
+if (sanitize_only == "FALSE"):
     if (infile is '' or outfile is '' or featurefile is ''):
-        logging.critical("Incorrect usage")
+        print("Incorrect usage")
         sys.exit(2)
 
 # Set the logging level
+# Note: DO NOT use "logging.XYZ()" before this
 log_level_list = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 if ((loglevel) and (loglevel in log_level_list)):
     logging.basicConfig(filename=logfile, filemode='w', level=loglevel)
 else:
     logging.basicConfig(filename=logfile, filemode='w', level="INFO")
+
+logging.debug("infile = %s, outfile = %s, featurefile = %s, logfile = %s, loglevel = %s, sanitize_only = %s" % \
+              (infile, outfile, featurefile, logfile, loglevel, sanitize_only))
 
 get_enabled_features()
 
