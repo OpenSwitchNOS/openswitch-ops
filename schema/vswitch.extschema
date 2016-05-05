@@ -536,14 +536,29 @@
           },
           "ephemeral": true
         },
-        "other_info": {
-          "category": "status",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          }
+        "loop_protect_disable_timer": {
+            "category": "configuration",
+            "type": {
+                "key":{
+                    "type": "integer",
+                    "minInteger": 0,
+                    "maxInteger": 604800
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "loop_protect_transmit_interval": {
+            "category": "configuration",
+            "type": {
+                "key":{
+                    "type": "integer",
+                    "minInteger": 1,
+                    "maxInteger": 10
+                },
+                "min": 0,
+                "max": 1
+            }
         }
       },
       "isRoot": true,
@@ -3553,30 +3568,6 @@
           },
           "ephemeral": true
         },
-        "aclv4_in_statistics_clear_requested": {
-          "category": "configuration",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4294967295
-            },
-            "min": 0,
-            "max": 1
-          }
-        },
-        "aclv4_in_statistics_clear_performed": {
-          "category": "status",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4294967295
-            },
-            "min": 0,
-            "max": 1
-          }
-        },
         "other_config": {
           "category": "configuration",
           "type": {
@@ -3818,17 +3809,6 @@
           }
         },
         "status": {
-          "category": "status",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          },
-          "ephemeral": true
-        },
-
-        "forwarding_state": {
           "category": "status",
           "type": {
             "key": "string",
@@ -4104,30 +4084,6 @@
           },
           "ephemeral": true
         },
-        "aclv4_in_statistics_clear_requested": {
-          "category": "configuration",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4294967295
-            },
-            "min": 0,
-            "max": 1
-          }
-        },
-        "aclv4_in_statistics_clear_performed": {
-          "category": "status",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4294967295
-            },
-            "min": 0,
-            "max": 1
-          }
-        },
         "macs_invalid_on_vlans": {
           "category": "status",
           "relationship": "reference",
@@ -4168,6 +4124,76 @@
             "min": 0,
             "max": "unlimited"
           }
+        },
+        "loop_protect_enable": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "boolean"
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "loop_protect_port_disabled": {
+            "category": "status",
+            "type": {
+                "key": {
+                    "type": "boolean"
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "loop_protect_status": {
+            "category": "status",
+            "type": {
+                "key": "string",
+                "value": "string",
+                "min": 0,
+                "max": "unlimited"
+            }
+        },
+        "loop_protect_action": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "string",
+                    "enum": [
+                        "set",
+                        [
+                         "do-not-disable",
+                         "tx-disable",
+                         "tx-rx-disable"
+                        ]
+                    ]
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "loop_protect_statistics": {
+            "category": "statistics",
+            "type": {
+                "key": "string",
+                "value": "integer",
+                "min": 0,
+                "max": "unlimited"
+            },
+            "ephemeral": true
+        },
+        "loop_protect_vlan": {
+            "category": "configuration",
+            "relationship": "reference",
+            "type": {
+                "key": {
+                    "type": "uuid",
+                    "refTable": "VLAN",
+                    "refType" : "weak"
+                },
+                "min": 0,
+                "max": 4094
+            }
         }
       },
       "indexes": [
@@ -4400,25 +4426,6 @@
             "max": 1
           },
           "ephemeral": true
-        },
-        "hw_status": {
-          "category": "status",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          },
-          "ephemeral": true
-        },
-        "forwarding_state": {
-          "category": "status",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          }
         },
         "link_resets": {
           "category": "statistics",
@@ -8680,21 +8687,7 @@
               "type": "integer",
               "minInteger": 0,
               "maxInteger": 4294967295
-            },
-            "min": 0,
-            "max": 1
-          }
-        },
-        "in_progress_version": {
-          "category": "status",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4294967295
-            },
-            "min": 0,
-            "max": 1
+            }
           }
         },
         "status": {
