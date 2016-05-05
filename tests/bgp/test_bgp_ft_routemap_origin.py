@@ -213,6 +213,29 @@ def configure_neighbor_rmap_in(dut, as_num1, network, as_num2, routemap):
     assert retCode == 0, "Test to set neighbor route-map in config failed"
     return True
 
+def verify_bgp_routes(dut, network, next_hop):
+    dump = SwitchVtyshUtils.vtysh_cmd(dut, "show ip bgp")
+    routes = dump.split(VTYSH_CR)
+    for route in routes:
+        if network in route and next_hop in route:
+            return True
+    return False
+
+def wait_for_route(dut, network, next_hop, condition=True) :
+    for i in range(MAX_WAIT_TIME):
+        found = verify_bgp_routes(dut, network, next_hop)
+        if found == condition:
+            if condition:
+                result = "configuration successfull"
+            else:
+                result = "configuration not successfull"
+            LogOutput('info', result)
+            return found
+        sleep(1)
+    info("### Condition not met after %s seconds ###\n" %
+           MAX_WAIT_TIME)
+    return found
+
 
 def configure(**kwargs):
     '''
@@ -334,8 +357,11 @@ def verify_routemap_set_origin_1(**kwargs):
     result = configure_neighbor_rmap_out(switch1, AS_NUM1, IP_ADDR2, AS_NUM1, "BGP_OUT1")
     assert result is True, "Failed to configure neighbor route-map on SW1"
 
-    sleep(30)
     exitContext(switch2)
+    wait_for_route(switch2, "10.0.0.0", "0.0.0.0")
+    wait_for_route(switch2, "11.0.0.0", "0.0.0.0")
+    wait_for_route(switch2, "9.0.0.0", "8.0.0.1")
+
     dump = SwitchVtyshUtils.vtysh_cmd(switch2, "sh ip bgp")
     network ="9.0.0.0"
     set_origin_flag = False
@@ -404,8 +430,11 @@ def verify_routemap_set_origin_2(**kwargs):
     result = configure_neighbor_rmap_in(switch2, AS_NUM2, IP_ADDR1, AS_NUM1, "BGP_IN1")
     assert result is True, "Failed to configure neighbor route-map on SW2"
 
-    sleep(50)
     exitContext(switch2)
+    wait_for_route(switch2, "10.0.0.0", "0.0.0.0")
+    wait_for_route(switch2, "11.0.0.0", "0.0.0.0")
+    wait_for_route(switch2, "9.0.0.0", "8.0.0.1")
+
     dump = SwitchVtyshUtils.vtysh_cmd(switch2, "sh ip bgp")
     network ="9.0.0.0"
     set_origin_flag = False

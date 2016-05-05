@@ -21,7 +21,7 @@ import json
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.switch import *
-from webui.utils.utils import *
+from webui import *
 
 MGMT_PATTERN_IP4 = "192.168.1.1"
 MGMT_PATTERN_IP6 = "fd12:3456:789a:1::"
@@ -147,7 +147,7 @@ def restTestLldpInterfaces(wrkston01):
         "response_body"].find('lldp_neighbor_info') != -1, 'Failed in checking the \
          GET METHOD JSON response validation for lldp_neighbor_info tag'
     info('### Success in Rest GET for lldp_neighbor_info tag ###\n')
-    rspDict = get_json(retStruct.data["response_body"])
+    rspDict = json.loads(retStruct.data["response_body"])
 
     # TEST 2 - Check to see if LLDP NEIGHBOR INFO - IP MGMT TAG IS PRESENT
     assert retStruct.data[
@@ -327,7 +327,7 @@ def setupLldp(**kwargs):
     info('CLI_Switch1 Return Structure')
     retStruct.printValueString()
 
-
+@pytest.mark.skipif(True, reason="waiting for desicion when Modular ft comes out")
 @pytest.mark.timeout(1000)
 class Test_lldp_configuration:
     def setup_class(cls):

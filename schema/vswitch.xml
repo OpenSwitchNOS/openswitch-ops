@@ -63,6 +63,43 @@
     </dd>
   </dl>
 
+  <h2>Category</h2>
+
+  <p>
+    All columns in the schema, except those related to hardware configuration, include
+    a "category" element. This element is used to define the data that is contained in
+    the column.  There are three category types:
+  </p>
+
+  <ol>
+    <li>
+      Status: Represent state data that the system writes as a result of its operation.
+      The data can come from protocols or system daemons. Hardware information columns
+      should use this category.  Columns using this category cannot be configured by
+      the user.
+    </li>
+    <li>
+      Statistics: Represent statistic data, usually counters, that the system reports.
+      This data can come from protocols, hardware or system daemons.  Columns using
+      this category cannot be configured by the user.
+    </li>
+    <li>
+      Configuration: Represent configuration data that comes from the user.  Only columns
+      using this category can be modified by the users.
+    </li>
+
+    <p>
+      Some column categories depend on the other column category. It means that the
+      column category is not explicit. The value will be dynamically interpreted by taking
+      the other column value. The tag "follows" inside the category is meant for that.
+    </p>
+    <p>
+      In other cases the category must be interpreted using a specific row value itself.
+      The column category will be calculated by mapping the specific enum value to the
+      corresponding category. The tag "per-value" inside the category is meant for that.
+    </p>
+  </ol>
+
   <table name="System" title="OpenSwitch top level configuration.">
     Configuration for an OpenSwitch system. There must be exactly
     one record in the <ref table="System"/> table.
@@ -98,6 +135,14 @@
         settings with no interface or routing dependences.
       </column>
 
+      <column name="ipsec_manual_sas">
+        This is a list of configured IPsec manual security associations (SA)
+      </column>
+
+      <column name="ipsec_manual_sps">
+        This is a list of configured IPsec manual security policies (SP)
+      </column>
+
       <column name="hostname">
       </column>
 
@@ -129,13 +174,17 @@
         sFlow(R) configuration.
       </column>
 
+      <column name="snmp_communities">
+        Community strings to be used by the system when communicating over SNMPv1/SNMPv2c.
+      </column>
+
       <column name="other_config" key="stats-update-interval"
               type='{"type": "integer", "minInteger": 5000}'>
         <p>
-          Interval for updating statistics to the database, in milliseconds.
-          This option will affect the update of the <code>statistics</code>
-          column in the following tables: <code>Port</code>, <code>Interface
-          </code>.
+          Update interval for the statistics, in milliseconds.
+          This option will affect the update of <code>statistics</code>,
+          <code>DHCP-Relay Statistics</code> columns in the <code>Port</code> table,
+          <code>statistics</code> column in the <code>Interface</code> table.
         </p>
         <p>
           Default value is 5000 ms.
@@ -184,6 +233,25 @@
         </p>
       </column>
 
+      <column name="other_config" key="banner">
+        <p>
+            Banner to be displayed on CLI start. Maximum length 4095.
+        </p>
+
+        <p>
+            No banner by default.
+        </p>
+      </column>
+
+      <column name="other_config" key="banner_exec">
+        <p>
+            Banner to be displayed on CLI login. Maximum length 4095.
+        </p>
+
+        <p>
+            No banner by default.
+        </p>
+      </column>
 
       <group title="TFTP Server Configurations">
         <column name="other_config" key="tftp_server_enable"
@@ -344,6 +412,15 @@
           Default value is 2.
         </p>
       </column>
+   </group>
+
+   <group title="SNMP configuration">
+     <column name="other_config" key="snmp_agent_port">
+        The port on which the SNMP agent listens for SNMP requests. The default port is 161.
+     </column>
+     <column name="other_config" key="system_location">This key represents the system location.</column>
+     <column name="other_config" key="system_contact">This key represents the system contact.</column>
+     <column name="other_config" key="system_description">This key represents the system description.</column>
    </group>
 
    <group title="Syslog Remotes Configurations">
@@ -797,6 +874,10 @@
         Specifies the URL that was used to fetch auto-provisioning script. Would not be
         present if auto-provisioning was not performed.
       </column>
+      <column name="acls">
+        List of all Access Control Lists (ACLs) in the system.  The existence of the list is
+        not an indication that it has been applied.
+      </column>
     </group>
 
     <group title="Logrotate configuration">
@@ -815,6 +896,40 @@
             The user configured URI of the remote host .The valid value is
             'tftp://A.B.C.D'.If not specified log files will be rotated locally.
         </column>
+    </group>
+
+    <group title="BroadView configuration">
+      <p>
+        The parameters in this group are used to configure BroadView agent.
+        Parameter enabled is used to enable/disable BroadView.
+        Agent sends asynch reports to the application at client_ip and client_port.
+        Parameter agent_port is the port number on which agent listens for
+        client connections. The communication on agent port is of request - response style.
+      </p>
+      <column name="broadview_config" key="enabled"
+              type='{"type": "boolean"}'>
+        Specifies whether the BroadView feature is enabled on the system.
+        False, if the value is not present.
+      </column>
+
+      <column name="broadview_config" key="client_ip" >
+        Specifies BroadView client ip address. This is the IP that BroadView Agent
+        tries to reach out to send async reports.
+        If the value is not configured then default is 127.0.0.1.
+      </column>
+
+      <column name="broadview_config" key="client_port"
+              type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+        Specifies BroadView client tcp port number. This is the port number along with client_ip that
+        BroadView agent shoud try to reach out to send async reports.
+        If no value is set, the default is 9070.
+      </column>
+
+      <column name="broadview_config" key="agent_port"
+              type='{"type": "integer", "minInteger": 1, "maxInteger": 65535}'>
+        Specifies BroadView agent tcp port number. Agent listens on this port for client connections.
+        If no value is set, the default is 8080.
+      </column>
     </group>
 
     <group title="Bufmon configuration">
@@ -952,6 +1067,16 @@
         </p>
       </column>
 
+      <column name="dhcp_config" key="v4relay_option82_enabled"
+              type='{"type": "boolean"}'>
+        <p>
+        Set this value to <code>true</code> to enable the DHCP-Relay Option 82
+        and set it to <code>false</code> otherwise. This configuration is
+        disabled by default. If the key is missing, the configuration is assumed
+        to be disabled.
+        </p>
+      </column>
+
       <column name="dhcp_config" key="v4relay_option82_policy"
               type='{"type": "string", "enum": ["set", ["drop", "keep", "replace"]]}'>
         <p>
@@ -1002,22 +1127,33 @@
         </p>
       </column>
 
-      <column name="dhcp_config" key="v4relay_hop_count_increment_enabled"
+      <column name="dhcp_config" key="v4relay_hop_count_increment_disabled"
               type='{"type": "boolean"}'>
         <p>
-        Set this value to <code>true</code> to enable the hop count increment in
+        Set this value to <code>true</code> to disable the hop count increment in
         the relayed DHCP requests and set it to <code>false</code> otherwise. This
-        configuration is disabled by default. If the key is missing, the configuration
-        is assumed to be disabled.
+        configuration is enabled by default. If the key is missing, the configuration
+        is assumed to be enabled.
         </p>
       </column>
 
-      <column name="dhcp_config" key="bootp_gateway"
-              type='{"type": "string", "maxLength":15}'>
+      <column name="dhcp_config" key="v6relay_enabled"
+              type='{"type": "boolean"}'>
         <p>
-        Provides a way to configure a gateway address for the DHCP relay agent
-        to use for DHCP requests, rather than the DHCP relay agent automatically assigning
-        the lowest-numbered IP address.
+        Set this value to <code>true</code> to enable DHCPv6-Relay functionality
+        globally and set it to <code>false</code> to disable it. This configuration
+        is disabled by default.
+        Though DHCPv6-Relay configuration is enabled globally, the functionality
+        is effective only after the port level server configuration.
+        </p>
+      </column>
+
+      <column name="dhcp_config" key="v6relay_option79_enabled"
+              type='{"type": "boolean"}'>
+        <p>
+        Set this value to <code>true</code> to enable the DHCPv6-Relay Option 79
+        and set it to <code>false</code> otherwise. This configuration is
+        disabled by default.
         </p>
       </column>
     </group>
@@ -1106,6 +1242,26 @@
         case, this key's value may be the name of the last successfully
         configured system schedule profile.
         </p>
+      </column>
+    </group>
+
+    <group title="COPP Statistics">
+      <p>
+        Contains key-value pairs that report overall Control Plane Policing
+        statistics regarding packets/bytes delivered to the management CPU
+        or packets/bytes dropped due to excessive rate.
+      </p>
+      <column name="copp_statistics" key="total_packets_passed">
+        Total number of protocol packets delivered to the management CPU.
+      </column>
+      <column name="copp_statistics" key="total_bytes_passed">
+        Total number of protocol bytes delivered to the management CPU.
+      </column>
+      <column name="copp_statistics" key="total_packets_dropped">
+        Total number of protocol packets dropped due to excessive rate.
+      </column>
+      <column name="copp_statistics" key="total_bytes_dropped">
+        Total number of protocol bytes dropped due to excessive rate.
       </column>
     </group>
 
@@ -1261,7 +1417,15 @@
         Set this value to specify the configuration revision number.
         Default value is 0.
       </column>
-   </group>
+    </group>
+    <group title="MSTP Status">
+      <p>
+        MSTP global status for all MSTIs.
+      </p>
+      <column name="status" key="mstp_config_digest">
+        The configuration digest for the MSTP bridge that is derived based on the VLAN membership of MST instances.
+      </column>
+    </group>
 
     <group title="Other Features">
       <column name="mirrors">
@@ -1427,11 +1591,12 @@
         The time last topology change happened for this instance.
         The format for this is number of seconds from epoch.
       </column>
-      <column name="top_change_cnt">
+      <column name="topology_change_count">
         The total number of topology changes that have occurred for this instance.
       </column>
-      <column name="topology_change_disable">
-        Set this value to <code>true</code>, if there is a change in topology.
+      <column name="topology_unstable">
+        This is set to <code>true</code> when a topology change has occurred.
+        Once topology stabilizes it will be set back to <code>false</code>.
         Default is <code>false</code>.
       </column>
     </group>
@@ -1529,8 +1694,13 @@
         The value used by the MSTP transmit state machine to limit the maximum
         transmission rate of MST BPDUs within the hello interval.
       </column>
-      <column name="top_change_cnt">
+      <column name="topology_change_count">
         The total number of topology changes that have occurred for this instance.
+      </column>
+      <column name="topology_unstable">
+        This is set to <code>true</code> when a topology change has occurred.
+        Once topology stabilizes it will be set back to <code>false</code>.
+        Default is <code>false</code>.
       </column>
     </group>
   </table>
@@ -1635,6 +1805,9 @@
       </column>
       <column name="port_hello_time">
         The port's hello time value, for the CIST.
+      </column>
+      <column name="fwd_transition_count">
+        The number of times this port has transitioned to the forwarding state.
       </column>
       <column name="protocol_migration_enable">
         Set this value to <code>true</code> to switch the STP working mode
@@ -2510,6 +2683,13 @@
         The possible values are "true" and "false".
       </column>
     </group>
+   <group title="MACs Validity">
+      <column name="macs_invalid">
+        If <code>true</code>, indicates that MACs on this VLAN are invalid. This might
+        be set by any agent of the system that decides that MACs are indeed invalid. Eventually
+        those MACs will be cleared from the system and macs_invalid will revert to <code>false</code>.
+      </column>
+   </group>
    <group title="VLAN Status">
       <column name="oper_state">
         Operational state of this VLAN.
@@ -2530,6 +2710,51 @@
       <column name="internal_usage" key="l3port">
           VLAN is used internally by ASIC to configure L3 behavior of the port.
           The value is the port name that uses this VLAN.
+      </column>
+    </group>
+    <group title="ACL Configuration">
+      <p>
+        ACL applied to vlans.
+      </p>
+      <column name="aclv4_in_cfg">
+        ACL, potentially in flight, desired to be applied to this vlan, as identified
+        in the <ref table="ACL"/>.
+      </column>
+      <column name="aclv4_in_cfg_version">
+        The version of the 'aclv4_in_cfg' column.
+        This value is incremented by the management interface each- CLI/REST/Web UI, etc.
+        every time it changes the 'aclv4_in_cfg' value.
+        An empty value means no ACL has been configured for the vlan.
+      </column>
+    </group>
+    <group title="ACL Status">
+      <p>
+        Status of applied ACLs and ACL statistics per vlan.
+      </p>
+      <column name="aclv4_in_applied">
+        Current, successfully applied ACL to this vlan, as identified in the
+        <ref table="ACL"/>
+      </column>
+      <column name="aclv4_in_status">
+        The status of the last version of 'aclv4_in_cfg' column, that has been
+        processed by switchd.
+      </column>
+      <column name="aclv4_in_status" key="version" type='{"type":"integer"}'>
+        The version of aclv4_in_cfg that corresponds to this status.
+      </column>
+      <column name="aclv4_in_status" key="state"
+            type='{"type":"string", "enum": ["set", ["applied", "in_progress", "canceled", "rejected"]]}'>
+      </column>
+      <column name="aclv4_in_status" key="code" type='{"type":"integer"}'>
+        Numeric error code.  Expected to be 0 when state is 'applied'
+      </column>
+      <column name="aclv4_in_status" key="message" type='{"type":"string"}'>
+        Detailed reason for error state.  Expected empty when state is 'applied'
+      </column>
+      <column name="aclv4_in_statistics" key="sequence_number" type='{"type":"integer"}'>
+        Statistics for the ACL applied to this port for ACEs that have the
+        'count' keyword specified.  Statistics are key/value pairs of
+        ACL sequence number and integer representing the statistics for that entry.
       </column>
     </group>
    <group title="Common Columns">
@@ -2727,9 +2952,9 @@
         Strict Priority will service all packets in the queue before any
         packets in lower numbered queues as long as there are no packets
         in any higher number queue.
-        </p><p><code>wrr</code> -
-        (Deficit) Weight Round Robin will apportion available bandwidth
-        amongst all non-empty wrr queues in relation to their queue weights.
+        </p><p><code>dwrr</code> -
+        Deficit Weight Round Robin will apportion available bandwidth
+        amongst all non-empty dwrr queues in relation to their queue weights.
         </p>
         <p>
         If this parameter is missing, it is assumed to be 'strict'.
@@ -2904,6 +3129,11 @@
       </column>
       <column name="hw_config" key="internal-vlan">
         The VLAN associated with l3 interfaces.
+      </column>
+      <column name="hw_config" key="block_all_mstp"
+              type='{"type": "boolean"}'>
+        Indicates that the port should be blocked in all MSTP instances.
+        Defaults to <code>false</code>.
       </column>
     </group>
 
@@ -3302,9 +3532,10 @@
     </group>
 
     <group title="DHCP-Relay Statistics">
-      DHCP-Relay statistics counters for both IPv4 and IPv6. If certain key is missing,
-      then the assummed counter value is 0.
-
+      DHCP-Relay statistics counters for both IPv4 and IPv6. The update period
+      is controlled by <ref column="other_config" key="stats-update-interval"/>in
+      <ref table="System"/>. If certain key is missing, then the assummed
+      counter value is 0.
       <column name="dhcp_relay_statistics" key="valid_v4client_requests"
               type='{"type":"integer"}'>
         Number of valid IPv4 DHCP relay requests processed.
@@ -3320,6 +3551,22 @@
       <column name="dhcp_relay_statistics" key="dropped_v4server_responses"
               type='{"type":"integer"}'>
         Number of IPv4 DHCP relay responses dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v4client_requests_with_option82"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay requests with option 82 processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4client_requests_with_option82"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay requests with option 82 dropped.
+      </column>
+      <column name="dhcp_relay_statistics" key="valid_v4server_responses_with_option82"
+              type='{"type":"integer"}'>
+        Number of valid IPv4 DHCP relay responses with option 82 processed.
+      </column>
+      <column name="dhcp_relay_statistics" key="dropped_v4server_responses_with_option82"
+              type='{"type":"integer"}'>
+        Number of IPv4 DHCP relay responses with option 82 dropped.
       </column>
       <column name="dhcp_relay_statistics" key="valid_v6client_requests"
               type='{"type":"integer"}'>
@@ -3338,7 +3585,64 @@
         Number of IPv6 DHCP relay responses dropped.
       </column>
     </group>
-
+    <group title="ACL Configuration">
+      <p>
+        ACL applied to ports.
+      </p>
+      <column name="aclv4_in_cfg">
+        ACL, potentially in flight, desired to be applied to this port, as identified
+        in the <ref table="ACL"/>.
+      </column>
+      <column name="aclv4_in_cfg_version">
+        The version of the 'aclv4_in_cfg' column.
+        This value is incremented by the management interface - CLI/REST/Web UI, etc.
+        every time it changes the 'aclv4_in_cfg' value.
+         An empty value means no ACL has been configured for the port.
+      </column>
+    </group>
+    <group title="ACL Status">
+      <p>
+        Status of applied ACLs and ACLs statistics per port.
+      </p>
+      <column name="aclv4_in_applied">
+        Current, successfully applied ACL to this port, as identified in the
+        <ref table="ACL"/>
+      </column>
+      <column name="aclv4_in_status">
+        The status of the last version of 'aclv4_in_cfg' column, that has been
+        processed by switchd.
+      </column>
+      <column name="aclv4_in_status" key="version" type='{"type":"integer"}'>
+        The version of aclv4_in_cfg that corresponds to this status.
+      </column>
+      <column name="aclv4_in_status" key="state"
+            type='{"type":"string", "enum": ["set", ["applied", "in_progress", "canceled", "rejected"]]}'>
+      </column>
+      <column name="aclv4_in_status" key="code" type='{"type":"integer"}'>
+        Numeric error code.  Expected to be 0 when state is 'applied'
+      </column>
+      <column name="aclv4_in_status" key="message" type='{"type":"string"}'>
+        Detailed reason for error state.  Expected empty when state is 'applied'
+      </column>
+      <column name="aclv4_in_statistics" key="sequence_number" type='{"type":"integer"}'>
+        Statistics for the ACL applied to this port for ACEs that have the
+        'count' keyword specified.  Statistics are key/value pairs of
+        ACL sequence number and integer representing the statistics for that entry.
+      </column>
+    </group>
+    <group title="MACs Validity">
+      <column name="macs_invalid_on_vlans">
+        If a set of VLANs is specified, it indicates that MACs on this port and that set of VLANs
+        are invalid. This might be set by any agent of the system that decides that
+        MACs are indeed invalid. Eventually those MACs will be cleared from the system
+        and macs_invalid_on_vlans will revert to an empty set.
+      </column>
+      <column name="macs_invalid">
+        If <code>true</code>, indicates that MACs on this port are invalid. This might
+        be set by any agent of the system that decides that MACs are indeed invalid. Eventually
+        those MACs will be cleared from the system and macs_invalid will revert to <code>false</code>.
+      </column>
+    </group>
     <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
@@ -4005,8 +4309,8 @@
            type='{"type": "integer"}'>
            Reports the Security Parameter Index used for SA outbound traffics.
         </column>
-
       </group>
+
     </group>
 
     <group title="Module Information">
@@ -6132,6 +6436,165 @@
     </column>
   </table>
 
+  <table name="IPsec_Manual_SA">
+    <p>
+      Following is the description of the IPsec manual SA configuration settings of
+      <ref table="IPsec_Manual_SA"/>.
+    </p>
+    <column name="SPI">
+      Specifies the IPsec security parameter index associated to a SA.
+    </column>
+    <column name="request_id">
+      Specifies the request ID associated a manual SA to its corresponding SP.
+    </column>
+    <column name="src_ip">
+        Specifies the source IPv4/IPv6 address of an SA.
+    </column>
+    <column name="dest_ip">
+        Specifies the destination IPv4/IPv6 address of an SA.
+    </column>
+    <column name="protocol">
+      Specifies the traffic IPsec protocol: Authentication Header (AH) vs.
+      Encapsulating Security Payload (ESP).
+      Defaults to <code>ESP</code>.
+    </column>
+    <column name="mode">
+      Specifies the traffic IPsec operation mode: tunnel vs. transport,
+      Defaults to <code>transport</code>.
+    </column>
+    <column name="authentication">
+      Specifies the configured hashes for the authenticity and integrity protection.
+      Defaults to <code>SHA1HMAC</code>.
+    </column>
+    <column name="auth_key">
+        Specifies the key for authentication and hasing.
+    </column>
+    <column name="encryption">
+      Specifies the supported encryptions for the message privacy.
+      Defaults to <code>AES128</code>.
+    </column>
+    <column name="encr_key">
+        Specifies the encryption key if the protocol is ESP.
+    </column>
+    <column name="selector_src_prefix">
+      Specifies the selector source address with an /XXX net mask.
+    </column>
+    <column name="selector_dest_prefix">
+      Specifies the selector destination address with an /XXX net mask.
+    </column>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="external_ids"/>
+      <column name="other_config"/>
+    </group>
+
+    <group title="Manual SA Status">
+      <column name="status" key="sa_conn_added"
+         type='{"type": "integer"}'>
+         Reports the epoch time when this SA was added.
+      </column>
+      <column name="status" key="sa_conn_used"
+         type='{"type": "integer"}'>
+         Reports the epoch time when this SA was last used.
+      </column>
+    </group>
+
+    <group title="Manual SA Statistics">
+      <column name="statistics" key="sa_bytes"
+         type='{"type": "integer"}'>
+         Reports the SA bytes processed.
+      </column>
+      <column name="statistics" key="sa_packets"
+         type='{"type": "integer"}'>
+         Reports the SA packets processed.
+      </column>
+    </group>
+
+  </table>
+
+  <table name="IPsec_Manual_SP">
+    <p>
+      Following is the description of the IPsec manual SP configuration settings of
+      <ref table="IPsec_Manual_SP"/>.
+    </p>
+    <column name="priority">
+      Specifies manual SP priority.
+      Defaults to <code>0</code>.
+    </column>
+    <column name="direction">
+      Specifies the manual SP direction.
+    </column>
+    <column name="action">
+      Specifies the manual SP action.
+      Defaults to <code>ipsec</code>.
+    </column>
+    <column name="ip_family">
+      Specifies the IP address family: IPv4 or IPv6.
+      Defaults to <code>ipv4</code>.
+    </column>
+    <column name="src_prefix">
+      Specifies the source IP address with a /XXX netmask.
+    </column>
+    <column name="dest_prefix">
+      Specifies the destination IP address with a /XXX netmask.
+    </column>
+    <column name="tmpl_request_id">
+      Specifies the template request ID for this manual SP operation.
+    </column>
+    <column name="tmpl_protocol">
+      Specifies the template protocol (AH or ESP) for this manual SP.
+      Defaults to <code>ESP</code>.
+    </column>
+    <column name="tmpl_mode">
+      Specifies the template mode (tunnel or transport) for this manual SP
+      Defaults to <code>transport</code>.
+    </column>
+    <column name="tmpl_ip_family">
+      Specifies the template IP address family: IPv4 or IPv6.
+      Defaults to <code>ipv4</code>.
+    </column>
+    <column name="tmpl_src_ip">
+      Specifies the template source IP address or host name.
+    </column>
+    <column name="tmpl_dest_ip">
+      Specifies the template destination IP address or host name.
+    </column>
+
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+
+      <column name="external_ids"/>
+      <column name="other_config"/>
+    </group>
+
+    <group title="Manual SP Status">
+      <column name="status" key="sp_conn_added"
+         type='{"type": "integer"}'>
+         Reports the epoch time when this SP was added.
+      </column>
+      <column name="status" key="sp_conn_used"
+         type='{"type": "integer"}'>
+         Reports the epoch time when this SP was last used.
+      </column>
+    </group>
+
+    <group title="Manual SP Statistics">
+      <column name="statistics" key="sp_bytes"
+         type='{"type": "integer"}'>
+         Reports the SP bytes processed.
+      </column>
+      <column name="statistics" key="sp_packets"
+         type='{"type": "integer"}'>
+         Reports the SP packets processed.
+      </column>
+    </group>
+
+  </table>
+
   <table name="Logical_Switch">
       <p>
         Configuration for identifying overlay networks associated with
@@ -6176,8 +6639,8 @@
     </column>
 
     <column name="from">
-      This column specifies who has configured this entry in the database.
-      Is it the hw-vtep controller, self learned from ASIC or statically configured.
+      This specifies whether this MAC address has been added by the
+      hw-vtep controller, dynamically learnt from the ASIC or statically configured.
     </column>
 
     <column name="port">
@@ -6244,6 +6707,12 @@
         this port.
         A maximum of 8 IPv6 server configurations are allowed. This count includes IPv6 unicast
         server configurations from the column "ipv6_ucast_server".
+      </column>
+      <column name="other_config" key="bootp_gateway"
+              type='{"type": "string", "maxLength":15}'>
+        Provides a way to configure a gateway address for the DHCP relay agent
+        to use for DHCP requests, rather than the DHCP relay agent automatically assigning
+        the lowest-numbered IP address.
       </column>
     </group>
   </table>
@@ -6413,5 +6882,215 @@
          Default is <code>debug</code>.
       </column>
     </group>
+  </table>
+  <table name="SNMP_Trap">
+    <group title="configuration">
+      <column name="receiver_address">The IP address of the trap receiver.</column>
+      <column name="receiver_udp_port">The UDP port of the trap receiver.</column>
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings. The default community string is "public".
+      </column>
+      <column name="type">Trap type. The default type is "trap".</column>
+      <column name="version">Trap/inform version. The default version is "v2c".</column>
+    </group>
+  </table>
+  <table name="SNMPv3_User">
+    <group title="configuration">
+      <column name="user_name">
+        User name that should contain alphanumeric characters.
+      </column>
+      <column name="auth_protocol">
+        The authentication protocol to be used for authenticating the user.
+        The default is "none".
+      </column>
+      <column name="priv_protocol">
+        The privacy protocol to be used for encrypting the user requests.
+        The default is "none".
+      </column>
+      <column name="auth_pass_phrase">The key to be used by authentication protocol.</column>
+      <column name="priv_pass_phrase">The key to be used by privacy protocol.</column>
+    </group>
+  </table>
+  <table name="ACL" title="Access Control List">
+    <group title="Access Control List Configuration">
+      <column name="name">
+        Name of an Access Control List (ACL).
+      </column>
+      <column name="list_type">
+        Type of an Access Control List  Accepted values: 'ipv4'
+      </column>
+      <column name="cfg_aces" keyname="sequence_number">
+        The desired version of the Access Control List.  Access Control Entries
+        (ACE) specified in this version of the ACL are defined
+        in <ref table="ACL_Entry"/>
+      </column>
+      <column name="cfg_version">
+        The version of the 'cfg_aces' column.
+        This value is incremented by the management interface - CLI/REST/Web UI, etc.
+        every time it changes the 'cfg_aces' value.
+      </column>
+    </group>
+    <group title="Access Control List Status">
+      <column name="cur_aces" keyname="sequence_number">
+        The currently configured version of the Access Control List.  Access Control
+        Entries (ACE) specified in this version of the ACL are defined
+        in <ref table="ACL_Entry"/>
+      </column>
+      <column name="in_progress_aces" keyname="sequence_number">
+        The in flight version of the Access Control List.  Access Control Entries
+        (ACE) specified in this ACL are defined in <ref table="ACL_Entry"/>
+      </column>
+      <column name="status"  key="status_string" type='{"type":"string"}'>
+        The status of the last version of 'cfg_aces' column, that has been
+        processed by switchd.  Accepted values are: 'in_progress', 'applied', 'rejected',
+        and 'canceled'.
+      </column>
+      <column name="status" key="version" type='{"type":"integer"}'>
+        The version of cfg_aces that corresponds to this status.
+      </column>
+      <column name="status" key="state" type='{"type":"string"}'>
+        Valid values are 'applied', 'in_progress', 'canceled', 'rejected'
+      </column>
+      <column name="status" key="code" type='{"type":"integer"}'>
+        Numeric error code.  Expected to be 0 when state is 'applied'
+      </column>
+      <column name="status" key="message" type='{"type":"string"}'>
+        Detailed reason for error state.  Expected empty when state is 'applied'
+      </column>
+    </group>
+    <group title="Common Columns">
+      The overall purpose of these columns is described under <code>Common
+      Columns</code> at the beginning of this document.
+      <column name="other_config">
+      </column>
+      <column name="external_ids">
+      </column>
+    </group>
+  </table>
+  <table name="ACL_Entry" title="Access Control Entry">
+    <column name="comment">
+      <p>
+        Comment to associate with the specified ACE.
+        Optional parameter.
+      </p>
+    </column>
+    <column name="action">
+      <p>
+         Match Action:
+         Optional parameter for IPv4 ACL entries.
+         There are two types: "permit" and "deny"
+         If no action is specified the ACE will not be programmed in hw.
+      </p>
+    </column>
+    <column name="src_ip">
+      <p>
+        Source IPv4 Address:
+        Optional parameter.  If no IP address is specified the ACE will not
+        match on source IP address.
+
+        The following IPv4 address formats are accepted:
+        X.X.X.X/X.X.X.X
+      </p>
+    </column>
+    <column name="dst_ip">
+      <p>
+        Destination IPv4 Address:
+        Optional parameter.  If no IP address is specified the ACE will not
+        match on destination IP address
+
+        The following IPv4 address formats are accepted:
+        X.X.X.X/X.X.X.X
+      </p>
+    </column>
+    <column name="protocol">
+      <p>
+        IPv4 Protocol
+        Optional parameter.  If no protocol is specified the ACE will
+        not match on protocol.
+      </p>
+    </column>
+    <group title="ACL L4 Port Configuration">
+        L4 Port: specifies the IPv4 L4 port to be used
+        as the minimum value.  It is used in conjunction with src/dst_l4_port_max
+        and src/dst_l4_port_range_reverse to determine the desired
+        L4 port functionality:
+
+        Applicable to TCP and UDP protocols.
+
+    <column name="src_l4_port_min">
+      <p>
+        Source L4 Port: specifies the IPv4 L4 source port to be used
+        as the minimum value.  It is used in conjunction with src_l4_port_max
+        and src_l4_port_range_reverse to determine the desired source
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+    <column name="src_l4_port_max">
+      <p>
+        Source L4 Port Max: specifies the maximum value
+        It is used in conjunction with src_l4_port_min
+        and src_l4_port_range_reverse to determine the desired source
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+     <column name="src_l4_port_range_reverse">
+      <p>
+        Specifies if the values in src_l4_port_min and src_l4_port_max
+        should be treated as specifying values not to be matched.
+        Optional parameter for IPv4 ACL entries.
+        Applicable to TCP and UDP protocols.
+      </p>
+    </column>
+    <column name="dst_l4_port_min">
+      <p>
+        Source L4 Port: specifies the IPv4 L4 source port to be used
+        as the minimum value.  It is used in conjunction with dst_l4_port_max
+        and dst_l4_port_range_reverse to determine the desired destination
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+    <column name="dst_l4_port_max">
+      <p>
+        Destination L4 Port Max: specifies the maximum value
+        It is used in conjunction with dst_l4_port_min
+        and dst_l4_port_range_reverse to determine the desired destination
+        L4 port functionality.
+
+        Optional parameter for IPv4 ACL entries.
+      </p>
+    </column>
+     <column name="dst_l4_port_range_reverse">
+      <p>
+        Specifies if the values in dst_l4_port_min and dst_l4_port_max
+        should be treated as specifying values not to be matched.
+        Optional parameter for IPv4 ACL entries.
+        Applicable to TCP and UDP protocols.
+      </p>
+    </column>
+    </group>
+    <column name="log">
+      <p>
+        Log Action: enable ACL logging for packets that match this
+        ACL entry
+        Optional parameter for IPv4 ACL entries
+        The following value is accepted:
+        true
+      </p>
+    </column>
+    <column name="count">
+      <p>
+        Count Action: enable hit counts in hardware for packets that
+        match this ACL entry
+        Optional parameter for IPv4 ACL entries
+        The following value is accepted:
+        true
+      </p>
+    </column>
   </table>
 </database>

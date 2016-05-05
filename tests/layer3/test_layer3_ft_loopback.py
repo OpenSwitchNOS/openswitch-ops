@@ -36,21 +36,21 @@ def loopback_l3(**kwargs):
 
     LogOutput('info', "Loopback l3 reachability test")
     retStruct = LoopbackInterfaceEnable(deviceObj=switch,
-                                        loopback="1", addr="192.168.1.5",
+                                        loopback=switch.linkPortMapping['lnk01'], addr="192.168.1.5",
                                         mask=24, config=True, enable=True)
     if retStruct.returnCode() != 0:
         LogOutput('error', "Failed to configure interface IP address")
         assert(False)
 
     retStruct = InterfaceEnable(deviceObj=switch, enable=True,
-                                interface="1")
+                                interface = switch.linkPortMapping['lnk01'] )
 
     if retStruct.returnCode() != 0:
         LogOutput('error', "Failed to enable interface")
         assert(False)
 
     retStruct = InterfaceIpConfig(deviceObj=switch,
-                                  interface="1",
+                                  interface = switch.linkPortMapping['lnk01'],
                                   addr="192.168.2.1", mask=24, config=True)
 
     if retStruct.returnCode() != 0:
@@ -72,7 +72,7 @@ def loopback_l3(**kwargs):
                                        192.168.2.1")
     LogOutput('info', "Pinging between workstation1 and dut01")
 
-    retStruct = wrkstn.Ping(ipAddr="192.168.1.5", packetCoung=10)
+    retStruct = wrkstn.Ping(ipAddr="192.168.1.5", packetCount=10)
     retCode = retStruct.returnCode()
     assert retCode == 0, "failed to ping switch"
     LogOutput('info', "IPv4 Ping from workstation 1 to dut01 return JSON:\n" +
@@ -96,7 +96,7 @@ def negative_l3_reach(**kwargs):
                                         enable=False)
     LogOutput('info', "Pinging between workstation1 and dut01 ")
 
-    retStruct = wrkstn.Ping(ipAddr="192.168.1.5", packetCoung=10)
+    retStruct = wrkstn.Ping(ipAddr="192.168.1.5", packetCount=10)
     retCode = retStruct.returnCode()
     if retCode == 0:
         LogOutput('info', "failed to ping switch")
