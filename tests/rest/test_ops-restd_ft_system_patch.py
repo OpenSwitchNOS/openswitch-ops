@@ -516,6 +516,51 @@ class PatchSystemTest(OpsVsiTest):
         info("### Configuration data validated %s ###\n" % post_patch_data)
         info(TEST_END % test_title)
 
+    def test_patch_test_with_malformed_value(self):
+        # Test Setup
+        test_title = "using \"op\": \"test\" with a malformed path value"
+        info(TEST_START % test_title)
+        data = ["1.1.1.1"]
+        patch = [{"op": "add", "path": "/dns_servers", "value": data},
+                 {"op": "test", "path": "///dns_servers", "value": data}]
+        # 1 - Query Resource
+        response, response_data = execute_request(
+            self.path, "GET", None, self.switch_ip, True,
+            xtra_header=self.cookie_header)
+
+        etag = response.getheader("Etag")
+        status_code = response.status
+        assert status_code == httplib.OK, "Wrong status code %s " % status_code
+
+        pre_patch_data = self.check_malformed_json(response_data)
+
+        # Test
+        # 2 - Modify data
+        headers = {"If-Match": etag}
+        headers.update(self.cookie_header)
+        status_code, response_data = execute_request(self.path, "PATCH",
+                                                     json.dumps(patch),
+                                                     self.switch_ip, False,
+                                                     headers)
+        assert status_code == httplib.BAD_REQUEST, "Wrong status code %s " \
+            % status_code
+        info("### System remains the same. Status code 400 BAD REQUEST  ###\n")
+
+        # 3 - Verify Modified data
+        response, response_data = execute_request(
+            self.path, "GET", None, self.switch_ip, True,
+            xtra_header=self.cookie_header)
+
+        post_patch_etag = response.getheader("Etag")
+        status_code = response.status
+        assert status_code == httplib.OK, "Wrong status code %s " % status_code
+
+        post_patch_data = self.check_malformed_json(response_data)
+
+        assert etag == post_patch_etag, "Etag should be the same"
+        info("### Configuration data validated %s ###\n" % post_patch_data)
+        info(TEST_END % test_title)
+
     def test_patch_test_operation_for_existent_value(self):
         # Test Setup
         test_title = "using \"op\": \"test\" for existent value"
@@ -1173,6 +1218,9 @@ class Test_PatchSystem:
     def test_run_call_test_patch_test_operation_nonexistent_value(self,
                                                                   netop_login):
         self.test_var.test_patch_test_operation_nonexistent_value()
+
+    def test_run_call_test_patch_test_with_malformed_value(self, netop_login):
+        self.test_var.test_patch_test_with_malformed_value()
 
     def test_run_call_test_patch_test_operation_for_existent_value(self,
                                                                    netop_login):
