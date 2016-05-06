@@ -1,0 +1,102 @@
+# Banner feature test cases
+
+- [Test Cases](#test-cases)
+    - [Test case 1a Restore default pre-login banner](#test-case-1a-restore-default-pre-login-banner)
+    - [Test case 1b Restore default pre-login banner](#test-case-1b-restore-default-post-login-banner)
+    - [Test case 2a - Customize the pre-login banner](#test-case-2a-customize-the-pre-login-banner)
+    - [Test case 2b - Customize the post-login banner](#test-case-2b-customize-the-post-login-banner)
+    - [Test case 3a - Disable the pre-login banner](#test-case-3a-disable-the-pre-login-banner)
+    - [Test case 3b - Disable the post-login banner](#test-case-3b-disable-the-post-login-banner)
+    - [Test case 4a - Display the pre-login banner](#test-case-4a-display-the-pre-login-banner)
+    - [Test case 4b - Display the post-login banner](#test-case-4b-display-the-post-login-banner)
+
+#Test Cases
+##  Verify the custom login banners feature
+### Objective
+Verify the custom login banners feature
+### Requirements
+The requirements for this test case are:
+ - Docker version 1.10 or above
+
+### Setup
+#### Topology
+              +------------------------+
+              |                        |
+              |  Openswitch container  |
+              |                        |
+              +------------------------+
+
+#### Test Setup
+None.
+
+### Test case 1a - Restore default pre-login banner
+### Description ###
+Restore the default pre-login banner and confirm the expected string is displayed in a new SSH session.
+### Test Result Criteria
+#### Test Pass Criteria
+The banner string matches the default pre-login banner string.
+#### Test Fail Criteria
+The banner string does not match the default pre-login banner string.
+
+### Test case 1b - Restore default post-login banner
+### Description
+Restore the default post-login banner and confirm the expected string is displayed in a new SSH session.
+### Test Result Criteria
+#### Test Pass Criteria
+The banner string matches the default post-login banner string.
+#### Test Fail Criteria
+The banner string matches the default post-login banner string.
+
+### Test case 2a - Customize the pre-login banner
+### Description
+Modify the pre-login banner with a known string and confirm the expected string is displayed in a new SSH session.
+### Test Result Criteria
+#### Test Pass Criteria
+The banner string matches the known string.
+#### Test Fail Criteria ####
+The banner string does not match the known string.
+
+### Test case 2b - Customize the post-login banner
+### Description
+Modify the post-login banner with a known string and confirm the expected string is displayed in a new SSH session.
+### Test Result Criteria
+#### Test Pass Criteria
+The banner string matches the known string.
+#### Test Fail Criteria ####
+The banner string does not match the known string.
+
+### Test case 3.a - Disable the pre-login banner
+### Description
+Disable the pre-login banner and confirm that no text is displayed before the login prompt in a new SSH session.
+### Test Result Criteria
+#### Test Pass Criteria
+No text is displayed before the login prompt.
+#### Test Fail Criteria ####
+Unexpected non-whitespace characters are displayed before the login prompt.
+
+### Test case 3b - Disable the post-login banner
+### Description
+Disable the post-login banner and confirm that no text is displayed after the login prompt and before the shell prompt in a new SSH session.
+### Test Result Criteria
+#### Test Pass Criteria
+No unexpected text is displayed after the login prompt and before the shell prompt.
+#### Test Fail Criteria ####
+Unexpected non-whitespace characters are displayed after the login prompt and before the shell prompt.
+
+### Test case 4a - Display the pre-login banner
+### Description
+Use the show command to display the pre-login banner and confirm that it matches an expected value.
+### Test Result Criteria
+#### Test Pass Criteria
+Displayed banner matches an expected value.
+#### Test Fail Criteria
+Displayed banner does not match an expected value.
+
+### Test case 4b - Display the post-login banner
+### Description
+Use the show command to display the post-login banner and confirm that it matches an expected value.
+### Test Result Criteria
+#### Test Pass Criteria
+Displayed banner matches an expected value.
+#### Test Fail Criteria
+Displayed banner does not match an expected value.
