@@ -465,6 +465,7 @@
           }
         },
         "ntp_config": {
+          "feature_list": ["OPS_NTPD"],
           "category": "configuration",
           "type": {
             "key": "string",
@@ -474,6 +475,7 @@
           }
         },
         "ntp_status": {
+          "feature_list": ["OPS_NTPD"],
           "category": "status",
           "type": {
             "key": "string",
@@ -484,6 +486,7 @@
           "ephemeral": true
         },
         "ntp_statistics": {
+          "feature_list": ["OPS_NTPD"],
           "category": "statistics",
           "type": {
             "key": "string",
@@ -6260,6 +6263,7 @@
       }
     },
     "NTP_Association": {
+      "feature_list": ["OPS_NTPD"],
       "columns": {
         "vrf": {
           "category": "configuration",
@@ -6325,6 +6329,7 @@
       "maxRows": 8
     },
     "NTP_Key": {
+      "feature_list": ["OPS_NTPD"],
       "columns": {
         "key_id": {
           "category": "configuration",
