@@ -513,9 +513,15 @@
       </column>
       <column name="ntp_status">
         This column holds the global status information for NTP.
+        <feature_list>
+          <feature>OPS_NTPD</feature>
+        </feature_list>
       </column>
       <column name="ntp_status" key="uptime">
-         Time in hours since the system was last rebooted.
+        Time in hours since the system was last rebooted.
+        <feature_list>
+          <feature>OPS_NTPD</feature>
+        </feature_list>
       </column>
       <column name="next_cfg">
         Sequence number for client to increment.  When a client modifies
@@ -691,6 +697,9 @@
       </group>
 
     <group title="NTP Statistics">
+        <feature_list>
+          <feature>OPS_NTPD</feature>
+        </feature_list>
         <column name="ntp_statistics" key="ntp_pkts_received">
             Total number of packets received.
         </column>
@@ -1056,6 +1065,9 @@
     </group>
 
     <group title="NTP configuration">
+      <feature_list>
+        <feature>OPS_NTPD</feature>
+      </feature_list>
       <p>
         Specifies the NTP global configuration.
       </p>
@@ -6212,6 +6224,9 @@
   </table>
 
   <table name="NTP_Association">
+    <feature_list>
+      <feature>OPS_NTPD</feature>
+    </feature_list>
     <p>
       NTP Client Configuration info related to configured NTP servers and
       their status info.<code>https://www.ietf.org/rfc/rfc5907.txt</code>
@@ -6322,6 +6337,9 @@
      </group>
   </table>
   <table name="NTP_Key">
+    <feature_list>
+      <feature>OPS_NTPD</feature>
+    </feature_list>
     <p>
       NTP Keys configuration
     </p>
