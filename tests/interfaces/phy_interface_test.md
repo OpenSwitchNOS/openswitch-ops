@@ -3,8 +3,11 @@
 ## Contents
 
 - [Enable/Disable Interface](#enabledisable-interface)
+   - [Verify through SNMP read operations](#verify-through-snmp-read-operations)
 - [Autonegotiation](#autonegotiation)
 - [Statistics](#statistics)
+    - [Verify statistics through SNMP read operations](#verify-statistics-through-snmp-read-operations)
+- [Verify interface configurations through SNMP](#verify-interface-configurations-through-snmp)
 
 ##  Enable/Disable interface
 ### Objective
@@ -68,7 +71,11 @@ Create two interfaces, one up and one down. Verify that status is correct and pi
   wrkston02: shell cmd: ping <to wrkston03 ip addr>
        : verify   :     ping fails
   ```
-
+#### Verify through SNMP read operations
+Read *ifAdminStatus* of interfcae 1 through 'snmpget'. verify the status of the interface.
+```
+wrkston01 : snmpget -v2c -cpublic <switch mgmt ip>:161 IF-MIB::ifAdminStatus.1
+```
 ### Test result criteria
 Interface: admin_state is either "down" or "up" and ping is used to determine if the link is up and working.
 
@@ -233,6 +240,11 @@ Bring up two interfaces and collect baseline statistics. Send pings from ws2 to 
   dut01: vtysh cmd:     show interface 1
   dut01: vtysh cmd:     show interface 2
        : verify   :     stats not updated
+```
+#### Verify statistics through SNMP read operations
+Walk the IF-MIB, verify the statictics being incremented.
+```
+wrkston01 : snmpwalk -v1 -cpublic <switch mgmt ip>:161 1.3.6.1.2.1.2.1
 ```
 
 ### Test result criteria
