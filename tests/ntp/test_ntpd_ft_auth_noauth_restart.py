@@ -22,6 +22,7 @@ from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.switch import *
 import pprint
+from pytest import mark
 
 #NTP server IPs
 global WORKSTATION_IP_ADDR_SER1
@@ -182,6 +183,7 @@ def chkNTPAssociationandStatus(dut01, wrkston01, wrkston02):
 
 #timeout increased to provide enough time to download the images from docker hub
 @pytest.mark.timeout(2400)
+@mark.OPS_NTPD
 class TestNtpClientConfig:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
