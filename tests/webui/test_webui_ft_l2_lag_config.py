@@ -20,6 +20,8 @@ import pytest
 from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 from opsvsiutils.systemutil import *
+from functools import wraps
+from utils.wrapper import retry_wrapper
 
 import json
 import httplib
@@ -73,14 +75,20 @@ LACP_AGGREGATION_KEY = "lacp-aggregation-key"
 
 # The host IPs are based on 10.0.0.0/8
 
-PING_ATTEMPTS = 3
-CREATION_SLEEP_SECS = 50
-DELETION_SLEEP_SECS = 30
+INTERFACE_STATE_STEP = 10
+INTERFACE_STATE_TIMEOUT = 80
+
+LAG_STATE_STEP = 5
+LAG_STATE_TIMEOUT = 35
+
+LAG_DELETION_STEP = 1
+LAG_DELETION_TIMEOUT = 5
 
 
 @pytest.fixture
 def netop_login(request):
-    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP1)
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP2)
 
 
 class myTopo(Topo):
@@ -129,6 +137,14 @@ class Test_CreateLag(OpsVsiTest):
         self.PATH_BRIDGE_NORMAL = self.PATH + "/bridges/bridge_normal"
         self.cookie_header = None
 
+    def retry_validate_turn_on_interfaces(self, sw, interfaces,
+                                          init_msg, err_msg,
+                                          time_steps, timeout):
+        validate_func = retry_wrapper(init_msg, err_msg,
+                                      time_steps, timeout
+                                      )(self.validate_turn_on_interfaces)
+        validate_func(sw, interfaces)
+
     def create_topo_no_lag(self):
         # set up port 1, 2 and 3 on switch 1
         self.create_port(self.SWITCH_IP1, PORT_1)
@@ -151,28 +167,24 @@ class Test_CreateLag(OpsVsiTest):
         self.set_vlan_mode(self.SWITCH_IP1, "lag" + LAG_ID, "trunk")
         self.create_lag(self.SWITCH_IP2, LAG_ID, INTERFACES, "passive")
         self.set_vlan_mode(self.SWITCH_IP2, "lag" + LAG_ID, "trunk")
-        time.sleep(CREATION_SLEEP_SECS)
         self.verify_lag_ok("lag" + LAG_ID)
 
     def test_change_l2_to_l3_lag(self):
         info("\n########## Testing the LAG from L2 to L3 ##########\n")
         self.set_routing_lag(self.SWITCH_IP1, LAG_ID)
         self.set_routing_lag(self.SWITCH_IP2, LAG_ID)
-        time.sleep(CREATION_SLEEP_SECS)
         self.verify_lag_ok("lag" + LAG_ID)
 
     def test_change_l3_to_l2_lag(self):
         info("\n########## Testing the LAG from L3 to L2 ##########\n")
         self.set_no_routing_lag(self.SWITCH_IP1, LAG_ID)
         self.set_no_routing_lag(self.SWITCH_IP2, LAG_ID)
-        time.sleep(CREATION_SLEEP_SECS)
         self.verify_lag_ok("lag" + LAG_ID)
 
     def test_delete_lag(self):
         # called after test_create_lag()
         self.delete_lag(self.SWITCH_IP1, LAG_ID, INTERFACES)
         self.delete_lag(self.SWITCH_IP2, LAG_ID, INTERFACES)
-        time.sleep(DELETION_SLEEP_SECS)
         self.verify_lag_deleted("lag" + LAG_ID)
 
     def create_lag(self, switch, lagId, interfaces, mode="active"):
@@ -365,44 +377,94 @@ class Test_CreateLag(OpsVsiTest):
         info("### Interface Patched. Status code is 204 NO CONTENT  ###\n")
 
     def verify_lag_ok(self, lagName, mode="active"):
-        # assert status bond_hw_handle has value for static lag
-        # assert status lacp_status bond_status ok for dynamic lag
-        # Verify data
-        self.PORT_PATH = self.PATH_PORTS + "/" + lagName
-        for switch in [self.SWITCH_IP1, self.SWITCH_IP2]:
-            info("### Checking switch " + switch + "###\n")
-            status_code, response_data = execute_request(
-                self.PORT_PATH, "GET",
-                None,
-                switch,
-                False,
-                xtra_header=self.cookie_header)
+        @retry_wrapper(
+            'Ensure lag creation returns status OK',
+            'Lag is not yet ready',
+            LAG_STATE_STEP,
+            LAG_STATE_TIMEOUT)
+        def internal_check_lag_status(lagName, mode):
+            # assert status bond_hw_handle has value for static lag
+            # assert status lacp_status bond_status ok for dynamic lag
+            # Verify data
+            self.PORT_PATH = self.PATH_PORTS + "/" + lagName
+            for switch in [self.SWITCH_IP1, self.SWITCH_IP2]:
+                info("### Checking switch " + switch + "###\n")
+                status_code, response_data = execute_request(
+                    self.PORT_PATH, "GET",
+                    None,
+                    switch,
+                    False,
+                    xtra_header=self.cookie_header)
+                assert status_code == httplib.OK,\
+                    "Failed to query LAG " + lagName
+                json_data = get_json(response_data)
+                if mode != "off":
+                    assert json_data["status"]["lacp_status"]["bond_status"] \
+                        == "ok"
+                    info("### Switch " + switch + " lag status is ok ###\n")
 
-            assert status_code == httplib.OK,\
-                "Failed to query LAG " + lagName
-            json_data = get_json(response_data)
-            if mode != "off":
-                assert json_data["status"]["lacp_status"]["bond_status"] \
-                    == "ok"
-                info("### Switch " + switch + " lag status is ok ###\n")
+        # Wait for interfaces to be on, then wait for lag to be ok
+        info("Waiting for interfaces to turn on")
+
+        self.retry_validate_turn_on_interfaces(
+            self.SWITCH_IP1,
+            INTERFACES,
+            "\nVerify interfaces are up in " + self.SWITCH_IP1 + "\n",
+            "\nRetry to make sure interfaces are up",
+            INTERFACE_STATE_STEP,
+            INTERFACE_STATE_TIMEOUT)
+
+        self.retry_validate_turn_on_interfaces(
+            self.SWITCH_IP2,
+            INTERFACES,
+            "\nVerify interfaces are up in " + self.SWITCH_IP2 + "\n",
+            "\nRetry to make sure interfaces are up",
+            INTERFACE_STATE_STEP,
+            INTERFACE_STATE_TIMEOUT)
+        internal_check_lag_status(lagName, mode)
 
     def verify_lag_deleted(self, lagName):
-        # assert status bond_hw_handle has value for static lag
-        # assert status lacp_status bond_status ok for dynamic lag
-        # Verify data
-        self.PORT_PATH = self.PATH_PORTS + "/" + lagName
-        for switch in [self.SWITCH_IP1, self.SWITCH_IP2]:
-            info("### Checking switch " + switch + "###\n")
-            status_code, response_data = execute_request(
-                self.PORT_PATH, "GET",
-                None,
-                switch,
-                False,
-                xtra_header=self.cookie_header)
+        @retry_wrapper(
+            'Ensure lag deletion returns status OK',
+            'Lag deletion is not yet complete',
+            1,
+            5)
+        def internal_check_lag_deletion(lagName):
+            self.PORT_PATH = self.PATH_PORTS + "/" + lagName
+            for switch in [self.SWITCH_IP1, self.SWITCH_IP2]:
+                info("### Checking switch " + switch + "###\n")
+                status_code, response_data = execute_request(
+                    self.PORT_PATH, "GET",
+                    None,
+                    switch,
+                    False,
+                    xtra_header=self.cookie_header)
 
-            assert status_code == 404,\
-                "Switch: " + switch + " - LAG " + lagName + " must not exist."
-            info("### Switch " + switch + " lag deletion is ok ###\n")
+                assert status_code == 404,\
+                    "Switch: " + switch + " - LAG " + lagName +\
+                    " must not exist."
+                info("### Switch " + switch + " lag deletion is ok ###\n")
+        internal_check_lag_deletion(lagName)
+
+    def get_interface_status(self, switch, interface):
+        self.INT_PATH = self.PATH_INT + "/" + interface
+        info("### GET INTF STATUS " + switch + "[" + interface + "] ###\n")
+        status_code, response_data = execute_request(
+            self.INT_PATH, "GET",
+            None,
+            switch,
+            False,
+            xtra_header=self.cookie_header)
+        assert status_code == httplib.OK,\
+            "Failed to query Interface " + interface
+        return get_json(response_data).get("status")
+
+    def validate_turn_on_interfaces(self, switch, interfaces):
+        for intf in interfaces:
+            status = self.get_interface_status(switch, intf)
+            assert status and status["admin_state"] == 'up' and \
+                status["link_state"] == 'up',\
+                "Interface link state for " + intf + " is down"
 
     def create_port(self, switch, port):
         self.PORT_PATH = self.PATH_PORTS + "/" + port
@@ -474,7 +536,6 @@ class Test_CreateLag(OpsVsiTest):
             return []
 
 
-@pytest.mark.skipif(True, reason="Skipping due to Taiga ID : 768")
 class Test_WebUIREST:
     def setup(self):
         pass
