@@ -3,10 +3,13 @@
 ## Contents
 
 - [Enable/Disable Interface](#enabledisable-interface)
+   - [Verify through SNMP read operations](#verify-through-snmp-read-operations)
 - [Autonegotiation](#autonegotiation)
 - [Statistics](#statistics)
+    - [Verify statistics through SNMP read operations](#verify-statistics-through-snmp-read-operations)
+- [Verify interface statistics through SNMP](#verify-interface-statistics-through-snmp)
 
-##  Enable/Disable interface
+## Enable/Disable interface
 ### Objective
 Verify that enable and disabling interfaces behave as expected.
 ### Requirements
@@ -68,17 +71,21 @@ Create two interfaces, one up and one down. Verify that status is correct and pi
   wrkston02: shell cmd: ping <to wrkston03 ip addr>
        : verify   :     ping fails
   ```
-
+#### Verify through SNMP read operations
+Read the *ifAdminStatus* parameter of interface 1 through 'snmpget'. Verify the status of the interface.
+```
+wrkston01 : snmpget -v2c -cpublic <switch mgmt ip>:161 IF-MIB::ifAdminStatus.1
+```
 ### Test result criteria
-Interface: admin_state is either "down" or "up" and ping is used to determine if the link is up and working.
+The interface `admin_state` is either "down" or "up" and pinging is used to determine if the link is active and working.
 
 #### Test pass criteria
-Interface: admin_state = "up" or "down" when appropriate and pings succeed.
+The interface `admin_state` is "up" or "down" when appropriate and pinging succeeds.
 
 #### Test fail criteria
-Interface: admin_state = "up" or "down" when appropriate and pings fail.
+The interface `admin_state` is displayed as "up" or "down" when appropriate but pinging fails.
 
-##  Autonegotiation
+## Autonegotiation
 ### Objective
 Verify autonegotiation configuration changes behave as expected.
 ### Requirements
@@ -111,7 +118,7 @@ The requirements for this test case are:
 #### Test setup
 
 ### Description
-Bring up two intefaces, with default autoneg (not configured). Verify autoneg is set to "on" and pings succeed.
+Bring up two interfaces, with default autoneg (not configured). Verify autoneg is set to "on" and pings succeed.
 Disable autoneg, verify admin_state is down, error=autoneg_required, and pings fail.
 Enable autoneg, verify autoneg is set to "on", and pings succeed.
 Remove autoneg (no autoneg) and it goes back to default (on). Verify autoneg is set to "on" and pings succeed.
@@ -234,12 +241,90 @@ Bring up two interfaces and collect baseline statistics. Send pings from ws2 to 
   dut01: vtysh cmd:     show interface 2
        : verify   :     stats not updated
 ```
+#### Verify statistics through SNMP read operations
+Execute the IF-MIB and then verify that the statistics are being incremented.
+```
+wrkston01 : snmpwalk -v1 -cpublic <switch mgmt ip>:161 1.3.6.1.2.1.2.1
+```
 
 ### Test result criteria
-Use vtysh output for "show interface x". Statistics should increase appropriately due to pings.
+Use the vtysh output for "show interface x". The statistics should increase appropriately due to pings.
 
 #### Test pass criteria
-Counters increase for rx/tx packets and bytes.
+Counters increase for `rx` or `tx` packets and bytes.
 
 #### Test fail criteria
-Counters do not change for rx/tx input errors, drops, rx crc, or tx collisions.
+Counters do not change for `rx` or `tx` input errors, drops occur for `rx crc`, or drops occur for `tx`  collisions.
+
+
+## Verify interface statistics through SNMP
+
+### Objective
+The testcase verifies if the SNMP is able to fetch the statistics update from OVSDB.
+
+### Requirements
+The requirements for this test case are:
+- 1 switch
+
+
+### Setup
+
+#### Topology diagram
+```ditaa
+    +--------+               +--------+
+    |        |               |        |
+    |   S1   | <-----------> |   S2   |
+    |        |               |        |
+    +--------+               +--------+
+```
+
+## Description
+To test the scenario, the statistics values are manually added using *ovs-vsctl set* command, followed by snmpwalk/snmpget operations on a IF-MIB objects.
+Following are the statictics objects set using ovs-vsctl
+
+### Interface statistics
+
+| MIB-object  | OVSDB key|
+|--------|--------|
+| ifInUcastPkts,ifHCInUcastPkts | rx_packets |
+| ifInOctets ,ifHCInOctets | rx_bytes |
+| ifOutUcastPkts,ifHCOutUcastPkts |  tx_packets |
+| ifOutOctets,ifHCOutOctets |tx_bytes |
+| ifInDiscards | rx_dropped |
+| ifInErrors | rx_crc_err |
+| ifOutDiscards | tx_dropped |
+| ifOutErrors    | tx_errors |
+
+
+### IP statistics
+| MIB-object  | OVSDB key|
+|--------|--------|
+|ipSystemStatsInReceives                       |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_rx_packets] + statistics[ip<v4/v6>_mc_rx_packets]|
+|ipSystemStatsHCInReceives                      |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_rx_packets] + statistics[ip<v4/v6>_mc_rx_packets] |
+|ipSystemStatsInOctets                          |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_rx_bytes] + statistics[ip<v4/v6>_mc_rx_bytes]|
+|ipSystemStatsHCInOctets                        |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_rx_bytes] + statistics[ip<v4/v6>_mc_rx_bytes] |
+|ipSystemStatsOutTransmits                      |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_tx_packets] + statistics[ip<v4/v6>_mc_tx_packets]|
+|ipSystemStatsHCOutTransmits                    |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_tx_packets] + statistics[ip<v4/v6>_mc_tx_packets]|
+|ipSystemStatsOutOctets                         |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_tx_bytes] + statistics[ip<v4/v6>_mc_tx_bytes]|
+|ipSystemStatsHCOutOctets                       |             [sum over all interfaces]-- statistics[ip<v4/v6>_uc_tx_bytes] + statistics[ip<v4/v6>_mc_tx_bytes]|
+|ipSystemStatsInMcastPkts                       |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_rx_packets]|
+|ipSystemStatsHCInMcastPkts                     |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_rx_packets]|
+|ipSystemStatsInMcastOctets                     |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_rx_bytes]|
+|ipSystemStatsHCInMcastOctets                   |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_rx_bytes]|
+|ipSystemStatsOutMcastPkts                      |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_tx_packets]|
+|ipSystemStatsHCOutMcastPkts                    |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_tx_packets]|
+|ipSystemStatsOutMcastOctets                    |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_tx_bytes]|
+|ipSystemStatsHCOutMcastOctets                  |             [sum over all interfaces]-- statistics[ip<v4/v6>_mc_tx_bytes]     |
+
+
+### Test result criteria
+Use snmpwalk command to read all the IF-MIB and IP-MIB statistics.
+```
+snmpwalk -<v1/v2c/v3> -c<public/configured_community> <localhost/remote IP:agent_port> <IF-MIB/IP-MIB>
+```
+
+#### Test pass criteria
+The snmpwalk result reflects the updated counters.
+
+#### Test fail criteria
+The snmpwalk result does not reflect the updated counters.
