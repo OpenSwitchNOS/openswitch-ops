@@ -111,6 +111,32 @@ no form of 'lacp rate fast' sets the rate to slow.
 ops-xxxx(config-lag-if)# no lacp rate fast
 ```
 
+4.  Setting the LACP **fallback**.
+LACP fallback is used to determine the behavior of a LAG using LACP to negotiate when there is no partner.
+When fallback is disabled, which is the default, LAG blocks all its members until it can negotiate with a partner.
+When fallback is enabled, one or more interfaces are not blocked when there is no partner,
+depending on the fallback mode, **priority** (default) or **all_active**.
+When **priority** mode is set, the interface with the higher LACP port-priority is not blocked.
+When **all_active** mode is set, none of the interfaces of the LAG are blocked.
+LACP fallback timeout is a value in seconds used to determine the time during which fallback will be active.
+Its default value is zero, meaning that fallback will be active until a partner is detected. It can be configured to
+any value between 1 and 900 seconds.
+```
+ops-xxxx(config-lag-if)# lacp fallback
+ops-xxxx(config-lag-if)# no lacp fallback
+
+ops-xxxx(config-lag-if)# lacp fallback mode all_active
+ops-xxxx(config-lag-if)# lacp fallback mode priority
+no form of 'lacp fallback mode all_active' sets fallback mode to priority.
+ops-xxxx(config-lag-if)# no lacp fallback mode all_active
+
+ops-xxxx(config-lag-if)# lacp fallback timeout 500
+no form of 'lacp fallback timeout' sets fallback timeout to zero.
+ops-xxxx(config-lag-if)# no lacp fallback timeout 500
+```
+Note: You can use "show lacp interface" to find out if an interface is being unblocked because of fallback operation.
+If the interface state has collecting, distributing and default neighbor state (CDE), it means the interface is unblocked by fallback.
+
 ### Setting up interface LACP parameters
 
 1. Setting the LACP **port-id**.
@@ -145,13 +171,17 @@ Aggregate-name          : lag100
 Aggregated-interfaces   :
 Heartbeat rate          : slow
 Fallback                : false
+Fallback mode           : all_active
+Fallback timeout        : 50
 Hash                    : l3-src-dst
 Aggregate mode          : off
 
->Aggregate-name         : lag200
+Aggregate-name          : lag200
 Aggregated-interfaces   :
 Heartbeat rate          : slow
 Fallback                : false
+Fallback mode           : priority
+Fallback timeout        : 0
 Hash                    : l3-src-dst
 Aggregate mode          : off
 ```
@@ -163,6 +193,8 @@ Aggregate-name          : lag100
 Aggregated-interfaces   :
 Heartbeat rate          : slow
 Fallback                : false
+Fallback mode           : all_active
+Fallback timeout        : 50
 Hash                    : l3-src-dst
 Aggregate mode          : off
 ```
