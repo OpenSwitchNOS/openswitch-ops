@@ -90,6 +90,116 @@ The option `set option-name <option_name> option-value <option_value>  match tag
 - Parameter `option-value` sets the DHCP option value.
 - Parameter `match-tags` sets the matching labels (optional).
 ```
+The list of available `option-name` and correponding `option-number` are:
+
+| option-name              | option-number |
+|--------------------------|---------------|
+| netmask                  | 1             |
+| time-offset              | 2             |
+| router                   | 3             |
+| dns-server               | 6             |
+| log-server               | 7             |
+| lpr-server               | 9             |
+| hostname                 | 12            |
+| boot-file-size           | 13            |
+| domain-name              | 15            |
+| swap-server              | 16            |
+| root-path                | 17            |
+| extension-path           | 18            |
+| ip-forward-enable        | 19            |
+| non-local-source-routing | 20            |
+| policy-filter            | 21            |
+| max-datagram-reassembly  | 22            |
+| default-ttl              | 23            |
+| mtu                      | 26            |
+| all-subnets-local        | 27            |
+| broadcast                | 28            |
+| router-discovery         | 31            |
+| router-solicitation      | 32            |
+| static-route             | 33            |
+| trailer-encapsulation    | 34            |
+| arp-timeout              | 35            |
+| ethernet-encap           | 36            |
+| tcp-ttl                  | 37            |
+| tcp-keepalive            | 38            |
+| nis-domain               | 40            |
+| nis-server               | 41            |
+| ntp-server               | 42            |
+| vendor-encap             | 43            |
+| netbios-ns               | 44            |
+| netbios-dd               | 45            |
+| netbios-nodetype         | 46            |
+| netbios-scope            | 47            |
+| x-windows-fs             | 48            |
+| x-windows-dm             | 49            |
+| requested-address        | 50            |
+| lease-time               | 51            |
+| option-overload          | 52            |
+| message-type             | 53            |
+| server-identifier        | 54            |
+| parameter-request        | 55            |
+| message                  | 56            |
+| max-message-size         | 57            |
+| T1                       | 58            |
+| T2                       | 59            |
+| vendor-class             | 60            |
+| client-id                | 61            |
+| nis+-domain              | 64            |
+| nis+-server              | 65            |
+| tftp-server              | 66            |
+| bootfile-name            | 67            |
+| mobile-ip-home           | 68            |
+| smtp-server              | 69            |
+| pop3-server              | 70            |
+| nntp-server              | 71            |
+| irc-server               | 74            |
+| user-class               | 77            |
+| FQDN                     | 81            |
+| agent-id                 | 82            |
+| client-arch              | 93            |
+| client-interface-id      | 94            |
+| client-machine-id        | 97            |
+| subnet-select            | 118           |
+| domain-search            | 119           |
+| sip-server               | 120           |
+| classless-static-route   | 121           |
+| vendor-id-encap          | 125           |
+| server-ip-address        | 255           |
+
+The list of `option-name` and `option-number` for ipv6 are:
+
+| option-name              | option-number |
+|--------------------------|---------------|
+| client-id                | 1             |
+| server-id                | 2             |
+| ia-na                    | 3             |
+| ia-ta                    | 4             |
+| iaaddr                   | 5             |
+| oro                      | 6             |
+| preference               | 7             |
+| unicast                  | 12            |
+| status                   | 13            |
+| rapid-commit             | 14            |
+| user-class               | 15            |
+| vendor-class             | 16            |
+| vendor-opts              | 17            |
+| sip-server-domain        | 21            |
+| sip-server               | 22            |
+| dns-server               | 23            |
+| domain-search            | 24            |
+| nis-server               | 27            |
+| nis+-server              | 28            |
+| nis-domain               | 29            |
+| nis+-domain              | 30            |
+| sntp-server              | 31            |
+| information-refresh-time | 32            |
+| FQDN                     | 39            |
+| ntp-server               | 56            |
+| bootfile-url             | 59            |
+| bootfile-param           | 60            |
+
+Refer to RFC 2132 for the format of valid `option-value` for corresponding `option-name`/`option-number`.
+
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
 ops-as5712(config-dhcp-server)#option set option-name Router option-value 10.0.0.1 match tags tag1,tag2,tag3
@@ -102,6 +212,7 @@ ops-as5712(config)# dhcp-server
 ops-as5712(config-dhcp-server)# no option set option-name Router option-value 10.0.0.1 match tags tag1,tag2,tag3
 ops-as5712(config-dhcp-server)# no option set option-number 3 option-value 10.0.0.1 match tags tag1,tag2,tag3
 ```
+
 ####Setting DHCP match configuration
 The `match set tag <set_tag_name> match-option-name <option_name> match-option-value <option_value>` and `match set tag <set_tag_name> match-option-number <option_number> match-option-value <option_value>` set the configuration for the server to set the tag if the client sends a DHCP option of the given number or name.
 - Parameter `match-option-name` sets the option name to be matched in the client request.
