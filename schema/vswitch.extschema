@@ -493,6 +493,35 @@
           },
           "ephemeral": true
         },
+        "ptp_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ptp_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "ptp_statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
         "syslog_remotes": {
           "category": "configuration",
           "relationship": "1:m",
@@ -4582,7 +4611,35 @@
             "min": 0,
             "max": "unlimited"
           }
-        }
+        },
+        "ptp_config": {
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "ptp_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
+        "ptp_statistics": {
+          "category": "statistics",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "ephemeral": true
+        },
       },
       "indexes": [
         [
