@@ -517,6 +517,81 @@
       <column name="ntp_status" key="uptime">
          Time in hours since the system was last rebooted.
       </column>
+
+      <group title="PTP Global Configuration">
+      <p>
+        Information about the Precision Time Protocol (PTP) configuration.
+      </p>
+      <column name="ptp_config">
+        Key-value pairs that represent PTP configuration.
+      </column>
+      <column name="ptp_config" key="enable">
+        Enable or disable PTP feature.
+      </column>
+      <column name="ptp_config" key="mode">
+        PTP packet forwarding mode for the switch.
+        The possible values are "transparent" and "boundary".
+      </column>
+      <column name="ptp_config" key="domain">
+        Domain number to use for the clock.
+      </column>
+      <column name="ptp_config" key="priority1">
+        Priority1 value for advertising the PTP clock.
+      </column>
+      <column name="ptp_config" key="priority2">
+        Priority2 value for advertising the PTP clock.
+      </column>
+      <column name="ptp_config" key="source_ip">
+        Source IP address for all PTP packets.
+      </column>
+      <column name="ptp_config" key="hold_time">
+        Specifies the PTP offset hold time in seconds.
+      </column>
+      </group>
+      <group title="PTP Status">
+      <p>
+        Information about the PTP status.
+      </p>
+      <column name="ptp_status">
+        Key-value pairs that report PTP status information
+      </column>
+      <column name="ptp_status" key="clock_identity">
+        Displays the properties of the local clock.
+      </column>
+      <column name="ptp_status" key="steps_removed">
+        Number of steps removed.
+      </column>
+      <column name="ptp_status" key="clock_quality">
+        Clock quality.
+      </column>
+      <column name="ptp_status" key="accuracy">
+        Clock accuracy.
+      </column>
+      <column name="ptp_status" key="offset_from_master">
+        The number of offsets from master.
+      </column>
+      <column name="ptp_status" key="number_of_slave_ports">
+        Number of slave ports present in the boundary clock scenario.
+      </column>
+      <column name="ptp_status" key="current_utc_offset">
+        The current UTC offset.
+      </column>
+      <column name="ptp_status" key="leap">
+        The number of leaps
+      </column>
+      </group>
+      <group title="PTP Statistics">
+      <p>
+        Information about the PTP statistics.
+      </p>
+      <column name="ptp_statistics">
+        Key-value pairs that report PTP statistics.
+      </column>
+      <column name="ptp_statistics" key="announce_messages">
+        Number of announce messages sent.
+      </column>
+      </group>
+
       <column name="next_cfg">
         Sequence number for client to increment.  When a client modifies
         any part of the database configuration and wishes to wait for
@@ -5008,6 +5083,66 @@
       </column>
     </group>
 
+    <group title="PTP Interface Configuration">
+      <p>
+        Information about the PTP Interface level configuration.
+      </p>
+      <column name="ptp_config">
+        Key-value pairs that report PTP information.
+      </column>
+      <column name="ptp_config" key="enable">
+        Enable or disable PTP feature on the interface.
+      </column>
+      <column name="ptp_config" key="announce_interval">
+        Configures the interval between PTP announce messages on an interface.
+      </column>
+      <column name="ptp_config" key="delay_minimum_interval">
+        Configures the minimum interval between PTP delay messages.
+      </column>
+      <column name="ptp_config" key="sync_interval">
+        Configures the interval between PTP sync messages.
+      </column>
+    </group>
+    <group title="PTP Status">
+      <p>
+        Information about the PTP status.
+      </p>
+      <column name="ptp_status">
+        Key-value pairs that report PTP status information on an interface.
+      </column>
+      <column name="ptp_status" key="port_state">
+        Displays the port state.
+      </column>
+      <column name="ptp_status" key="steps_removed">
+        Displays the number of steps removed.
+      </column>
+      <column name="ptp_status" key="delay_request_interval">
+        Displays the delay request interval.
+      </column>
+      <column name="ptp_status" key="announce_interval">
+        Displays the PTP announce interval.
+      </column>
+    </group>
+    <group title="PTP Statistics">
+      <p>
+        Information about the PTP statistics.
+      </p>
+      <column name="ptp_statistics">
+        Key-value pairs that report PTP statistics on an interface.
+      </column>
+      <column name="ptp_statistics" key="announce_messages_sent">
+        Number of announce messages sent.
+      </column>
+      <column name="ptp_statistics" key="announce_messages_received">
+        Number of announce messages received.
+      </column>
+      <column name="ptp_statistics" key="sync_messages_sent">
+        Number of sync messages sent.
+      </column>
+      <column name="ptp_statistics" key="follow_up_messages_sent">
+        Number of follow-up messages sent.
+      </column>
+    </group>
     <group title="Statistics">
       <p>
         Key-value pairs that report interface statistics.  The current
