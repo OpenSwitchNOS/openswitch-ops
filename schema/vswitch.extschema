@@ -917,6 +917,39 @@
           },
           "ephemeral": true
         },
+        "source_interface": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "tftp_source_interface",
+                  "radius_source_interface",
+                  "protocols_source_interface"
+                ]
+              ]
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "Port",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "source_ip": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "other_config": {
           "category": "configuration",
           "type": {

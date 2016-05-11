@@ -289,18 +289,6 @@
        </column>
     </group>
 
-    <group title="Source Interface Selection Configurations">
-        <column name="other_config" key="tftp_source"
-                type='{"type": "string", "maxLength":256}'>
-          Provides source interface or IP address for tftp client. If not present, regular routing rules take place.
-        </column>
-
-        <column name="other_config" key="protocols_source"
-                type='{"type": "string", "maxLength":256}'>
-          Overrides source interface or IP address for all the protocols that support it. If not present, regular routing rules take place.
-        </column>
-      </group>
-
     <group title="UDP Broadcast Forwarder Configurations">
         <column name="other_config" key="udp_bcast_forwarder_enabled"
               type='{"type": "boolean"}'>
@@ -1564,6 +1552,35 @@
           the assumed value is false.
       </column>
    </group>
+
+   <group title="Source Interface Selection Configurations">
+
+        <column name="source_ip" key="tftp_source_ip">
+          Provides source IP address for tftp client. If not present, regular routing rules take place.
+        </column>
+
+        <column name="source_ip" key="radius_source_ip">
+          Provides source IP address for radius server. If not present, regular routing rules take place.
+        </column>
+
+        <column name="source_ip" key="protocols_source_ip">
+          Overrides source interface for all the protocols that support it. If not present, regular routing rules take place.
+        </column>
+
+        <column name="source_interface" key="tftp_source_interface">
+          Provides source interface for tftp client. If not present, regular routing rules take place.
+        </column>
+
+        <column name="source_interface" key="radius_source_interface">
+          Provides source interface for radius server. If not present, regular routing rules take place.
+        </column>
+
+        <column name="source_interface" key="protocols_source_interface">
+          Overrides source IP address for all the protocols that support it. If not present, regular routing rules take place.
+        </column>
+
+      </group>
+
    <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
