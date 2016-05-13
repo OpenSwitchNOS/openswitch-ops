@@ -3480,7 +3480,7 @@
           }
         },
         "internal_usage": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": "string",
             "value": "string",
