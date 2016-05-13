@@ -2058,17 +2058,100 @@ admin
 
 Sort by allowed sort field (ascending mode).
 
-For each allowed sort field exececute the following steps:
+For each allowed sort field execute the following steps:
 
-1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=<field_name>` and verify that response is `200 OK`.
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=<field_name>`
+and verify that response is `200 OK`.
 2. Verify if the result is being ordered by the provided field name.
 
 Sort by allowed sort field (descending mode).
 
-For each allowed sort field exececute the following steps:
+For each allowed sort field execute the following steps:
 
-1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=-<field_name>` and verify that response is `200 OK`.
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=-<field_name>`
+and verify that response is `200 OK`.
 2. Verify if the result is being ordered by the provided field name.
+
+Sort without using depth parameter (ascending and descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?sort=<field_name>`
+and verify that response is `400 BAD REQUEST`.
+
+Sort by allowed sort field and offset equal to zero (ascending and descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;offset=0;sort=-<field_name>`
+and verify that response is `200 OK`.
+2. Verify if returned all the results.
+
+Sort by allowed sort field and offset with invalid criteria (ascending and descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;offset=one;sort=<field_name>`
+and verify that response is `400 BAD REQUEST`.
+
+Sort by allowed sort field and limit equal to ten (ascending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;name=Port-1,Port-2,
+Port-3,Port-4,Port-5,Port-6,Port-7,Port-8,Port-9,Port-10;limit=10;sort=name`
+and verify that response is `200 OK`.
+2. Verify if returned 10 ports in the results.
+
+Sort by allowed sort field and limit equal to ten (descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;name=Port-1,Port-2,
+Port-3,Port-4,Port-5,Port-6,Port-7,Port-8,Port-9,Port-10;limit=10;sort=-name`
+and verify that response is `200 OK`.
+2. Verify if returned 10 ports in the results.
+
+Sort by allowed sort field and limit higher to ten (ascending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;name=Port-1,Port-2,
+Port-3,Port-4,Port-5,Port-6,Port-7,Port-8,Port-9,Port-10;limit=11;sort=name`
+and verify that response is `200 OK`.
+2. Verify if returned 10 ports in the results.
+
+Sort by allowed sort field and limit higher to ten (descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;name=-Port-1,Port-2,
+Port-3,Port-4,Port-5,Port-6,Port-7,Port-8,Port-9,Port-10;limit=11;sort=<field_name>`
+and verify that response is `200 OK`.
+2. Verify if returned 10 ports in the results.
+
+Sort by allowed sort field and limit equal to zero (ascending and descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;limit=0;sort=<field_name>`
+and verify that response is `400 BAD REQUEST`.
+
+Sort by allowed sort field with offset equal to 9 and limit to two (ascending a descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;name=-Port-1,Port-2,
+Port-3,Port-4,Port-5,Port-6,Port-7,Port-8,Port-9,Port-10;offset=9;limit=2;
+sort=<field_name>` and verify that response is `200 OK`.
+2. Verify if returned only one port in the result.
+
+Sort by allowed sort field and limit equal to negative value (ascending and descending mode).
+
+For each allowed sort field execute the following steps:
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;limit=-1;sort=<field_name>`
+and verify that response is `400 BAD REQUEST`.
 
 ### Test result criteria
 
@@ -2077,7 +2160,7 @@ For each allowed sort field exececute the following steps:
 This test passes by meeting the following criteria:
 
 - The HTTP response is `200 OK`.
-- The response has 10 ports.
+- The response has all the expected amount of ports.
 - The ports are sorted ascending/descending by the field name.
 
 #### Test fail criteria
@@ -2085,7 +2168,7 @@ This test passes by meeting the following criteria:
 This test fails when:
 
 - The HTTP response is not equal to `200 OK`.
-- The response doesn't have 10 ports.
+- The response doesn't have expected amount of ports.
 - The port aren't sorted ascending/descending by the field name.
 
 
@@ -2164,10 +2247,20 @@ Sort by admin and name (Ascending mode)
 1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=admin,name` and verify that response is `200 OK`.
 2. Verify if the result is being ordered by the provided fields. First by admin and the by name.
 
+Sort by all available keys (Ascending mode)
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=<all available keys>` and verify that response is `200 OK`.
+2. Verify if the result is being ordered by all the provided fields.
+
 Sort by admin and name (Descending mode)
 
 1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=-admin,name` and verify that response is `200 OK`.
 2. Verify if the result is being ordered by the provided fields. First by admin and the by name.
+
+Sort by all available keys (Descending mode)
+
+1. Execute a GET request on `/rest/v1/system/ports?depth=1;sort=-<all available keys>` and verify that response is `200 OK`.
+2. Verify if the result is being ordered by all the provided fields.
 
 ### Test result criteria
 
@@ -2179,7 +2272,7 @@ This test passes by meeting the following criteria:
 - The response has 10 ports.
 - The result is sorted ascending/descending by the combination of fields.
 
-Expected result when sort mode is ascending:
+Expected result when sort mode is ascending and provided fields are "admin,name":
 
 ```
 admin = down, name = Port10
@@ -2194,7 +2287,7 @@ admin = up, name = Port7
 admin = up, name = Port9
 ```
 
-Expected result when sort mode is descending:
+Expected result when sort mode is descending and provided fields are "-admin,name":
 
 ```
 admin = up, name = Port9
