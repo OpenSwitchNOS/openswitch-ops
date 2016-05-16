@@ -460,7 +460,7 @@ def lldp_interface_txrx(**kwargs):
             Sleep(seconds=10, message="Delay")
     device1.setDefaultContext(context="vtyShell")
     #assert int((lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())==1, "Case Failed, No Neighbor is present for SW1 on Link 1"
-    assert int((lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())== int(device2.linkPortMapping['lnk01']), "Case Failed, No Neighbor is present for SW1 on Link 1"
+    assert str((lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())== str(device2.linkPortMapping['lnk01']), "Case Failed, No Neighbor is present for SW1 on Link 1"
     if (lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']):
         LogOutput('info',"Case Passed, Neighborship established by SW1 on Link1")
         LogOutput('info', "\nPort of SW1 neighbor is :" + str(lnk01PrtStats[device1.linkPortMapping['lnk01']]['Neighbor_portID']))
@@ -499,7 +499,7 @@ def lldp_interface_txrx(**kwargs):
             Sleep(seconds=10, message="Delay")
     device2.setDefaultContext(context="vtyShell")
     #assert int((lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())==1, "Case Failed, No Neighbor is present for SW2 on link 1"
-    assert int((lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())== int(device1.linkPortMapping['lnk01']), "Case Failed, No Neighbor is present for SW2 on link 1"
+    assert str((lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']).rstrip())== str(device1.linkPortMapping['lnk01']), "Case Failed, No Neighbor is present for SW2 on link 1"
     if (lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']):
         LogOutput('info',"\nCase Passed, Neighborship established by SW2 on Link 1")
         LogOutput('info', "\nPort of SW1 neighbor is :" + str(lnk01PrtStats[device2.linkPortMapping['lnk01']]['Neighbor_portID']))
@@ -542,7 +542,7 @@ def lldp_interface_txrx(**kwargs):
             Sleep(seconds=10, message="Delay")
     device1.setDefaultContext(context="vtyShell")
     #assert int((lnk02PrtStats[device1.linkPortMapping['lnk02']]['Neighbor_portID']).rstrip())==2, "Case Failed, No Neighbor present for SW1 on Link 2"
-    assert int((lnk02PrtStats[device1.linkPortMapping['lnk02']]['Neighbor_portID']).rstrip())== int(device2.linkPortMapping['lnk02']), "Case Failed, No Neighbor present for SW1 on Link 2"
+    assert str((lnk02PrtStats[device1.linkPortMapping['lnk02']]['Neighbor_portID']).rstrip())== str(device2.linkPortMapping['lnk02']), "Case Failed, No Neighbor present for SW1 on Link 2"
     if (lnk02PrtStats[device1.linkPortMapping['lnk02']]['Neighbor_portID']):
         LogOutput('info',"Case Passed,  Neighborship established for SW1 on link 2")
         LogOutput('info', "\nPort of SW1 neighbor is :" + str(lnk02PrtStats[device1.linkPortMapping['lnk02']]['Neighbor_portID']))
@@ -671,7 +671,7 @@ def lldp_interface_txrx(**kwargs):
             Sleep(seconds=10, message="Delay")
     device2.setDefaultContext(context="vtyShell")
     #assert int((lnk03PrtStats[device2.linkPortMapping['lnk03']]['Neighbor_portID']).rstrip())==3, "Case Passed, No Neighbor is present for SW2 on Link 3"
-    assert int((lnk03PrtStats[device2.linkPortMapping['lnk03']]['Neighbor_portID']).rstrip())== int(device1.linkPortMapping['lnk03']), "Case Passed, No Neighbor is present for SW2 on Link 3"
+    assert str((lnk03PrtStats[device2.linkPortMapping['lnk03']]['Neighbor_portID']).rstrip())== str(device1.linkPortMapping['lnk03']), "Case Passed, No Neighbor is present for SW2 on Link 3"
     if (lnk03PrtStats[device2.linkPortMapping['lnk03']]['Neighbor_portID']):
         LogOutput('info',"\nCase Passed, Neighborship established by SW2 on Link 3")
         LogOutput('info', "\nPort of SW2 neighbour is :" + str(lnk03PrtStats[device2.linkPortMapping['lnk03']]['Neighbor_portID']))
