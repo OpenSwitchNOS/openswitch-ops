@@ -5755,7 +5755,9 @@
               "type": "uuid",
               "refTable": "Port",
               "refType" : "weak"
-            }
+            },
+            "min": 0,
+            "max": 1
           }
         },
         "tunnel_key": {
@@ -5786,9 +5788,7 @@
       },
       "indexes": [
         [
-          "bridge",
           "vlan",
-          "from",
           "mac_addr"
         ]
       ],
