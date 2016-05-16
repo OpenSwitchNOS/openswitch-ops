@@ -20,6 +20,7 @@ import re
 from opstestfw import *
 from opstestfw.switch.CLI import *
 from opstestfw.switch import *
+import pdb
 
 # Topology definition
 topoDict = {"topoExecution": 1000,
@@ -30,13 +31,15 @@ topoDict = {"topoExecution": 1000,
                             wrkston01:system-category:workstation"}
 
 
+interface_loopback_id = "10" # Hardcode loopback interface, interface ID not valid for all platforms
+
 def loopback_l3(**kwargs):
     switch = kwargs.get('device1', None)
     wrkstn = kwargs.get('device2', None)
 
     LogOutput('info', "Loopback l3 reachability test")
     retStruct = LoopbackInterfaceEnable(deviceObj=switch,
-                                        loopback=switch.linkPortMapping['lnk01'], addr="192.168.1.5",
+                                        loopback=interface_loopback_id, addr="192.168.1.5",
                                         mask=24, config=True, enable=True)
     if retStruct.returnCode() != 0:
         LogOutput('error', "Failed to configure interface IP address")
@@ -92,7 +95,7 @@ def negative_l3_reach(**kwargs):
 
     LogOutput('info', "Loopback negative l3 reachability test")
     retStruct = LoopbackInterfaceEnable(deviceObj=switch,
-                                        loopback="1",
+                                        loopback=interface_loopback_id,
                                         enable=False)
     LogOutput('info', "Pinging between workstation1 and dut01 ")
 
