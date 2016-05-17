@@ -215,6 +215,7 @@ def deviceCleanup(**kwargs):
         assert(False)
 
 
+@pytest.mark.skipif(True, reason="Skipping for TG-1109")
 class Test_subInt:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
