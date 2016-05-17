@@ -190,9 +190,9 @@ class ModifyPortTest (OpsVsiTest):
             self.PORT_PATH, "PUT", json.dumps({'configuration':put_data}),
             self.SWITCH_IP, xtra_header=self.cookie_header)
 
-        assert status_code == httplib.OK, "Error modifying a Port. Status \
+        assert status_code == httplib.BAD_REQUEST, "Error modifying a Port. Status \
             code: %s Response data: %s " % (status_code, response_data)
-        info("### Port Modified. Status code 200 OK  ###\n")
+        info("### Port NOT Modified. Status code 400 Bad_Request  ###\n")
 
         # 3 - Verify Port name is not modified
         status_code, response_data = execute_request(
