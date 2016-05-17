@@ -23,6 +23,7 @@ from opstestfw.switch import *
 
 # Topology definition
 topoDict = {"topoExecution": 1000,
+            "topoType": "physical",
             "topoTarget": "dut01 ",
             "topoDevices": "dut01 wrkston01 ",
             "topoLinks": "lnk01:dut01:wrkston01",
@@ -215,6 +216,7 @@ def deviceCleanup(**kwargs):
         assert(False)
 
 
+# @pytest.mark.skipif(True, reason="Skipping for TG-1109")
 class Test_subInt:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
