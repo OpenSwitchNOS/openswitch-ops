@@ -4032,9 +4032,11 @@
 
       <column name="hw_status" key="ready_state_blocked_reason"
           type='{ "type": "string", "enum": ["set",
-                       ["acls"]]}'>
-        Enumeration that identifies the asserting protocol that causes the
+                       ["acls","initialized"]]}'>
+        Enumeration that identifies the asserting protocol that is causing the
         ready to be "false".
+        The default value is <code>initialized</code> to indicate ready has been
+        set to a default value of "false".
       </column>
 
       <column name="forwarding_state" key="forwarding"
