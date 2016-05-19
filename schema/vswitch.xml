@@ -3279,6 +3279,13 @@
       default the port is up.
     </column>
 
+    <column name="kernel_state_ready">
+      The kernel state of the Port. The port kernel state ready determines
+      the kernel configuration is successfully applied in kernel.
+      When kernel is configured/provisioned the interface(s) associated
+      with the port, the state would become 1. default state would be 0.
+    </column>
+
     <group title="Hardware Port Configuration">
       <p>
         The following fields are not meant to be configured by the user,
@@ -4265,6 +4272,15 @@
           The observed state of the physical network link.  This is ordinarily
           the link's carrier status.
         </p>
+      </column>
+
+      <column name="kernel_state_ready">
+        <p>
+	The kernel state of the Interface. The interface kernel state ready
+	determines the kernel configuration is successfully applied in kernel.
+	When kernel is configured/provisioned the interface(s) associated
+	with the port, the state would become 1. default state would be 0.
+	</p>
       </column>
 
       <column name="link_resets">
