@@ -19,6 +19,7 @@
 		- [Configuring hash type](#configuring-hash-type)
 		- [Configuring LACP fallback mode](#configuring-lacp-fallback-mode)
 		- [Configuring LACP rate](#configuring-lacp-rate)
+                - [Configuring no shutdown](#configuring-no-shutdown)
 		- [Configuring shutdown](#configuring-shutdown)
 - [LAG display commands](#lag-display-commands)
 	- [Display global LACP configuration](#display-global-lacp-configuration)
