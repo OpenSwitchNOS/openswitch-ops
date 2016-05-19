@@ -3831,6 +3831,16 @@
             "max": 1
           }
         },
+        "kernel_interface_ready": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "ip4_address_secondary": {
           "category": "configuration",
           "type": {
@@ -4631,6 +4641,16 @@
             "max": 1
           },
           "ephemeral": true
+        },
+        "kernel_interface_ready": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
+          }
         },
         "hw_status": {
           "category": "status",
