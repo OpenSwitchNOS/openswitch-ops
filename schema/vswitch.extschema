@@ -3729,6 +3729,23 @@
             "max": 1
           }
         },
+        "kernel_state": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "pending",
+                  "done"
+                ]
+              ]
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "ip4_address_secondary": {
           "category": "configuration",
           "type": {
