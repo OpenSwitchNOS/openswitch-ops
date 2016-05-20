@@ -93,6 +93,40 @@ switch(config)# apply qos queue-profile default schedule-profile strict
 #### Troubleshooting
 See the [Common troubleshooting](#common-troubleshooting) section for error messages that may appear as the output of various commands.
 
+If a profile is attempted to be applied, but fails to be applied to the hardware, then the desired configuration may differ from the actual configuration (known as 'status'). In this case, the desired configuration and the actual configuration (status) would both be displayed by the 'show interface' command. In the following example, the desired schedule profile is 'strict', but the actual schedule profile in hardware is 'default':
+```
+switch# configure terminal
+switch(config)# apply qos queue-profile default schedule-profile strict
+switch(config-if)# do show interface 1
+
+Interface 1 is down (Administratively down)
+ Admin state is down
+ State information: admin_down
+ Hardware: Ethernet, MAC Address: 70:72:cf:e7:cc:67
+ MTU 1500
+ Full-duplex
+ qos trust none
+ qos queue-profile default
+ qos schedule-profile strict, status is default
+ Speed 0 Mb/s
+ Auto-Negotiation is turned on
+ Input flow-control is off, output flow-control is off
+ RX
+            0 input packets              0 bytes
+            0 input error                0 dropped
+            0 CRC/FCS
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
+ TX
+            0 output packets             0 bytes
+            0 input error                0 dropped
+            0 collision
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
+```
+
 | Error Message | Description |
 |:-----------|:---------------------------------------|
 | *The queue profile has local priority NUM assigned more than once.* | This error message occurs when an apply command is attempted for a queue profile for which the given local priority has been assigned to more than one queue. The solution is to remove the local priority from one of the queues in the queue profile.
@@ -321,6 +355,41 @@ switch(config-if)# apply qos schedule-profile strict
 
 #### Troubleshooting
 See the [Common troubleshooting](#common-troubleshooting) section for error messages that may appear as the output of various commands.
+
+If a profile is attempted to be applied, but fails to be applied to the hardware, then the desired configuration may differ from the actual configuration (known as 'status'). In this case, the desired configuration and the actual configuration (status) would both be displayed by the 'show interface' command. In the following example, the desired schedule profile is 'strict', but the actual schedule profile in hardware is 'default':
+```
+switch# configure terminal
+switch(config)# interface 1
+switch(config-if)# apply qos schedule-profile strict
+switch(config-if)# do show interface 1
+
+Interface 1 is down (Administratively down)
+ Admin state is down
+ State information: admin_down
+ Hardware: Ethernet, MAC Address: 70:72:cf:e7:cc:67
+ MTU 1500
+ Full-duplex
+ qos trust none
+ qos queue-profile default
+ qos schedule-profile strict, status is default
+ Speed 0 Mb/s
+ Auto-Negotiation is turned on
+ Input flow-control is off, output flow-control is off
+ RX
+            0 input packets              0 bytes
+            0 input error                0 dropped
+            0 CRC/FCS
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
+ TX
+            0 output packets             0 bytes
+            0 input error                0 dropped
+            0 collision
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
+```
 
 | Error Message | Description |
 |:-----------|:---------------------------------------|
