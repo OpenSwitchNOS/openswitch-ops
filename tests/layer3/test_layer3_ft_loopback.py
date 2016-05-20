@@ -36,7 +36,7 @@ def loopback_l3(**kwargs):
 
     LogOutput('info', "Loopback l3 reachability test")
     retStruct = LoopbackInterfaceEnable(deviceObj=switch,
-                                        loopback=switch.linkPortMapping['lnk01'], addr="192.168.1.5",
+                                        loopback="1", addr="192.168.1.5",
                                         mask=24, config=True, enable=True)
     if retStruct.returnCode() != 0:
         LogOutput('error', "Failed to configure interface IP address")
@@ -68,8 +68,8 @@ def loopback_l3(**kwargs):
         LogOutput('error', "Failed to configure IP on workstation")
 
     retCmdout = wrkstn.DeviceInteract(command=
-                                      "ip route add 192.168.1.0/24 via \
-                                       192.168.2.1")
+                                      "ip route add 192.168.1.0/24 via " +
+                                       "192.168.2.1")
     LogOutput('info', "Pinging between workstation1 and dut01")
 
     retStruct = wrkstn.Ping(ipAddr="192.168.1.5", packetCount=10)

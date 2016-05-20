@@ -24,6 +24,7 @@ PING_BYTES = 128
 
 # Topology definition
 topoDict = {"topoExecution": 1000,
+            "topoType": "physical",
             "topoTarget": "dut01",
             "topoDevices": "dut01 wrkston01 wrkston02 wrkston03 wrkston04",
             "topoLinks": "lnk01:dut01:wrkston01,lnk02:dut01:wrkston02,lnk03:dut01:wrkston03,lnk04:dut01:wrkston04",
@@ -146,13 +147,13 @@ def ping_vlan(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode==0, "Unable to enable interface on switch"
 
-    interface1=int(switch.linkPortMapping['lnk01'])
+    interface1=switch.linkPortMapping['lnk01']
 
-    interface2=int(switch.linkPortMapping['lnk02'])
+    interface2=switch.linkPortMapping['lnk02']
 
-    interface3=int(switch.linkPortMapping['lnk03'])
+    interface3=switch.linkPortMapping['lnk03']
 
-    interface4=int(switch.linkPortMapping['lnk04'])
+    interface4=switch.linkPortMapping['lnk04']
 
     returnStructure = switch.VtyshShell(enter=True)
     returnCode = returnStructure.returnCode()
@@ -185,14 +186,14 @@ def ping_vlan(**kwargs):
     retCode = returnStructure['returnCode']
     assert retCode==0, "Failed to exit vlan"
 
-    LogOutput('info', "Configuring interface %d to VLAN 10"%interface1)
-    returnStructure =switch.DeviceInteract(command="interface %d"%interface1)
+    LogOutput('info', "Configuring interface " + interface1 + " to VLAN 10")
+    returnStructure =switch.DeviceInteract(command="interface " + interface1)
     retCode = returnStructure['returnCode']
     assert returnCode==0, "Failed to enter interface context"
 
     returnStructure =switch.DeviceInteract(command="no routing")
     retCode = returnStructure['returnCode']
-    assert retCode==0, "Failed to perform no shut"
+    assert retCode==0, "Failed to perform no routing"
 
     returnStructure =switch.DeviceInteract(command="no shutdown")
     retCode = returnStructure['returnCode']
@@ -206,8 +207,8 @@ def ping_vlan(**kwargs):
     retCode = returnStructure['returnCode']
     assert retCode==0, "Failed to exit interface"
 
-    LogOutput('info', "Configuring interface %d to VLAN 10"%interface2)
-    returnStructure =switch.DeviceInteract(command="interface %d"%interface2)
+    LogOutput('info', "Configuring interface " + interface2 + " to VLAN 10")
+    returnStructure =switch.DeviceInteract(command="interface " + interface2)
     retCode = returnStructure['returnCode']
     assert retCode==0, "Failed to enter interface context"
 
@@ -227,8 +228,8 @@ def ping_vlan(**kwargs):
     retCode = returnStructure['returnCode']
     assert retCode==0, "Failed to exit interface"
 
-    LogOutput('info', "Configuring interface %d to VLAN 20"%interface3)
-    returnStructure =switch.DeviceInteract(command="interface %d"%interface3)
+    LogOutput('info', "Configuring interface " + interface3 + " to VLAN 20")
+    returnStructure =switch.DeviceInteract(command="interface " + interface3)
     retCode = returnStructure['returnCode']
     assert retCode==0, "Failed to enter interface context"
 
@@ -429,8 +430,8 @@ def ping_vlan(**kwargs):
     returnStructure = switch.VtyshShell(enter=True)
     base_vlan10 = baseline_stats(switch, "show interface vlan10", True)
     base_vlan20 = baseline_stats(switch, "show interface vlan20", True)
-    base_ip_intf4 = baseline_stats(switch, "show ip interface %d"%interface4, False)
-    base_ipv6_intf4 = baseline_stats(switch, "show ipv6 interface %d"%interface4, False)
+    base_ip_intf4 = baseline_stats(switch, "show ip interface " + interface4, False)
+    base_ipv6_intf4 = baseline_stats(switch, "show ipv6 interface " + interface4, False)
 
     #Ping host 3 host 4 from host 1
     host1.Ping(ipAddr="20.0.0.10", packetCount=5)
@@ -445,9 +446,9 @@ def ping_vlan(**kwargs):
     LogOutput('info',"\n##### Verify interface vlan20 stats #####\n")
     verify_l3_stats(switch, "show interface vlan20", base_vlan20, 10, True)
     LogOutput('info',"\n##### Verify ip phy interface stats #####\n")
-    verify_l3_stats(switch, "show ip interface %d"%interface4, base_ip_intf4, 5, False)
+    verify_l3_stats(switch, "show ip interface " + interface4, base_ip_intf4, 5, False)
     LogOutput('info',"\n##### Verify ipv6 phy interface stats #####\n")
-    verify_l3_stats(switch, "show ipv6 interface %d"%interface4, base_ipv6_intf4, 5, False)
+    verify_l3_stats(switch, "show ipv6 interface " + interface4, base_ipv6_intf4, 5, False)
 
     #Unconfiguring vlans
 
@@ -496,7 +497,7 @@ def ping_vlan(**kwargs):
     retStruct = host1.Ping(ipAddr="20.0.0.10", packetCount=5)
     retCode = retStruct.returnCode()
     assert retCode!=0, "\n##### Ping Passed, Case Failed #####"
-    LogOutput('info',"\n##### Failed to do IPv6 ping, Case Passed #####\n\n")
+    LogOutput('info',"\n##### Failed to do IPv4 ping, Case Passed #####\n\n")
 
 
     retStruct = host1.Ping(ipAddr="2000::10", packetCount=5, ipv6Flag=True)
