@@ -3220,7 +3220,7 @@
           }
         },
         "address_family": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": {
               "type": "string",
@@ -3238,7 +3238,7 @@
           "mutable": false
         },
         "sub_address_family": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": {
               "type": "string",
@@ -3257,7 +3257,7 @@
           "mutable": false
         },
         "distance": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": {
               "type": "integer",
@@ -3270,7 +3270,7 @@
           "mutable": false
         },
         "metric": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": {
               "type": "integer",
@@ -3295,7 +3295,7 @@
           }
         },
         "path_attributes": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": "string",
             "value": "string",
