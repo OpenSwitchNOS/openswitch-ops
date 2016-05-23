@@ -1547,6 +1547,9 @@
       <column name="ports">
         Ports included in the VRF.
       </column>
+      <column name="active_router_id">
+          Router ID identified by the ZEBRA based on currently available interfaces.
+      </column>
       <column name="bgp_routers" keyname="asn">
         BGP routers keyed by ASN value.
       </column>
