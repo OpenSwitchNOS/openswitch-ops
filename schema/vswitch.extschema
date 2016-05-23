@@ -4835,6 +4835,8 @@
               "type": "string",
               "maxLength": 45
             }
+            "min": 0,
+            "max": 1
           }
         },
         "keepalive_peer_ip": {
@@ -4844,6 +4846,8 @@
               "type": "string",
               "maxLength": 45
             }
+            "min": 0,
+            "max": 1
           }
         },
         "keepalive_vrf": {
@@ -4855,6 +4859,8 @@
               "refTable": "VRF",
               "refType" : "weak"
             }
+            "min": 0,
+            "max": 1
           }
         },
         "keepalive_timers": {
