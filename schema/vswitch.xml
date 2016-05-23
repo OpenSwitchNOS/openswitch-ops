@@ -1547,6 +1547,14 @@
       <column name="ports">
         Ports included in the VRF.
       </column>
+      <column name="router_id">
+          User configurable default router ID, this will be used if protocol
+          level router ID is not configured.
+      </column>
+      <column name="active_router_id">
+          Router ID identified by the ZEBRA based on currently available interafces.
+          This will same as router_id if router_id is configured by the user.
+      </column>
       <column name="bgp_routers" keyname="asn">
         BGP routers keyed by ASN value.
       </column>
