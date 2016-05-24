@@ -4255,6 +4255,12 @@
         </p>
       </column>
 
+      <column name="error_control">
+        <p>
+          The status of Ethernet error control mode of the physical network link.
+        </p>
+      </column>
+
       <column name="bond_status">
         Key-value pairs that report the status of a bond.  This applies to both
         static or LACP bonds.
