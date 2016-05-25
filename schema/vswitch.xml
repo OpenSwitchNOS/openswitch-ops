@@ -4981,6 +4981,11 @@
       VLAN traffic and distributes to the vlan interfaces based on the VLAN
       tags. The default value is `false'
     </column>
+    <column name="hw_intf_info" key="unique_intf_mac_addr">
+      A unique MAC address for this interface. Protocols that need to use
+      an interface specific MAC address can use this as the source MAC address
+      in protocol data units i.e. PDUs.
+    </column>
     <column name="split_parent">
       For a split child interface, this is the reference to the parent <ref table="Interface"/>.
     </column>
