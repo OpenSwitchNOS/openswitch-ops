@@ -16,7 +16,7 @@ compile: $(SANE_OVSSCHEMAS)
 
 install:
 	install -d $(DESTDIR)/$(PREFIX)/share/openvswitch
-	set -e; cd schema; for f in *.extschema *.ovsschema *.xml; do \
+	set -e; cd schema; for f in *.extschema *.ovsschema *.xml *.h; do \
 	    install -m 0644 $$f $(DESTDIR)/$(PREFIX)/share/openvswitch/$$f; \
 	done
 
