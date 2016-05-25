@@ -941,6 +941,53 @@
           },
           "ephemeral": true
         },
+        "source_interface": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "tftp",
+                  "radius",
+                  "all"
+                ]
+              ]
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "Port",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": 3
+          }
+        },
+        "source_ip": {
+          "category": "configuration",
+          "type": {
+           "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "tftp",
+                  "radius",
+                  "all"
+                ]
+              ]
+            },
+            "value": {
+              "type": "string",
+              "min": 0,
+              "max": 15
+            },
+            "min": 0,
+            "max": 3
+          }
+        },
         "other_config": {
           "category": "configuration",
           "type": {
@@ -3225,7 +3272,7 @@
     "BGP_Route": {
       "columns": {
         "vrf": {
-          "category": "configuration",
+          "category": "status",
           "relationship": "m:1",
           "type": {
             "key": {
@@ -3318,7 +3365,7 @@
           "mutable": false
         },
         "bgp_nexthops": {
-          "category": "configuration",
+          "category": "status",
           "relationship": "1:m",
           "type": {
             "key": {
