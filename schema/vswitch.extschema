@@ -6201,7 +6201,7 @@
     "MAC": {
       "columns": {
         "mac_addr": {
-          "category": "configuration",
+          "category": "status",
           "type": {
             "key": {
               "type": "string",
@@ -6211,7 +6211,7 @@
           }
         },
         "bridge": {
-          "category": "configuration",
+          "category": "status",
           "relationship": "m:1",
           "type": {
             "key": {
@@ -6222,7 +6222,7 @@
           }
         },
         "vlan": {
-          "category": "configuration",
+          "category": "status",
           "type": {
             "key": {
               "type": "integer",
@@ -6232,7 +6232,7 @@
           }
         },
         "from": {
-          "category": "configuration",
+          "category": "status",
           "type": {
             "key": {
               "enum": [
@@ -6248,7 +6248,7 @@
           }
         },
         "port": {
-          "category": "configuration",
+          "category": "status",
           "relationship": "m:1",
           "type": {
             "key": {
@@ -6259,7 +6259,7 @@
           }
         },
         "tunnel_key": {
-          "category": "configuration",
+          "category": "status",
           "type": {
             "key": {
               "type": "integer",
