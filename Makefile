@@ -19,6 +19,11 @@ install:
 	set -e; cd schema; for f in *.extschema *.ovsschema *.xml; do \
 	    install -m 0644 $$f $(DESTDIR)/$(PREFIX)/share/openvswitch/$$f; \
 	done
+	install -d $(DESTDIR)/$(includedir)
+	set -e; cd schema; for f in *.h; do \
+	    install -m 0644 $$f $(DESTDIR)/$(includedir)/$$f; \
+	done
+	$(info includedir_path=$(DESTDIR)/$(includedir))
 
 clean:
 	rm -rf $(SANE_OVSSCHEMAS)
