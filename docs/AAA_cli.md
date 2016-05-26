@@ -11,7 +11,7 @@
     - [ssh](#ssh)
 - [User configuration commands](#user-configuration-commands)
     - [user add](#user-add)
-    - [passwd](#passwd)
+    - [password](#password)
     - [user remove](#user-remove)
 - [Display commands](#display-commands)
     - [show aaa authentication](#show-aaa-authentication)
