@@ -5,6 +5,7 @@
 - [Configuration context](#configuration-context)
   - [Creation, modification, and deletion](#creation-modification-and-deletion)
   - [Log timer](#log-timer)
+  - [Reset](#reset)
 - [Interface configuration context](#interface-configuration-context)
   - [Application, replacement, and removal](#application-replacement-and-removal)
 - [VLAN configuration context](#vlan-configuration-context)
@@ -12,6 +13,7 @@
 - [Global context](#global-context)
   - [Display](#display)
   - [Statistics \(hit counts\)](#statistics-hit-counts)
+  - [Log timer](#log-timer-1)
 
 ## Configuration context
 
@@ -146,6 +148,39 @@ Remove an ACL
 switch(config)# no access-list ip My_ACL
 ```
 
+### Reset
+
+#### Syntax
+
+```
+reset access-list all
+```
+
+#### Description
+
+Reset the configuration and application of all ACLS to match the active
+configuration. Active configuration means the configuration has passed platform
+support and capacity checks and is either programmed or pending programming in
+hardware.
+
+#### Authority
+
+Admin.
+
+#### Parameters
+
+| Name       | Status   | Syntax  | Description |
+|------------|----------|---------|-------------|
+| *all*      | Required | Keyword | Operate on all ACLs. |
+
+#### Examples
+
+Reset the configuration for all ACLs.
+
+```
+switch(config)# reset access-list all
+```
+
 ### Log timer
 
 #### Syntax
@@ -256,6 +291,11 @@ switch(config)#
 
 ## VLAN configuration context
 
+*Warning: Applying ACLs to VLANs is not yet supported by all OpenSwitch
+          components. The CLI commands presented in this document are
+          available, but the ACLs will not be programmed unless all components
+          are enhanced to support VLAN ACL apply operations.*
+
 ### Application, replacement, and removal
 
 #### Syntax
@@ -326,12 +366,26 @@ switch(config)#
 #### Syntax
 
 ```
-show access-list [{interface|vlan} <id> [in]] [ip] [<acl-name>] [config]
+show access-list [{interface|vlan} <id> [in]] [ip] [<acl-name>] [commands] [configuration]
 ```
 
 #### Description
 
-Displays configured ACLs and their entries.
+Displays configured active ACLs and their entries.
+
+By default, `show access-list` will display the ACL configuration active in the
+system. Active configuration means the configuration has passed platform
+support and capacity checks and is either programmed or pending programming in
+hardware.
+
+By specifying the `configuration` token, the user-specified
+configuration will be displayed, whether or not it is active. This command will
+display a warning if the active and user-specified configuration do not match.
+In such a case, the user may wish to use the `reset access-list` command
+(see [reset](#reset)).
+
+Specifying `commands` will display active ACL entries as well as the state of
+any `apply` commands on interfaces.
 
 #### Authority
 
@@ -347,7 +401,8 @@ Admin.
 | **in**        | Optional | String  | Limit display to ingress ACLs. |
 | **ip**        | Optional | Keyword | Limit display to IPv4 ACLs. |
 | **acl-name**  | Optional | String  | Display the ACL matching this name. |
-| **config**    | Optional | String  | Display output as CLI commands. |
+| **commands**  | Optional | String  | Display output as CLI commands. |
+| **configuration** | Optional | String  | Display user-specified configuration. |
 
 #### Examples
 
@@ -377,14 +432,16 @@ IPv4       My_ACL
 -------------------------------------------------------------------------------
 ```
 
-Display ACLs configured in above examples as config
+Display ACLs configured and applied in above examples as CLI commands.
 
 ```
-switch# show access-list config
+switch# show access-list commands
 access-list ip My_ACL
     10 permit udp any 172.16.1.0/24
     20 permit tcp 172.16.2.0/16 gt 1023 any
     30 deny any any any count
+interface 2
+    apply access-list ip My_ACL in
 ```
 
 ### Statistics (hit counts)
@@ -445,4 +502,31 @@ Clear hit counts for all configured ACLs.
 
 ```
 switch# clear access-list hitcounts all
+```
+
+### Log timer
+
+#### Syntax
+
+```
+show access-list log-timer
+```
+
+#### Description
+
+Display ACL log timer configuration. See [log timer](#log-timer) configuration
+for information on changing this setting.
+
+#### Authority
+
+Admin.
+
+#### Parameters
+
+None.
+
+#### Examples
+
+```
+switch# show access-list log-timer
 ```
