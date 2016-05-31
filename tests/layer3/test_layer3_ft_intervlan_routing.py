@@ -390,39 +390,46 @@ def ping_vlan(**kwargs):
 
 
     #Ping from host 1 to host 3
-    retStruct = host1.Ping(ipAddr="20.0.0.10", packetCount=1)
+    retStruct = host1.Ping(ipAddr="20.0.0.10", packetCount=20)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv4 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
+
     LogOutput('info',"\n##### Ping Passed, Case Passed #####\n\n")
 
 
-    retStruct = host1.Ping(ipAddr="2000::10", packetCount=1, ipv6Flag=True)
+    retStruct = host1.Ping(ipAddr="2000::10", packetCount=20, ipv6Flag=True)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv6 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
     LogOutput('info',"\n##### Ping Passed, Case Passed #####\n\n")
 
     #Ping form host 1 to host 4
-    retStruct = host1.Ping(ipAddr="30.0.0.10", packetCount=1)
+    retStruct = host1.Ping(ipAddr="30.0.0.10", packetCount=20)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv4 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
     LogOutput('info',"\n##### Ping Passed, Case Passed #####\n\n")
 
 
-    retStruct = host1.Ping(ipAddr="3000::10", packetCount=1, ipv6Flag=True)
+    retStruct = host1.Ping(ipAddr="3000::10", packetCount=20, ipv6Flag=True)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv6 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
     LogOutput('info',"\n##### Ping Passed, Case Passed #####\n\n")
 
     #Ping From Host1 to Host 2
-    retStruct = host1.Ping(ipAddr="10.0.0.10", packetCount=1)
+    retStruct = host1.Ping(ipAddr="10.0.0.10", packetCount=20)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv4 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
     LogOutput('info',"\n##### Ping Passed, Case Passed #####\n\n")
 
 
-    retStruct = host1.Ping(ipAddr="1000::10", packetCount=1, ipv6Flag=True)
+    retStruct = host1.Ping(ipAddr="1000::10", packetCount=20, ipv6Flag=True)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv6 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
     LogOutput('info',"\n##### Ping Passed, Case Passed #####\n\n")
 
     LogOutput('info',"\n##### Baselining L3 stats #####\n")
@@ -482,25 +489,27 @@ def ping_vlan(**kwargs):
 
     LogOutput('info',"\n\n\n########Ping after unconfig#########")
 
-    retStruct = host1.Ping(ipAddr="10.0.0.10", packetCount=1)
+    retStruct = host1.Ping(ipAddr="10.0.0.10", packetCount=20)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv4 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
     LogOutput('info',"\n##### Ping Passed, Case Passed #####\n\n")
 
 
-    retStruct = host1.Ping(ipAddr="1000::10", packetCount=1, ipv6Flag=True)
+    retStruct = host1.Ping(ipAddr="1000::10", packetCount=20, ipv6Flag=True)
     retCode = retStruct.returnCode()
-    assert retCode==0, "\n##### Failed to do IPv6 ping, Case Failed #####"
+    assert retStruct.data['packet_loss'] <= 15, \
+    "\n##### Failed to do IPv4 ping, Case Failed #####"
     LogOutput('info',"\n##### Ping Passed. Case passed #####\n\n")
 
     #Ping from Host 1 to Host 3
-    retStruct = host1.Ping(ipAddr="20.0.0.10", packetCount=1)
+    retStruct = host1.Ping(ipAddr="20.0.0.10", packetCount=20)
     retCode = retStruct.returnCode()
     assert retCode!=0, "\n##### Ping Passed, Case Failed #####"
     LogOutput('info',"\n##### Failed to do IPv6 ping, Case Passed #####\n\n")
 
 
-    retStruct = host1.Ping(ipAddr="2000::10", packetCount=1, ipv6Flag=True)
+    retStruct = host1.Ping(ipAddr="2000::10", packetCount=20, ipv6Flag=True)
     retCode = retStruct.returnCode()
     assert retCode!=0, "\n##### Ping Passed, Case Failed #####"
     LogOutput('info',"\n##### Failed to do IPv6 ping, Case Passed #####\n\n")
