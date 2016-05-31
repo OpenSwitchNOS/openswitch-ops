@@ -264,6 +264,57 @@ Interface                                                            (Mb/s)    C
 ...................................................................................................
   1.1        33    eth     ..     down    Administratively down       auto     ..
 ```
+
+##Supportability Commands
+###Display event logs
+####Syntax
+show events
+####Description
+This command displays all the events logged by sub-interfaces.
+####Authority
+All users
+####Examples
+```
+switch# show events
+2016-05-31:06:26:27.363131|ops-intfd|4002|LOG_INFO|Interface port_admin set to down for 4.5 interface
+2016-05-31:06:26:27.363188|ops-intfd|4002|LOG_INFO|Interface port_admin set to down for 4 interface
+2016-05-31:06:26:27.363923|ops-portd|10001|LOG_INFO|Sub-Interface 4.5, created
+2016-05-31:06:26:27.364459|ops-zebra|21008|LOG_DEBUG|L3 port added 4.5
+2016-05-31:06:26:27.364478|ops-zebra|21008|LOG_DEBUG|L3 port added 4
+2016-05-31:06:26:29.454491|ops-zebra|21006|LOG_DEBUG|Interface 4.5 admin state modified to down
+2016-05-31:07:08:51.348180|ops-zebra|21008|LOG_DEBUG|L3 port added 4.4
+2016-05-31:07:08:51.351755|ops-portd|10001|LOG_INFO|Sub-Interface 4.4, created
+2016-05-31:07:08:51.355438|ops-intfd|4002|LOG_INFO|Interface port_admin set to down for 4.4 interface
+2016-05-31:07:08:52.285367|ops-zebra|21006|LOG_DEBUG|Interface 4.4 admin state modified to down
+2016-05-31:07:08:57.415487|ops-zebra|21008|LOG_DEBUG|Port IPv4/v6 Updated 4.4
+2016-05-31:07:08:57.418705|ops-portd|10003|LOG_INFO|Sub-Interface 4.4, configured with ip address 10.1.1.1/24
+```
+###Daignostic Dump
+####Syntax
+diag-dump subinterface basic
+####Description
+This command will dump number of created subinterfaces.
+####Authority
+All users
+####Examples
+```
+switch# diag-dump subinterface basic
+=========================================================================
+[Start] Feature subinterface Time : Tue May 31 07:19:57 2016
+
+=========================================================================
+-------------------------------------------------------------------------
+[Start] Daemon ops-portd
+-------------------------------------------------------------------------
+Number of Configured sub-interfaces are : 2.
+
+-------------------------------------------------------------------------
+[End] Daemon ops-portd
+-------------------------------------------------------------------------
+=========================================================================
+[End] Feature subinterface
+=========================================================================
+```
 ##References
 * [Reference 1]`interface_cli.md`
 * [Reference 2]`sub-interface_design.md`
