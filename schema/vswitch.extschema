@@ -5821,7 +5821,9 @@
          "category": "configuration",
          "type":{
            "key":{
-             "type":"integer"
+             "type":"integer",
+             "minInteger": 2048,
+             "maxInteger": 1000000000
            },
            "min": 0,
            "max": 1
