@@ -3749,6 +3749,9 @@
         * Down:  All member interfaces configured to be a member of a LAG are
           either administratively or operatively down
       </column>
+      <column name="bond_status" key="bond_speed">
+        Speed of interfaces operating in lag.
+      </column>
     </group>
 
     <group title="Port Statistics">
