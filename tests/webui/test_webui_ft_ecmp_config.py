@@ -22,9 +22,10 @@ from opsvsi.opsvsitest import *
 import json
 import httplib
 
+from pytest import mark
+
 from opsvsiutils.restutils.utils import login, execute_request, \
-    rest_sanity_check, get_switch_ip, get_json, get_server_crt, \
-    remove_server_crt
+    rest_sanity_check, get_switch_ip, get_json
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
@@ -427,6 +428,7 @@ class Test_EcmpConfig(OpsVsiTest):
         info("### ECMP resilient hash disable validated ###\n")
 
 
+@mark.skipif(True, reason="Test ported to modular framework")
 class Test_WebUI_ECMP:
     def setup(self):
         pass
@@ -436,12 +438,10 @@ class Test_WebUI_ECMP:
 
     def setup_class(cls):
         Test_WebUI_ECMP.test_var = Test_EcmpConfig()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.SWITCH_IP)
 
     def teardown_class(cls):
         Test_WebUI_ECMP.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
