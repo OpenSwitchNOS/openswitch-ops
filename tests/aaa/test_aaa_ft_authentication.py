@@ -220,7 +220,7 @@ class aaaFeatureTest(OpsVsiTest):
         out = ""
         out += s1.cmd("echo ")
         sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.spawn(sshkey)
+        sshkeygen = pexpect.run(sshkey)
         myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
@@ -266,7 +266,7 @@ class aaaFeatureTest(OpsVsiTest):
         out = ""
         out += s1.cmd("echo ")
         sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.spawn(sshkey)
+        sshkeygen = pexpect.run(sshkey)
         myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
@@ -317,7 +317,7 @@ class aaaFeatureTest(OpsVsiTest):
         out = ""
         out += s1.cmd("echo ")
         sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.spawn(sshkey)
+        sshkeygen = pexpect.run(sshkey)
         myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
