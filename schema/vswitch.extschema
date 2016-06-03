@@ -2664,6 +2664,17 @@
             "max": 2
           }
         },
+        "redistribute_protocol": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 30
+            },
+            "min": 0,
+            "max": 3
+          }
+        },
         "redistribute": {
           "category": "configuration",
           "relationship": "reference",
