@@ -15,29 +15,19 @@
 
 ## Show version
 ### Description
-This command shows the current switch version information. The format of the `show version` output is
-```
-<name> <version> (Build: <platform>-ops-<X.Y.Z>-<branch-name>[-<build-time>][-<meta-string>]
-```
+This command shows the current switch version information.
+The switch version will capture the project-name, platform, git-branch, timestamp etc.
 
-| Field Name  | Explanation                                                                                                                          | Example                       |
-|-------------|--------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|
-| name        | Name of the project.                                                                                                                 | OpenSwitch                    |
-| version     | Version of the software.                                                                                                             | 0.3.0                         |
-| platform    | Platform for which the image is built.                                                                                               | genericx86-64, AS5712, AS6712 |
-| ops         | Abbreviation for OpenSwitch.                                                                                                         |                               |
-| X.Y.Z       | The release version.                                                                                                                 | 0.3.0                         |
-| branch-name | Branch where the image is built.                                                                                                     | master, feature, release      |
-| build-time  | For periodic builds, the build time-stamp in YYYYMMDDNN format. For developer builds, the build time-stamp in YYYYMMDDHHmmss format. | 2016042606, 20160419204046    |
-| meta-string | “dev” is appended to image names when a developer builds an image using “make”                                                       |                               |
-
-
+For example:
 | Switch Image Build Type                                                 | Show version                                                                |
 |-------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| Developer build of OpenSwitch from the master branch for genericx86-64. | OpenSwitch 0.3.0 (Build: genericx86-64-ops-0.3.0-master-20160419204046-dev) |
-| Periodic build of OpenSwitch from the master branch for genericx86-64.  | OpenSwitch 0.3.0 (Build: genericx86-64-ops-0.3.0-master+2016042606          |
-| Developer build of OpenSwitch from the master branch for AS5712.        | OpenSwitch 0.3.0 (Build: as5712-ops-0.3.0-master-20160419204046-dev)        |
-| Periodic build of OpenSwitch from the master branch for AS5712.         | OpenSwitch 0.3.0 (Build: as5712-ops-0.3.0-master+2016042606)                |
+| Developer build of OpenSwitch from the master branch for genericx86-64. | OpenSwitch 0.4.0 (Build: genericx86-64-ops-0.4.0-master-20160419204046-dev) |
+| Periodic build of OpenSwitch from the master branch for genericx86-64.  | OpenSwitch 0.4.0 (Build: genericx86-64-ops-0.4.0-master+2016042606          |
+| Developer build of OpenSwitch from the master branch for AS5712.        | OpenSwitch 0.4.0 (Build: as5712-ops-0.4.0-master-20160419204046-dev)        |
+| Periodic build of OpenSwitch from the master branch for AS5712.         | OpenSwitch 0.4.0 (Build: as5712-ops-0.4.0-master+2016042606)                |
+| Periodic build of OpenSwitch from the release branch for AS5712.        | OpenSwitch 0.3.0 (Build: as5712-ops-0.3.0-rc0-release+2016042606)                |
+
+For detailed explanation of every field, refer to the [CLI Guide](/documents/user/system_cli).
 
 ## Show version detail
 ### Description
