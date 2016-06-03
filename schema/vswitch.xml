@@ -2462,9 +2462,12 @@
       Specifies BGP hold time in seconds.
       Default is 180 seconds.
       </column>
+      <column name="redistribute_protocol">
+      Specifies protocol routes to be redistributed into BGP.
+      </column>
       <column name="redistribute">
-      Specifies which protocol routes should be redistributed into BGP.
-      The routes can be filtered by specifying the route-map.
+      Specifies protocol routes with route-map filter to be redistributed into BGP.
+      The routes can be filtered with specified route-map.
       </column>
       <column name="always_compare_med">
       Compares MED (Multi-Exit Discriminitor) from different neighbors.
