@@ -1150,6 +1150,8 @@ def proxyARPonSubInterfaceTest(dut01):
 
 
 @pytest.mark.skipif(True, reason="skipped test case due to gate job failures.")
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_proxyarp_feature:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
