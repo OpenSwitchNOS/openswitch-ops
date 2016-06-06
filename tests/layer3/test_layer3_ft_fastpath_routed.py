@@ -289,6 +289,8 @@ def fastpath_ping(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode, "##### IPv6 ping succeeded even after unconfiguring routes ######"
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_fastpath_ping:
     def setup_class (cls):
         # Test object will parse command line and formulate the env

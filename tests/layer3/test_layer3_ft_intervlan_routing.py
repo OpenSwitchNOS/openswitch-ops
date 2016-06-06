@@ -506,6 +506,8 @@ def ping_vlan(**kwargs):
     LogOutput('info',"\n##### Failed to do IPv6 ping, Case Passed #####\n\n")
 
 @pytest.mark.timeout(1000)
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_vlan_ping:
     def setup_class (cls):
         # Test object will parse command line and formulate the env
