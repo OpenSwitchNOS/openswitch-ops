@@ -135,6 +135,8 @@ class DeletePortTest (OpsVsiTest):
         info("\n########## End Test delete non-existent Port  ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_DeletePort:
     def setup(self):
         pass

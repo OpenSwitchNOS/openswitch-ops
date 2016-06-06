@@ -309,6 +309,8 @@ class CreatePortTest (OpsVsiTest):
         info("\n########## End test to verify malformed JSON ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_CreatePort:
     def setup(self):
         pass
