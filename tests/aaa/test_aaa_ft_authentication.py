@@ -220,7 +220,7 @@ class aaaFeatureTest(OpsVsiTest):
         out = ""
         out += s1.cmd("echo ")
         sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.run(sshkey)
+        sshkeygen = pexpect.spawn(sshkey)
         myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
@@ -266,7 +266,7 @@ class aaaFeatureTest(OpsVsiTest):
         out = ""
         out += s1.cmd("echo ")
         sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.run(sshkey)
+        sshkeygen = pexpect.spawn(sshkey)
         myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
@@ -317,7 +317,7 @@ class aaaFeatureTest(OpsVsiTest):
         out = ""
         out += s1.cmd("echo ")
         sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.run(sshkey)
+        sshkeygen = pexpect.spawn(sshkey)
         myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
@@ -345,6 +345,8 @@ class aaaFeatureTest(OpsVsiTest):
             assert loginpass != 1, "Failed to validate radius authetication" \
                                    " when server is not reachable"
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_aaafeature:
     def setup(self):
         pass
