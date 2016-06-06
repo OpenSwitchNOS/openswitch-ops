@@ -724,7 +724,6 @@ def ecmp_ping(**kwargs):
         LogOutput('info', "\n##### Ping Passed, Case Failed #####\n\n")
 
 @pytest.mark.timeout(500)
-
 class Test_ecmp_ping:
 
     def setup_class(cls):
