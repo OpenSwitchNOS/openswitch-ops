@@ -216,6 +216,8 @@ def deviceCleanup(**kwargs):
         assert(False)
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_subInt:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
