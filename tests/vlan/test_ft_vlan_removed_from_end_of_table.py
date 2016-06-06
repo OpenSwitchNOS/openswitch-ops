@@ -133,6 +133,8 @@ def cleanUp(dut, wrk1, wrk2, wrk3):
     else:
         LogOutput('info', "Passed Switch Reboot piece")
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                         "were enable")
 class Test_vlan_state_removed_from_end_of_table:
 
     def setup_class(cls):
