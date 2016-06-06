@@ -132,6 +132,8 @@ class slowRoutingTests(OpsVsiTest):
              "connected hosts passed ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_slow_routing:
 
     def setup_class(cls):
