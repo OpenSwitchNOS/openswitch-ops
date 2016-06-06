@@ -223,6 +223,8 @@ def clean_up(dut01, dut02):
     else:
         LogOutput('info', "Passed Switch Reboot ")
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_ft_ecmp_hash:
 
     dut01Obj = None

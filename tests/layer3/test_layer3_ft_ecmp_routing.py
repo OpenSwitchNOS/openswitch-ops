@@ -725,6 +725,8 @@ def ecmp_ping(**kwargs):
 
 @pytest.mark.timeout(500)
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_ecmp_ping:
 
     def setup_class(cls):

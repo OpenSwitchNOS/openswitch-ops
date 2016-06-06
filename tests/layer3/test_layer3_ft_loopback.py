@@ -128,6 +128,8 @@ def negative_l3_reach(**kwargs):
         LogOutput('error', "Failed to configure IP on workstation")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_loopback:
     def setup_class(cls):
         # Test object will parse command line and formulate the env
