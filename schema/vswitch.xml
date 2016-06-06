@@ -1582,6 +1582,51 @@
           the assumed value is false.
       </column>
    </group>
+
+   <group title="Source Interface Selection Configurations">
+      The overall purpose of these columns is to provide the Source IP address
+      for all the supported protocols outgoing packets. If both the columns
+      present priority will be given to "source_ip".
+        <column name="source_interface" key="tftp">
+          Provides source interface for outgoing tftp packets. If not present,
+          the key "all" provides the source interface for outgoing tftp packets.
+          Otherwise regular routing rules take place.
+        </column>
+
+        <column name="source_interface" key="radius">
+          Provides source interface for outgoing radius server packets. If not
+          present, the key "all" provides the source interface for outgoing
+          tftp packets. Otherwise regular routing rules take place.
+        </column>
+
+        <column name="source_interface" key="all">
+          Provides the configuration for all the supported protocols for which
+          source interface is not configured. If the key is not present
+          specific protocol source interface keys provides their own source
+          interface. Otherwise regular routing rules take place.
+        </column>
+
+        <column name="source_ip" key="tftp">
+          Provides source ip for outgoing tftp packets. If not present,
+          the key "all" provides the source ip for outgoing tftp packets.
+          Otherwise regular routing rules take place.
+        </column>
+
+        <column name="source_ip" key="radius">
+          Provides source ip for outgoing radius packets. If not present,
+          the key "all" provides the source ip for outgoing tftp packets.
+          Otherwise regular routing rules take place.
+        </column>
+
+        <column name="source_ip" key="all">
+          Provides the source ip for all the unconfigured source
+          ip supported protocols outgoing packets. If the key is
+          not present specific protocol source ip keys provides
+          their own source ip. Otherwise regular routing rules take place.
+        </column>
+
+    </group>
+
    <group title="Common Columns">
       The overall purpose of these columns is described under <code>Common
       Columns</code> at the beginning of this document.
