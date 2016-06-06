@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
 #
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -21,12 +21,12 @@ from opstestfw.switch.CLI import *
 from opstestfw.switch.OVS import *
 
 PING_BYTES = 128
-# This number represent the % of packet loss in the traffic,
-# it was picked after talk with the feature owner,
-# and realize that depends of amount of packets sent,
-# the ASIC could drop the first packets,
-# in this case this 15% represents 3 packets.
-PACKET_LOSS = 15
+# This number represent the % of packet loss in the traffic, 		
+# it was picked after talk with the feature owner, 		
+# and realize that depends of amount of packets sent, 		
+# the ASIC could drop the first packets, 		
+# in this case this 15% represents 3 packets. 		
+PACKET_LOSS = 15		
 PACKET_COUNT = 20
 
 # Topology definition

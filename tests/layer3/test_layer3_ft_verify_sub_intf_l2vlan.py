@@ -197,7 +197,7 @@ def l3_route(**kwargs):
     LogOutput('info', "Failed to ping switch\
                   Negative test case passed")
 
-    # after removing dot1 encapsulation trying to ping host-switch
+    # after eemoving dot1 encapsulation trying to ping host-switch
     retStruct = Dot1qEncapsulation(deviceObj = device1,
                     subInterface=device1.linkPortMapping['lnk01'] + ".10",
                                    dot1q = False, vlan = 200, enable = True)
