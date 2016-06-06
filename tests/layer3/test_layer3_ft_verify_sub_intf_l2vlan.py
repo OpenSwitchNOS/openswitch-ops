@@ -211,6 +211,8 @@ def l3_route(**kwargs):
     LogOutput('info', "Packet Loss %:\t" + str(packet_loss))
     assert packets_received == 0, "able to ping switch"
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_subInt:
 
     def setup_class(cls):
