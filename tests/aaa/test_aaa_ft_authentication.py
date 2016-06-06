@@ -340,6 +340,8 @@ class aaaFeatureTest(OpsVsiTest):
             assert loginpass != 1, "Failed to validate radius authetication" \
                                    " when server is not reachable"
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_aaafeature:
     def setup(self):
         pass
