@@ -184,7 +184,8 @@ def unConfigureWorkstation(deviceObj, int, ipAddr, netMask, broadcast):
               deviceObj.device + ":\n" + cmdOut)
     return True
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                         "were enable")
 class Test_vlan_state_reason_transition:
 
     def setup_class(cls):

@@ -115,7 +115,8 @@ def cleanUp(dut):
             return
     LogOutput('info', "Cleaned up devices")
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                         "were enable")
 class Test_vlan_state_transition:
 
     def setup_class(cls):
