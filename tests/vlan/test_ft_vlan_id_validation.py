@@ -93,7 +93,8 @@ def tryInvalidVlan(dut):
     else:
         return 0
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_vlan_Id_Validation:
 
     def setup_class(cls):
