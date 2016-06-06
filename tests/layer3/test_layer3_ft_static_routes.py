@@ -339,6 +339,8 @@ class staticRouteTest(OpsVsiTest):
         info('\n########## IPv6 route delete test completed ##########\n')
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_zebra_static_routes_ft:
 
     def setup_class(cls):

@@ -411,7 +411,9 @@ def configure(**kwargs):
     result = configure_neighbor(switch2,AS_NUM2,IP_ADDR1,AS_NUM1)
     assert result is True, "Failed to configur neighbor on SW2"
 
-@pytest.mark.skipif(True, reason="skipped test case due to random gate job failures.")
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests \
+                                  were enable")
+@pytest.mark.timeout(600)
 class Test_bgp_redistribute_configuration:
     def setup_class(cls):
         Test_bgp_redistribute_configuration.testObj = \
