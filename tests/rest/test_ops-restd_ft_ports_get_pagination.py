@@ -359,6 +359,8 @@ class QueryPortPaginationTest(OpsVsiTest):
              " results ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_QueryPortPagination:
     def setup(self):
         pass

@@ -128,6 +128,8 @@ class UpdateExistingVlan(OpsVsiTest):
              "##########\n" % self.vlan_path)
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class TestPutExistingVlan:
     def setup(self):
         pass
@@ -236,6 +238,8 @@ class UpdateVlanInvalidName(OpsVsiTest):
              "##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class TestPutVlanInvalidName:
     def setup(self):
         pass
@@ -336,6 +340,8 @@ class UpdateVlanInvalidId(OpsVsiTest):
              "##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class TestPutVlanInvalidId:
     def setup(self):
         pass
@@ -436,6 +442,8 @@ class UpdateVlanInvalidDescription(OpsVsiTest):
              "DONE ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class TestPutVlanInvalidDescription:
     def setup(self):
         pass
@@ -535,6 +543,8 @@ class UpdateVlanInvalidAdmin(OpsVsiTest):
              "##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class TestPutVlanInvalidAdmin:
     def setup(self):
         pass
@@ -635,6 +645,8 @@ class UpdateVlanInvalidOtherConfig(OpsVsiTest):
              "value DONE ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class TestPutVlanInvalidOtherConfig:
     def setup(self):
         pass
@@ -735,6 +747,8 @@ class UpdateVlanInvalidExternalIds(OpsVsiTest):
              "DONE ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class TestPutVlanInvalidExternalIds:
     def setup(self):
         pass

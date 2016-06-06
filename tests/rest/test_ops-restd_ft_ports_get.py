@@ -145,6 +145,8 @@ class QueryPortTest (OpsVsiTest):
             request ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_QueryPort:
     def setup(self):
         pass

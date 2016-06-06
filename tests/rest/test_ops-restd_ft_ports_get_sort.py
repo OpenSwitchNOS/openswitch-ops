@@ -783,6 +783,8 @@ class QuerySortPortTest (OpsVsiTest):
         info("\n########## End Port Sort Tests Descending Order ##########\n")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_QuerySortPort:
 
     def setup(self):
