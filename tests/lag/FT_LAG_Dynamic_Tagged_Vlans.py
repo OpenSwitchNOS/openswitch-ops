@@ -55,6 +55,8 @@ def clean_up(dut01, dut02, wrkston01, wrkston02, wrkston03, wrkston04):
         LogOutput('info', "Passed Switch Reboot ")
 
 
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+"were enable")
 class Test_ft_LAG_Dynamic_tagged_vlans:
 
     listDut = None
