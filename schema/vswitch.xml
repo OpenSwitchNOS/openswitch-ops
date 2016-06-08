@@ -1617,6 +1617,10 @@
         The lower a priority value, the higher the priority.
         Default value is 32768.
       </column>
+      <column name="remaining_hops">
+        The hop count after which this instance MSTP BPDU will be discarded.
+        Default value is 20
+      </column>
       <column name="root_port">
         Specifies the root port name for a MSTP instance.
       </column>
