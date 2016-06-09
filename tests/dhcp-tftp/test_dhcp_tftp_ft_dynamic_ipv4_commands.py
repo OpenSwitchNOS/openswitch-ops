@@ -231,7 +231,8 @@ class dhcpIPV4DynamicPoolConfigCTTest(OpsVsiTest):
         info('\n### testdhcpClientDynamicIPV4AddressConfig: '\
              'Test Passed ###\n')
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_dhcp_tftp_commands:
 
     def setup(self):
