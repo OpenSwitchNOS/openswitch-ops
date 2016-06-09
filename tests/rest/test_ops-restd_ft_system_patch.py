@@ -1230,7 +1230,8 @@ class PatchSystemTest(OpsVsiTest):
         info("### Configuration data validated %s ###\n" % post_patch_data)
         info(TEST_END % test_title)
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_PatchSystem:
     def setup(self):
         pass

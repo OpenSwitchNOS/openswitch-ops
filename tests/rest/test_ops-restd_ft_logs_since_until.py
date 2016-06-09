@@ -251,7 +251,8 @@ class LogsSinceUntilTest (OpsVsiTest):
         info("\n########## End Test to Validate logs with until timestamp" +
              "##########\n")
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_LogsSinceUntil:
     def setup(self):
         pass
