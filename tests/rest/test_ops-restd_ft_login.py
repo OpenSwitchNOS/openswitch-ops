@@ -180,7 +180,8 @@ class LoginTest (OpsVsiTest):
 
         info(TEST_END % test_title)
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_login:
     def setup(self):
         pass
