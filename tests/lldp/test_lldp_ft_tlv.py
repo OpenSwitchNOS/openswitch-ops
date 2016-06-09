@@ -621,7 +621,8 @@ def lldp_tlv(**kwargs):
     retCode = retStruct.returnCode()
     assert retCode == 0, "Failed to exit vtysh prompt"
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 @pytest.mark.timeout(1000)
 class Test_lldp_configuration:
 
