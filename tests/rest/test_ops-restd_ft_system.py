@@ -254,7 +254,8 @@ class systemTest(OpsVsiTest):
         info("\n########## Finished executing PUT request on %s ##########\n"
              % self.PATH)
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_system:
     def setup(self):
         pass
