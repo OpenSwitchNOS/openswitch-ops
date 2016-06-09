@@ -231,6 +231,8 @@ class QueryCustomValidatorsTest(OpsVsiTest):
         info("### Successfully retrieved validation error message ###\n")
 
 dc_disable = pytest.mark.skipif(True, reason="new DC module does not have this feature.")
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_custom_validators:
     def setup(self):
         pass

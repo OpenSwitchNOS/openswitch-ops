@@ -498,7 +498,8 @@ class QueryInterfaceDepthTest(OpsVsiTest):
                 getattr(self, "%s" % name)()
         info("\n########## Ending Recursive Get Tests ##########\n")
 
-
+@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
+                                 "were enable")
 class Test_QueryInterfaceDepth:
     def setup(self):
         pass
