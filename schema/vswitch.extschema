@@ -5110,6 +5110,15 @@
             "max": "unlimited"
           }
         },
+        "keepalive_peer_status": {
+          "category": "status",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
         "keepalive_statistics": {
           "category": "statistics",
           "type": {
@@ -5141,7 +5150,27 @@
             "max": 1
           }
         },
+        "lacp_actor_system_id": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "lacp_partner_port_id": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "lacp_actor_port_id": {
           "category": "status",
           "type": {
             "key": {
@@ -5161,7 +5190,27 @@
             "max": 1
           }
         },
+        "lacp_actor_key": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "lacp_partner_state": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "lacp_actor_state": {
           "category": "status",
           "type": {
             "key": {
@@ -5174,6 +5223,18 @@
                  ]
               ]
             },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "lacp_port_priority" : {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+                "minInteger": 1,
+                "maxInteger": 65535
+              },
             "min": 0,
             "max": 1
           }
