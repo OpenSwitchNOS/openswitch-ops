@@ -25,7 +25,8 @@ import httplib
 from pytest import mark
 
 from opsvsiutils.restutils.utils import login, execute_request, \
-    rest_sanity_check, get_switch_ip, get_json
+    rest_sanity_check, get_switch_ip, get_json, get_server_crt, \
+    remove_server_crt
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
@@ -438,10 +439,12 @@ class Test_WebUI_ECMP:
 
     def setup_class(cls):
         Test_WebUI_ECMP.test_var = Test_EcmpConfig()
+        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.SWITCH_IP)
 
     def teardown_class(cls):
         Test_WebUI_ECMP.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
