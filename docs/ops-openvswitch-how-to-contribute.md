@@ -1,0 +1,345 @@
+# Contribuiting to OpenVswitch inside OpenSwitch
+---
+
+This document describes the workflow for contributing to the ops-openvswitch
+module.
+
+# Table of Contents
+
+- [OpenVswitch module structure](#openvswitch-module-structure)
+- [Adding new functionality](#adding-new-functionality)
+    - [Creating a feature branch](#creating-a-feature-branch)
+    - [Develop the feature](#develop-the-feature)
+    - [Publish the feature](#publish-the-feature)
+    - [Review process](#review-process)
+    - [New Patch creation](#new-patch-creation)
+        - [Option A: the maintainers create the new patch file](#option-a-the-maintainers-create-the-new-patch-file)
+        - [Instructions for the module maintainers](#instructions-for-the-module-maintainers)
+        - [Option B: The developers create the new patch file](#option-b-the-developers-create-the-new-patch-file)
+- [Updating an existing patch](#updating-an-existing-patch)
+    - [Set up the branch](#set-up-the-branch)
+    - [Do the fix](#do-the-fix)
+    - [Publish the fix](#publish-the-fix)
+    - [Review process](#review-process)
+    - [Patch file creation](#patch-file-creation)
+        - [Option A: The maintainers create the new patch file](#option-a-the-maintainers-create-the-new-patch-file)
+        - [Instructions for the module maintainers](#instructions-for-the-module-maintainers)
+        - [Option B: The developers create the new patch file](#option-b-the-developers-create-the-new-patch-file)
+
+# OpenVswitch module structure
+---
+
+The OpenVswitch (OVS) module is built in OpenSwitch (OPS) by downloading the its
+sources directly from [github.com](https://github.com/openvswitch/ovs). On top
+of the OVS code, the changes done specifically for OPS are applied as a series
+of patches.
+
+The recipe of the module contains the list of patches that are applied to the
+OVS code after it is downloaded. Both, the recipe and patch files, reside on
+the [ops-build repository](http://git.openswitch.net/cgit/openswitch/ops-build).
+This repository contains all the information necessary to recreate any OVS
+build.
+
+Since reviewing the code directly in the patch files can be difficult as the
+changes are displayed without the full context of the file, the patch changes
+are kept and reviewed in the [ovs](
+http://git.openswitch.net/cgit/openswitch/ops-build) git repository. Note that
+this repository exists for the sole purpose of reviewing the code of the
+patches. It is not built, tested, and it is not integrated with CIT.
+
+The ovs repository inherits the branches from the OVS project. It has branches
+for each release. For example 2.5, the current release, is on branch
+branch-2.5. ovs has special branches associated with each release that follow
+the name convention: `patches/branch-<OVS_VERSION>`. It contains all the
+patches that are applied to that particular OVS version in OPS.
+
+Having all the patches applied one after the other on a branch, reduce the
+possibility of conflicts between the patch files. Adding new functionality is
+easy as it only requires to put a new commit on top of the corresponding patches
+branch and generate the new patch file. Also, fixing a bug or updating a
+existing patch is also easy as it requires only to update the commit that
+generated the patch and then generate a new patch file. The workflow to do this
+is described on this document.
+
+This approach keeps the OVS code unchanged, so that the repository in OPS is not
+a fork but a clone, allowing the OPS community to easily update the OVS
+version to get bug fixes and new features. Contributing to the OVS project is
+also seamless as individual patches can be sent for upstreaming and then removed
+once they are part of the OVS code base.
+
+# Adding new functionality
+---
+
+New functionality can be added on a feature branch. On this branches, the
+feature can be split in several commits. This is specially useful for big
+changes. The decision of publishing the feature branch falls on to the
+developers.
+
+## Creating a feature branch
+
+First, it is necessary to identify which version of OVS is going to be used for
+the patch. OVS naming convention for branches names the branches after the
+release version. For example the branch for version 2.5 is `feature/branch-2.5`.
+Its corresponding patch branch would be `patches/branch-2.5`
+
+Create a new feature branch based on `patches/branch-<OVS_VERSION>`:
+```
+git checkout --track -b feature/<FEATURE_NAME> patches/branch-<OVS_VERSION>
+```
+If the branch wants to be published:
+```
+git push -u gerrit feature/<FEATURE_NAME>
+```
+
+## Develop the feature
+
+There are not any special requirement or workflow for the feature branches.
+Depending on the size of the feature or the preferences of the developers, the
+feature under development could span over several commits. Each commit, as any
+in OpenSwitch, needs to go through a Gerrit review before merging.
+
+The code in the feature branch can be reviewed by the developers working in the
+new feature. Once it is ready, it needs to be applied in the
+`patches/branch-<OVS_VERSION>` branch and the module recipe needs to be updated
+to use the new patch.
+
+## Publish the feature
+
+Once the code is ready in the feature branch, it needs to be moved to the
+`patches/branch-<OVS_VERSION>` branch as a single commit. First checkout the
+branch were the new feature will be applied.
+```
+git checkout patches/branch-<OVS_VERSION>
+```
+
+To avoid having a feature split over several patch files, bring the changes from
+`feature/<FEATURE_NAME>` and combined them:
+```
+git merge --squash  feature/<FEATURE_NAME> # Brings the feature code combined
+git commit --signoff # Commit all the changes from the feature branch
+```
+
+## Review process
+
+The commit that includes the code in the patches branch needs to be approved by
+the module maintainers. To create a new code review issue the command:
+```
+git push origin HEAD:refs/for/patches/branch-<OVS_VERSION>
+```
+
+## New Patch creation
+
+NOTE: this section includes 2 options. During the review of this document one
+must be picked and the other one removed.
+
+### Option A: the maintainers create the new patch file
+
+Once the maintainers approved the review. They will take care of creating the
+new patch file and apply it to the recipe.
+
+### Instructions for the module maintainers
+
+The git format-patch option needs to be used in order to keep the commit
+information (subject, body, author) as part of the patch. From branch
+`patches/<OVS_VERSION>` issue:
+```
+git format-patch devtool-base
+```
+
+This will generate a new patch for your commit.
+
+In the ops-build repo go to the directory of the ops-openvswitch recipe:
+```
+cd yocto/recipes/openswitch/meta-distro-openswitch/recipes-ops/openvswitch/
+```
+
+Issue:
+```
+ls openvswitch/*.patches
+```
+
+To get the list of all the patches. Update the numeration in the your patch file
+so it becomes the last of all. Copy the new patch to `ops-openvswitch` and
+include it in the recipe by editing the file `ops-openvswitch.bb`.
+
+Finally, create a review in ops-build to update the recipe.
+
+### Option B: The developers create the new patch file
+
+After the code is accepted on `patches/branch-<OVS_VERSION>` branch, the
+patch corresponding to the new commit has to be generated. The git format-patch
+option needs to be used in order to keep the commit information (subject, body,
+author) as part of the patch. From branch `patches/<OVS_VERSION>` issue:
+```
+git format-patch devtool-base
+```
+
+This will generate a new patch for your commit.
+
+In the ops-build repo go to the directory of the ops-openvswitch recipe:
+```
+cd yocto/recipes/openswitch/meta-distro-openswitch/recipes-ops/openvswitch/
+```
+
+Issue:
+```
+ls openvswitch/*.patches
+```
+
+To get the list of all the patches. Update the numeration in the your patch file
+so it becomes the last of all. Copy your patch to `ops-openvswitch` and include
+it in the recipe by editing the file `ops-openvswitch.bb`.
+
+Finally, create a review in ops-build to update the recipe.
+
+# Updating an existing patch
+---
+
+Depending on the size of the change, it can be coded directly on the
+`patches/branch-<OVS_VERSION>` branch, or on a feature branch.
+
+## Set up the branch
+
+Checkout the feature branch for the patch if it already exists, or create it if
+it does not.
+```
+// if it already exists
+git checkout --track -b feature/<FEATURE_NAME>
+
+// to create it
+git checkout --track -b feature/<FEATURE_NAME> patches/branch-<OVS_VERSION>
+```
+
+## Do the fix
+
+Do your changes an commit on top of the branch. There are not any special
+requirement to do this.
+
+The code in the feature branch can be reviewed by the developers working in the
+new feature. Once it is ready, it needs to be applied in the
+`patches/branch-<OVS_VERSION>` branch and the module recipe needs to be updated
+to use the new patch.
+
+## Publish the fix
+
+Once the fix or refactor is ready in the feature branch, the code needs to be
+applied in the `patches/branch-<OVS_VERSION>` branch as a single commit. First
+checkout the branch were the new feature will be applied.
+```
+git checkout patches/branch-<OVS_VERSION>
+```
+
+Bring all the changes from the feature branch and combine it:
+```
+git merge --squash  feature/<FEATURE_NAME> # Brings the feature code combined
+git commit --signoff # Creates a commit with all the changes from the feature branch
+```
+
+This brings the changes from all the commits that were done to do the fix on the
+feature branch to the stage of the current branch. Commit them using:
+```
+git commit --signoff
+```
+
+## Review process
+
+NOTE: this section includes 2 options. During the review of this document one
+must be picked and the other one removed.
+
+As this commit clearly present the changes that are being submitted, this is the
+commit that has to be the sent for review to the module maintainers.
+
+To do so issue:
+```
+git push origin HEAD:refs/for/patches/branch-<OVS_VERSION>
+```
+
+## Patch file creation
+
+### Option A: The maintainers create the new patch file
+
+When a fix related to an existing patch is accepted on
+`patches/branch-<OVS_VERSION>`, the module maintainers are responsible of
+updating the patch list to include the new change.
+
+### Instructions for the module maintainers
+
+To combine two patches rebase functionality of git. The ovs repository is
+is configured to support the workflow described in this section.
+
+From the `patches/branch-<OVS_VERSION>`, locate the hash of the commit that is
+going to be updated. This can be easily done using grep with the name of the
+patch file:
+```
+git log --online | grep <PATCH_NAME>
+```
+
+Rebase and combine the changes
+```
+git rebase -i <HASH_OF_COMMIT_TO_BE_CHANGED>^
+```
+
+This puts you in the editor. Move the line with the fix below the commits that
+is going to be updated. Then change 'pick' to 'fixup' and save the file.
+Conflicts between the commit that was rebased and the old commits will pop out
+here. Solve any conflict and continue the rebase until it is done:
+```
+git rebase --continue
+```
+
+Now that the branch history has been rewritten, the branch has to be published
+on the remote. To do this, it is necessary to use the --force option as it is
+effectively overwriting commits that were already on the remote branch.
+```
+git push --force origin HEAD:refs/heads/patches/branch-<OVS_VERSION>
+```
+
+To generate the new patch the git format-patch option needs to be used in order
+to keep the commit information (subject, body, author) as part of the patch and
+to keep an standard format for all the patches.
+
+From branch `patches/branch-<OVS_VERSION>` issue:
+```
+git format-patch -N feature/branch-<OVS_VERSION>
+```
+
+This will regenerate the patches of all the commits in the patches branch.
+```
+cd yocto/recipes/openswitch/meta-distro-openswitch/recipes-ops/openvswitch/
+```
+
+Copy the patches to `ops-openvswitch`. Do not change the patch names. Only the
+patches that were updated need to be copied.
+
+Finally, send your change in ops-build for reviewing.
+
+
+### Option B: The developers create the new patch file
+
+After the code is accepted on `patches/branch-<OVS_VERSION>` branch, the patch
+corresponding to the new commit has to be generated. The git format-patch option
+needs to be used in order to keep the commit information (subject, body, author)
+as part of the patch. From branch `patches/<OVS_VERSION>` issue:
+```
+git format-patch devtool-base
+```
+
+This will generate a new patch for your commit.
+
+In the ops-build repo go to the directory of the ops-openvswitch recipe:
+```
+cd yocto/recipes/openswitch/meta-distro-openswitch/recipes-ops/openvswitch/
+```
+
+Issue:
+```
+ls openvswitch/*.patches
+```
+
+To get the list of all the patches. Update the numeration in the your patch file
+so it becomes the last of all. Copy your patch to `ops-openvswitch` and include
+your patch in the recipe by editing the file `ops-openvswitch.bb`.
+
+Finally, send your change for reviewing. Do not forget to add the repo
+[maintainers as reviewers](
+https://review.openswitch.net/#/admin/groups/104,members).
