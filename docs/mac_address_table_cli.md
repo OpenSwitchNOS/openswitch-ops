@@ -10,6 +10,8 @@
 
     - [show mac-address-table address < mac-address >](#show-mac-address-table-address-mac-address)
 
+    - [show mac-address-table count](#show-mac-address-table-count)
+
 
 
 ## Display commands
@@ -20,7 +22,7 @@
 
 ```
 
-show mac-address-table [dynamic] [port <ports> | vlan <VLAN_ID>] [address  <A:B:C:D:E:F>]
+show mac-address-table [count] | [[dynamic] [port <ports> | vlan <VLAN_ID>]] | [address  <A:B:C:D:E:F>]
 
 ```
 
@@ -298,5 +300,48 @@ MAC Address          VLAN     Type      Port
 --------------------------------------------------
 
 00:01:01:01:01:03   1        dynamic     1
+
+```
+
+
+### show mac-address-table count
+
+
+
+#### Syntax
+
+
+
+```
+
+ show mac-address-table count
+
+```
+
+
+
+#### Description
+
+This command displays the total number of MAC addresses in the MAC table
+
+#### Authority
+
+Admin user.
+
+#### Parameters
+
+
+None
+
+
+#### Examples
+
+
+
+```
+
+switch# show mac-address-table count
+
+Number of MAC addresses 10
 
 ```
