@@ -12,7 +12,7 @@
 - [Roles](#roles)
 	- [Ansible galaxy](#ansible-galaxy)
 - [Communicating with Openswitch](#communicating-with-openswitch)
-	- [SSH communication with Openswitch](#ssh-communiation-with-openswitch)
+	- [SSH communication with Openswitch](#ssh-communication-with-openswitch)
 - [How to write Ansible role for OpenSwitch VLAN](#how-to-write-ansible-role-for-openswitch-vlan)
 	- [Create and initialize VLAN role](#create-and-initialize-vlan-role)
 	- [Create templates based on schema](#create-templates-based-on-schema)
@@ -34,9 +34,9 @@ It is recommended on the Ansible website to use 'pip', the Python package manage
 
 ## Installing Ansible
 
-As per the flavor of the operating system, there are different ways to install Ansible.
+Based on the operating system, there are different ways to install Ansible.
 
-Recommended by Ansible official documentation for linux:
+Recommended by Ansible official documentation for Linux:
 ```
 $sudo pip install Ansible
 ```
@@ -52,8 +52,20 @@ Ansible can also be installed using apt-get provided all the package requirement
 ```
 $sudo apt-get install Ansible
 ```
+**Note:** Using a method other than the recommand `pip`, might install an older release of Ansible. To install the most recent Ansible stable release, build and install Ansible from source code. For example, to install Ansible stable release 2.1:
+```
+git clone https://github.com/ansible/ansible.git --recursive --branch stable-2.1
+sudo apt-get install python-dev
+sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+sudo apt-get install graphviz
+cd ansible
+sudo make
+sudo make install
+```
 
 A working Ansible control machine Docker image is uploaded on the Docker hub and is used for running the tests.
+
+**Note:** This step is optional. Once Ansible is installed on any machine/VM, that machine/VM acts as an Ansible control machine.
 
 The command to pull the Ansible control machine is:
 ```
@@ -104,6 +116,7 @@ Sample inventory:
 ops ansible_host=192.168.1.10 ansible_port=22
 
 ```
+**Note:** For OpenSwitch host, the `ansible_host` value should be the same as the IP address of the management interface eth0. To check the management interface IP address, run the `ifconfig` command from the switch terminal.
 
 #### Verifying the Ansible installation
 
@@ -116,9 +129,9 @@ $ ansible localhost -m setup
 
 ## Playbooks
 
-Playbook are used to automate, configure, and orchestrate the infrastructure. As the official documentation explains, playbooks are the design plans and modules are the tools. Playbooks contain plays, and plays contain tasks.
+Playbooks are used to automate, configure, and orchestrate the infrastructure. As the official documentation explains, playbooks are the design plans and modules are the tools. Playbooks contain plays, and plays contain tasks.
 
-Sample playbook with a single play:
+Sample playbook with a single play <b>ping.yml</b>:
 
 ```
 ---
@@ -133,12 +146,44 @@ Sample playbook with a single play:
       ping:
 ```
 
+**Note:** Before using a playbook to ping/configure remote devices/hosts, communication needs to be formed between the Ansible control machine and the hosts. The preferred method is an SSH connection using a public key:
+
+Make Ansible use scp for an SSH connection:
+```
+export ANSIBLE_SCP_IF_SSH=y
+```
+Create a playbook to copy the public key to the hosts (<b>copy_public_key.yaml</b>):
+```
+- name: copy the ssh public key to the OpenSwitch
+  hosts: OpenSwitch
+  gather_facts: no
+  vars:
+    ansible_ssh_user: root
+    public_key: ~/.ssh/id_rsa.pub
+  tasks:
+    - authorized_key: user=admin key="{{ lookup('file', public_key) }}"
+```
 To run the playbook use the following command:
 ```
-$ansible-playbook ping.yml
+ansible-playbook copy_public_key.yaml
 ```
+Ansible returns a success message similar to the following:
+```
+PLAY [copy the ssh public key to the OpenSwitch] *******************************
 
-For more information on writing playbboks, refer to:
+TASK [authorized_key] **********************************************************
+changed: [ops]
+
+PLAY RECAP *********************************************************************
+ops                        : ok=1    changed=1    unreachable=0    failed=0
+```
+For more information, refer to the [Communicating with Openswitch](#communicating-with-openswitch) session.
+
+After successfully coping the SSH key, run the <b>ping.yml</b> playbook to ping the hosts:
+```
+ansible-playbook ping.yml
+```
+For more information on writing playbooks, refer to:
 
 http://docs.ansible.com/ansible/playbooks_intro.html
 
@@ -218,7 +263,7 @@ It is required to have an access to the management port of the OpenSwitch in ord
 
 For an example playbook written for the initial communication with the OpenSwitch, refer to:
 
-http://git.openswitch.net/cgit/openswitch/ops-ansible/tree/examples/utility
+http://git.openswitch.net/cgit/openswitch/ops-ansible/tree/utils
 
 Use the following commands to confirm the test:
 ```
@@ -329,7 +374,7 @@ Create the ops_system.j2 template (<b>templates/ops_system.j2</b>) to iterate th
 
   {# System.bridges column #}
   {%- if ops_bridges is defined -%}
-    {%- include ['ops_system_bridges.j2'] -%},
+    {%- include ['ops_system_bridges.j2'] -%}
   {%- endif -%}
 }
 
@@ -373,7 +418,7 @@ Based on this, create the ops_system_bridges.j2 template (<b>templates/ops_syste
   {%- endfor -%}
 }
 ```
-Refer to <i>Ports</i> table of [schema/vswitch.extschema](http://git.openswitch.net/cgit/openswitch/ops/tree/schema/vswitch.extschema), to create the ops_port.j2 template(<b>templates/ops_system_bridges.j2</b>) :
+Refer to <i>Ports</i> table of [schema/vswitch.extschema](http://git.openswitch.net/cgit/openswitch/ops/tree/schema/vswitch.extschema), to create the ops_port.j2 template(<b>templates/ops_port.j2</b>) :
 ```
 {# OpenSwitch Port table JSON template file #}
 
@@ -402,25 +447,11 @@ Following is a simple playbook to create two vlans under the default bridge (<b>
 ```
 ---
 - name: create two vlans through vlan role
-  hosts: ops
+  hosts: OpenSwitch
   gather_facts: no
   vars:
     ansible_user: admin
     ops_debug: yes
-    ops_cli_provider:
-      transport: cli
-      username: netop
-      password: netop
-      host: "{{ ansible_host }}"
-      port: "{{ ansible_port }}"
-    ops_rest_provider:
-      transport: rest
-      username: netop
-      password: netop
-      host: "{{ ansible_host }}"
-      port: "{{ ops_rest_port }}"
-      use_ssl: true
-      validate_certs: no
 
   roles:
     - role: vlan
@@ -444,7 +475,7 @@ Following is a simple playbook to create two vlans under the default bridge (<b>
 To fully explore the capabilities of Ansible, add multiple switch members to the <b>hosts</b> file and group them together. They are configured simultaneously when executing the playbook (for example, <b>tests/create_vlan.yml</b>). Following is a <b>hosts</b> file example:
 
 ```
-[ops]
+[OpenSwitch]
 ops1 ansible_host=192.168.1.10 ansible_port=22
 ops2 ansible_host=192.168.1.11 ansible_port=22
 ```
