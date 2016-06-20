@@ -2556,8 +2556,10 @@
       Default is 180 seconds.
       </column>
       <column name="redistribute">
-      Specifies which protocol routes should be redistributed into BGP.
-      The routes can be filtered by specifying the route-map.
+      Specifies which routes should be redistributed by BGP.
+      </column>
+      <column name="redistribute_route_map">
+      Specifies route-maps to be applied when redistributing routes.
       </column>
       <column name="always_compare_med">
       Compares MED (Multi-Exit Discriminitor) from different neighbors.
@@ -4266,9 +4268,12 @@
 
       <column name="hw_status" key="ready_state_blocked_reason"
           type='{ "type": "string", "enum": ["set",
-                       ["acls"]]}'>
-        Enumeration that identifies the asserting protocol that causes the
-        ready to be "false".
+                       ["acls","waiting"]]}'>
+        Enumeration that identifies the asserting protocol that is causing the
+        hw_status ready key to be "false".
+        The default value will be set to <code>waiting</code> to indicate that
+        not all protocols that should set hw_status ready key have responded
+        yet.
       </column>
 
       <column name="forwarding_state" key="forwarding"
@@ -4353,6 +4358,16 @@
         <p>
           This column will be empty for an interface that does not
           have an MTU as, for example, some kinds of tunnels do not.
+        </p>
+      </column>
+
+      <column name="error_control">
+        <p>
+          The status of Ethernet error control (error detection and correction)
+          mode of the physical network link.
+          The error control can be implemented as forward error correction (FEC).
+          The FEC can be implemented using Fire codes (FC-FEC) or Reed-Solomon
+          codes (RS-FEC).
         </p>
       </column>
 
@@ -5393,6 +5408,11 @@
     <column name="user_config" key="mtu">
       The user-configured MTU of <ref table="Interface"/>.
     </column>
+    <column name="user_config" key="error_control">
+      The user-configured Ethernet error control (error detection and correction) mode
+      of <ref table="Interface"/>. The possible values are "none", "fc-fec" and "rs-fec".
+      Default is "none" if not specified.
+    </column>
     <column name="user_config" key="lane_split">
       The user-configured split mode of <ref table="Interface"/>.
       This is only applicable if an interface can be split into
@@ -5433,6 +5453,9 @@
     </column>
     <column name="hw_intf_config" key="mtu">
       Maximum transmission unit (MTU) of <ref table="Interface"/>.
+    </column>
+    <column name="hw_intf_config" key="error_control">
+      The possible values are "none", "fc-fec" and "rs-fec". Default is "none".
     </column>
     <column name="hw_intf_config" key="interface_type">
       Physical layer interface type of <ref table="Interface"/>.
@@ -6357,7 +6380,7 @@
     </group>
     <group title="Configuration">
       <column name="enabled">
-        Specifies whether counter is enabled.
+        Specifies whether counter is enabled. An empty value means counter is disabled.
       </column>
 
       <column name="trigger_threshold">
