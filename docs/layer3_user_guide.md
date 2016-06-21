@@ -102,7 +102,9 @@ Interface 1 is up
             0 input error                0 dropped
 
             0 CRC/FCS
-
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
  TX
 
             0 output packets             0 bytes
@@ -110,6 +112,9 @@ Interface 1 is up
             0 input error                0 dropped
 
             0 collision
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
 
 
 

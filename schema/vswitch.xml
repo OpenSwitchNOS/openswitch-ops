@@ -87,7 +87,6 @@
       Configuration: Represent configuration data that comes from the user.  Only columns
       using this category can be modified by the users.
     </li>
-  </ol>
 
   <p>
     Some column categories depend on the other column category. It means that the
@@ -1622,6 +1621,9 @@
         The lower a priority value, the higher the priority.
         Default value is 32768.
       </column>
+      <column name="remaining_hops">
+        Once known, contains the hop count after which the MSTP BPDU of this instance are discarded.
+      </column>
       <column name="root_port">
         Specifies the root port name for a MSTP instance.
       </column>
@@ -1705,8 +1707,7 @@
         The path cost from the transmitting bridge to the CIST regional root.
       </column>
       <column name="remaining_hops">
-        The hop count after which this instance MSTP BPDU will be discarded.
-        Default value is 20
+        Once known, contains the hop count after which the MSTP BPDU of this instance are discarded.
       </column>
       <column name="oper_hello_time">
         The operating hello timer value for this instance.
@@ -3594,6 +3595,32 @@
           VLAN.
         </p>
       </column>
+      <column name="vlan_tag">
+        <p>
+          For an access port, specifies the untagged 802.1Q vlan. If empty,
+          untagged packets are dropped. For a native tagged or native untagged
+          port, specifies the "native VLAN". Must be empty for a trunk port.
+        </p>
+        <p>
+          For an L3 port, the value is empty. For an interface VLAN
+          the value will be the VLAN on which it is created.
+        </p>
+      </column>
+
+      <column name="vlan_trunks">
+        <p>
+          For a trunk, native-tagged, or native-untagged port, the 802.1Q VLAN
+          or VLANs that this port trunks; if it is empty, then the port trunks
+          all VLANs defined in the <ref table="VLAN"/> table.  Must be empty
+          if this is an access port.
+        </p>
+        <p>
+          A native-tagged or native-untagged port always trunks its native
+          VLAN, regardless of whether <ref column="vlan_trunks"/> includes that
+          VLAN.
+        </p>
+      </column>
+
       <column name="vlan_tunnel_keys" keyname="vlan">
         <p>
           Specifies translation from a vlan to the
@@ -3948,6 +3975,13 @@
           is disable, then the state is blocked.
         * Down:  All member interfaces configured to be a member of a LAG are
           either administratively or operatively down
+      </column>
+      <column name="bond_status" key="bond_speed"
+              type='{"type":"integer", "minInteger": 0}'>
+        Speed, in bits per second (bps), of interfaces operating in LAG. By operating,
+        it means the active interfaces of the LAG, if one member interface operates at
+        a different speed, that interface is not considered as eligible.
+        Valid values are integers greater or equal to 0.
       </column>
     </group>
 
@@ -7614,6 +7648,10 @@
 
     <column name="vlan">
       VLAN associated with MAC address.
+    </column>
+
+    <column name="mac_vlan">
+      Specifies the VLAN <ref table="VLAN"/> associated with MAC address.
     </column>
 
     <column name="from">
