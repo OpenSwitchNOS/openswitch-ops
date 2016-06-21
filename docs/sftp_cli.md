@@ -8,6 +8,7 @@
 - [SFTP client](#sftp-client)
 	- [Interactive mode](#interactive-mode)
 	- [Non-interactive mode](#non-interactive-mode)
+- [References](#references)
 
 ## SFTP server
 ### Enable/Disable
@@ -49,7 +50,7 @@ SFTP server : Enabled
 #### Syntax
 `copy sftp username ( <IPv4-address> | <hostname> | <IPv6-address>)`
 #### Description
-This command enters the SFTP interactive mode.
+This command enters the SFTP interactive mode and can be accessed only by a system management user(SYS_MGMT as mentioned in RBAC method).
 #### Parameters
 | Parameter | Status | Syntax | Description |
 |:-----------|:----------|:----------------:|:------------------------|
@@ -74,6 +75,12 @@ Warning: Permanently added '10.1.1.1' (ECDSA) to the list of known hosts.
 abc@10.1.1.1's password:
 Connected to 10.1.1.1.
 sftp>
+sftp> get /users/abc/test_file
+Fetching /users/abc/test_file to test_file
+/users/abc/test_file                                                                                                                            100%  212     0.2KB/s   00:00
+sftp> put test_file /users/abc/
+Uploading test_file to /users/abc/test_file
+test_file                                                                                                                                      100%  212     0.2KB/s   00:00
 
 switch# copy sftp abc a::1
 The authenticity of host 'a::1 (a::1)' can't be established.
@@ -83,13 +90,19 @@ Warning: Permanently added 'a::1' (ECDSA) to the list of known hosts.
 abc@a::1's password:
 Connected to a::1.
 sftp>
+sftp> get /users/abc/test_file
+Fetching /users/abc/test_file to test_file
+/users/abc/test_file                                                                                                                            100%  212     0.2KB/s   00:00
+sftp> put test_file /users/abc/
+Uploading test_file to /users/abc/test_file
+test_file                                                                                                                                      100%  212     0.2KB/s   00:00
 ```
 
 ### Non-Interactive mode
 #### Syntax
 `copy sftp username ( <IPv4-address> | <hostname> | <IPv6-address> ) Source [Destination]`
 #### Description
-This command performs a non-interactive SFTP get.
+This command performs a non-interactive SFTP get and can be accessed only by a system management user(SYS_MGMT as mentioned in RBAC method).
 #### Parameters
 | Parameter | Status | Syntax | Description |
 |:-----------|:----------|:----------------:|:------------------------|
@@ -145,3 +158,6 @@ Fetching source-file to destination-file
 source-file                   100%   25     0.0KB/s   00:00
 switch#
 ```
+
+## References
+http://www.openswitch.net/documents/dev/ops-rbac/design
