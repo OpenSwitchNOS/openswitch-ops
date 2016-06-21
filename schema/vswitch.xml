@@ -7779,7 +7779,7 @@
       There must be a user-defined name of the mirror session.
     </column>
 
-    <column name="active">
+    <column name="active" emptyValue="false">
       The intended state of the mirror session: active or inactive.
       The <ref column="status" key="operation_state"/> value contains
       the actual state in hardware (e.g. active, inactive, or error).
@@ -7826,7 +7826,8 @@
       </column>
       <column name="mirror_status" key="operation_state"
               type='{"type":"string",
-                     "enum": ["set", ["active", "shutdown", "internal_error", "driver_error", "unknown_error"]]}'>
+              "enum": ["set", ["active", "shutdown", "internal_error", "driver_error", "unknown_error", "inactive"]]}'
+              emptyValue="inactive">
         Operational state of the mirror session in hardware.
         Only the value "active" means the hardware mirroring is running.
         Any other value, or if the key is missing, means the session
