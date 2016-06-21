@@ -3,16 +3,16 @@
 ## Contents
 
 - [BroadView configuration commands](#broadview-configuration-commands)
-    - [client ip port](#client-ip-port)
-    - [agent port](#agent-port)
+    - [broadview client ip port](#broadview-client-ip-port)
+    - [broadview agent-port](#broadview-agent-port)
 - [Display Commands](#display-commands)
     - [show broadview](#show-broadview)
 
 
-## Configuration commands
+## BroadView configuration commands
 
 
-### broadview client ip
+### broadview client ip port
 
 #### Syntax
 ```
