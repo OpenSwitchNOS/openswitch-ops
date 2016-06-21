@@ -32,4 +32,5 @@ The BroadView daemon interfaces with the OVSDB-Server, so it is loosely coupled 
 The BroadView daemon gets the configuration from the OVSDB schema. It exports statistics via its REST API using JSON messaging to a collector or controller.
 
 ## References
-- [BroadView design](/documents/dev/ops-broadview/DESIGN)
+- [BroadView design](/documents/user/broadview_design)
+- [BroadView user guide](/documents/user/broadview_user_guide)
