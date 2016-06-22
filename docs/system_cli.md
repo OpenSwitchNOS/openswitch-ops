@@ -16,6 +16,7 @@
   - [Showing system temperature information](#showing-system-temperature-information)
   - [Showing system LED information](#showing-system-led-information)
   - [Showing system power-supply information](#showing-system-power-supply-information)
+  - [Showing system clock information](#showing-system-clock-information)
   - [Showing system cpu information using top](#showing-system-cpu-information-using-top)
   - [Showing system memory information using top](#showing-system-memory-information-using-top)
 
@@ -419,6 +420,28 @@ Name           Status
 -----------------------------
 base-1         ok
 base-2         Input Fault
+```
+
+### Showing system clock information
+
+#### Syntax
+`show system clock`
+
+#### Description
+This command displays system clock information.
+It shows system time in <Day> <Mon> <Date> <hh:mm:ss> <timezone> <year> format
+
+#### Authority
+All users.
+
+#### Parameters
+This command does not require a parameter.
+
+#### Examples
+```
+switch# show system clock
+  Wed Jun 22 18:39:48 UTC 2016
+switch#
 ```
 
 ### Showing system CPU information using top
