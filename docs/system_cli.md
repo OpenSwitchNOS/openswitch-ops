@@ -421,6 +421,28 @@ base-1         ok
 base-2         Input Fault
 ```
 
+### Showing system clock information
+
+#### Syntax
+`show system clock`
+
+#### Description
+This command displays system clock information.
+It shows system time in <Day> <Mon> <Date> <hh:mm:ss> <timezone> <year> format
+
+#### Authority
+All users.
+
+#### Parameters
+This command does not require a parameter.
+
+#### Examples
+```
+switch# show system clock 
+  Wed Jun 22 18:39:48 UTC 2016
+switch#
+```
+
 ### Showing system CPU information using top
 
 #### Syntax
