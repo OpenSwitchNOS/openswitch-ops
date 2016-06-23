@@ -46,6 +46,38 @@ topoDict = {"topoExecution": 1000,
                             wrkston01:system-category:workstation"}
 
 
+def enterShell(**kwargs):
+
+    switch1 = kwargs.get('switch1', None)
+    switch2 = kwargs.get('switch2', None)
+
+    retStruct = switch1.VtyshShell(enter=True)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to enter vtysh prompt"
+
+    retStruct = switch2.VtyshShell(enter=True)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to enter vtysh prompt"
+
+    return True
+
+
+def exitContext(**kwargs):
+
+    switch1 = kwargs.get('switch1', None)
+    switch2 = kwargs.get('switch2', None)
+
+    retStruct = switch1.VtyshShell(enter=False)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to enter vtysh prompt"
+
+    retStruct = switch2.VtyshShell(enter=False)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to exit vtysh prompt"
+
+    return True
+
+
 def configure(**kwargs):
     switch1 = kwargs.get('switch1', None)
     switch2 = kwargs.get('switch2', None)
@@ -202,6 +234,46 @@ def configure(**kwargs):
 
     cmdOut = host1.cmd("netstat -rn")
     LogOutput('info', "IPv4 Route table for workstation 1:\n" + str(cmdOut))
+
+    #Entering vtysh SW1
+    retStruct = switch1.VtyshShell(enter=False)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to exit vtysh prompt"
+
+    #Entering vtysh SW2
+    retStruct = switch2.VtyshShell(enter=False)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to exit vtysh prompt"
+
+
+def check_interface_status(**kwargs):
+
+    switch1 = kwargs.get('switch1', None)
+    switch2 = kwargs.get('switch2', None)
+
+    iter = 0
+    while iter!= 2:
+        retry = 0
+        output = switch1.cmd("ovs-vsctl get interface 1 admin_state")
+        if 'down' in output:
+            retry = 1
+
+        output = switch1.cmd("ovs-vsctl get interface 2 admin_state")
+        if 'down' in output:
+            retry = 1
+
+        output = switch2.cmd("ovs-vsctl get interface 1 admin_state")
+        if 'down' in output:
+            retry = 1
+
+        if (retry == 0):
+            return True
+        else:
+            sleep(5)
+
+        iter += 1
+
+    return True
 
 
 def ping_basic(**kwargs):
@@ -573,10 +645,6 @@ def cleanup(**kwargs):
     switch2 = kwargs.get('switch2', None)
     host1 = kwargs.get('host1', None)
 
-    retStruct = switch1.VtyshShell(enter=False)
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Failed to exit vtysh prompt"
-
     LogOutput('info', "\nPerforming cleanup")
     LogOutput('info', "unconfiguring static ipv4 route on host1")
     retStruct = host1.IPRoutesConfig(config=False,
@@ -685,6 +753,10 @@ def cleanup(**kwargs):
     if retCode != 0:
         assert "Failed to unconfigure static ipv4 route on switch2"
 
+    retStruct = switch2.VtyshShell(enter=True)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to enter vtysh prompt"
+
     devIntRetStruct = switch2.DeviceInteract(command="conf t")
     devIntRetStruct = switch2.DeviceInteract(command="no ipv6"
                                              " route 1030::/120 1010::2")
@@ -694,6 +766,10 @@ def cleanup(**kwargs):
 
     devIntRetStruct = switch2.DeviceInteract(command="exit")
 
+    retStruct = switch2.VtyshShell(enter=False)
+    retCode = retStruct.returnCode()
+    assert retCode == 0, "Failed to exit vtysh prompt"
+
     LogOutput('info', "Disabling interface2 on SW2")
     retStruct = InterfaceEnable(deviceObj=switch2, enable=False,
                                 interface=switch2.linkPortMapping['lnk02'])
@@ -701,17 +777,12 @@ def cleanup(**kwargs):
     if retCode != 0:
         assert "Unable to disable interface2 on SW2"
 
-    retStruct = switch2.VtyshShell(enter=False)
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Failed to exit vtysh prompt"
-
 
 class Test_ping:
 
     def setup_class(cls):
-        # Test objaect will parse command line and formulate the env
-        Test_ping.testObj = testEnviron(topoDict=topoDict,
-                                        defSwitchContext="vtyShell")
+        # Test object will parse command line and formulate the env
+        Test_ping.testObj = testEnviron(topoDict=topoDict)
         # Get ping topology object
         Test_ping.pingTopoObj = Test_ping.testObj.topoObjGet()
 
@@ -728,30 +799,41 @@ class Test_ping:
         configure(switch1=dut01Obj, switch2=dut02Obj, host1=wrkston01Obj)
 
         LogOutput('info', "### Basic ping tests ###")
-        ping_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
+        if (check_interface_status(switch1=dut01Obj, switch2=dut02Obj) is True):
+            if (enterShell(switch1=dut01Obj, switch2=dut02Obj) is False):
+                LogOutput('info', "\n### Failed to enter vtysh prompt ###")
 
-        LogOutput('info', "\n### Ping with options tests ###")
-        ping_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_datagram_size_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_timeout_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_tos_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
+            LogOutput('info', "\n### Ping with options tests ###")
+            ping_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_datagram_size_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_timeout_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_tos_option(host1=wrkston01Obj, switch2=dut02Obj)
 
-        LogOutput('info', "\n### Ping with extended options tests ###")
-        ping_with_recordroute_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_timestamp_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_timestamp_and_address_option(host1=wrkston01Obj,
+            LogOutput('info', "\n### Ping with extended options tests ###")
+            ping_with_recordroute_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_timestamp_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_timestamp_and_address_option(host1=wrkston01Obj,
                                                switch2=dut02Obj)
 
-        LogOutput('info', "\n### Basic ping6 tests ###")
-        ping6_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
+            LogOutput('info', "\n### Basic ping6 tests ###")
+            ping6_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
 
-        LogOutput('info', "\n### Ping6 test with options ###")
-        ping6_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping6_with_datagram_size_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping6_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping6_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
+            LogOutput('info', "\n### Ping6 test with options ###")
+            ping6_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping6_with_datagram_size_option(host1=wrkston01Obj,
+                                                switch2=dut02Obj)
+            ping6_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping6_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
+            if (exitContext(switch1=dut01Obj, switch2=dut02Obj) is False):
+                LogOutput('info', "\n### Failed to exit vtysh prompt ###")
+        else:
+            LogOutput('info', "\n Interface state is down, ping failed")
+
+        if (enterShell(switch1=dut01Obj, switch2=dut02Obj) is False):
+            LogOutput('info', "\n### Failed to enter vtysh prompt ###")
 
         LogOutput('info', "\n### Ping failure test cases ###")
         ping_network_unreachable(switch2=dut02Obj)
@@ -761,5 +843,8 @@ class Test_ping:
         LogOutput('info', "\n### Ping6 failure test cases ###")
         ping6_network_unreachable(switch2=dut02Obj)
         ping6_unknown_host(switch2=dut02Obj)
+
+        if (exitContext(switch1=dut01Obj, switch2=dut02Obj) is False):
+            LogOutput('info', "\n### Failed to exit vtysh prompt ###")
 
         cleanup(switch1=dut01Obj, switch2=dut02Obj, host1=wrkston01Obj)
