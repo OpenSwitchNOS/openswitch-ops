@@ -204,6 +204,53 @@ def configure(**kwargs):
     LogOutput('info', "IPv4 Route table for workstation 1:\n" + str(cmdOut))
 
 
+def check_interface_status(**kwargs):
+
+    switch1 = kwargs.get('switch1', None)
+    switch2 = kwargs.get('switch2', None)
+
+    iter = 0
+    while iter != 2:
+        retry = 0
+        devIntRetStruct = switch2.DeviceInteract(command="start-shell")
+        retCode = devIntRetStruct.get('returnCode')
+        assert retCode == 0, "Failed to enter bash shell"
+
+        devIntRetStruct = switch1.DeviceInteract(command="start-shell")
+        retCode = devIntRetStruct.get('returnCode')
+        assert retCode == 0, "Failed to enter bash shell"
+
+        devIntRetStruct = switch1.DeviceInteract(command="ovs-vsctl get"
+                                                " interface 1 admin_state")
+        retBuffer = devIntRetStruct.get('buffer')
+        if 'down' in retBuffer:
+            retry = 1
+
+        devIntRetStruct = switch1.DeviceInteract(command="ovs-vsctl get"
+                                                " interface 2 admin_state")
+        retBuffer = devIntRetStruct.get('buffer')
+        if 'down' in retBuffer:
+            retry = 1
+
+        devIntRetStruct = switch2.DeviceInteract(command="ovs-vsctl get"
+                                                " interface 1 admin_state")
+        retBuffer = devIntRetStruct.get('buffer')
+        if 'down' in retBuffer:
+            retry = 1
+
+        devIntRetStruct = switch2.DeviceInteract(command="exit")
+        devIntRetStruct = switch1.DeviceInteract(command="exit")
+
+        if (retry == 0):
+            return True
+        else:
+            sleep(5)
+
+        iter += 1
+
+    return True
+
+
 def ping_basic(**kwargs):
 
     host1 = kwargs.get('host1', None)
@@ -728,38 +775,44 @@ class Test_ping:
         configure(switch1=dut01Obj, switch2=dut02Obj, host1=wrkston01Obj)
 
         LogOutput('info', "### Basic ping tests ###")
-        ping_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
+        if (check_interface_status(switch1=dut01Obj,
+                    switch2=dut02Obj) is True):
 
-        LogOutput('info', "\n### Ping with options tests ###")
-        ping_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_datagram_size_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_timeout_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_tos_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
+            LogOutput('info', "\n### Ping with options tests ###")
+            ping_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_datagram_size_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_timeout_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_tos_option(host1=wrkston01Obj, switch2=dut02Obj)
 
-        LogOutput('info', "\n### Ping with extended options tests ###")
-        ping_with_recordroute_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_timestamp_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping_with_timestamp_and_address_option(host1=wrkston01Obj,
+            LogOutput('info', "\n### Ping with extended options tests ###")
+            ping_with_recordroute_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_timestamp_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping_with_timestamp_and_address_option(host1=wrkston01Obj,
                                                switch2=dut02Obj)
 
-        LogOutput('info', "\n### Basic ping6 tests ###")
-        ping6_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
+            LogOutput('info', "\n### Basic ping6 tests ###")
+            ping6_basic(host1=wrkston01Obj, switch1=dut01Obj, switch2=dut02Obj)
 
-        LogOutput('info', "\n### Ping6 test with options ###")
-        ping6_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping6_with_datagram_size_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping6_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
-        ping6_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
+            LogOutput('info', "\n### Ping6 test with options ###")
+            ping6_with_datafill_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping6_with_datagram_size_option(host1=wrkston01Obj,
+                                                switch2=dut02Obj)
+            ping6_with_interval_option(host1=wrkston01Obj, switch2=dut02Obj)
+            ping6_with_repetition_option(host1=wrkston01Obj, switch2=dut02Obj)
 
-        LogOutput('info', "\n### Ping failure test cases ###")
-        ping_network_unreachable(switch2=dut02Obj)
-        ping_destination_unreachable(switch2=dut02Obj)
-        ping_unknown_host(switch2=dut02Obj)
+            LogOutput('info', "\n### Ping failure test cases ###")
+            ping_network_unreachable(switch2=dut02Obj)
+            ping_destination_unreachable(switch2=dut02Obj)
+            ping_unknown_host(switch2=dut02Obj)
 
-        LogOutput('info', "\n### Ping6 failure test cases ###")
-        ping6_network_unreachable(switch2=dut02Obj)
-        ping6_unknown_host(switch2=dut02Obj)
+            LogOutput('info', "\n### Ping6 failure test cases ###")
+            ping6_network_unreachable(switch2=dut02Obj)
+            ping6_unknown_host(switch2=dut02Obj)
+        else:
+            LogOutput('info', "\n Since Interface state is down ping test"
+            " cases are not executed")
 
         cleanup(switch1=dut01Obj, switch2=dut02Obj, host1=wrkston01Obj)
