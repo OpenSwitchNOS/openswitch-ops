@@ -3940,6 +3940,10 @@
         protection to be blocked.
       </column>
 
+      <column name="forwarding_state" key="protocol" type='{"type": "string", "set":["enum", ["lacp", "mstp", "none"]]}'/>
+
+      <column name="forwarding_state" key="layer" type='{"type": "string", "set":["enum", ["aggregation", "loop_protection"]]}'/>
+
       <column name="lacp_status">
         Key-value pairs that report lacp-specific port status.
       </column>
