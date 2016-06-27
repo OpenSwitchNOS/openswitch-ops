@@ -166,6 +166,9 @@
         Community strings to be used by the system when communicating over SNMPv1/SNMPv2c.
       </column>
 
+      <column name="other_config" key="dns_client_disabled"
+              type='{"type": "string"}'>
+
       <column name="other_config" key="stats-update-interval"
               type='{"type": "integer", "minInteger": 5000}'>
         <p>
