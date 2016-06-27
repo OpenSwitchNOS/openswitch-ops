@@ -3421,6 +3421,8 @@
       ports, interfaces, and bridges on a host.
     </column>
 
+    <column name="config_admin" type='{"type": "string", "set":["enum", ["down", "up"]]}'/>
+
     <column name="interfaces">
       The port's interfaces.  If there is more than one, this is a
       bonded Port. A maximum of 8 interfaces can be assigned to a port.
