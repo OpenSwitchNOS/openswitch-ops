@@ -25,6 +25,8 @@
  *          For non-map columns, IDL should already automatically generate
  *          the necessary
  *          #defines in vswitch-idl.h file.
+ *
+ *    This file will be replaced.
  */
 
 #ifndef OPENSWITCH_IDL_HEADER
