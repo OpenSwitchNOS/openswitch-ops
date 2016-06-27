@@ -200,7 +200,7 @@
       </column>
 
       <column name="other_config" key="internal_vlan_policy"
-              type='{"type": "string"}'>
+              type='{"type": "string", "set":["enum", ["ascending", "descending"]]}'>
         <p>
             This key indicates order of assignment of internal VLAN ID (ascending or descending).
         </p>
@@ -358,6 +358,11 @@
         transmitting it.
         Default is <code>enable</code>.
       </column>
+
+      <column name="other_config" key="lldp_tlv_port_vlan_id_enable" type='{"type": "boolean"}'/>
+      <column name="other_config" key="lldp_tlv_port_proto_vlan_id_enable" type='{"type": "boolean"}'/>
+      <column name="other_config" key="lldp_tlv_port_vlan_name_enable" type='{"type": "boolean"}'/>
+      <column name="other_config" key="lldp_tlv_port_proto_id_enable" type='{"type": "boolean"}'/>
 
       <column name="other_config" key="lldp_mgmt_addr"
               type='{"type": "string"}'>
@@ -822,7 +827,7 @@
         The value for this key is a valid interface name that is to be
         configured as management interface
       </column>
-      <column name="mgmt_intf" key="mode" >
+      <column name="mgmt_intf" key="mode" type='{"type": "string", "set":["enum", ["dhcp", "static"]]}'>
         The value is static or dhcp based on the mode in which the management
         ip is to be obtained. Default value is dhcp.
       </column>
@@ -849,6 +854,12 @@
       <column name="mgmt_intf" key="default_gateway_v6" >
         The value for this key is default gateway IPv6 address
       </column>
+      <column name="mgmt_intf" key="ipv6_linklocal" type='{"type": "string"}'/>
+      <column name="mgmt_intf" key="hostname" type='{"type": "string"}'/>
+      <column name="mgmt_intf" key="dhcp_hostname" type='{"type": "string"}'/>
+      <column name="mgmt_intf" key="domain_name" type='{"type": "string"}'/>
+      <column name="mgmt_intf" key="dhcp_domain_name" type='{"type": "string"}'/>
+
       <column name="radius_servers">
         Specifies radius servers configuration. See the <ref table="Radius_Server"/>
         table for more information.
@@ -2285,6 +2296,10 @@
           best path selectionUsed by BGP to influence in the
           best path selection..
       </column>
+      <column name="protocol_specific" key="bgp_peer_id" type='{"type": "string"}'/>
+      <column name="protocol_specific" key="bgp_internal" type='{"type": "string"}'/>
+      <column name="protocol_specific" key="bgp_ibgp" type='{"type": "string"}'/>
+      <column name="protocol_specific" key="bgp_uptime" type='{"type": "string"}'/>
    </group>
   </table>
 
@@ -2539,6 +2554,15 @@
           best path selection.
           Default value is 0.
       </column>
+      <column name="path_attributes" key="bgp_internal" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_ibgp" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_uptime" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_weight" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_aggregator_id" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_aggregator_addr" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_community" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_ecommunity" type='{"type": "string"}'/>
+      <column name="path_attributes" key="bgp_atomic_aggregate" type='{"type": "string"}'/>
    </group>
   </table>
 
@@ -4419,7 +4443,7 @@
         interface aggregation to be different from "forwarding".
       </column>
 
-      <column name="error">
+      <column name="error" type='{ "type": "string", "enum": ["set", ["uninitilized", "admin_down", "module_missing", "module_unrecognized", "module_unsupported", "lanes_split", "lanes_not_split", "invalid_mtu", "invalid_speeds", "autoneg_not_supported", "autoneg_required", "ok"]]}'>
         If the configuration of the <ref table="Interface"/> failed,
         OpenSwitch sets this column to an error
         description in human readable form.  Otherwise, OpenSwitch clears
@@ -4839,13 +4863,13 @@
       <column name="pm_info">
         Key-value pairs that report pluggable module information.
       </column>
-      <column name="pm_info" key="connector">
+      <column name="pm_info" key="connector" type='{"type": "string", "enum": ["set", ["QSFP28_CLR4", "QSFP28_CR4", "QSFP28_PSM4", "QSFP28_CWDM4", "QSFP28_LR4", "QSFP28_SR4", "SFP28_CR", "SFP28_LR", "SFP28_SR", "QSFP_CR4", "QSFP_LR4", "QSFP_SR4", "SFP_CX", "SFP_DAC", "SFP_FC", "SFP_LR", "SFP_LRM", "SFP_LX", "SFP_RJ45", "SFP_SR", "SFP_SX", "absent", "unknown"]]}'>
         The type of pluggable module connector inserted into the socket.
         The possible values are "absent", "unknown", "SFP_RJ45", "SFP_SX", "SFP_LX",
         "SFP_CX", "SFP_SR", "SFP_LR", "SFP_LRM", "SFP_DAC", "SFP_FC", "QSFP_CR4",
         "QSFP_SR4" and "QSFP_LR4".
       </column>
-      <column name="pm_info" key="connector_status">
+      <column name="pm_info" key="connector_status" type='{"type": "string", "enum": ["set", ["supported", "unrecognized", "unsupported"]]}'>
         The status of the connector to indicate whether it is supported by the hardware platform.
         The possible values are "unrecognized", "unsupported" and "supported".
       </column>
@@ -5460,6 +5484,11 @@
         <column name="lldp_statistics" key="lldp_rx_tlv_unknown">
           Number of lldp TLVs discarded because of unknown tlv.
         </column>
+        <column name="lldp_statistics" key="lldp_rx_unrecognized"/>
+        <column name="lldp_statistics" key="lldp_ageout"/>
+        <column name="lldp_statistics" key="lldp_insert"/>
+        <column name="lldp_statistics" key="lldp_delete"/>
+        <column name="lldp_statistics" key="lldp_drop"/>
       </group>
       <group title="Statistics: Interface Queue Transmit Statistics">
         <column name="queue_tx_bytes" keyname="queue_number">
@@ -5555,10 +5584,10 @@
     <column name="hw_intf_config">
       Key-value pairs that represent the configuration passed down to hardware.
     </column>
-    <column name="hw_intf_config" key="enable">
+    <column name="hw_intf_config" key="enable" type='{"type": "string", "enum": ["set", ["true", "false"]]}'>
       The possible values are "true" and "false".
     </column>
-    <column name="hw_intf_config" key="autoneg">
+    <column name="hw_intf_config" key="autoneg" type='{"type": "string", "enum": ["set", ["on", "off", "default"]]}'>
       The possible values are "on" and "off".
     </column>
     <column name="hw_intf_config" key="speeds">
@@ -5578,7 +5607,7 @@
     <column name="hw_intf_config" key="error_control">
       The possible values are "none", "fc-fec" and "rs-fec". Default is "none".
     </column>
-    <column name="hw_intf_config" key="interface_type">
+    <column name="hw_intf_config" key="interface_type" type='{"type": "string", "enum": ["set", ["unknown", "backplane", "1GBASE_SX", "1GBASE_T", "10GBASE_CR", "10GBASE_SR", "10GBASE_LR", "10GBASE_LRM", "25GBASE_CR", "25GBASE_SR", "25GBASE_LR", "40GBASE_CR4", "40GBASE_SR4", "40GBASE_LR4", "100GBASE_CR4", "100GBASE_SR4", "100GBASE_LR4"]]}'>
       Physical layer interface type of <ref table="Interface"/>.
       The possible values are "unknown", "backplane", "1GBASE_SX", "1GBASE_T",
       "10GBASE_CR", "10GBASE_SR", "10GBASE_LR", "10GBASE_LRM", "40GBASE_CR4",
@@ -5612,11 +5641,11 @@
     <column name="hw_intf_info" key="speeds">
       The list of supported speeds of the interface in units of megabits per second.
     </column>
-    <column name="hw_intf_info" key="connector">
+    <column name="hw_intf_info" key="connector" type='{"type": "string", "enum": ["set", ["RJ45", "SFP_PLUS", "QSFP_PLUS", "QSFP28"]]}'>
       The form factor of the interface socket.
       The possible values are "SFP_PLUS" and "QSFP_PLUS".
     </column>
-    <column name="hw_intf_info" key="pluggable">
+    <column name="hw_intf_info" key="pluggable" type='{"type": "string", "enum": ["set", ["false", "true"]]}'>
       Boolean value indicating whether or not the interface has a fixed connector or
       a pluggable module socket.
     </column>
@@ -5632,6 +5661,8 @@
       Boolean value indicating whether or not the interface supports Ethernet
       40G speed.
     </column>
+    <column name="hw_intf_info" key="capability_enet25G" type='{"type": "string"}'/>
+    <column name="hw_intf_info" key="capability_enet100G" type='{"type": "string"}'/>
     <column name="hw_intf_info" key="capability_split_4">
       Boolean value indicating whether or not the interface supports being
       split into four split ports. For example, a QSFP+ port can run as a
