@@ -153,17 +153,6 @@ ops-as5712#
 ## ECMP
 ECMP capability in OpenSwitch is currently available for IPv4 and IPv6 routes. ECMP can be enabled/disabled at the system level. By default ECMP is enabled.
 
-To disable ECMP on OpenSwitch:
-```
-ops-as5712# configure terminal
-ops-as5712(config)# ip ecmp disable
-```
-To re-enable ECMP:
-```
-ops-as5712# configure terminal
-ops-as5712(config)# no ip ecmp disable
-```
-
 By default, ECMP uses four tuple in the hash calculation:
  - SrcIP
  - DstIP
