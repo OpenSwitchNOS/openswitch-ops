@@ -1,0 +1,10 @@
+Code-Review+1: Mohan Ram Bhadravati <mohan-ram.r.bhadravati@hpe.com>
+Code-Review+1: Mithun Kumar Halder <mithun.kum.halder@hpe.com>
+Code-Review+2: Eduardo Ramírez <eramireza@hpe.com>
+Verified+2: Eduardo Ramírez <eramireza@hpe.com>
+Workflow+1: Eduardo Ramírez <eramireza@hpe.com>
+Submitted-by: Eduardo Ramírez <eramireza@hpe.com>
+Submitted-at: Fri, 01 Jul 2016 15:09:39 +0000
+Reviewed-on: https://review.openswitch.net/11180
+Project: openswitch/ops
+Branch: refs/heads/feature/schema_modularity
