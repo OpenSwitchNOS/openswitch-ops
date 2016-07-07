@@ -5901,7 +5901,7 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 1,
+              "minInteger": 0,
               "maxInteger": 4094
             }
           }
