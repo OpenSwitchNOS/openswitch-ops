@@ -1,0 +1,10 @@
+Code-Review+1: Sundar Durairaj <sundarapandian.durairaj@hpe.com>
+Code-Review+1: Siva Muthusamy <sivabalakrishnan.muthusamy@hpe.com>
+Code-Review+2: Eduardo Ramírez <eramireza@hpe.com>
+Verified+2: Eduardo Ramírez <eramireza@hpe.com>
+Workflow+1: Eduardo Ramírez <eramireza@hpe.com>
+Submitted-by: Eduardo Ramírez <eramireza@hpe.com>
+Submitted-at: Thu, 07 Jul 2016 19:21:19 +0000
+Reviewed-on: https://review.openswitch.net/11153
+Project: openswitch/ops
+Branch: refs/heads/feature/schema_modularity
