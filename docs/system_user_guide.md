@@ -40,6 +40,20 @@ switch(config)# led base-loc on
 switch(config)#
 ```
 
+3. ++Setting Timezone++
+'timezone set *timezone*' lets the user to set the Timezone on the switch. By default the timezone on the switch will be utc (Coordinated Universal Time).
+All the timezones available in the posix standard are supported through this command.
+In the example below *'us/alaska'* timezone is set on the system.
+```
+switch(config)# timezone set u
+uct                us/arizona         us/hawaii          us/pacific
+universal          us/central         us/indiana-starke  us/samoa
+us/alaska          us/east-indiana    us/michigan        utc
+us/aleutian        us/eastern         us/mountain
+
+switch(config)# timezone set us/alaska
+```
+
 ### Verifying the configuration
 1. ++View the fan information.++
 'show system fan' command displays the detailed information of fans in the system.
@@ -121,6 +135,43 @@ PACKAGE     : dbus-1
 VERSION     : NA
 SOURCE TYPE : other
 SOURCE URL  : NA
+```
+
+6. View Timezone information.
+The 'show system timezone' command displays the timezone information on the switch.
+By default the timezone configured should be utc.
+```
+switch# show system timezone
+System is configured for timezone : UTC
+      DST active: n/a
+
+switch# show system clock
+Thu Jun 16 00:08:26 UTC 2016
+```
+If we configure a timezone of "US/Alaska", then we should be able to verify with the
+following commands
+```
+switch# show running-config
+Current configuration:
+!
+Version 0.1.8
+timezone set us/alaska
+!
+!
+!
+!
+vlan 1
+    no shutdown
+
+switch# show system timezone
+System is configured for timezone : US/Alaska
+      DST active: yes
+ Last DST change: DST began at
+                  Sun 2016-03-13 01:59:59 AKST
+                  Sun 2016-03-13 03:00:00 AKDT
+ Next DST change: DST ends (the clock jumps one hour backwards) at
+                  Sun 2016-11-06 01:59:59 AKDT
+                  Sun 2016-11-06 01:00:00 AKST
 ```
 
 ## CLI
