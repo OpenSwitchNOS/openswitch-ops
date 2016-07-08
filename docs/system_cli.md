@@ -8,6 +8,8 @@
   - [Unsetting the fan speed](#unsetting-the-fan-speed)
   - [Setting an LED state](#setting-an-led-state)
   - [Unsetting an LED state](#unsetting-an-led-state)
+  - [Setting Timezone on the switch](#setting-timezone-on-the-switch)
+  - [Unsetting Timezone on the switch](#unsetting-timezone-on-the-switch)
 - [System Display Commands](#system-display-commands)
   - [Showing version information](#showing-version-information)
   - [Showing package information](#showing-package-information)
@@ -19,6 +21,7 @@
   - [Showing system clock information](#showing-system-clock-information)
   - [Showing system cpu information using top](#showing-system-cpu-information-using-top)
   - [Showing system memory information using top](#showing-system-memory-information-using-top)
+  - [Showing Timezone information](#showing-timezone-information)
 
 
 ## System configuration commands
@@ -215,6 +218,625 @@ VERSION     : NA
 SOURCE TYPE : other
 SOURCE URL  : NA
 ```
+### Setting Timezone on the switch 
+#### Syntax
+`timezone set *timezone*>`
+
+#### Description
+This command sets the Timezone on the switch. By default the timezone is set to utc (Coordinated Universal Time).
+
+#### Authority
+All users.
+
+#### Parameters
+The *timezone* parameter takes one of the following values as per the posix timezone database:
+  africa/abidjan                    Africa/Abidjan Zone
+  africa/accra                      Africa/Accra Zone
+  africa/addis_ababa                Africa/Addis_Ababa Zone
+  africa/algiers                    Africa/Algiers Zone
+  africa/asmara                     Africa/Asmara Zone
+  africa/asmera                     Africa/Asmera Zone
+  africa/bamako                     Africa/Bamako Zone
+  africa/bangui                     Africa/Bangui Zone
+  africa/banjul                     Africa/Banjul Zone
+  africa/bissau                     Africa/Bissau Zone
+  africa/blantyre                   Africa/Blantyre Zone
+  africa/brazzaville                Africa/Brazzaville Zone
+  africa/bujumbura                  Africa/Bujumbura Zone
+  africa/cairo                      Africa/Cairo Zone
+  africa/casablanca                 Africa/Casablanca Zone
+  africa/ceuta                      Africa/Ceuta Zone
+  africa/conakry                    Africa/Conakry Zone
+  africa/dakar                      Africa/Dakar Zone
+  africa/dar_es_salaam              Africa/Dar_es_Salaam Zone
+  africa/djibouti                   Africa/Djibouti Zone
+  africa/douala                     Africa/Douala Zone
+  africa/el_aaiun                   Africa/El_Aaiun Zone
+  africa/freetown                   Africa/Freetown Zone
+  africa/gaborone                   Africa/Gaborone Zone
+  africa/harare                     Africa/Harare Zone
+  africa/johannesburg               Africa/Johannesburg Zone
+  africa/juba                       Africa/Juba Zone
+  africa/kampala                    Africa/Kampala Zone
+  africa/khartoum                   Africa/Khartoum Zone
+  africa/kigali                     Africa/Kigali Zone
+  africa/kinshasa                   Africa/Kinshasa Zone
+  africa/lagos                      Africa/Lagos Zone
+  africa/libreville                 Africa/Libreville Zone
+  africa/lome                       Africa/Lome Zone
+  africa/luanda                     Africa/Luanda Zone
+  africa/lubumbashi                 Africa/Lubumbashi Zone
+  africa/lusaka                     Africa/Lusaka Zone
+  africa/malabo                     Africa/Malabo Zone
+  africa/maputo                     Africa/Maputo Zone
+  africa/maseru                     Africa/Maseru Zone
+  africa/mbabane                    Africa/Mbabane Zone
+  africa/mogadishu                  Africa/Mogadishu Zone
+  africa/monrovia                   Africa/Monrovia Zone
+  africa/nairobi                    Africa/Nairobi Zone
+  africa/ndjamena                   Africa/Ndjamena Zone
+  africa/niamey                     Africa/Niamey Zone
+  africa/nouakchott                 Africa/Nouakchott Zone
+  africa/ouagadougou                Africa/Ouagadougou Zone
+  africa/porto-novo                 Africa/Porto-Novo Zone
+  africa/sao_tome                   Africa/Sao_Tome Zone
+  africa/timbuktu                   Africa/Timbuktu Zone
+  africa/tripoli                    Africa/Tripoli Zone
+  africa/tunis                      Africa/Tunis Zone
+  africa/windhoek                   Africa/Windhoek Zone
+  america/adak                      America/Adak Zone
+  america/anchorage                 America/Anchorage Zone
+  america/anguilla                  America/Anguilla Zone
+  america/antigua                   America/Antigua Zone
+  america/araguaina                 America/Araguaina Zone
+  america/argentina/buenos_aires    America/Argentina/Buenos_Aires Zone
+  america/argentina/catamarca       America/Argentina/Catamarca Zone
+  america/argentina/comodrivadavia  America/Argentina/ComodRivadavia Zone
+  america/argentina/cordoba         America/Argentina/Cordoba Zone
+  america/argentina/jujuy           America/Argentina/Jujuy Zone
+  america/argentina/la_rioja        America/Argentina/La_Rioja Zone
+  america/argentina/mendoza         America/Argentina/Mendoza Zone
+  america/argentina/rio_gallegos    America/Argentina/Rio_Gallegos Zone
+  america/argentina/salta           America/Argentina/Salta Zone
+  america/argentina/san_juan        America/Argentina/San_Juan Zone
+  america/argentina/san_luis        America/Argentina/San_Luis Zone
+  america/argentina/tucuman         America/Argentina/Tucuman Zone
+  america/argentina/ushuaia         America/Argentina/Ushuaia Zone
+  america/aruba                     America/Aruba Zone
+  america/asuncion                  America/Asuncion Zone
+  america/atikokan                  America/Atikokan Zone
+  america/atka                      America/Atka Zone
+  america/bahia                     America/Bahia Zone
+  america/bahia_banderas            America/Bahia_Banderas Zone
+  america/barbados                  America/Barbados Zone
+  america/belem                     America/Belem Zone
+  america/belize                    America/Belize Zone
+  america/blanc-sablon              America/Blanc-Sablon Zone
+  america/boa_vista                 America/Boa_Vista Zone
+  america/bogota                    America/Bogota Zone
+  america/boise                     America/Boise Zone
+  america/buenos_aires              America/Buenos_Aires Zone
+  america/cambridge_bay             America/Cambridge_Bay Zone
+  america/campo_grande              America/Campo_Grande Zone
+  america/cancun                    America/Cancun Zone
+  america/caracas                   America/Caracas Zone
+  america/catamarca                 America/Catamarca Zone
+  america/cayenne                   America/Cayenne Zone
+  america/cayman                    America/Cayman Zone
+  america/chicago                   America/Chicago Zone
+  america/chihuahua                 America/Chihuahua Zone
+  america/coral_harbour             America/Coral_Harbour Zone
+  america/cordoba                   America/Cordoba Zone
+  america/costa_rica                America/Costa_Rica Zone
+  america/creston                   America/Creston Zone
+  america/cuiaba                    America/Cuiaba Zone
+  america/curacao                   America/Curacao Zone
+  america/danmarkshavn              America/Danmarkshavn Zone
+  america/dawson                    America/Dawson Zone
+  america/dawson_creek              America/Dawson_Creek Zone
+  america/denver                    America/Denver Zone
+  america/detroit                   America/Detroit Zone
+  america/dominica                  America/Dominica Zone
+  america/edmonton                  America/Edmonton Zone
+  america/eirunepe                  America/Eirunepe Zone
+  america/el_salvador               America/El_Salvador Zone
+  america/ensenada                  America/Ensenada Zone
+  america/fort_wayne                America/Fort_Wayne Zone
+  america/fortaleza                 America/Fortaleza Zone
+  america/glace_bay                 America/Glace_Bay Zone
+  america/godthab                   America/Godthab Zone
+  america/goose_bay                 America/Goose_Bay Zone
+  america/grand_turk                America/Grand_Turk Zone
+  america/grenada                   America/Grenada Zone
+  america/guadeloupe                America/Guadeloupe Zone
+  america/guatemala                 America/Guatemala Zone
+  america/guayaquil                 America/Guayaquil Zone
+  america/guyana                    America/Guyana Zone
+  america/halifax                   America/Halifax Zone
+  america/havana                    America/Havana Zone
+  america/hermosillo                America/Hermosillo Zone
+  america/indiana/indianapolis      America/Indiana/Indianapolis Zone
+  america/indiana/knox              America/Indiana/Knox Zone
+  america/indiana/marengo           America/Indiana/Marengo Zone
+  america/indiana/petersburg        America/Indiana/Petersburg Zone
+  america/indiana/tell_city         America/Indiana/Tell_City Zone
+  america/indiana/vevay             America/Indiana/Vevay Zone
+  america/indiana/vincennes         America/Indiana/Vincennes Zone
+  america/indiana/winamac           America/Indiana/Winamac Zone
+  america/indianapolis              America/Indianapolis Zone
+  america/inuvik                    America/Inuvik Zone
+  america/iqaluit                   America/Iqaluit Zone
+  america/jamaica                   America/Jamaica Zone
+  america/jujuy                     America/Jujuy Zone
+  america/juneau                    America/Juneau Zone
+  america/kentucky/louisville       America/Kentucky/Louisville Zone
+  america/kentucky/monticello       America/Kentucky/Monticello Zone
+  america/knox_in                   America/Knox_IN Zone
+  america/kralendijk                America/Kralendijk Zone
+  america/la_paz                    America/La_Paz Zone
+  america/lima                      America/Lima Zone
+  america/los_angeles               America/Los_Angeles Zone
+  america/louisville                America/Louisville Zone
+  america/lower_princes             America/Lower_Princes Zone
+  america/maceio                    America/Maceio Zone
+  america/managua                   America/Managua Zone
+  america/manaus                    America/Manaus Zone
+  america/marigot                   America/Marigot Zone
+  america/martinique                America/Martinique Zone
+  america/matamoros                 America/Matamoros Zone
+  america/mazatlan                  America/Mazatlan Zone
+  america/mendoza                   America/Mendoza Zone
+  america/menominee                 America/Menominee Zone
+  america/merida                    America/Merida Zone
+  america/metlakatla                America/Metlakatla Zone
+  america/mexico_city               America/Mexico_City Zone
+  america/miquelon                  America/Miquelon Zone
+  america/moncton                   America/Moncton Zone
+  america/monterrey                 America/Monterrey Zone
+  america/montevideo                America/Montevideo Zone
+  america/montreal                  America/Montreal Zone
+  america/montserrat                America/Montserrat Zone
+  america/nassau                    America/Nassau Zone
+  america/new_york                  America/New_York Zone
+  america/nipigon                   America/Nipigon Zone
+  america/nome                      America/Nome Zone
+  america/noronha                   America/Noronha Zone
+  america/north_dakota/beulah       America/North_Dakota/Beulah Zone
+  america/north_dakota/center       America/North_Dakota/Center Zone
+  america/north_dakota/new_salem    America/North_Dakota/New_Salem Zone
+  america/ojinaga                   America/Ojinaga Zone
+  america/panama                    America/Panama Zone
+  america/pangnirtung               America/Pangnirtung Zone
+  america/paramaribo                America/Paramaribo Zone
+  america/phoenix                   America/Phoenix Zone
+  america/port-au-prince            America/Port-au-Prince Zone
+  america/port_of_spain             America/Port_of_Spain Zone
+  america/porto_acre                America/Porto_Acre Zone
+  america/porto_velho               America/Porto_Velho Zone
+  america/puerto_rico               America/Puerto_Rico Zone
+  america/rainy_river               America/Rainy_River Zone
+  america/rankin_inlet              America/Rankin_Inlet Zone
+  america/recife                    America/Recife Zone
+  america/regina                    America/Regina Zone
+  america/resolute                  America/Resolute Zone
+  america/rio_branco                America/Rio_Branco Zone
+  america/rosario                   America/Rosario Zone
+  america/santa_isabel              America/Santa_Isabel Zone
+  america/santarem                  America/Santarem Zone
+  america/santiago                  America/Santiago Zone
+  america/santo_domingo             America/Santo_Domingo Zone
+  america/sao_paulo                 America/Sao_Paulo Zone
+  america/scoresbysund              America/Scoresbysund Zone
+  america/shiprock                  America/Shiprock Zone
+  america/sitka                     America/Sitka Zone
+  america/st_barthelemy             America/St_Barthelemy Zone
+  america/st_johns                  America/St_Johns Zone
+  america/st_kitts                  America/St_Kitts Zone
+  america/st_lucia                  America/St_Lucia Zone
+  america/st_thomas                 America/St_Thomas Zone
+  america/st_vincent                America/St_Vincent Zone
+  america/swift_current             America/Swift_Current Zone
+  america/tegucigalpa               America/Tegucigalpa Zone
+  america/thule                     America/Thule Zone
+  america/thunder_bay               America/Thunder_Bay Zone
+  america/tijuana                   America/Tijuana Zone
+  america/toronto                   America/Toronto Zone
+  america/tortola                   America/Tortola Zone
+  america/vancouver                 America/Vancouver Zone
+  america/virgin                    America/Virgin Zone
+  america/whitehorse                America/Whitehorse Zone
+  america/winnipeg                  America/Winnipeg Zone
+  america/yakutat                   America/Yakutat Zone
+  america/yellowknife               America/Yellowknife Zone
+  antarctica/casey                  Antarctica/Casey Zone
+  antarctica/davis                  Antarctica/Davis Zone
+  antarctica/dumontdurville         Antarctica/DumontDUrville Zone
+  antarctica/macquarie              Antarctica/Macquarie Zone
+  antarctica/mawson                 Antarctica/Mawson Zone
+  antarctica/mcmurdo                Antarctica/McMurdo Zone
+  antarctica/palmer                 Antarctica/Palmer Zone
+  antarctica/rothera                Antarctica/Rothera Zone
+  antarctica/south_pole             Antarctica/South_Pole Zone
+  antarctica/syowa                  Antarctica/Syowa Zone
+  antarctica/troll                  Antarctica/Troll Zone
+  antarctica/vostok                 Antarctica/Vostok Zone
+  arctic/longyearbyen               Arctic/Longyearbyen Zone
+  asia/aden                         Asia/Aden Zone
+  asia/almaty                       Asia/Almaty Zone
+  asia/amman                        Asia/Amman Zone
+  asia/anadyr                       Asia/Anadyr Zone
+  asia/aqtau                        Asia/Aqtau Zone
+  asia/aqtobe                       Asia/Aqtobe Zone
+  asia/ashgabat                     Asia/Ashgabat Zone
+  asia/ashkhabad                    Asia/Ashkhabad Zone
+  asia/baghdad                      Asia/Baghdad Zone
+  asia/bahrain                      Asia/Bahrain Zone
+  asia/baku                         Asia/Baku Zone
+  asia/bangkok                      Asia/Bangkok Zone
+  asia/beirut                       Asia/Beirut Zone
+  asia/bishkek                      Asia/Bishkek Zone
+  asia/brunei                       Asia/Brunei Zone
+  asia/calcutta                     Asia/Calcutta Zone
+  asia/chita                        Asia/Chita Zone
+  asia/choibalsan                   Asia/Choibalsan Zone
+  asia/chongqing                    Asia/Chongqing Zone
+  asia/chungking                    Asia/Chungking Zone
+  asia/colombo                      Asia/Colombo Zone
+  asia/dacca                        Asia/Dacca Zone
+  asia/damascus                     Asia/Damascus Zone
+  asia/dhaka                        Asia/Dhaka Zone
+  asia/dili                         Asia/Dili Zone
+  asia/dubai                        Asia/Dubai Zone
+  asia/dushanbe                     Asia/Dushanbe Zone
+  asia/gaza                         Asia/Gaza Zone
+  asia/harbin                       Asia/Harbin Zone
+  asia/hebron                       Asia/Hebron Zone
+  asia/ho_chi_minh                  Asia/Ho_Chi_Minh Zone
+  asia/hong_kong                    Asia/Hong_Kong Zone
+  asia/hovd                         Asia/Hovd Zone
+  asia/irkutsk                      Asia/Irkutsk Zone
+  asia/istanbul                     Asia/Istanbul Zone
+  asia/jakarta                      Asia/Jakarta Zone
+  asia/jayapura                     Asia/Jayapura Zone
+  asia/jerusalem                    Asia/Jerusalem Zone
+  asia/kabul                        Asia/Kabul Zone
+  asia/kamchatka                    Asia/Kamchatka Zone
+  asia/karachi                      Asia/Karachi Zone
+  asia/kashgar                      Asia/Kashgar Zone
+  asia/kathmandu                    Asia/Kathmandu Zone
+  asia/katmandu                     Asia/Katmandu Zone
+  asia/khandyga                     Asia/Khandyga Zone
+  asia/kolkata                      Asia/Kolkata Zone
+  asia/krasnoyarsk                  Asia/Krasnoyarsk Zone
+  asia/kuala_lumpur                 Asia/Kuala_Lumpur Zone
+  asia/kuching                      Asia/Kuching Zone
+  asia/kuwait                       Asia/Kuwait Zone
+  asia/macao                        Asia/Macao Zone
+  asia/macau                        Asia/Macau Zone
+  asia/magadan                      Asia/Magadan Zone
+  asia/makassar                     Asia/Makassar Zone
+  asia/manila                       Asia/Manila Zone
+  asia/muscat                       Asia/Muscat Zone
+  asia/nicosia                      Asia/Nicosia Zone
+  asia/novokuznetsk                 Asia/Novokuznetsk Zone
+  asia/novosibirsk                  Asia/Novosibirsk Zone
+  asia/omsk                         Asia/Omsk Zone
+  asia/oral                         Asia/Oral Zone
+  asia/phnom_penh                   Asia/Phnom_Penh Zone
+  asia/pontianak                    Asia/Pontianak Zone
+  asia/pyongyang                    Asia/Pyongyang Zone
+  asia/qatar                        Asia/Qatar Zone
+  asia/qyzylorda                    Asia/Qyzylorda Zone
+  asia/rangoon                      Asia/Rangoon Zone
+  asia/riyadh                       Asia/Riyadh Zone
+  asia/saigon                       Asia/Saigon Zone
+  asia/sakhalin                     Asia/Sakhalin Zone
+  asia/samarkand                    Asia/Samarkand Zone
+  asia/seoul                        Asia/Seoul Zone
+  asia/shanghai                     Asia/Shanghai Zone
+  asia/singapore                    Asia/Singapore Zone
+  asia/srednekolymsk                Asia/Srednekolymsk Zone
+  asia/taipei                       Asia/Taipei Zone
+  asia/tashkent                     Asia/Tashkent Zone
+  asia/tbilisi                      Asia/Tbilisi Zone
+  asia/tehran                       Asia/Tehran Zone
+  asia/tel_aviv                     Asia/Tel_Aviv Zone
+  asia/thimbu                       Asia/Thimbu Zone
+  asia/thimphu                      Asia/Thimphu Zone
+  asia/tokyo                        Asia/Tokyo Zone
+  asia/ujung_pandang                Asia/Ujung_Pandang Zone
+  asia/ulaanbaatar                  Asia/Ulaanbaatar Zone
+  asia/ulan_bator                   Asia/Ulan_Bator Zone
+  asia/urumqi                       Asia/Urumqi Zone
+  asia/ust-nera                     Asia/Ust-Nera Zone
+  asia/vientiane                    Asia/Vientiane Zone
+  asia/vladivostok                  Asia/Vladivostok Zone
+  asia/yakutsk                      Asia/Yakutsk Zone
+  asia/yekaterinburg                Asia/Yekaterinburg Zone
+  asia/yerevan                      Asia/Yerevan Zone
+  atlantic/azores                   Atlantic/Azores Zone
+  atlantic/bermuda                  Atlantic/Bermuda Zone
+  atlantic/canary                   Atlantic/Canary Zone
+  atlantic/cape_verde               Atlantic/Cape_Verde Zone
+  atlantic/faeroe                   Atlantic/Faeroe Zone
+  atlantic/faroe                    Atlantic/Faroe Zone
+  atlantic/jan_mayen                Atlantic/Jan_Mayen Zone
+  atlantic/madeira                  Atlantic/Madeira Zone
+  atlantic/reykjavik                Atlantic/Reykjavik Zone
+  atlantic/south_georgia            Atlantic/South_Georgia Zone
+  atlantic/st_helena                Atlantic/St_Helena Zone
+  atlantic/stanley                  Atlantic/Stanley Zone
+  australia/act                     Australia/ACT Zone
+  australia/adelaide                Australia/Adelaide Zone
+  australia/brisbane                Australia/Brisbane Zone
+  australia/broken_hill             Australia/Broken_Hill Zone
+  australia/canberra                Australia/Canberra Zone
+  australia/currie                  Australia/Currie Zone
+  australia/darwin                  Australia/Darwin Zone
+  australia/eucla                   Australia/Eucla Zone
+  australia/hobart                  Australia/Hobart Zone
+  australia/lhi                     Australia/LHI Zone
+  australia/lindeman                Australia/Lindeman Zone
+  australia/lord_howe               Australia/Lord_Howe Zone
+  australia/melbourne               Australia/Melbourne Zone
+  australia/north                   Australia/North Zone
+  australia/nsw                     Australia/NSW Zone
+  australia/perth                   Australia/Perth Zone
+  australia/queensland              Australia/Queensland Zone
+  australia/south                   Australia/South Zone
+  australia/sydney                  Australia/Sydney Zone
+  australia/tasmania                Australia/Tasmania Zone
+  australia/victoria                Australia/Victoria Zone
+  australia/west                    Australia/West Zone
+  australia/yancowinna              Australia/Yancowinna Zone
+  brazil/acre                       Brazil/Acre Zone
+  brazil/denoronha                  Brazil/DeNoronha Zone
+  brazil/east                       Brazil/East Zone
+  brazil/west                       Brazil/West Zone
+  canada/atlantic                   Canada/Atlantic Zone
+  canada/central                    Canada/Central Zone
+  canada/east-saskatchewan          Canada/East-Saskatchewan Zone
+  canada/eastern                    Canada/Eastern Zone
+  canada/mountain                   Canada/Mountain Zone
+  canada/newfoundland               Canada/Newfoundland Zone
+  canada/pacific                    Canada/Pacific Zone
+  canada/saskatchewan               Canada/Saskatchewan Zone
+  canada/yukon                      Canada/Yukon Zone
+  cet                               CET Zone
+  chile/continental                 Chile/Continental Zone
+  chile/easterisland                Chile/EasterIsland Zone
+  cst6cdt                           CST6CDT Zone
+  cuba                              Cuba Zone
+  eet                               EET Zone
+  egypt                             Egypt Zone
+  eire                              Eire Zone
+  est                               EST Zone
+  est5edt                           EST5EDT Zone
+  etc/gmt                           Etc/GMT Zone
+  etc/gmt+0                         Etc/GMT+0 Zone
+  etc/gmt+1                         Etc/GMT+1 Zone
+  etc/gmt+10                        Etc/GMT+10 Zone
+  etc/gmt+11                        Etc/GMT+11 Zone
+  etc/gmt+12                        Etc/GMT+12 Zone
+  etc/gmt+2                         Etc/GMT+2 Zone
+  etc/gmt+3                         Etc/GMT+3 Zone
+  etc/gmt+4                         Etc/GMT+4 Zone
+  etc/gmt+5                         Etc/GMT+5 Zone
+  etc/gmt+6                         Etc/GMT+6 Zone
+  etc/gmt+7                         Etc/GMT+7 Zone
+  etc/gmt+8                         Etc/GMT+8 Zone
+  etc/gmt+9                         Etc/GMT+9 Zone
+  etc/gmt-0                         Etc/GMT-0 Zone
+  etc/gmt-1                         Etc/GMT-1 Zone
+  etc/gmt-10                        Etc/GMT-10 Zone
+  etc/gmt-11                        Etc/GMT-11 Zone
+  etc/gmt-12                        Etc/GMT-12 Zone
+  etc/gmt-13                        Etc/GMT-13 Zone
+  etc/gmt-14                        Etc/GMT-14 Zone
+  etc/gmt-2                         Etc/GMT-2 Zone
+  etc/gmt-3                         Etc/GMT-3 Zone
+  etc/gmt-4                         Etc/GMT-4 Zone
+  etc/gmt-5                         Etc/GMT-5 Zone
+  etc/gmt-6                         Etc/GMT-6 Zone
+  etc/gmt-7                         Etc/GMT-7 Zone
+  etc/gmt-8                         Etc/GMT-8 Zone
+  etc/gmt-9                         Etc/GMT-9 Zone
+  etc/gmt0                          Etc/GMT0 Zone
+  etc/greenwich                     Etc/Greenwich Zone
+  etc/uct                           Etc/UCT Zone
+  etc/universal                     Etc/Universal Zone
+  etc/utc                           Etc/UTC Zone
+  etc/zulu                          Etc/Zulu Zone
+  europe/amsterdam                  Europe/Amsterdam Zone
+  europe/andorra                    Europe/Andorra Zone
+  europe/athens                     Europe/Athens Zone
+  europe/belfast                    Europe/Belfast Zone
+  europe/belgrade                   Europe/Belgrade Zone
+  europe/berlin                     Europe/Berlin Zone
+  europe/bratislava                 Europe/Bratislava Zone
+  europe/brussels                   Europe/Brussels Zone
+  europe/bucharest                  Europe/Bucharest Zone
+  europe/budapest                   Europe/Budapest Zone
+  europe/busingen                   Europe/Busingen Zone
+  europe/chisinau                   Europe/Chisinau Zone
+  europe/copenhagen                 Europe/Copenhagen Zone
+  europe/dublin                     Europe/Dublin Zone
+  europe/gibraltar                  Europe/Gibraltar Zone
+  europe/guernsey                   Europe/Guernsey Zone
+  europe/helsinki                   Europe/Helsinki Zone
+  europe/isle_of_man                Europe/Isle_of_Man Zone
+  europe/istanbul                   Europe/Istanbul Zone
+  europe/jersey                     Europe/Jersey Zone
+  europe/kaliningrad                Europe/Kaliningrad Zone
+  europe/kiev                       Europe/Kiev Zone
+  europe/lisbon                     Europe/Lisbon Zone
+  europe/ljubljana                  Europe/Ljubljana Zone
+  europe/london                     Europe/London Zone
+  europe/luxembourg                 Europe/Luxembourg Zone
+  europe/madrid                     Europe/Madrid Zone
+  europe/malta                      Europe/Malta Zone
+  europe/mariehamn                  Europe/Mariehamn Zone
+  europe/minsk                      Europe/Minsk Zone
+  europe/monaco                     Europe/Monaco Zone
+  europe/moscow                     Europe/Moscow Zone
+  europe/nicosia                    Europe/Nicosia Zone
+  europe/oslo                       Europe/Oslo Zone
+  europe/paris                      Europe/Paris Zone
+  europe/podgorica                  Europe/Podgorica Zone
+  europe/prague                     Europe/Prague Zone
+  europe/riga                       Europe/Riga Zone
+  europe/rome                       Europe/Rome Zone
+  europe/samara                     Europe/Samara Zone
+  europe/san_marino                 Europe/San_Marino Zone
+  europe/sarajevo                   Europe/Sarajevo Zone
+  europe/simferopol                 Europe/Simferopol Zone
+  europe/skopje                     Europe/Skopje Zone
+  europe/sofia                      Europe/Sofia Zone
+  europe/stockholm                  Europe/Stockholm Zone
+  europe/tallinn                    Europe/Tallinn Zone
+  europe/tirane                     Europe/Tirane Zone
+  europe/tiraspol                   Europe/Tiraspol Zone
+  europe/uzhgorod                   Europe/Uzhgorod Zone
+  europe/vaduz                      Europe/Vaduz Zone
+  europe/vatican                    Europe/Vatican Zone
+  europe/vienna                     Europe/Vienna Zone
+  europe/vilnius                    Europe/Vilnius Zone
+  europe/volgograd                  Europe/Volgograd Zone
+  europe/warsaw                     Europe/Warsaw Zone
+  europe/zagreb                     Europe/Zagreb Zone
+  europe/zaporozhye                 Europe/Zaporozhye Zone
+  europe/zurich                     Europe/Zurich Zone
+  factory                           Factory Zone
+  gb                                GB Zone
+  gb-eire                           GB-Eire Zone
+  gmt                               GMT Zone
+  gmt+0                             GMT+0 Zone
+  gmt-0                             GMT-0 Zone
+  gmt0                              GMT0 Zone
+  greenwich                         Greenwich Zone
+  hongkong                          Hongkong Zone
+  hst                               HST Zone
+  iceland                           Iceland Zone
+  indian/antananarivo               Indian/Antananarivo Zone
+  indian/chagos                     Indian/Chagos Zone
+  indian/christmas                  Indian/Christmas Zone
+  indian/cocos                      Indian/Cocos Zone
+  indian/comoro                     Indian/Comoro Zone
+  indian/kerguelen                  Indian/Kerguelen Zone
+  indian/mahe                       Indian/Mahe Zone
+  indian/maldives                   Indian/Maldives Zone
+  indian/mauritius                  Indian/Mauritius Zone
+  indian/mayotte                    Indian/Mayotte Zone
+  indian/reunion                    Indian/Reunion Zone
+  iran                              Iran Zone
+  israel                            Israel Zone
+  jamaica                           Jamaica Zone
+  japan                             Japan Zone
+  kwajalein                         Kwajalein Zone
+  libya                             Libya Zone
+  met                               MET Zone
+  mexico/bajanorte                  Mexico/BajaNorte Zone
+  mexico/bajasur                    Mexico/BajaSur Zone
+  mexico/general                    Mexico/General Zone
+  mst                               MST Zone
+  mst7mdt                           MST7MDT Zone
+  navajo                            Navajo Zone
+  nz                                NZ Zone
+  nz-chat                           NZ-CHAT Zone
+  pacific/apia                      Pacific/Apia Zone
+  pacific/auckland                  Pacific/Auckland Zone
+  pacific/bougainville              Pacific/Bougainville Zone
+  pacific/chatham                   Pacific/Chatham Zone
+  pacific/chuuk                     Pacific/Chuuk Zone
+  pacific/easter                    Pacific/Easter Zone
+  pacific/efate                     Pacific/Efate Zone
+  pacific/enderbury                 Pacific/Enderbury Zone
+  pacific/fakaofo                   Pacific/Fakaofo Zone
+  pacific/fiji                      Pacific/Fiji Zone
+  pacific/funafuti                  Pacific/Funafuti Zone
+  pacific/galapagos                 Pacific/Galapagos Zone
+  pacific/gambier                   Pacific/Gambier Zone
+  pacific/guadalcanal               Pacific/Guadalcanal Zone
+  pacific/guam                      Pacific/Guam Zone
+  pacific/honolulu                  Pacific/Honolulu Zone
+  pacific/johnston                  Pacific/Johnston Zone
+  pacific/kiritimati                Pacific/Kiritimati Zone
+  pacific/kosrae                    Pacific/Kosrae Zone
+  pacific/kwajalein                 Pacific/Kwajalein Zone
+  pacific/majuro                    Pacific/Majuro Zone
+  pacific/marquesas                 Pacific/Marquesas Zone
+  pacific/midway                    Pacific/Midway Zone
+  pacific/nauru                     Pacific/Nauru Zone
+  pacific/niue                      Pacific/Niue Zone
+  pacific/norfolk                   Pacific/Norfolk Zone
+  pacific/noumea                    Pacific/Noumea Zone
+  pacific/pago_pago                 Pacific/Pago_Pago Zone
+  pacific/palau                     Pacific/Palau Zone
+  pacific/pitcairn                  Pacific/Pitcairn Zone
+  pacific/pohnpei                   Pacific/Pohnpei Zone
+  pacific/ponape                    Pacific/Ponape Zone
+  pacific/port_moresby              Pacific/Port_Moresby Zone
+  pacific/rarotonga                 Pacific/Rarotonga Zone
+  pacific/saipan                    Pacific/Saipan Zone
+  pacific/samoa                     Pacific/Samoa Zone
+  pacific/tahiti                    Pacific/Tahiti Zone
+  pacific/tarawa                    Pacific/Tarawa Zone
+  pacific/tongatapu                 Pacific/Tongatapu Zone
+  pacific/truk                      Pacific/Truk Zone
+  pacific/wake                      Pacific/Wake Zone
+  pacific/wallis                    Pacific/Wallis Zone
+  pacific/yap                       Pacific/Yap Zone
+  poland                            Poland Zone
+  portugal                          Portugal Zone
+  prc                               PRC Zone
+  pst8pdt                           PST8PDT Zone
+  roc                               ROC Zone
+  rok                               ROK Zone
+  singapore                         Singapore Zone
+  turkey                            Turkey Zone
+  uct                               UCT Zone
+  universal                         Universal Zone
+  us/alaska                         US/Alaska Zone
+  us/aleutian                       US/Aleutian Zone
+  us/arizona                        US/Arizona Zone
+  us/central                        US/Central Zone
+  us/east-indiana                   US/East-Indiana Zone
+  us/eastern                        US/Eastern Zone
+  us/hawaii                         US/Hawaii Zone
+  us/indiana-starke                 US/Indiana-Starke Zone
+  us/michigan                       US/Michigan Zone
+  us/mountain                       US/Mountain Zone
+  us/pacific                        US/Pacific Zone
+  us/samoa                          US/Samoa Zone
+  utc                               UTC Zone
+  w-su                              W-SU Zone
+  wet                               WET Zone
+  zulu                              Zulu Zone
+
+#### Examples
+
+```
+switch(config)# timezone set us/alaska
+```
+
+### Unsetting Timezone on the switch
+#### Syntax
+`no timezone set *timezone*` 
+
+#### Description
+This command removes the configured Timezone, and sets it to the default UTC timezone.
+
+#### Authority
+All users.
+
+#### Parameters
+This command takes in the same parameters as the "timezone set" command. Please refer above.
+
+#### Examples
+```
+switch(config)#no timezone set us/alaska 
+```
+
 
 ### Showing system information
 #### Syntax
@@ -509,3 +1131,37 @@ KiB Swap:  8385532 total,  8368236 free,    17296 used.  9024352 avail Mem
   313 root      20   0  101564  14008   3244 S   0.0  0.1   0:00.00 python /usr/bin/ops_aaautilspa+
   188 root      20   0   40288  13300   4636 S   0.0  0.1   0:00.35 /usr/sbin/ovsdb-server --remot+
 ```
+### Showing Timezone information
+
+#### Syntax
+`show system timezone`
+
+#### Description
+This command displays detailed information for the Timezone configured on the system.
+
+#### Authority
+All users
+
+#### Parameters
+This command does not require a parameter
+
+#### Example
+By default the timezone configured should be utc.
+```
+switch# show system timezone
+System is configured for timezone : UTC
+      DST active: n/a
+```
+If we configure a timezone of "US/Alaska", then we should be able to verify with the
+```
+switch# show system timezone
+System is configured for timezone : US/Alaska
+      DST active: yes
+ Last DST change: DST began at
+                  Sun 2016-03-13 01:59:59 AKST
+                  Sun 2016-03-13 03:00:00 AKDT
+ Next DST change: DST ends (the clock jumps one hour backwards) at
+                  Sun 2016-11-06 01:59:59 AKDT
+                  Sun 2016-11-06 01:00:00 AKST
+```
+
