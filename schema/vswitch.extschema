@@ -4817,6 +4817,26 @@
             "min": 0,
             "max": "unlimited"
           }
+        },
+        "intf_statistics_clear_requested": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "intf_statistics_clear_performed": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer"
+            },
+            "min": 0,
+            "max": 1
+          }
         }
       },
       "indexes": [

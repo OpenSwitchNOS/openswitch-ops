@@ -4799,6 +4799,12 @@
           For each outbound queue, a count of the queue's total transmit errors or drops.
         </column>
       </group>
+      <column name="intf_statistics_clear_requested">
+        The number of times a request was made to clear the statistics for this Interface.
+      </column>
+      <column name="intf_statistics_clear_performed">
+        The number of times that the statistics for this Interface have been cleared.
+      </column>
     </group>
 
     <group title="Bonding Configuration">
