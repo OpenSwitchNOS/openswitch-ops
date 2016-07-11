@@ -6953,7 +6953,7 @@
       </column>
       <column name="severity">
          Filter syslog messages with severity.  Only messages with severity higher than or equal to the specified value will be sent to the remote server.
-         Default is <code>debug</code>.
+         Default is <code>info</code>.
       </column>
     </group>
   </table>
