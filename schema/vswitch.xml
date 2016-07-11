@@ -133,6 +133,14 @@
       <column name="hostname">
       </column>
 
+      <column name="timezone">
+        User configured Timezone. Timezone information is based off support through
+        POSIX timezones. Examples of Timezone configuration include "US/Pacific",
+        "Asia/Singapore", "Etc/GMT". Please refer to list of timezones here:
+        <code>https://en.wikipedia.org/wiki/List_of_tz_database_time_zones</code>
+        By default, "UTC" Timezone is configured.
+      </column>
+
       <column name="domain_name">
         Domain name as configured by the user.
       </column>

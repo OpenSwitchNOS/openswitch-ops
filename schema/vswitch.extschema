@@ -173,6 +173,10 @@
             "max": 1
           }
         },
+        "timezone": {
+          "category": "configuration",
+          "type": "string"
+        },
         "db_version": {
           "category": "status",
           "type": {
