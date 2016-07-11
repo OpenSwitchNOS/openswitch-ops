@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,9 +23,14 @@ from opsvsi.opsvsitest import *
 import json
 import httplib
 import urllib
+import subprocess
 
-from utils.fakes import *
-from utils.utils import *
+from opsvsiutils.restutils.fakes import create_fake_vlan
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, get_container_id, \
+    compare_dict, get_server_crt, remove_server_crt
+from opsvsiutils.restutils.swagger_test_utility import \
+    swagger_model_verification
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -53,6 +58,11 @@ class myTopo(Topo):
 #   Query for Bridge Normal                                                   #
 #                                                                             #
 ###############################################################################
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.switch_ip)
+
+
 class QueryDefaultBridgeNormal(OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -66,6 +76,7 @@ class QueryDefaultBridgeNormal(OpsVsiTest):
                            build=True)
 
         self.switch_ip = get_switch_ip(self.net.switches[0])
+        self.cookie_header = None
 
     def test(self):
         expected_data = ["/rest/v1/system/bridges/%s" % DEFAULT_BRIDGE]
@@ -74,10 +85,9 @@ class QueryDefaultBridgeNormal(OpsVsiTest):
         info("\n########## Executing GET to /system/bridges ##########\n")
         info("Testing Path: %s\n" % path)
 
-        response_status, response_data = execute_request(path,
-                                                         "GET",
-                                                         None,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            path, "GET", None, self.switch_ip, xtra_header=self.cookie_header)
+
         assert response_status == httplib.OK, \
             "Response status received: %s\n" % response_status
         info("Response status received: %s\n" % response_status)
@@ -98,9 +108,12 @@ class TestGetDefaultBridgeNormal:
 
     def setup_class(cls):
         TestGetDefaultBridgeNormal.test_var = QueryDefaultBridgeNormal()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestGetDefaultBridgeNormal.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -111,76 +124,7 @@ class TestGetDefaultBridgeNormal:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
-        self.test_var.test()
-
-
-###############################################################################
-#                                                                             #
-#   No VLANs Associated to bridge_normal by default                           #
-#                                                                             #
-###############################################################################
-class QueryNoVlansAssociated(OpsVsiTest):
-    def setupNet(self):
-        self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
-                                       sws=NUM_OF_SWITCHES,
-                                       hopts=self.getHostOpts(),
-                                       sopts=self.getSwitchOpts()),
-                           switch=VsiOpenSwitch,
-                           host=None,
-                           link=None,
-                           controller=None,
-                           build=True)
-
-        self.path = "/rest/v1/system/bridges/"
-        self.switch_ip = get_switch_ip(self.net.switches[0])
-
-    def test(self):
-        path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
-
-        info("\n########## Executing GET to /system/bridges/{id}/vlans "
-             "(No VLANs added) ##########\n")
-        info("Testing path: %s\n" % path)
-
-        response_status, response_data = execute_request(path,
-                                                         "GET",
-                                                         None,
-                                                         self.switch_ip)
-
-        assert response_status == httplib.OK, \
-            "Response status received: %s\n" % response_status
-        info("Response status received: %s\n" % response_status)
-
-        assert json.loads(response_data) == []
-        info("Response data received: %s\n" % response_data)
-
-        info("########## Executing GET to /system/bridges/{id}/vlans "
-             "(No VLANs added) DONE ##########\n")
-
-
-class TestGetNoVlansAssociated:
-    def setup(self):
-        pass
-
-    def teardown(self):
-        pass
-
-    def setup_class(cls):
-        TestGetNoVlansAssociated.test_var = QueryNoVlansAssociated()
-
-    def teardown_class(cls):
-        TestGetNoVlansAssociated.test_var.net.stop()
-
-    def setup_method(self, method):
-        pass
-
-    def teardown_method(self, method):
-        pass
-
-    def __del__(self):
-        del self.test_var
-
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -206,25 +150,24 @@ class QueryVlansAssociated(OpsVsiTest):
         self.vlan_id = 1
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.cookie_header = None
 
     def test(self):
-        expected_data = ["%s/%s" % (self.vlan_path, self.vlan_name)]
+        expected_data = "%s/%s" % (self.vlan_path, self.vlan_name)
         path = self.vlan_path
 
         info("\n########## Executing GET to /system/bridges/{id}/vlans "
              "(VLAN added) ##########\n")
         info("Testing path: %s\n" % path)
 
-        response_status, response_data = execute_request(path,
-                                                         "GET",
-                                                         None,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            path, "GET", None, self.switch_ip, xtra_header=self.cookie_header)
 
         assert response_status == httplib.OK, \
             "Response status received: %s\n" % response_status
         info("Response status received: %s\n" % response_status)
 
-        assert json.loads(response_data) == expected_data, \
+        assert expected_data in json.loads(response_data), \
             "Response data received: %s\n" % response_data
         info("Response data received: %s" % response_data)
 
@@ -241,7 +184,8 @@ class TestGetVlansAssociated:
 
     def setup_class(cls):
         TestGetVlansAssociated.test_var = QueryVlansAssociated()
-
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
         create_fake_vlan(TestGetVlansAssociated.test_var.vlan_path,
                          TestGetVlansAssociated.test_var.switch_ip,
                          TestGetVlansAssociated.test_var.vlan_name,
@@ -249,6 +193,7 @@ class TestGetVlansAssociated:
 
     def teardown_class(cls):
         TestGetVlansAssociated.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -259,7 +204,7 @@ class TestGetVlansAssociated:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -285,6 +230,7 @@ class QueryVlanByName(OpsVsiTest):
         self.vlan_id = 1
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.cookie_header = None
 
     def test(self):
         path = "%s/%s" % (self.vlan_path, self.vlan_name)
@@ -294,17 +240,16 @@ class QueryVlanByName(OpsVsiTest):
         expected_configuration_data["id"] = 1
         expected_configuration_data["description"] = "test_vlan"
         expected_configuration_data["admin"] = "up"
-        expected_configuration_data["other_config"] = {}
-        expected_configuration_data["external_ids"] = {}
+        #expected_configuration_data["other_config"] = {}
+        #expected_configuration_data["external_ids"] = {}
 
         info("\n########## Executing GET to /system/bridges/{id}/vlans/ "
              "{id} ##########\n")
         info("Testing path: %s\n" % path)
 
-        response_status, response_data = execute_request(path,
-                                                         "GET",
-                                                         None,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            path, "GET", None, self.switch_ip, xtra_header=self.cookie_header)
+
         expected_response = json.loads(response_data)
 
         assert response_status == httplib.OK, \
@@ -328,14 +273,18 @@ class TestGetVlanByName:
 
     def setup_class(cls):
         TestGetVlanByName.test_var = QueryVlanByName()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
+        cls.fake_data = create_fake_vlan(TestGetVlanByName.test_var.vlan_path,
+                                         TestGetVlanByName.test_var.switch_ip,
+                                         TestGetVlanByName.test_var.vlan_name,
+                                         TestGetVlanByName.test_var.vlan_id)
 
-        create_fake_vlan(TestGetVlanByName.test_var.vlan_path,
-                         TestGetVlanByName.test_var.switch_ip,
-                         TestGetVlanByName.test_var.vlan_name,
-                         TestGetVlanByName.test_var.vlan_id)
+        cls.container_id = get_container_id(cls.test_var.net.switches[0])
 
     def teardown_class(cls):
         TestGetVlanByName.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -346,7 +295,11 @@ class TestGetVlanByName:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
+        info("container_id_test %s\n" % self.container_id)
+        swagger_model_verification(self.container_id,
+                                   "/system/bridges/{pid}/vlans/{id}",
+                                   "GET_ID", self.fake_data)
         self.test_var.test()
 
 
@@ -371,6 +324,7 @@ class QueryNonExistentVlanByName(OpsVsiTest):
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_name = "not_found"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.cookie_header = None
 
     def test(self):
         path = "%s/%s" % (self.vlan_path, self.vlan_name)
@@ -379,10 +333,8 @@ class QueryNonExistentVlanByName(OpsVsiTest):
              "##########\n")
         info("Testing path: %s\n" % path)
 
-        response_status, response_data = execute_request(path,
-                                                         "GET",
-                                                         None,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            path, "GET", None, self.switch_ip, xtra_header=self.cookie_header)
 
         assert response_status == httplib.NOT_FOUND, \
             "Response status received: %s\n" % response_status
@@ -405,9 +357,12 @@ class TestGetNonExistentVlan:
 
     def setup_class(cls):
         TestGetNonExistentVlan.test_var = QueryNonExistentVlanByName()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestGetNonExistentVlan.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -418,5 +373,5 @@ class TestGetNonExistentVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()

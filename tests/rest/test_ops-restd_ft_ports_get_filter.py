@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -27,8 +27,10 @@ import urllib
 import inspect
 import types
 
-from utils.fakes import *
-from utils.utils import *
+from opsvsiutils.restutils.fakes import create_fake_port
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, update_test_field, \
+    get_server_crt, remove_server_crt
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -41,6 +43,11 @@ class myTopo (Topo):
         self.hsts = hsts
         self.sws = sws
         switch = self.addSwitch("s1")
+
+
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.switch_ip)
 
 
 class QueryFilterPortTest (OpsVsiTest):
@@ -57,6 +64,7 @@ class QueryFilterPortTest (OpsVsiTest):
 
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.path = "/rest/v1/system/ports/"
+        self.cookie_header = None
 
     def test_port_filter_by_name(self):
         test_field = "name"
@@ -74,11 +82,104 @@ class QueryFilterPortTest (OpsVsiTest):
                                                      httplib.OK,
                                                      "")
 
-            assert len(request_response) is 1, "Retrieved more expected ports!"
-            assert request_response[0]["configuration"][test_field] is not test_port, \
-                "Retrieved different port!"
+            assert len(request_response) == 1, "Retrieved a different " \
+                                               "amount of ports than expected!"
+            assert request_response[0]["configuration"][test_field] is not \
+                test_port, "Retrieved different port!"
 
         info("########## End Test Filter name ##########\n")
+
+    def test_port_filter_by_name_with_invalid_criteria(self):
+        test_title = "Test Filter name  with invalid criteria"
+        info("\n########## " + test_title + " ##########\n")
+        test_field = "name"
+        test_port = "invalid_criteria"
+        path = "%s?selector=configuration&depth=1;%s=%s" % (self.path,
+                                                            test_field,
+                                                            test_port)
+        request_response = self.validate_request(self.switch_ip,
+                                                 path,
+                                                 None,
+                                                 "GET",
+                                                 httplib.OK,
+                                                 "")
+        assert len(request_response) == 0, "Expected No Results"
+        info("########## End " + test_title + " ##########\n")
+
+    def test_port_with_invalid_filter_and_invalid_criteria(self):
+        test_title = "Test invalid filter name  with invalid criteria"
+        info("\n########## " + test_title + " ##########\n")
+        test_field = "invalid_filter"
+        test_port = "invalid_criteria"
+        path = "%s?selector=configuration&depth=1;%s=%s" % (self.path,
+                                                            test_field,
+                                                            test_port)
+        request_response = self.validate_request(self.switch_ip,
+                                                 path,
+                                                 None,
+                                                 "GET",
+                                                 httplib.BAD_REQUEST,
+                                                 "")
+        info("Request response: %s\n" % request_response)
+        info("########## End " + test_title + " ##########\n")
+
+    def test_port_with_valid_filters_and_valid_criteria(self):
+        test_title = "Test valid filters name, mac and valid criteria"
+        info("\n########## " + test_title + " ##########\n")
+        test_fields = ["name", "mac"]
+        test_criteria = ["Port-1", "01:23:45:67:89:01"]
+        path = "%s?selector=configuration&depth=1;%s=%s;%s=%s" % \
+               (self.path, test_fields[0], test_criteria[0],
+                test_fields[1], test_criteria[1])
+        request_response = self.validate_request(self.switch_ip,
+                                                 path,
+                                                 None,
+                                                 "GET",
+                                                 httplib.OK,
+                                                 "")
+        for i in range(len(test_fields)):
+            assert request_response[0]["configuration"][test_fields[i]] == \
+                test_criteria[i], "Retrieved wrong port!"
+        assert len(request_response) == 1, \
+            "Retrieved more ports than expected!"
+        info("########## End " + test_title + " ##########\n")
+
+    def test_port_filter_without_depth_parameter(self):
+        test_title = "Test Filter name without depth parameter"
+        info("\n########## " + test_title + " ##########\n")
+        test_field = "name"
+        test_port = "Port-1"
+        path = "%s?selector=configuration;%s=%s" % (self.path,
+                                                    test_field,
+                                                    test_port)
+        request_response = self.validate_request(self.switch_ip,
+                                                 path,
+                                                 None,
+                                                 "GET",
+                                                 httplib.BAD_REQUEST,
+                                                 "")
+        info("Request response: %s\n" % request_response)
+        info("########## End " + test_title + " ##########\n")
+
+    def test_port_with_complex_filter_mac(self):
+        test_title = "Test complex filter mac and valid criteria"
+        info("\n########## " + test_title + " ##########\n")
+        test_field = "mac"
+        test_mac = ""
+        for i in range(1, NUM_FAKE_PORTS + 1):
+            test_mac += "01:23:45:67:89:%02x," % i
+        path = "%s?selector=configuration&depth=1;%s=%s" % (self.path,
+                                                            test_field,
+                                                            test_mac)
+        request_response = self.validate_request(self.switch_ip,
+                                                 path,
+                                                 None,
+                                                 "GET",
+                                                 httplib.OK,
+                                                 "")
+        assert len(request_response) == NUM_FAKE_PORTS, \
+            "Retrieved a different amount of ports than expected!"
+        info("########## End " + test_title + " ##########\n")
 
     def test_port_filter_by_interfaces(self):
         test_ports = ["Port-1", "Port-2", "Port-3"]
@@ -98,7 +199,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_new_value)
+                              test_new_value,
+                              self.cookie_header)
 
         #######################################################################
         # Query for the updated port
@@ -116,8 +218,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for port in range(0, updated_ports):
-            assert request_response[port]["configuration"][test_field] == test_new_value, \
-                "Retrieved wrong port!"
+            assert request_response[port]["configuration"][test_field] == \
+                test_new_value, "Retrieved wrong port!"
 
         #######################################################################
         # Query for other ports
@@ -135,8 +237,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for port in range(0, other_ports):
-            assert request_response[port]["configuration"][test_field] == test_old_value, \
-                "Retrieved wrong port!"
+            assert request_response[port]["configuration"][test_field] == \
+                test_old_value, "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -145,7 +247,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_old_value)
+                              test_old_value,
+                              self.cookie_header)
 
         info("########## End Test Filter interface ##########\n")
 
@@ -167,7 +270,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_new_value)
+                              test_new_value,
+                              self.cookie_header)
 
         #######################################################################
         # Query for the updated port
@@ -185,8 +289,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for port in range(0, updated_ports):
-            assert request_response[port]["configuration"][test_field] == test_new_value, \
-                "Retrieved wrong port!"
+            assert request_response[port]["configuration"][test_field] == \
+                test_new_value, "Retrieved wrong port!"
 
         #######################################################################
         # Query for other ports
@@ -204,8 +308,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for port in range(0, other_ports):
-            assert request_response[port]["configuration"][test_field] == test_old_value, \
-                "Retrieved wrong port!"
+            assert request_response[port]["configuration"][test_field] == \
+                test_old_value, "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -214,7 +318,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_old_value)
+                              test_old_value,
+                              self.cookie_header)
 
         info("########## End Filter Trunks ##########\n")
 
@@ -236,8 +341,8 @@ class QueryFilterPortTest (OpsVsiTest):
 
             assert len(request_response) is 1, \
                 "Retrieved more expected ports!"
-            assert request_response[0]["configuration"][test_field] is not test_ipv4, \
-                "Retrieved wrong port!"
+            assert request_response[0]["configuration"][test_field] \
+                is not test_ipv4, "Retrieved wrong port!"
 
         info("########## End Test Filter Primary IPv4 Address ##########\n")
 
@@ -258,8 +363,8 @@ class QueryFilterPortTest (OpsVsiTest):
                                                      "")
 
             assert len(request_response) is 1, "Retrieved more expected ports!"
-            assert request_response[0]["configuration"][test_field] is not test_ipv4, \
-                "Retrieved wrong port!"
+            assert request_response[0]["configuration"][test_field] is not \
+                test_ipv4, "Retrieved wrong port!"
 
         info("########## End Test Filter Secondary IP4 Address ##########\n")
 
@@ -277,12 +382,14 @@ class QueryFilterPortTest (OpsVsiTest):
         update_test_field(self.switch_ip,
                           self.path + "/Port-1",
                           test_field,
-                          ["passive"])
+                          ["passive"],
+                          self.cookie_header)
 
         update_test_field(self.switch_ip,
                           self.path + "/Port-2",
                           test_field,
-                          ["off"])
+                          ["off"],
+                          self.cookie_header)
 
         ######################################################################
         # Query for the updated ports
@@ -321,8 +428,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, other_ports):
-            assert request_response[i]["configuration"][test_field] == "active", \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                "active", "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -330,12 +437,14 @@ class QueryFilterPortTest (OpsVsiTest):
         update_test_field(self.switch_ip,
                           self.path + "/Port-2",
                           test_field,
-                          ["active"])
+                          ["active"],
+                          self.cookie_header)
 
         update_test_field(self.switch_ip,
                           self.path + "/Port-3",
                           test_field,
-                          ["active"])
+                          ["active"],
+                          self.cookie_header)
 
         info("########## End Test Filter Lacp ##########\n")
 
@@ -357,7 +466,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_new_value)
+                              test_new_value,
+                              self.cookie_header)
 
         #######################################################################
         # Query for the updated ports
@@ -375,8 +485,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, updated_ports):
-            assert request_response[i]["configuration"][test_field] == test_new_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_new_value, "Retrieved wrong port!"
 
         #######################################################################
         # Query for other ports
@@ -394,8 +504,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, other_ports):
-            assert request_response[i]["configuration"][test_field] == test_old_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_old_value, "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -404,7 +514,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_old_value)
+                              test_old_value,
+                              self.cookie_header)
 
         info("########## End Filter bond_mode ##########\n")
 
@@ -426,7 +537,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_new_value)
+                              test_new_value,
+                              self.cookie_header)
 
         #######################################################################
         # Query for the updated port
@@ -444,8 +556,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, updated_ports):
-            assert request_response[i]["configuration"][test_field] == test_new_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_new_value, "Retrieved wrong port!"
 
         #######################################################################
         # Query for other ports
@@ -463,8 +575,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, other_ports):
-            assert request_response[i]["configuration"][test_field] == test_old_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_old_value, "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -473,7 +585,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_old_value)
+                              test_old_value,
+                              self.cookie_header)
 
         info("########## End Test Filter Bond Active Slave ##########\n")
 
@@ -495,7 +608,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_new_value)
+                              test_new_value,
+                              self.cookie_header)
 
         #######################################################################
         # Query for the updated port
@@ -513,8 +627,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, updated_ports):
-            assert request_response[i]["configuration"][test_field] == test_new_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_new_value, "Retrieved wrong port!"
 
         #######################################################################
         # Query for other ports
@@ -532,8 +646,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, other_ports):
-            assert request_response[i]["configuration"][test_field] == test_old_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_old_value, "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -542,7 +656,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_old_value)
+                              test_old_value,
+                              self.cookie_header)
 
         info("########## End Test Filter Tag ##########\n")
 
@@ -564,7 +679,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + test_ports[i],
                               test_field,
-                              test_new_value[i])
+                              test_new_value[i],
+                              self.cookie_header)
 
         #######################################################################
         # Query for the updated ports
@@ -582,8 +698,8 @@ class QueryFilterPortTest (OpsVsiTest):
             assert len(request_response) == 1, \
                 "Retrieved more ports than expected!"
 
-            assert request_response[0]["configuration"][test_field] == mode, \
-                "Retrieved wrong port!"
+            assert request_response[0]["configuration"][test_field] == \
+                mode, "Retrieved wrong port!"
 
         #######################################################################
         # Query for other ports
@@ -601,8 +717,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, other_ports):
-            assert request_response[i]["configuration"][test_field] == test_old_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_old_value, "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -611,7 +727,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_old_value)
+                              test_old_value,
+                              self.cookie_header)
 
         info("########## End Test Filter vlan_mode ##########\n")
 
@@ -634,8 +751,8 @@ class QueryFilterPortTest (OpsVsiTest):
             assert len(request_response) is 1, \
                 "Retrieved more expected ports!"
 
-            assert request_response[0]["configuration"][test_field] is not test_mac, \
-                "Retrieved wrong port!"
+            assert request_response[0]["configuration"][test_field] is not \
+                test_mac, "Retrieved wrong port!"
 
         info("########## End Test Filter MAC ##########\n")
 
@@ -658,8 +775,8 @@ class QueryFilterPortTest (OpsVsiTest):
             assert len(request_response) is 1, \
                 "Retrieved more expected ports!"
 
-            assert request_response[0]["configuration"][test_field] is not test_ip6, \
-                "Retrieved wrong port!"
+            assert request_response[0]["configuration"][test_field] is not \
+                test_ip6, "Retrieved wrong port!"
 
         info("########## End Test Filter Primary IPv6 Address ##########\n")
 
@@ -682,8 +799,8 @@ class QueryFilterPortTest (OpsVsiTest):
             assert len(request_response) is 1, \
                 "Retrieved more expected ports!"
 
-            assert request_response[0]["configuration"][test_field] is not secondary_ip6, \
-                "Retrieved wrong port!"
+            assert request_response[0]["configuration"][test_field] is not \
+                secondary_ip6, "Retrieved wrong port!"
 
         info("########## End Test Filter Sec. IPv6 Address ##########\n")
 
@@ -705,7 +822,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_new_value)
+                              test_new_value,
+                              self.cookie_header)
 
         #######################################################################
         # Query for the updated ports
@@ -723,8 +841,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, updated_ports):
-            assert request_response[i]["configuration"][test_field] == test_new_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_new_value, "Retrieved wrong port!"
 
         #######################################################################
         # Query for other ports
@@ -742,8 +860,8 @@ class QueryFilterPortTest (OpsVsiTest):
             "Retrieved more ports than expected!"
 
         for i in range(0, other_ports):
-            assert request_response[i]["configuration"][test_field] == test_old_value, \
-                "Retrieved wrong port!"
+            assert request_response[i]["configuration"][test_field] == \
+                test_old_value, "Retrieved wrong port!"
 
         #######################################################################
         # Restore default value
@@ -752,7 +870,8 @@ class QueryFilterPortTest (OpsVsiTest):
             update_test_field(self.switch_ip,
                               self.path + port,
                               test_field,
-                              test_old_value)
+                              test_old_value,
+                              self.cookie_header)
 
         info("########## End Test Filter Admin ##########\n")
 
@@ -762,9 +881,11 @@ class QueryFilterPortTest (OpsVsiTest):
 
     def validate_request(self, switch_ip, path, data, op, expected_code,
                          expected_data):
-        status_code, response_data = execute_request(path, op, data, switch_ip)
+        cookie_header = login(switch_ip)
+        status_code, response_data = execute_request(path, op, data, switch_ip,
+                                                     xtra_header=cookie_header)
 
-        assert status_code is expected_code, \
+        assert status_code == expected_code, \
             "Wrong status code %s " % status_code
         # info("### Status code is OK ###\n")
 
@@ -804,10 +925,13 @@ class Test_QueryFilterPort:
 
     def setup_class(cls):
         Test_QueryFilterPort.test_var = QueryFilterPortTest()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
         Test_QueryFilterPort.test_var.setup_switch_ports(NUM_FAKE_PORTS)
 
     def teardown_class(cls):
         Test_QueryFilterPort.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -818,5 +942,5 @@ class Test_QueryFilterPort:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.run_tests()

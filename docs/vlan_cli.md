@@ -90,7 +90,7 @@ switch(config-if)#vlan trunk native 20
 ```
 switch(config)# interface lag 2
 switch(config-lag-if)#no routing
-switch(config-lag-if)#vlan native trunk 20
+switch(config-lag-if)#vlan trunk native 20
 ```
 
 #### Removing a trunk native VLAN from an interface
@@ -151,17 +151,27 @@ This command does not take a parameter.
 
 #### Examples
 The following commands remove interface 2 from tagged trunk native VLAN.
-switch(config)# interface 2
-switch(config-if)#no vlan trunk native tag
+
+    switch(config)# interface 2
+    switch(config-if)# no vlan trunk native tag
 
 The following commands remove interface LAG 2 to trunk native VLAN 20 which is already created.
 
-switch(config)# interface lag 2
-switch(config-lag-if)#no vlan trunk native tag
+    switch(config)# interface lag 2
+    switch(config-lag-if)# no vlan trunk native tag
 
 #### Assigning a VLAN to a trunk on the interface
 #### Syntax
 `vlan trunk allowed <vlanid>`
+
+**Note : vlanid can accept input in the form of range, comma and both.**
+
+For example :
+
+      i)  vlan trunk allowed 2
+     ii)  vlan trunk allowed 2-6
+    iii)  vlan trunk allowed 2,5,8,10
+     iv)  vlan trunk allowed 2-5,6
 
 #### Description
 This command assigns the VLAN represented by an ID to a trunk on the interface / LAG interface. This command expects the interface / LAG interface to be already configured as part of the trunk VLAN.
@@ -178,14 +188,20 @@ All users.
 ```
 switch(config)# interface 2
 switch(config-if)#no routing
-switch(config-if)#vlan native trunk 1
+switch(config-if)#vlan trunk native 1
 switch(config-if)#vlan trunk allowed  2
 ```
 ```
 switch(config)# interface lag 2
 switch(config-if)#no routing
-switch(config-lag-if)#vlan native trunk 1
+switch(config-lag-if)#vlan trunk native 1
 switch(config-lag-if)#vlan trunk allowed 2
+```
+```
+switch(config)# interface 3
+switch(config-if)# no routing
+switch(config-if)# vlan trunk native 1
+switch(config-if)# vlan trunk allowed 2-5,10,17
 ```
 
 #### Removing a VLAN from a trunk on the interface
@@ -336,17 +352,19 @@ switch#show vlan
 `
 
 ```
-|VLAN   |    Name    |     Status  |      Reason  |   Reserved  |  Ports  |
-|-------|------------|-------------|--------------|-------------|---------|
-| 1     |   default  |   active    |    ADMIN/UP  |   No        |  1,L2   |
-| 33    |   asdf     |   active    |    ADMIN/UP  |   L3        |   1     |
+--------------------------------------------------------------------------------------
+VLAN    Name            Status   Reason         Reserved       Interfaces
+--------------------------------------------------------------------------------------
+1       DEFAULT_VLAN_1  down     no_member_port
+33      VLAN33          up       ok             l3port         1
 ```
 
 `
 switch#show vlan 33
 `
 ```
-|VLAN   |    Name    |     Status  |      Reason  |   Reserved  |  Ports  |
-|-------|------------|-------------|--------------|-------------|---------|
-| 33    |   asdf     |   active    |    ADMIN/UP  |   L3        |   1     |
+--------------------------------------------------------------------------------------
+VLAN    Name            Status   Reason         Reserved       Interfaces
+--------------------------------------------------------------------------------------
+33      VLAN33          up       ok             l3port
 ```

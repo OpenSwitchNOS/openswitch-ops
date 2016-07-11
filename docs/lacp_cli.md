@@ -17,12 +17,18 @@
 		- [Entering into LAG context](#entering-into-lag-context)
 		- [Configuring LACP mode](#configuring-lacp-mode)
 		- [Configuring hash type](#configuring-hash-type)
+		- [Configuring LACP fallback](#configuring-lacp-fallback)
 		- [Configuring LACP fallback mode](#configuring-lacp-fallback-mode)
+		- [Configuring LACP fallback timeout](#configuring-lacp-fallback-timeout)
 		- [Configuring LACP rate](#configuring-lacp-rate)
+		- [Configuring shutdown](#configuring-shutdown)
 - [LAG display commands](#lag-display-commands)
 	- [Display global LACP configuration](#display-global-lacp-configuration)
 	- [Display LACP aggregates](#display-lacp-aggregates)
 	- [Display LACP interface configuration](#display-lacp-interface-configuration)
+	- [LAG show running-config](#lag-show-running-config)
+- [LAG diagnostic dump commands](#lag-diagnostic-dump-commands)
+	- [LAG diag-dump basic](#lag-diag-dump-basic)
 
 ## LACP configuration commands
 ### Global context commands
@@ -34,7 +40,7 @@
 ```
 
 ##### Description
-This command creates a LAG interface represented by an ID.
+This command creates a Link Aggregation Group (LAG) interface represented by an ID.
 
 ##### Authority
 all users
@@ -80,7 +86,7 @@ switch(config)# no interface lag 100
 ```
 
 ##### Description
-This command sets an LACP system priority.
+This command sets a Link Aggregation Control Protocol (LACP) system priority.
 
 ##### Authority
 all users
@@ -258,11 +264,13 @@ switch(config-lag-if)# no lacp mode active
 
 #### Configuring hash type
 ##### Syntax
-    hash l2-src-dst
+
+```
+    hash {l2-src-dst/l3-src-dst/l4-src-dst}
+```
 
 ##### Description
-This command sets an LACP hash type to l2-src-dst. The default is l3-src-dst.
-The **no** form of the command sets an LACP hash type to l3-src-dst.
+This command sets an LACP hash type to l2-src-dst, l3-src-dst or l4-src-dst. The default is l3-src-dst.
 
 ##### Authority
 all users
@@ -275,19 +283,18 @@ no parameters.
 ```
 switch(config)# interface lag 1
 switch(config-lag-if)# hash l2-src-dst
-switch(config-lag-if)# no hash l2-src-dst
 ```
 
-#### Configuring LACP fallback mode
+#### Configuring LACP fallback
 ##### Syntax
 
 ```
-    lacp fallback
+[no] lacp fallback
 ```
 
 ##### Description
-This command enables an LACP fallback mode.
-The **no** form of the command disables the an LACP fallback mode.
+This command enables LACP fallback.
+The **no** form of the command disables LACP fallback.
 
 ##### Authority
 all users
@@ -303,7 +310,64 @@ switch(config-lag-if)# lacp fallback
 switch(config-lag-if)# no lacp fallback
 ```
 
-##### Configuring LACP rate
+#### Configuring LACP fallback mode
+##### Syntax
+
+```
+lacp fallback mode priority|all_active
+no lacp fallback mode all_active
+```
+
+##### Description
+This command sets LACP fallback mode to **priority** or **all_active**.
+The **no** form of the command takes only **all_active** mode and sets LACP fallback mode to **priority**.
+
+##### Authority
+all users
+
+##### Parameters
+
+| Parameter | Status   | Syntax         | Description                           |
+|-----------|----------|----------------|---------------------------------------|
+| *mode* | Required | **priority** or **all_active**| Keyword to set LACP fallback mode. |
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# lacp fallback mode all_active
+switch(config-lag-if)# no lacp fallback mode all_active
+```
+
+#### Configuring LACP fallback timeout
+##### Syntax
+
+```
+[no] lacp fallback timeout <1-900>
+```
+
+##### Description
+This command sets LACP fallback timeout value.
+The **no** form of the command sets LACP fallback timeout to **0**.
+
+##### Authority
+all users
+
+##### Parameters
+
+| Parameter | Status   | Syntax         | Description                           |
+|-----------|----------|----------------|---------------------------------------|
+| *timeout* | Required | 1-900 | Value in seconds to set LACP fallback timeout. |
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# lacp fallback timeout 150
+switch(config-lag-if)# no lacp fallback timeout 150
+```
+
+#### Configuring LACP rate
 ##### Syntax
 
 ```
@@ -324,6 +388,52 @@ no parameters.
 ```
 switch(config)# interface lag 1
 switch(config-lag-if)# lacp rate fast
+```
+
+#### Configuring no shutdown
+##### Syntax
+
+```
+    no shutdown
+```
+
+##### Description
+This command sets every interface in LAG to no shutdown.
+
+##### Authority
+all users
+
+##### Parameters
+no parameters.
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# no shutdown
+```
+
+#### Configuring shutdown
+##### Syntax
+
+```
+    shutdown
+```
+
+##### Description
+This command sets every interface in LAG to shutdown.
+
+##### Authority
+all users
+
+##### Parameters
+no parameters.
+
+##### Examples
+
+```
+switch(config)# interface lag 1
+switch(config-lag-if)# shutdown
 ```
 
 ## LAG display commands
@@ -359,7 +469,7 @@ System-priority : 65534
 ```
 
 #### Description
-This command displays all LACP aggregate information if no parameter is passed. If a LAG name is passed as an argument, it shows information of the specified LAG
+This command displays all LACP aggregate information if no parameter is passed. If a LAG name is passed as an argument, it shows information of the specified LAG.
 
 #### Authority
 all users
@@ -376,6 +486,8 @@ Aggregate-name        : lag100
 Aggregated-interfaces : 1
 Heartbeat rate        : slow
 Fallback              : false
+Fallback mode         : priority
+Fallback timeout      : 0
 Hash                  : l3-src-dst
 Aggregate mode        : active
 
@@ -385,6 +497,8 @@ Aggregate-name        : lag100
 Aggregated-interfaces : 1
 Heartbeat rate        : slow
 Fallback              : false
+Fallback mode         : priority
+Fallback timeout      : 0
 Hash                  : l3-src-dst
 Aggregate mode        : active
 
@@ -392,6 +506,8 @@ Aggregate-name        : lag200
 Aggregated-interfaces : 3 2
 Heartbeat rate        : slow
 Fallback              : false
+Fallback mode         : all_active
+Fallback timeout      : 100
 Hash                  : l3-src-dst
 Aggregate mode        : active
 
@@ -463,4 +579,185 @@ System-id          |                    |
 System-priority    |                    |
 
 switch#
+```
+
+### LAG show running-config
+#### Syntax
+
+```
+    show running-config
+```
+
+#### Description
+This command displays the complete switch configuration, when the switch has
+LAGs configured it should display all the configuration specific to those interfaces.
+
+#### Authority
+all users
+
+#### Parameters
+No parameters
+
+#### Examples
+```
+switch# show running-config
+Current configuration:
+!
+!
+!
+!
+!
+vlan 1
+    no shutdown
+interface lag 2
+    no shutdown
+    ip address 10.2.2.2/24
+    ipv6 address 2001::1/64
+interface lag 3
+    no shutdown
+    lacp mode passive
+interface lag 1
+    no shutdown
+    lacp mode active
+    ip address 10.1.1.1/24
+    ipv6 address 2001:db8:a0b:12f0::1/64
+```
+
+## LAG diagnostic dump commands
+### LAG diag-dump basic
+#### Syntax
+
+```
+    diag-dump lacp basic [file]
+```
+
+#### Description
+This command displays diagnostic information about the system LAGs. If a file is
+specified, it captures the information to it.
+The information includes the configured, eligible and participant interface
+members of all the LAGs in the system. It also includes the amount of PDUs and
+marker PDUs sent and received by each interface configured as member of one
+dynamic LAG, and the LACP state machine state for each dyanmic LAG in the system.
+It also includes the configuration files for the Linux bonding driver for each
+LAG in the system.
+
+#### Authority
+All users
+
+#### Parameters
+| Parameter | Status  | Syntax |   Description  |
+|-----------|---------|--------|----------------|
+| **file**  | Optional | String | File to capture the command output.|
+
+#### Examples
+```
+switch# diag-dump lacp basic
+=========================================================================
+[Start] Feature lacp Time : Wed Apr  6 01:54:44 2016
+
+=========================================================================
+-------------------------------------------------------------------------
+[Start] Daemon ops-lacpd
+-------------------------------------------------------------------------
+System Ports:
+================ Ports ================
+Port lag2:
+    lacp                 : active
+    lag_member_speed     : 1000
+    configured_members   : 5 4
+    eligible_members     : 5 4
+    participant_members  : 5 4
+    interface_count      : 2
+Port 1:
+    lacp                 : off
+    lag_member_speed     : 1000
+    configured_members   : 1
+    eligible_members     : 1
+    participant_members  :
+    interface_count      : 0
+Port bridge_normal:
+    lacp                 : off
+    lag_member_speed     : 0
+    configured_members   : bridge_normal
+    eligible_members     :
+    participant_members  :
+    interface_count      : 0
+
+LAG interfaces:
+Port lag2:
+    configured_members   : 5 4
+    eligible_members     : 5 4
+    participant_members  : 5 4
+
+LACP PDUs counters:
+LAG lag2:
+ Configured interfaces:
+  Interface: 5
+    lacp_pdus_sent: 10
+    marker_response_pdus_sent: 0
+    lacp_pdus_received: 7
+    marker_pdus_received: 0
+  Interface: 4
+    lacp_pdus_sent: 10
+    marker_response_pdus_sent: 0
+    lacp_pdus_received: 8
+    marker_pdus_received: 0
+
+LACP state:
+LAG lag2:
+ Configured interfaces:
+  Interface: 5
+    actor_oper_port_state
+       lacp_activity:1 time_out:0 aggregation:1 sync:1 collecting:1 distributing:1 defaulted:0 expired:0
+    partner_oper_port_state
+       lacp_activity:1 time_out:0 aggregation:1 sync:1 collecting:1 distributing:1 defaulted:0 expired:0
+    lacp_control
+       begin:0 actor_churn:0 partner_churn:0 ready_n:1 selected:1 port_moved:0 ntt:0 port_enabled:1
+  Interface: 4
+    actor_oper_port_state
+       lacp_activity:1 time_out:0 aggregation:1 sync:1 collecting:1 distributing:1 defaulted:0 expired:0
+    partner_oper_port_state
+       lacp_activity:1 time_out:0 aggregation:1 sync:1 collecting:1 distributing:1 defaulted:0 expired:0
+    lacp_control
+       begin:0 actor_churn:0 partner_churn:0 ready_n:1 selected:1 port_moved:0 ntt:0 port_enabled:1
+
+-------------------------------------------------------------------------
+[End] Daemon ops-lacpd
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+[Start] Daemon ops-portd
+-------------------------------------------------------------------------
+Configuration file for lag2:
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: load balancing (xor)
+Transmit Hash Policy: layer2 (0)
+MII Status: up
+MII Polling Interval (ms): 0
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: 5
+MII Status: up
+Speed: 10000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 70:72:cf:3a:b6:b6
+Slave queue ID: 0
+
+Slave Interface: 4
+MII Status: up
+Speed: 10000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 70:72:cf:3a:b6:b6
+Slave queue ID: 0
+
+-------------------------------------------------------------------------
+[End] Daemon ops-portd
+-------------------------------------------------------------------------
+=========================================================================
+[End] Feature lacp
+=========================================================================
+Diagnostic dump captured for feature lacp
 ```

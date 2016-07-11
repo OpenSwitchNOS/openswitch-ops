@@ -48,13 +48,13 @@ ops-as5712(config)#
 Once LLDP is enabled, the switch begins to transmit advertisements from those ports that are configured to send LLDP packets.
 
 3. Enable LLDP on interface.
-By using the `lldp transmission` and `lldp reception` commands, LLDP can be enabled or disabled on individual interfaces or configured to only
+By using the `lldp transmit` and `lldp receive` commands, LLDP can be enabled or disabled on individual interfaces or configured to only
 send or only receive LLDP packets. Consider interface 1 which is connected to neighbor device,
 ```
 ops-as5712(config)# interface 1
-ops-as5712(config-if)# lldp reception
+ops-as5712(config-if)# lldp receive
 ops-as5712(config-if)#
-ops-as5712(config-if)# lldp transmission
+ops-as5712(config-if)# lldp transmit
 ops-as5712(config-if)#
 ```
 
@@ -104,7 +104,7 @@ ops-as5712(config)#
 ```
 
 5. Select LLDP TLV.
-The `lldp select-tlv` command configures the type, length, and value (TLV) to send and receive in LLDP packets. The `no lldp select-tlv` command removes the TLV configuration.
+The `lldp select-tlv` command configures the type, length, and value (TLV) to send in LLDP packets. The `no lldp select-tlv` command removes the TLV configuration.
 ```
 ops-as5712(config)# lldp select-tlv system-capabilities
 ops-as5712(config)#

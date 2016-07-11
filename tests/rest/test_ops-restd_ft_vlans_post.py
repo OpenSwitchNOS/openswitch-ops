@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -25,8 +25,11 @@ import json
 import httplib
 import urllib
 
-from utils.fakes import *
-from utils.utils import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    get_switch_ip, rest_sanity_check, get_container_id, \
+    get_server_crt, remove_server_crt
+from opsvsiutils.restutils.swagger_test_utility import \
+    swagger_model_verification
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -72,9 +75,13 @@ class myTopo(Topo):
 #   Create a fake vlan to bridge_normal                                       #
 #                                                                             #
 ###############################################################################
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.switch_ip)
+
+
 class CreateBasicVlan(OpsVsiTest):
     def setupNet(self):
-
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
                                        sws=NUM_OF_SWITCHES,
                                        hopts=self.getHostOpts(),
@@ -88,6 +95,7 @@ class CreateBasicVlan(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = """
@@ -106,10 +114,9 @@ class CreateBasicVlan(OpsVsiTest):
         info("\n########## Executing POST to /system/bridges ##########\n")
         info("Testing Path: %s\n" % self.vlan_path)
 
-        response_status, response_data = execute_request(self.vlan_path,
-                                                         "POST",
-                                                         data,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            self.vlan_path, "POST", data, self.switch_ip,
+            xtra_header=self.cookie_header)
 
         assert response_status == httplib.CREATED, \
             "Response status received: %s\n" % response_status
@@ -131,9 +138,13 @@ class TestPostBasicVlan:
 
     def setup_class(cls):
         TestPostBasicVlan.test_var = CreateBasicVlan()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
+        cls.container_id = get_container_id(cls.test_var.net.switches[0])
 
     def teardown_class(cls):
         TestPostBasicVlan.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -144,7 +155,11 @@ class TestPostBasicVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
+        info("container_id_test %s\n" % self.container_id)
+        swagger_model_verification(self.container_id,
+                                   "/system/bridges/{pid}/vlans",
+                                   "POST", base_vlan_data)
         self.test_var.test()
 
 
@@ -168,6 +183,7 @@ class CreateVlanInvalidName(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -192,10 +208,9 @@ class CreateVlanInvalidName(OpsVsiTest):
             info("Testing field \"name\" as [%s] with value: %s\n" % (field,
                                                                       value))
 
-            response_status, response_data = execute_request(self.vlan_path,
-                                                             "POST",
-                                                             json.dumps(value),
-                                                             self.switch_ip)
+            response_status, response_data = execute_request(
+                self.vlan_path, "POST", json.dumps(value), self.switch_ip,
+                xtra_header=self.cookie_header)
 
             assert response_status == httplib.BAD_REQUEST, \
                 "Response status received: %s\n" % response_status
@@ -218,9 +233,12 @@ class TestPostVlanInvalidName:
 
     def setup_class(cls):
         TestPostVlanInvalidName.test_var = CreateVlanInvalidName()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidName.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -231,7 +249,7 @@ class TestPostVlanInvalidName:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -255,6 +273,7 @@ class CreateVlanInvalidId(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -279,10 +298,9 @@ class CreateVlanInvalidId(OpsVsiTest):
             info("Testing field \"id\" as [%s] with value: %s\n" % (field,
                                                                     value))
 
-            response_status, response_data = execute_request(self.vlan_path,
-                                                             "POST",
-                                                             json.dumps(value),
-                                                             self.switch_ip)
+            response_status, response_data = execute_request(
+                self.vlan_path, "POST", json.dumps(value), self.switch_ip,
+                xtra_header=self.cookie_header)
 
             assert response_status == httplib.BAD_REQUEST, \
                 "Response status received: %s\n" % response_status
@@ -305,9 +323,12 @@ class TestPostVlanInvalidId:
 
     def setup_class(cls):
         TestPostVlanInvalidId.test_var = CreateVlanInvalidId()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidId.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -318,7 +339,7 @@ class TestPostVlanInvalidId:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -342,6 +363,7 @@ class CreateVlanInvalidDescription(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -366,10 +388,9 @@ class CreateVlanInvalidDescription(OpsVsiTest):
             info("Testing field \"description\" as [%s] with value: "
                  "%s\n" % (field, value))
 
-            response_status, response_data = execute_request(self.vlan_path,
-                                                             "POST",
-                                                             json.dumps(value),
-                                                             self.switch_ip)
+            response_status, response_data = execute_request(
+                self.vlan_path, "POST", json.dumps(value), self.switch_ip,
+                xtra_header=self.cookie_header)
 
             assert response_status == httplib.BAD_REQUEST, \
                 "Response status received: %s\n" % response_status
@@ -393,9 +414,12 @@ class TestPostVlanInvalidDescription:
     def setup_class(cls):
         TestPostVlanInvalidDescription.test_var = \
             CreateVlanInvalidDescription()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidDescription.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -406,7 +430,7 @@ class TestPostVlanInvalidDescription:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -430,6 +454,7 @@ class CreateVlanInvalidAdmin(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -454,10 +479,9 @@ class CreateVlanInvalidAdmin(OpsVsiTest):
             info("Testing field \"admin\" as %s with value: %s\n" % (field,
                                                                      value))
 
-            response_status, response_data = execute_request(self.vlan_path,
-                                                             "POST",
-                                                             json.dumps(value),
-                                                             self.switch_ip)
+            response_status, response_data = execute_request(
+                self.vlan_path, "POST", json.dumps(value), self.switch_ip,
+                xtra_header=self.cookie_header)
 
             assert response_status == httplib.BAD_REQUEST, \
                 "Response status received: %s\n" % response_status
@@ -480,9 +504,12 @@ class TestPostVlanInvalidAdmin:
 
     def setup_class(cls):
         TestPostVlanInvalidAdmin.test_var = CreateVlanInvalidAdmin()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidAdmin.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -493,7 +520,7 @@ class TestPostVlanInvalidAdmin:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -517,6 +544,7 @@ class CreateVlanInvalidOtherConfig(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -541,10 +569,9 @@ class CreateVlanInvalidOtherConfig(OpsVsiTest):
             info("Testing field \"other_config\" as [%s] with value: "
                  "%s\n" % (field, value))
 
-            response_status, response_data = execute_request(self.vlan_path,
-                                                             "POST",
-                                                             json.dumps(value),
-                                                             self.switch_ip)
+            response_status, response_data = execute_request(
+                self.vlan_path, "POST", json.dumps(value), self.switch_ip,
+                xtra_header=self.cookie_header)
 
             assert response_status == httplib.BAD_REQUEST, \
                 "Response status received: %s\n" % response_status
@@ -568,9 +595,12 @@ class TestPostVlanInvalidOtherConfig:
     def setup_class(cls):
         TestPostVlanInvalidOtherConfig.test_var = \
             CreateVlanInvalidOtherConfig()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidOtherConfig.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -581,7 +611,7 @@ class TestPostVlanInvalidOtherConfig:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -605,6 +635,7 @@ class CreateVlanInvalidExternalIds(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = deepcopy(test_vlan_data)
@@ -629,10 +660,9 @@ class CreateVlanInvalidExternalIds(OpsVsiTest):
             info("Testing field \"external_ids\" as %s with value: "
                  "%s\n" % (field, value))
 
-            response_status, response_data = execute_request(self.vlan_path,
-                                                             "POST",
-                                                             json.dumps(value),
-                                                             self.switch_ip)
+            response_status, response_data = execute_request(
+                self.vlan_path, "POST", json.dumps(value), self.switch_ip,
+                xtra_header=self.cookie_header)
 
             assert response_status == httplib.BAD_REQUEST, \
                 "Response status received: %s\n" % response_status
@@ -656,9 +686,12 @@ class TestPostVlanInvalidExternalIds:
     def setup_class(cls):
         TestPostVlanInvalidExternalIds.test_var = \
             CreateVlanInvalidExternalIds()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidExternalIds.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -669,7 +702,7 @@ class TestPostVlanInvalidExternalIds:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -693,6 +726,7 @@ class CreateVlanMissingFields(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = {}
@@ -710,10 +744,9 @@ class CreateVlanMissingFields(OpsVsiTest):
             info("Testing missing field \"%s\" with value: %s\n" % (field,
                                                                     value))
 
-            response_status, response_data = execute_request(self.vlan_path,
-                                                             "POST",
-                                                             json.dumps(value),
-                                                             self.switch_ip)
+            response_status, response_data = execute_request(
+                self.vlan_path, "POST", json.dumps(value), self.switch_ip,
+                xtra_header=self.cookie_header)
 
             assert response_status == httplib.BAD_REQUEST, \
                 "Response status received: %s\n" % response_status
@@ -736,9 +769,12 @@ class TestPostVlanMissingFields:
 
     def setup_class(cls):
         TestPostVlanMissingFields.test_var = CreateVlanMissingFields()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanMissingFields.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -749,7 +785,7 @@ class TestPostVlanMissingFields:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -773,12 +809,13 @@ class CreateVlanDuplicated(OpsVsiTest):
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_path = "%s/%s/vlans" % (self.path, default_bridge)
+        self.cookie_header = None
 
     def test(self):
         data = """
                {
                    "configuration": {
-                       "name": "fake_vlan",
+                       "name": "fake_vlan_1",
                        "id": 1,
                        "description": "test vlan",
                        "admin": ["up"],
@@ -788,14 +825,12 @@ class CreateVlanDuplicated(OpsVsiTest):
                }
                """
 
-        info("\n########## Executing POST to test duplicated VLAN "
-             "##########\n")
+        info("\n########## Executing POST to /system/bridges ##########\n")
         info("Testing Path: %s\n" % self.vlan_path)
 
-        response_status, response_data = execute_request(self.vlan_path,
-                                                         "POST",
-                                                         data,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            self.vlan_path, "POST", data, self.switch_ip,
+            xtra_header=self.cookie_header)
 
         assert response_status == httplib.CREATED, \
             "Response status received: %s\n" % response_status
@@ -806,10 +841,9 @@ class CreateVlanDuplicated(OpsVsiTest):
         info("Response data received: %s\n" % response_data)
 
         # Create duplicated
-        response_status, response_data = execute_request(self.vlan_path,
-                                                         "POST",
-                                                         data,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            self.vlan_path, "POST", data, self.switch_ip,
+            xtra_header=self.cookie_header)
 
         assert response_status == httplib.BAD_REQUEST, \
             "Response status received: %s\n" % response_status
@@ -832,9 +866,12 @@ class TestPostDuplicated:
 
     def setup_class(cls):
         TestPostDuplicated.test_var = CreateVlanDuplicated()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostDuplicated.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -845,5 +882,5 @@ class TestPostDuplicated:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()

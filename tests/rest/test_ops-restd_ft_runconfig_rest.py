@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -26,6 +26,9 @@ import httplib
 from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 from opsvsiutils.systemutil import *
+from opsvsiutils.restutils.utils import execute_request, login, \
+    rest_sanity_check, get_switch_ip, get_server_crt, \
+    remove_server_crt
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -48,6 +51,11 @@ class myTopo(Topo):
         switch = self.addSwitch("s1")
 
 
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.SWITCH_IP)
+
+
 class configTest(OpsVsiTest):
     def setupNet(self):
 
@@ -57,38 +65,30 @@ class configTest(OpsVsiTest):
                            hopts=host_opts, sopts=switch_opts)
         self.net = Mininet(ecmp_topo, switch=VsiOpenSwitch, host=Host,
                            link=OpsVsiLink, controller=None, build=True)
+        self.cookie_header = None
+        self.SWITCH_IP = get_switch_ip(self.net.switches[0])
 
     def verify_startup_config(self):
         info('''"\n########## Verify startup config writes and reads the
              config to startup config db ##########\n"''')
         src_path = os.path.dirname(os.path.realpath(__file__))
         src_file = os.path.join(src_path, 'json.data')
-        s1 = self.net.switches[0]
-        ip_addr = s1.cmd("python -c \"import socket; print\
-                         socket.gethostbyname(socket.gethostname())\"")
 
         path = '/rest/v1/system' + '/full-configuration?type=startup'
         with open(src_file) as data_file:
                 _data = json.loads(data_file.read())
 
-        _headers = {"Content-type": "multipart/form-data",
-                    "Accept": "text/plain"}
-        conn = httplib.HTTPConnection(ip_addr, 8091)
-        conn.request("PUT", path, json.dumps(_data), _headers)
-        response = conn.getresponse()
+        status_code, response_data = execute_request(
+            path, "PUT", json.dumps(_data), self.SWITCH_IP,
+            xtra_header=self.cookie_header)
 
-        assert response.status == 200
+        assert status_code == httplib.OK
 
-        _headers = {"Content-type": "application/x-www-form-urlencoded",
-                    "Accept": "text/plain"}
-        conn = httplib.HTTPConnection(ip_addr, 8091)
-        conn.request("GET", path, json.dumps(""), _headers)
-        response = conn.getresponse()
-        content = response.read()
+        status_code, response_data = execute_request(
+            path, "GET", None, self.SWITCH_IP, xtra_header=self.cookie_header)
+        content = json.loads(response_data)
 
-        content = json.loads(content)
-
-        assert response.status == 200
+        assert status_code == httplib.OK
 
         assert ordered(content) == ordered(_data)
 
@@ -104,9 +104,11 @@ class Test_config:
 
     def setup_class(cls):
         Test_config.test_var = configTest()
+        get_server_crt(cls.test_var.net.switches[0])
 
     def teardown_class(cls):
         Test_config.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -117,5 +119,5 @@ class Test_config:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.verify_startup_config()

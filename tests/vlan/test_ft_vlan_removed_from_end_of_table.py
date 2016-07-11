@@ -58,12 +58,16 @@ topoDict = {"topoExecution": 1000,
 
 def capture(deviceObj, interface="eth0", number=1):
     command = 'nmap -sP 10.1.1.1-254' + "\n"
+    # Adding a delay of 2 sec so as all the workstations and links are ready
+    time.sleep(2)
     deviceObj.expectHndl.send(command)
+    # time to run the nmap command
     time.sleep(5)
     deviceObj.expectHndl.expect('#')
     result = re.findall('\(\d*\s\w*\s\w*\)', deviceObj.expectHndl.before)
     hostsNumber = re.findall('\d?', result[0])
     if hostsNumber[1] != number:
+        LogOutput('error', str(deviceObj.expectHndl.before))
         return 1
     else:
         return 0
@@ -85,6 +89,7 @@ def verifyVlan(dut, pVlan, pQuantity=0):
     else:
         return 1
 
+
 # Verify a port has been assigned to a vlan
 
 
@@ -94,7 +99,7 @@ def verifyVlanPorts(dut, vlanID, port):
     showVlanOutput = returnCLS.valueGet()
     for myDictionary in showVlanOutput:
         if myDictionary['VLAN'] == vlanID and \
-                port in myDictionary['Ports']:
+                port in myDictionary['Interfaces']:
             assigned = True
             return assigned
     return assigned
@@ -127,7 +132,6 @@ def cleanUp(dut, wrk1, wrk2, wrk3):
         finalResult.append(devRebootRetStruct.returnCode())
     else:
         LogOutput('info', "Passed Switch Reboot piece")
-
 
 class Test_vlan_state_removed_from_end_of_table:
 
@@ -311,7 +315,6 @@ class Test_vlan_state_removed_from_end_of_table:
         else:
             LogOutput('info', "Passed enable interface {pInterface}".format(
                 pInterface=self.dut01Obj.linkPortMapping['lnk03']))
-
     def test_added_ports(self):
         LogOutput('info', "############################################")
         LogOutput('info', "Step 6- Verify ports assign correctly")
@@ -367,7 +370,7 @@ class Test_vlan_state_removed_from_end_of_table:
         else:
             LogOutput('info', 'Passed sending traffic and verifying')
 
-    def test_delete_middle_vlan(self):
+    def test_delete_end_vlan(self):
         LogOutput('info', "############################################")
         LogOutput('info', "Step 8- Delete highest vlan from table")
         LogOutput('info', "############################################")
@@ -406,21 +409,20 @@ class Test_vlan_state_removed_from_end_of_table:
             assert(False)
         else:
             LogOutput('info', "Passed adding port to vlan " + str(2))
-
     def test_added_port(self):
         LogOutput('info', "############################################")
         LogOutput(
             'info', "Step 11- Verify ports re-assign correctly")
         LogOutput('info', "############################################")
-        # Verify port assigned to vlan 4
-        if verifyVlanPorts(self.dut01Obj, 4,
-                           self.dut01Obj.linkPortMapping['lnk01']) != 0:
+        # Verify port assigned to vlan 2
+        if verifyVlanPorts(self.dut01Obj, 2,
+                           self.dut01Obj.linkPortMapping['lnk03']) != 0:
             LogOutput('error', "Failed to verify port {pPort}".format(
-                pPort=self.dut01Obj.linkPortMapping['lnk01']))
+                pPort=self.dut01Obj.linkPortMapping['lnk03']))
             assert(False)
         else:
             LogOutput('info', "Passed verifying port {pPort}".format(
-                pPort=self.dut01Obj.linkPortMapping['lnk01']))
+                pPort=self.dut01Obj.linkPortMapping['lnk03']))
 
     def test_sendTraffic_after(self):
         LogOutput('info', "############################################")
@@ -428,6 +430,7 @@ class Test_vlan_state_removed_from_end_of_table:
         LogOutput('info', "############################################")
         if capture(self.wrkston01,
                    self.wrkston01.linkPortMapping['lnk01'], '2') != 0:
+            LogOutput('error', str(ShowVlan(deviceObj=self.dut01Obj).buffer()))
             LogOutput('error', "Failed to send traffic")
             assert(False)
         else:

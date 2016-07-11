@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,7 +23,8 @@ import pytest
 from opsvsi.docker import *
 from opsvsi.opsvsitest import *
 
-SSHCLIENT = "/usr/bin/ssh"
+SSHCLIENT = "/usr/bin/ssh -q -o UserKnownHostsFile=/dev/null \
+             -o StrictHostKeyChecking=no"
 
 # Purpose of this test is to test switch authentication
 # with local credentials and RADIUS credentials.
@@ -54,8 +55,8 @@ class aaaFeatureTest(OpsVsiTest):
         h1 = self.net.hosts[0]
         switchIP = self.getSwitchIP()
         print "SwitchIP:" + switchIP
-        out = h1.cmd("sed -i '76s/steve/admin/' /etc/freeradius/users")
-        out = h1.cmd("sed -i '76s/#admin/admin/' /etc/freeradius/users")
+        out = h1.cmd("sed -i '76s/steve/netop/' /etc/freeradius/users")
+        out = h1.cmd("sed -i '76s/#netop/netop/' /etc/freeradius/users")
         out = h1.cmd("sed -i '196s/192.168.0.0/"+switchIP+"/' "
                      "/etc/freeradius/clients.conf")
         out = h1.cmd("sed -i '196,199s/#//' /etc/freeradius/clients.conf")
@@ -140,7 +141,7 @@ class aaaFeatureTest(OpsVsiTest):
         s1.cmdCLI("exit")
         return True
 
-    def radiusAuthEnable(self):
+    def radiusAuthEnable(self, chap=False):
         ''' This function is to enable radius authentication in DB
         with CLI command'''
         s1 = self.net.switches[0]
@@ -151,10 +152,17 @@ class aaaFeatureTest(OpsVsiTest):
         assert ('Unknown command' not in out),  \
             "Failed to enter configuration terminal"
 
-        out += s1.cmd("echo ")
-        out = s1.cmdCLI("aaa authentication login radius")
-        assert ('Unknown command' not in out), "Failed to enable radius" \
-                                               " authentication"
+        if chap:
+            out += s1.cmd("echo ")
+            out = s1.cmdCLI("aaa authentication login radius radius-auth chap")
+            assert ('Unknown command' not in out), "Failed to set chap" \
+                                               " for radius"
+        else:
+            out += s1.cmd("echo ")
+            out = s1.cmdCLI("aaa authentication login radius")
+            assert ('Unknown command' not in out), "Failed to enable radius" \
+                                                   " authentication"
+
         out += s1.cmd("echo ")
         s1.cmdCLI("exit")
         return True
@@ -212,9 +220,7 @@ class aaaFeatureTest(OpsVsiTest):
         print run
         out = ""
         out += s1.cmd("echo ")
-        sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.spawn(sshkey)
-        myssh = SSHCLIENT + " admin@" + switchIpAddress
+        myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
         i = p.expect([ssh_newkey, 'password:', pexpect.EOF])
@@ -223,7 +229,7 @@ class aaaFeatureTest(OpsVsiTest):
             p.sendline('yes')
             i = p.expect([ssh_newkey, 'password:', pexpect.EOF])
         if i == 1:
-            p.sendline('admin')
+            p.sendline('netop')
             j = p.expect(['#', 'password:'])
             if j == 0:
                 p.sendline('exit')
@@ -239,15 +245,15 @@ class aaaFeatureTest(OpsVsiTest):
         elif i == 2:
             assert i != 2, "Failed with SSH command"
 
-    def loginSSHradius(self):
+    def loginSSHradius(self, chap=False):
         '''This function is to verify radius authentication is successful when
         radius is true and fallback is false'''
-        info('########## Test to verify SSH login with radius authenication '
+        info('########## Test to verify SSH login with radius authentication '
              'enabled and fallback disabled ##########\n')
         s1 = self.net.switches[0]
         self.noFallbackEnable()
         sleep(5)
-        self.radiusAuthEnable()
+        self.radiusAuthEnable(chap)
         sleep(5)
         ssh_newkey = 'Are you sure you want to continue connecting'
         switchIpAddress = self.getSwitchIP()
@@ -258,9 +264,7 @@ class aaaFeatureTest(OpsVsiTest):
 
         out = ""
         out += s1.cmd("echo ")
-        sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.spawn(sshkey)
-        myssh = SSHCLIENT + " admin@" + switchIpAddress
+        myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
         i = p.expect([ssh_newkey, 'password:', pexpect.EOF])
@@ -282,7 +286,11 @@ class aaaFeatureTest(OpsVsiTest):
         if loginpass == 1:
             p.sendline('exit')
             p.kill(0)
-            info(".### Passed SSH login with radius authentication ###\n")
+            if chap:
+                info(".### Passed SSH login with radius authentication and"
+                     " chap ###\n")
+            else:
+                info(".### Passed SSH login with radius authentication ###\n")
             return True
 
     def loginSSHradiusWithFallback(self):
@@ -305,9 +313,7 @@ class aaaFeatureTest(OpsVsiTest):
         print run
         out = ""
         out += s1.cmd("echo ")
-        sshkey= "ssh-keygen -R " + switchIpAddress
-        sshkeygen = pexpect.spawn(sshkey)
-        myssh = SSHCLIENT + " admin@" + switchIpAddress
+        myssh = SSHCLIENT + " netop@" + switchIpAddress
         p = pexpect.spawn(myssh)
 
         i = p.expect([ssh_newkey, 'password:', pexpect.EOF])
@@ -321,7 +327,7 @@ class aaaFeatureTest(OpsVsiTest):
             assert i != 2, "Failed with SSH command"
         loginpass = p.expect(['password:', '#'])
         if loginpass == 0:
-            p.sendline('admin')
+            p.sendline('netop')
             p.expect('#')
             p.sendline('exit')
             p.kill(0)
@@ -364,6 +370,7 @@ class Test_aaafeature:
 
     def test_loginSSHradius(self):
         self.test.loginSSHradius()
+        self.test.loginSSHradius(chap=True)
 
     def test_loginSSHradiusWithFallback(self):
         self.test.loginSSHradiusWithFallback()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -25,8 +25,10 @@ import json
 import httplib
 import urllib
 
-from utils.fakes import *
-from utils.utils import *
+from opsvsiutils.restutils.fakes import create_fake_vlan
+from opsvsiutils.restutils.utils import execute_request, login, \
+    rest_sanity_check, get_switch_ip, get_server_crt, \
+    remove_server_crt
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -51,6 +53,11 @@ class myTopo(Topo):
 #   Basic Delete for non-existent VLAN                                        #
 #                                                                             #
 ###############################################################################
+@pytest.fixture
+def netop_login(request):
+    request.cls.test_var.cookie_header = login(request.cls.test_var.switch_ip)
+
+
 class DeleteNonExistentVlan(OpsVsiTest):
     def setupNet(self):
         self.net = Mininet(topo=myTopo(hsts=NUM_HOSTS_PER_SWITCH,
@@ -67,16 +74,16 @@ class DeleteNonExistentVlan(OpsVsiTest):
         self.switch_ip = get_switch_ip(self.net.switches[0])
         self.vlan_name = "not_found"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.cookie_header = None
 
     def test(self):
         delete_path = "%s/%s" % (self.vlan_path, self.vlan_name)
         info("\n########## Executing DELETE for %s ##########\n" %
              self.vlan_path)
 
-        response_status, response_data = execute_request(delete_path,
-                                                         "DELETE",
-                                                         None,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            delete_path, "DELETE", None, self.switch_ip,
+            xtra_header=self.cookie_header)
 
         assert response_status == httplib.NOT_FOUND, \
             "Response status received: %s\n" % response_status
@@ -99,9 +106,12 @@ class TestDeleteNonExistentVlan:
 
     def setup_class(cls):
         TestDeleteNonExistentVlan.test_var = DeleteNonExistentVlan()
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestDeleteNonExistentVlan.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -112,7 +122,7 @@ class TestDeleteNonExistentVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()
 
 
@@ -138,6 +148,7 @@ class DeleteExistentVlan(OpsVsiTest):
         self.vlan_id = 1
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
+        self.cookie_header = None
 
     def test(self):
         delete_path = "%s/%s" % (self.vlan_path, self.vlan_name)
@@ -147,10 +158,9 @@ class DeleteExistentVlan(OpsVsiTest):
         #######################################################################
         info("\n########## Executing DELETE for %s ##########\n" % delete_path)
 
-        response_status, response_data = execute_request(delete_path,
-                                                         "DELETE",
-                                                         None,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            delete_path, "DELETE", None, self.switch_ip,
+            xtra_header=self.cookie_header)
 
         assert response_status == httplib.NO_CONTENT, \
             "Response status received: %s\n" % response_status
@@ -169,18 +179,13 @@ class DeleteExistentVlan(OpsVsiTest):
         info("\n########## Executing GET for %s ##########\n" % self.vlan_path)
         info("Testing Path: %s\n" % self.vlan_path)
 
-        response_status, response_data = execute_request(self.vlan_path,
-                                                         "GET",
-                                                         None,
-                                                         self.switch_ip)
+        response_status, response_data = execute_request(
+            delete_path, "GET", None, self.switch_ip,
+            xtra_header=self.cookie_header)
 
-        assert response_status == httplib.OK, \
+        assert response_status == httplib.NOT_FOUND, \
             "Response status received: %s\n" % response_status
         info("Response status received: \"%s\"\n" % response_status)
-
-        assert json.loads(response_data) == [], \
-            "Response data received: %s\n" % response_data
-        info("Response data received: %s\n" % response_data)
 
         info("########## Executing GET for %s DONE "
              "##########\n" % self.vlan_path)
@@ -195,7 +200,8 @@ class TestDeleteExistentVlan:
 
     def setup_class(cls):
         TestDeleteExistentVlan.test_var = DeleteExistentVlan()
-
+        get_server_crt(cls.test_var.net.switches[0])
+        rest_sanity_check(cls.test_var.switch_ip)
         create_fake_vlan(TestDeleteExistentVlan.test_var.vlan_path,
                          TestDeleteExistentVlan.test_var.switch_ip,
                          TestDeleteExistentVlan.test_var.vlan_name,
@@ -203,6 +209,7 @@ class TestDeleteExistentVlan:
 
     def teardown_class(cls):
         TestDeleteExistentVlan.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -213,5 +220,5 @@ class TestDeleteExistentVlan:
     def __del__(self):
         del self.test_var
 
-    def test_run(self):
+    def test_run(self, netop_login):
         self.test_var.test()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# (c) Copyright [2015] Hewlett Packard Enterprise Development LP
+# (c) Copyright 2015 - 2016 Hewlett Packard Enterprise Development LP
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -36,7 +36,56 @@ class mgmtIntfTests(OpsVsiTest):
     # IPv4 and it's subnet mask which is obtained from DHCP server.
     Dhcp_Ipv4_submask = ''
 
+    # DHCP dhclient is currently not running on VSI image due to
+    # dhclient_apparmor_profile [/etc/apparmor.d/sbin.dhclient] file,
+    # which is present on running host machine[VM].
+    # The Profile files will declare access rules to allow access to
+    # linux system resources. Implicitly the access is denied
+    # when there is no matching rule in the profile.
+    # If we want to run docker instance with dhclient on such a
+    # host machine, we have to disable the dhclient_apparmor_profile file
+    # and enable it once testcase execution is finished.
+
+    def disable_dhclient_profile(self):
+        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
+            os.system("sudo ln -s /etc/apparmor.d/sbin.dhclient "
+                      "  /etc/apparmor.d/disable/")
+            os.system('sudo apparmor_parser -R /etc/apparmor.d/sbin.dhclient')
+
+    def enable_dhclient_profile(self):
+        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
+            os.system('sudo rm /etc/apparmor.d/disable/sbin.dhclient')
+            os.system('sudo apparmor_parser -r /etc/apparmor.d/sbin.dhclient')
+
+    # When we run this test file with multiple instance,there is a chance of
+    # asynchronously enabling and disabling dhclient_profile file on the
+    # running system.
+    # To avoid asynchronous issue, the count variable is used to maintain
+    # the number of mgmt-intf test file execution instance in a temp file.
+    # whenever the count reaches zero, the profile file is enabled again.
+    def file_read_for_mgmt_instance_count(self):
+        file_fd = open('mgmt_sys_var', 'r')
+        count = file_fd.read()
+        count = re.search('\d+', count)
+        num = int(count.group(0))
+        file_fd.close()
+        return num
+
+    def file_write_for_mgmt_instance_count(self, count_number):
+        file_fd = open('mgmt_sys_var', 'w+')
+        file_fd.write(str(count_number))
+        file_fd.close()
+
     def setupNet(self):
+        if os.path.exists('mgmt_sys_var') is False:
+            self.file_write_for_mgmt_instance_count(0)
+        else:
+            count = self.file_read_for_mgmt_instance_count()
+            num = count + 1
+            self.file_write_for_mgmt_instance_count(num)
+
+        self.disable_dhclient_profile()
+
         # If you override this function, make sure to
         # either pass getNodeOpts() into hopts/sopts of the topology that
         # you build or into addHost/addSwitch calls.
@@ -48,11 +97,6 @@ class mgmtIntfTests(OpsVsiTest):
                            host=Host,
                            link=OpsVsiLink, controller=None,
                            build=True)
-        # Disabling dhclient profile on VM.
-        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
-            os.system("sudo ln -s /etc/apparmor.d/sbin.dhclient "
-                      "  /etc/apparmor.d/disable/")
-            os.system('sudo apparmor_parser -R /etc/apparmor.d/sbin.dhclient')
 
     def numToDottedQuad(self, n):
         d = 256 * 256 * 256
@@ -67,13 +111,21 @@ class mgmtIntfTests(OpsVsiTest):
     def dhclient_started_on_mgmt_intf_ipv4(self):
         s1 = self.net.switches[0]
         cnt = 15
+        output_tmp = ''
+        output = ''
         while cnt:
-            output = s1.cmd("systemctl status dhclient@eth0.service")
+            output = s1.cmd("systemctl status dhclient@eth0.service -l")
+            output_tmp = s1.cmd("ifconfig eth0")
+            output_log = s1.cmd("cat /var/log/messages | grep \"dhclient\" ")
             if output in 'running':
                 break
             else:
                 cnt -= 1
                 sleep(1)
+
+        info("DHCLIENT status debug info : %s\n" % (output))
+        info("Mgmt port status debug info : %s\n" % (output_tmp))
+        info("SYSLOG output : %s\n" % (output_log))
         assert 'running' in output, "Test to verify dhcp client has"\
             " started failed"
         info('### Successfully verified dhcp client has started ###\n')
@@ -433,7 +485,12 @@ class mgmtIntfTests(OpsVsiTest):
     # Verify to set hostname through dhclient
     def set_hostname_by_dhclient(self):
         s1 = self.net.switches[0]
-        s1.cmd("dhcphostname open-vswitch-new")
+        s1.cmdCLI("configure terminal")
+        s1.cmdCLI("interface mgmt")
+        s1.cmdCLI("ip dhcp")
+        #giving time for dhcp to come up
+        sleep(2)
+        s1.cmd("dhcp_options open-vswitch-new None None None")
         cnt = 15
         while cnt:
             cmd_output = s1.ovscmd("ovs-vsctl list system")
@@ -447,6 +504,47 @@ class mgmtIntfTests(OpsVsiTest):
             "Test to set system hostname through dhclient"\
             " has failed"
         info("### Successfully verified to set system hostname"
+             " by dhclient ###\n")
+
+    # Verify to configure system domainname through CLI
+    def config_set_domainname_from_cli(self):
+        s1 = self.net.switches[0]
+        s1.cmdCLI("config terminal")
+        s1.cmdCLI("domain-name cli")
+        cnt = 15
+        while cnt:
+            cmd_output = s1.ovscmd("ovs-vsctl list system")
+            domainname = s1.ovscmd("ovs-vsctl get system . "
+                                   "domain_name").rstrip('\r\n')
+            if "domain_name=cli" in cmd_output and \
+               domainname == "cli":
+                break
+            else:
+                cnt -= 1
+                sleep(1)
+        assert 'domain_name=cli' in cmd_output and \
+               domainname == 'cli' and \
+               "Test to set domainname through CLI"\
+               " has failed"
+        info("### Successfully verified configuring"
+             " domainname using CLI ###\n")
+
+    # Verify to set domainname through dhclient
+    def set_domainname_by_dhclient(self):
+        s1 = self.net.switches[0]
+        s1.cmd("dhcp_options None None None dhcp_domain")
+        cnt = 15
+        while cnt:
+            cmd_output = s1.ovscmd("ovs-vsctl list system")
+            if "dhcp_domain_name=dhcp_domain" in cmd_output:
+                break
+            else:
+                cnt -= 1
+                sleep(1)
+        assert 'dhcp_domain_name=dhcp_domain' in cmd_output,\
+            "Test to set system domainname through dhclient"\
+            " has failed"
+        info("### Successfully verified to set system domainname"
              " by dhclient ###\n")
 
     #Extra cleanup if test fails in middle.
@@ -467,10 +565,20 @@ class Test_mgmt_intf:
         # Stop the Docker containers, and
         # mininet topology.
         Test_mgmt_intf.test.net.stop()
+        Enable = False
+
+        if os.path.exists('mgmt_sys_var') is True:
+            num = Test_mgmt_intf.test.file_read_for_mgmt_instance_count()
+            if num == 0:
+                Enable = True
+            else:
+                num = num - 1
+                Test_mgmt_intf.test.file_write_for_mgmt_instance_count(num)
+
         # Enabling dhclient.profile on VM.
-        if os.path.isfile("/etc/apparmor.d/sbin.dhclient") is True:
-            os.system('sudo rm /etc/apparmor.d/disable/sbin.dhclient')
-            os.system('sudo apparmor_parser -r /etc/apparmor.d/sbin.dhclient')
+        if Enable is True:
+            Test_mgmt_intf.test.enable_dhclient_profile()
+            os.system('rm mgmt_sys_var')
 
     def teardown_method(self, method):
         self.test.mgmt_intf_cleanup()
@@ -539,3 +647,11 @@ class Test_mgmt_intf:
 
     def test_set_hostname_by_dhclient(self):
         self.test.set_hostname_by_dhclient()
+
+    def test_config_set_domainname_from_cli(self):
+        info("\n########## Test to configure System Domainname "
+             " ##########\n")
+        self.test.config_set_domainname_from_cli()
+
+    def test_set_domainname_by_dhclient(self):
+        self.test.set_domainname_by_dhclient()
