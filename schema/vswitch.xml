@@ -2921,6 +2921,9 @@
       <column name="state">
         Current state of the neighbor entry.
       </column>
+      <column name="route_references">
+        List of route entries for which this neighbor is a nexthop.
+      </column>
       <column name="status" key="dp_hit"
           type='{"type": "boolean"}'>
           Indicates if there is active traffic to the neighbor. This value
