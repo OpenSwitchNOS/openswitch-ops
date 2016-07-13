@@ -23,7 +23,7 @@ from opstestfw.switch.CLI import *
 from opstestfw.switch import *
 from opstestfw.switch.CLI.InterfaceIpConfig import InterfaceIpConfig
 from opsvsiutils.vtyshutils import *
-
+import time
 '''
 TOPOLOGY
 +---------------+             +---------------+
@@ -227,6 +227,7 @@ def verify_bgp_routes(dut, network, next_hop):
     retCode = retStruct.returnCode()
     assert retCode == 0, "Failed to enter vtysh prompt"
     dump =  dut.DeviceInteract(command="show ip bgp")
+    LogOutput('info',dump['buffer'])
     if network in dump['buffer'] and next_hop in dump['buffer']:
         return True
     return False
@@ -285,7 +286,7 @@ def verify_routemap_set_weight(**kwargs):
     wait_for_route(switch2, "10.0.0.0", "0.0.0.0")
     wait_for_route(switch2, "11.0.0.0", "0.0.0.0")
     wait_for_route(switch2, "9.0.0.0", "8.0.0.1")
-
+    sleep(10)
     switch2.VtyshShell(enter=True)
     out = switch2.DeviceInteract(command="sh ip bgp")
     assert '22' in out['buffer'] and '9.0.0.0' in out['buffer'], "Failed to configure 'set weight'"
@@ -329,7 +330,7 @@ def verify_routemap_set_localpref(**kwargs):
     wait_for_route(switch2, "10.0.0.0", "0.0.0.0")
     wait_for_route(switch2, "11.0.0.0", "0.0.0.0")
     wait_for_route(switch2, "9.0.0.0", "8.0.0.1")
-
+    sleep(2)
     switch2.VtyshShell(enter=True)
     out = switch2.DeviceInteract(command="sh ip bgp")
     assert '45' in out['buffer'], "Failed to configure 'set local-preference'"
@@ -422,19 +423,16 @@ def configure(**kwargs):
     assert result is True, "Failed to configur neighbor on SW2"
 
 
-@pytest.mark.skipif(True, reason="Disabling because modular framework tests \
-                                  were enable")
-@pytest.mark.timeout(600)
-class Test_bgp_redistribute_configuration:
+class Test_bgp_routemap_weight_local_pref:
     def setup_class(cls):
-        Test_bgp_redistribute_configuration.testObj = \
+        Test_bgp_routemap_weight_local_pref.testObj = \
             testEnviron(topoDict=topoDict)
         # Get topology object
-        Test_bgp_redistribute_configuration.topoObj = \
-            Test_bgp_redistribute_configuration.testObj.topoObjGet()
+        Test_bgp_routemap_weight_local_pref.topoObj = \
+            Test_bgp_routemap_weight_local_pref.testObj.topoObjGet()
 
     def teardown_class(cls):
-        Test_bgp_redistribute_configuration.topoObj.terminate_nodes()
+        Test_bgp_routemap_weight_local_pref.topoObj.terminate_nodes()
 
     def test_configure(self):
         dut01Obj = self.topoObj.deviceObjGet(device="dut01")
