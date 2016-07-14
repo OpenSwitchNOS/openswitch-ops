@@ -4951,6 +4951,25 @@
             "max": "unlimited"
           }
         },
+        "port_flap": {
+            "category": "status",
+            "type": {
+                "key": {
+                    "type": "boolean"
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "port_state_override": {
+            "category": "status",
+            "type": {
+                "key": "string",
+                "value": "string",
+                "min": 0,
+                "max": "unlimited"
+            }
+        },
         "loop_protect_enable": {
             "category": "configuration",
             "type": {
@@ -5505,8 +5524,8 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 15
+              "minInteger": 1,
+              "maxInteger": 16
             },
             "min": 0,
             "max": 1
