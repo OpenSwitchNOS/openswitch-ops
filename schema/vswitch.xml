@@ -4541,6 +4541,32 @@
       <column name="loop_protect_statistics" key="loop_count">
         Number of times a loop has been detected on this port.
       </column>
+  </group>
+
+   <group title="port flap request">
+      <column name="port_flap">
+          If this value is set to <code>true</code>,by an application, this port will be flapped
+          and value will be reset to <code>false</code>
+          If this value is set to <code>false</code>, by an application no action wil be taken
+          If this value is empty, no action wil be taken
+          Default value is <code>false</code>.
+      </column>
+   </group>
+
+   <group title="port state override_request">
+      <column name="port_state_override" key="mclag">
+          Every application which uses this column defines its own key/value
+          to requesting port to be up or down
+          This port will be made down if any application request this port to
+          be made down by setting its key
+          Port will be made up only when all the applications request port to
+          be made up by setting their respctive keys.
+          Here MCLAG is application, which will set its key mclagd to request
+          for port state override.if If this value is set to <code>true</code>
+          port will be made down, If this value is set to <code>false</code>
+          port won't be made up unless every other application which are using
+          column set the value to false.
+      </column>
    </group>
   </table>
 
@@ -4906,7 +4932,7 @@
         Actor system ID is in the form of device priority (2 bytes) followed by
         device MAC address (6 bytes) encoded as string in which each byte value is
         separated by a colon.  Example:  00:08:00:02:82:1f:60:4a
-        Device priority range is 0 to 15.
+        Device priority range is 1 to 16.
         Default device priority value is <code>8</code>.
       </column>
       <column name="mclag_status" key="actor_port_id">
@@ -6126,15 +6152,15 @@
 
        <group title="MCLAG Keepalive timer configuration">
          <column name="keepalive_timers" key="hello_interval"
-           type='{"type": "integer", "minInteger": 1, "maxInteger": 30}'
-           emptyValue="30">
-           Keepalive hello interval in seconds. The default value is <code>30</code>.
+             type='{"type": "integer", "minInteger": 1, "maxInteger": 5}'
+             emptyValue="1">
+           Keepalive hello interval in seconds. The default value is <code>1</code>.
          </column>
          <column name="keepalive_timers" key="dead_interval"
-           type='{"type": "integer", "minInteger": 2, "maxInteger": 120}'
-           emptyValue="90">
+             type='{"type": "integer", "minInteger": 2, "maxInteger": 20}'
+             emptyValue="3">
            Configures the amount of time to wait for keepalive packets from a peer in seconds.
-           The default value is <code>90</code>.
+           The default value is <code>3</code>.
          </column>
        </group>
 
