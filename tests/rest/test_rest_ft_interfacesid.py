@@ -27,7 +27,7 @@ NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
 DATA = {"configuration": {"name": "bridge_normal", "type": "internal",
-                          "user_config":{"admin": "up"}}}
+                          "user_config": {"admin": "up"}}}
 
 
 @pytest.fixture

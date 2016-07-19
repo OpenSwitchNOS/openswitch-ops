@@ -173,6 +173,16 @@
             "max": 1
           }
         },
+        "timezone": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "db_version": {
           "category": "status",
           "type": {
@@ -1146,7 +1156,9 @@
                         "type": "uuid",
                         "refTable": "Port",
                         "refType" : "weak"
-                    }
+                    },
+                    "min": 0,
+                    "max": 1
                 }
             },
             "port_priority" : {
@@ -1182,6 +1194,7 @@
                       "set",
                         [
                           "Root",
+                          "Master",
                           "Designated",
                           "Alternate",
                           "Backup",
@@ -4245,6 +4258,32 @@
             "max": 1
           }
         },
+        "vlan_trunks": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VLAN",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": 4094
+          }
+        },
+        "vlan_tag": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VLAN",
+              "refType" : "weak"
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
         "vlan_mode": {
           "category": "configuration",
           "type": {
@@ -4504,8 +4543,7 @@
             "value": "string",
             "min": 0,
             "max": "unlimited"
-          },
-          "ephemeral": true
+          }
         },
         "bond_status": {
           "category": "status",
@@ -5257,8 +5295,7 @@
             },
             "min": 0,
             "max": 1
-          },
-          "ephemeral": true
+          }
         },
         "kernel_interface_ready": {
           "category": "status",
@@ -6948,6 +6985,19 @@
             }
           }
         },
+        "mac_vlan": {
+          "category": "status",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VLAN",
+              "refType" : "weak"
+            },
+            "min":0,
+            "max":1
+          }
+        },
         "from": {
           "category": "status",
           "type": {
@@ -6973,7 +7023,9 @@
               "type": "uuid",
               "refTable": "Port",
               "refType" : "weak"
-            }
+            },
+            "min": 0,
+            "max": 1
           }
         },
         "tunnel_key": {
@@ -7006,6 +7058,7 @@
         [
           "bridge",
           "vlan",
+          "mac_vlan",
           "from",
           "mac_addr"
         ]
@@ -9258,11 +9311,13 @@
       "indexes": [
         [
           "receiver_address",
-          "receiver_udp_port"
+          "receiver_udp_port",
+          "type",
+          "version"
         ]
       ],
 
-      "maxRows" : 10,
+      "maxRows" : 30,
       "isRoot" : true
     },
     "SNMPv3_User" : {

@@ -18,7 +18,7 @@
   - [Showing system temperature information](#showing-system-temperature-information)
   - [Showing system LED information](#showing-system-led-information)
   - [Showing system power-supply information](#showing-system-power-supply-information)
-  - [Showing system date information](#showing-system-date-information)
+  - [Showing system clock information](#showing-system-clock-information)
   - [Showing system cpu information using top](#showing-system-cpu-information-using-top)
   - [Showing system memory information using top](#showing-system-memory-information-using-top)
   - [Showing timezone information](#showing-timezone-information)
@@ -1047,13 +1047,13 @@ base-1         ok
 base-2         Input Fault
 ```
 
-### Showing system date information
+### Showing system clock information
 
 #### Syntax
-`show date`
+`show system clock`
 
 #### Description
-This command displays system date information. It shows system time in <<para>Day> <<para>Mon> <<para>Date> <<para>hh:mm:ss> <<para>timezone> <<para>year> format.
+This command displays system clock information. It shows system time in <<para>Day> <<para>Mon> <<para>Date> <<para>hh:mm:ss> <<para>timezone> <<para>year> format.
 
 #### Authority
 All users.
@@ -1063,7 +1063,7 @@ No parameters.
 
 #### Examples
 ```
-switch# show date
+switch# show system clock
   Wed Jun 22 18:39:48 UTC 2016
 switch#
 ```
