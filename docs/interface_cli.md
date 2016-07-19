@@ -53,7 +53,7 @@ ops-as5712# configure terminal
 ops-as5712(config)# interface 1
 ops-as5712(config-if)#
 ```
-### Enable an interface
+### Enable interface
 #### Syntax
 `no shutdown`
 #### Description
