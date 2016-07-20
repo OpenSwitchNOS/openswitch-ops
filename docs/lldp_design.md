@@ -14,7 +14,7 @@
     * [References](#references)
 
 # High-level design of LLDP
-LLDP is used by networking devices to advertise identities and capabilities at the link layer. The [LLDP daemon (lldpd)](/documents/dev/ops-lldpd/DESIGN) is responsible for sending and receiving LLDP advertisements over the switch interfaces and populating the neighbors discovered in the OVSDB Interface table. The daemon receives global LLDP configurations from System:other_config column in OVSDB and per interface configurations from Interface:other_config column.  The daemon is also responsible for maintaining global and per interface LLDP statistics and writing them to OVSDB.
+LLDP is used by networking devices to advertise identities and capabilities at the link layer. The [LLDP daemon (lldpd)](/documents/dev/ops-lldpd/DESIGN) is responsible for sending and receiving LLDP advertisements over the switch interfaces and populating the neighbors discovered in the OVSDB Interface table. The daemon receives global LLDP configurations from System:other_config column in OVSDB and per interface configurations from Interface:other_config column.  The daemon is also responsible for maintaining global and per interface LLDP statistics and writing them to OVSDB. When the device boots up LLDP is enabled by default.
 
 ## Design choices
 There were multiple open source choices for LLDP daemon like "lldpad" from http://open-lldp.org/, "ladvd" from https://github.com/sspans/ladvd and "lldpd" from http://vincentbernat.github.io/lldpd/. The "lldpd" implementation from http://vincentbernat.github.io/lldpd/ was selected due to the following considerations:

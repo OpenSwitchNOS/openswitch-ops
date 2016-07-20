@@ -36,7 +36,7 @@ All LLDP configuration commands except `lldp transmission` and `lldp reception` 
 #### Syntax
 `lldp enable`
 #### Description
-This command enables the LLDP (Link Layer Discovery Protocol) feature in the device.
+This command enables the LLDP (Link Layer Discovery Protocol) feature in the device. By default, lldp is enabled on the device.
 #### Authority
 All users.
 #### Parameters
