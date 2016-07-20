@@ -8310,6 +8310,19 @@
       <column name="priv_pass_phrase">The key to be used by privacy protocol.</column>
     </group>
   </table>
+  <table name="SNMPv3_Context">
+    <group title="configuration">
+      <column name="context_name">
+        context name that should contain alphanumeric characters.
+      </column>
+      <column name="vrf">
+        The VRF which want link to context ,The default is "none".
+      </column>
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings,which is mapped to context.
+      </column>
+     </group>
+  </table>
   <table name="ACL" title="Access Control List">
     <group title="Access Control List Configuration">
       <column name="name">
