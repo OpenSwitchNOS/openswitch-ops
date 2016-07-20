@@ -116,6 +116,8 @@
       <column name="vrfs">
       </column>
 
+      <column name="management_vrf">
+      </column>
       <column name="management_mac">
         Ethernet MAC address for the management interface port for this system.
       </column>
@@ -9043,7 +9045,21 @@
       </column>
       <column name="auth_pass_phrase">The key to be used by authentication protocol.</column>
       <column name="priv_pass_phrase">The key to be used by privacy protocol.</column>
+      <column name="snmp_context">The key to be used for refered the context.</column>
     </group>
+  </table>
+  <table name="SNMPv3_Context">
+    <group title="configuration">
+      <column name="context_name">
+        context name that should contain alphanumeric characters.
+      </column>
+      <column name="vrf">
+        The VRF which want link to context ,The default is "none".
+      </column>
+      <column name="community_name">
+        SNMPv1/SNMPv2c community strings,which is mapped to context.
+      </column>
+     </group>
   </table>
   <table name="ACL" title="Access Control List">
     <group title="Access Control List Configuration">

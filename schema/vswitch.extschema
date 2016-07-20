@@ -9419,7 +9419,7 @@
           }
         },
 
-        "priv_pass_phrase" : {
+       "priv_pass_phrase" : {
           "category" : "configuration" ,
           "type" : {
             "key" : {
@@ -9430,8 +9430,19 @@
             "min" : 0,
             "max" : 1
           }
+        },
+        "context_name": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "SNMPv3_Context",
+              "refType" : "weak_gc"
+            }
+          }
         }
-      },
+     },
       "maxRows" : 10,
       "indexes" : [
         [
@@ -9439,6 +9450,49 @@
         ]
       ],
       "isRoot" : true
+    },
+    "SNMPv3_Context" : {
+      "columns" : {
+        "name" : {
+          "category": "configuration",
+          "type" : {
+           "key" : {
+             "type" : "string",
+             "minLength" : 1,
+             "maxLength": 32
+           }
+          }
+        },
+        "vrf": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "VRF",
+              "refType" : "weak_gc"
+            }
+          },
+          "mutable": false
+        },
+        "community_name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1 ,
+              "maxLength": 32
+            }
+          }
+        }
+      },
+      "indexes": [
+        [
+          "name",
+          "vrf"
+        ]
+      ],
+      "isRoot": true
     },
     "ACL": {
       "columns": {
