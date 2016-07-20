@@ -353,6 +353,18 @@
             "max": 64
           }
         },
+        "tacacs_servers": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Tacacs_Server"
+             },
+            "min": 0,
+            "max": 64
+          }
+        },
         "ecmp_config": {
           "category": "configuration",
           "type": {
@@ -6480,6 +6492,66 @@
           "ip_address"
         ]
       ]
+    },
+    "Tacacs_Server": {
+      "columns": {
+        "ip_address": {
+          "category": "configuration",
+           "type": "string",
+           "mutable": false
+        },
+        "priority": {
+          "category": "configuration",
+           "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 64
+            }
+          }
+        },
+        "tcp_port": {
+          "category": "configuration",
+           "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 65535
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "passkey": {
+          "category": "configuration",
+           "type": {
+             "key": {
+               "type": "string",
+               "maxLength": 32
+             },
+             "min": 0,
+             "max": 1
+           }
+        },
+        "timeout": {
+          "category": "configuration",
+           "type": {
+            "key": {
+               "type": "integer",
+               "minInteger": 1,
+               "maxInteger": 60
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+      },
+      "indexes": [
+        [
+          "ip_address"
+        ]
+      ],
+      "maxRows": 64
     },
     "CLI_Alias": {
       "columns": {

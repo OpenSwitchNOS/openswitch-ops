@@ -875,6 +875,10 @@
         Specifies radius servers configuration. See the <ref table="Radius_Server"/>
         table for more information.
       </column>
+      <column name="tacacs_servers">
+        Specifies tacacs servers configuration. See the <ref table="Tacacs_Server"/>
+        table for more information.
+      </column>
       <column name="auto_provisioning_status" key="performed" type='{"type": "boolean"}' emptyValue="false">
         Specifies whether auto-provisioning was performed. False if not specified.
       </column>
@@ -6726,6 +6730,35 @@
           Specifies the number of retries to radius server if there is no response.
           Default retry value is 1.
       </column>
+  </table>
+
+  <table name="Tacacs_Server" title="Tacacs server configuration">
+      These tacacs+ servers are being used for authenticating when users
+      wants to login to the box.
+
+      <column name="ip_address">
+          IP address of the tacacs+ server configured.
+      </column>
+
+      <column name="priority">
+          Specifies the order in which tacacs+ servers are configured on the switch.
+      </column>
+
+      <column name="tcp_port" emptyValue="49">
+          Specifies the tcp port number for authentication. Default tcp port
+          number for authentication is 49.
+      </column>
+
+      <column name="passkey" emptyValue="testing123-1">
+          Specifies the passkey between tacacs+ client and tacacs+ server
+          for authentication. Default passkey is testing123-1.
+      </column>
+
+      <column name="timeout" emptyValue="5">
+          Specifies the timeout between authentication requests to tacacs+ server.
+          Default timeout is 5 seconds.
+      </column>
+
   </table>
 
   <table name="Manager" title="OVSDB management connection.">
