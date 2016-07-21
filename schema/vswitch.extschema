@@ -353,6 +353,18 @@
             "max": 64
           }
         },
+        "tacacs_servers": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Tacacs_Server"
+             },
+            "min": 0,
+            "max": 64
+          }
+        },
         "ecmp_config": {
           "category": "configuration",
           "type": {
@@ -532,6 +544,15 @@
                 "min": 0,
                 "max": 1
             }
+        },
+        "tacacs_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
         }
       },
       "isRoot": true,
@@ -951,6 +972,7 @@
                 [
                   "tftp",
                   "radius",
+                  "tacacs",
                   "all"
                 ]
               ]
@@ -6473,6 +6495,29 @@
             "min": 0,
             "max": 1
           }
+        },
+        "group_id": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "AAA_Server_Group",
+              "refType" : "weak"
+           },
+           "min":0,
+           "max":1
+          }
+        },
+        "group_priority": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 64
+            }
+          }
         }
       },
       "indexes": [
@@ -6480,6 +6525,135 @@
           "ip_address"
         ]
       ]
+    },
+    "Tacacs_Server": {
+      "columns": {
+        "ip_address": {
+          "category": "configuration",
+          "type": "string",
+          "mutable": false
+        },
+        "tcp_port": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 65535
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "passkey": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 63
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "timeout": {
+          "category": "configuration",
+           "type": {
+            "key": {
+               "type": "integer",
+               "minInteger": 1,
+               "maxInteger": 60
+            },
+            "min": 0,
+            "max": 1
+          }
+        },
+        "priority": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 64
+            }
+          }
+        },
+        "group_id": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "AAA_Server_Group",
+              "refType" : "weak"
+           },
+           "min":0,
+           "max":1
+          }
+        },
+        "group_priority": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 64
+            }
+          }
+        }
+      },
+      "indexes": [
+        [
+          "ip_address"
+        ]
+      ]
+    },
+    "AAA_Server_Group": {
+      "columns": {
+        "group_type": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "local",
+                  "radius",
+                  "tacacs+"
+                ]
+              ]
+            }
+          }
+        },
+        "group_name": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            }
+          }
+        },
+        "priority": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1,
+              "maxInteger": 130
+            }
+          }
+        }
+      },
+      "indexes": [
+        [
+          "group_name"
+        ]
+      ],
+      "isRoot": true,
+      "maxRows": 130
     },
     "CLI_Alias": {
       "columns": {

@@ -875,6 +875,10 @@
         Specifies radius servers configuration. See the <ref table="Radius_Server"/>
         table for more information.
       </column>
+      <column name="tacacs_servers">
+        Specifies tacacs+ server configuration. See the <ref table="Tacacs_Server"/>
+        table for more information.
+      </column>
       <column name="auto_provisioning_status" key="performed" type='{"type": "boolean"}' emptyValue="false">
         Specifies whether auto-provisioning was performed. False if not specified.
       </column>
@@ -1323,6 +1327,28 @@
         Default value is <code>5</code> seconds.
       </column>
     </group>
+
+    <group title="TACACS+ configuration">
+      <p>
+        Specifies the TACACS+ global configuration.
+      </p>
+      <column name="tacacs_config" key="timeout" type='{"type":"integer", "minInteger": 0, "maxInteger": 60}'>
+         Specifies the timeout interval that the switch waits for response
+         from the TACACS+ server before declaring a timeout failure.
+         Default timeout value is 5 seconds.
+      </column>
+
+      <column name="tacacs_config" key="tcp_port" type='{"type":"integer", "minInteger": 1, "maxInteger": 65535}'>
+          Specifies the tcp port number used for exchanging TACACS+ messages
+          between the client and server. Default tcp port number is 49.
+      </column>
+
+      <column name="tacacs_config" key="passkey" type='{"type":"string"}'>
+          Specifies the shared secret key between the TACACS+ client
+          and the TACACS+ server. Default passkey is testing123-1.
+      </column>
+    </group>
+
   </table>
 
   <table name="Subsystem" title="system board, daughter card, line card, etc.">
@@ -1708,6 +1734,12 @@
         Provides source interface for outgoing radius server packets. If not
         present, the key "all" provides the source interface for outgoing
         tftp packets. Otherwise regular routing rules take place.
+      </column>
+
+      <column name="source_interface" key="tacacs">
+        Provides source interface for outgoing TACACS+ packets to server. If not
+        present, the key "all" provides the source interface for outgoing
+        TACACS+ packets. Otherwise regular routing rules take place.
       </column>
 
       <column name="source_interface" key="all">
@@ -6726,8 +6758,90 @@
           Specifies the number of retries to radius server if there is no response.
           Default retry value is 1.
       </column>
+
+      <column name="group_id">
+          Specifies the RADIUS server-group that it belongs to.
+      </column>
+
+      <column name="group_priority">
+          Specifies the order in which RADIUS servers are configured
+          within the server-group that it belongs to.
+      </column>
+
   </table>
 
+  <table name="Tacacs_Server" title="Tacacs server configuration">
+      Contains list of Tacacs-plus servers configured for AAA
+
+      <column name="ip_address">
+          IPV4/IPV6 address or FQDN of the TACACS+ server
+      </column>
+
+      <column name="tcp_port" emptyValue="49">
+          Specifies the tcp port number used for exchanging TACACS+ messages
+          between the client and server. Default tcp port number is 49.
+      </column>
+
+      <column name="passkey" emptyValue="testing123-1">
+          Specifies the shared secret key between the TACACS+ client
+          and the TACACS+ server. Default passkey is testing123-1.
+      </column>
+
+      <column name="timeout" emptyValue="5">
+          Specifies the timeout interval that the switch waits for response
+          from the TACACS+ server before declaring a timeout failure.
+          Default timeout value is 5 seconds.
+      </column>
+
+      <column name="priority">
+          Specifies the default order in which TACACS+ servers are configured
+          on the switch.
+      </column>
+
+      <column name="group_id">
+          Specifies the TACACS+ server-group that it belongs to.
+      </column>
+
+      <column name="group_priority">
+          Specifies the order in which TACACS+ servers are configured
+          within the server-group that it belongs to.
+      </column>
+
+  </table>
+
+  <table name="AAA_Server_Group" title="AAA server-group configuration">
+      Contains list of RADIUS and TACACS+ server-groups comprising
+      a list of respective servers.
+
+      <column name="group_type">
+          Either local, radius or tacacs+
+          Group 0: local: Special group that contains no servers.
+                   More of a place-holder to capture the order to be followed for authentication
+          Group 1: radius: Default group that contains all RADIUS servers
+                   in the order in which they were configured.
+          Group 2: tacacs+: Default group that contains all TACACS+ servers
+                   in the order in which they were configured.
+          Group 3-130: User groups.
+                       A RADIUS user-group will contain RADIUS servers alone
+                       A TACACS+ user-group will contain TACACS+ servers alone
+      </column>
+
+      <column name="group_name">
+          Specifies the unique name of the server-group.
+          This can be max 32 bytes long.
+          It can comprise of a group family or a group-name.
+          Example:
+          group radius: A server group that consists of all defined RADIUS hosts
+          group tacacs+: A server group that consists of all defined TACACS+ hosts
+          group name: A RADIUS or a TACACS+ group consisting of a list of
+          all RADIUS or all TACACS+ servers respectively.
+      </column>
+
+      <column name="priority">
+          Specifies the order in which AAA server-groups need to be applied
+      </column>
+
+  </table>
   <table name="Manager" title="OVSDB management connection.">
     <p>
       Configuration for a database connection to an OpenSwitch database
