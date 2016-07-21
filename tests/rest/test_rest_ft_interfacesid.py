@@ -27,7 +27,7 @@ NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
 DATA = {"configuration": {"name": "bridge_normal", "type": "internal",
-                          "user_config":{"admin": "up"}}}
+                          "user_config": {"admin": "up"}}}
 
 
 @pytest.fixture
@@ -82,32 +82,6 @@ class QueryInterfacesId(OpsVsiTest):
         assert d['configuration']['name'] == 'bridge_normal', 'Failed in checking the \
             GET METHOD JSON response validation for Interface name'
         info('### Success in Rest GET system for Interface name ###\n')
-
-        status_code, response_data = execute_request(
-            self.url, "DELETE", json.dumps(DATA), self.SWITCH_IP, False,
-            xtra_header=self.cookie_header)
-
-        assert status_code == httplib.NO_CONTENT, ("Wrong status code %s " %
-                                                   status_code)
-        info('### Success in executing the rest command "DELETE" for url: ' +
-             self.url + ' ###\n')
-
-        info('### Success in executing the rest command \
-        "DELETE for url=/rest/v1/system/interfaces/bridge_normal" ###\n')
-
-        info('### Success in Rest DELETE Interfacesid ###\n')
-
-        status_code, response_data = execute_request(
-            self.url, "GET", None, self.SWITCH_IP, False,
-            xtra_header=self.cookie_header)
-
-        assert status_code == httplib.NOT_FOUND, ("Wrong status code %s " %
-                                                  status_code)
-
-        info('### Success in executing the rest command" "GET" as not \
-             expected for url: ' + self.url + ' ###\n')
-        info('### Success in Rest Checking http code 404 for GET method \
-             #once DELETED Interfacesid ###\n')
 
 
 class Test_interfaces_id:

@@ -102,7 +102,9 @@ Interface 1 is up
             0 input error                0 dropped
 
             0 CRC/FCS
-
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
  TX
 
             0 output packets             0 bytes
@@ -110,6 +112,9 @@ Interface 1 is up
             0 input error                0 dropped
 
             0 collision
+       L3:
+            ucast: 0 packets, 0 bytes
+            mcast: 0 packets, 0 bytes
 
 
 
@@ -128,15 +133,11 @@ Interface 1 is up
  MTU 0
 
  RX
-
-          ucast: 10 packets, 750 bytes
-
+          ucast: 0 packets, 0 bytes
           mcast: 0 packets, 0 bytes
 
  TX
-
-          ucast: 10 packets, 750 bytes
-
+          ucast: 0 packets, 0 bytes
           mcast: 0 packets, 0 bytes
 
 
@@ -354,7 +355,6 @@ ops-as5712#
 ## ECMP
 
 ECMP capability in OpenSwitch is currently available for IPv4 and IPv6 routes. ECMP is enabled by default.
-
 
 
 By default, ECMP uses four tuple in the hash calculation:
