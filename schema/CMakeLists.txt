@@ -1,51 +1,16 @@
 add_custom_target(ovsschema ALL)
 
-# Vendors might provide a customized schema processing process ...
-include("vendor-extensions/build.cmake" OPTIONAL
-	RESULT_VARIABLE has_vendor_extensions)
+include("build.cmake")
 
-# ... and if they don't, fall back to the common one.
-if(has_vendor_extensions STREQUAL "NOTFOUND")
-	include("build.cmake")
-endif()
+# Common definitions
+set(unified_schema "${CMAKE_CURRENT_BINARY_DIR}/openswitch.extschema.json")
 
-# Process extschema files
+# Generate database schemas from master file
+set(master_schema_file ${CMAKE_CURRENT_SOURCE_DIR}/master.extschema.json)
+generate_database_schema(${master_schema_file})
 
-file(GLOB extschema
-	RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/*.extschema"
-)
+# Process the database schemas
+add_subdirectory(dbschemas)
 
-foreach(fn ${extschema})
-	message(STATUS "Process file: ${fn}")
-	generate_ovsschema(${fn})
-endforeach(fn)
-
-# Process ovsschema files
-
-file(GLOB ovsschema
-	RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/*.ovsschema"
-)
-
-# If we are building in-source, the .ovsschema file might be a leftover
-# from a previous run. Remove generated files from ovsschema list.
-foreach(fn ${extschema})
-	string(REGEX REPLACE "\\.extschema$" ".ovsschema" fn ${fn})
-	list(REMOVE_ITEM ovsschema ${fn})
-endforeach(fn)
-
-# Install all the ovsschema files and their documentation if it exists
-foreach(fn ${ovsschema})
-	message(STATUS "Existing file: ${fn}")
-	process_ovsschema(${fn})
-endforeach(fn)
-
-# Process header files
-
-file(GLOB idl_headers
-	RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-)
-
-install(FILES ${idl_headers} DESTINATION include)
+# Process the legacy header files
+add_subdirectory(legacy)
