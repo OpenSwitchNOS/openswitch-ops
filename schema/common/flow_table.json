@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "common/flow_table.json#",
+  "name": "OpenSwitch",
+  "version": "0.1.8",
+  "tables": {
+    "Flow_Table": {
+      "columns": {
+        "name": {
+          "type": {
+            "key": "string",
+            "min": 0,
+            "max": 1
+          },
+          "doc": [
+            "The table's name.  Set this column to change the name that controllers will",
+            "receive when they request table statistics, e.g. `ovs-ofctl dump-tables`.  The",
+            "name does not affect switch behavior."
+          ]
+        },
+        "flow_limit": {
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "min": 0,
+            "max": 1
+          },
+          "doc": [
+            "If set, limits the number of flows that may be added to the table. OpenSwitch",
+            "may limit the number of flows in a table for other reasons, e.g. due to hardware",
+            "limitations or for resource availability or performance reasons."
+          ],
+          "group": "/Flow_Table/Eviction Policy"
+        },
+        "overflow_policy": {
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "refuse",
+                "evict"
+              ]
+            },
+            "min": 0,
+            "max": 1
+          },
+          "doc": [
+            "Controls the switch's behavior when an OpenFlow flow table modification request",
+            "would add flows in excess of [flow_limit](Flow_Table.flow_limit).  The supported",
+            "values are:",
+            "",
+            "+ __`refuse`__:   Refuse to add the flow or flows.  This is also the default",
+            "policy when [overflow_policy](Flow_Table.overflow_policy) is unset.",
+            "+ __`evict`__:   Delete a flow chosen according to the algorithm described",
+            "above."
+          ],
+          "group": "/Flow_Table/Eviction Policy"
+        },
+        "groups": {
+          "type": {
+            "key": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "doc": [
+            "When [overflow_policy](Flow_Table.overflow_policy) is `evict`, this controls how",
+            "flows are chosen for eviction when the flow table would otherwise exceed",
+            "[flow_limit](Flow_Table.flow_limit) flows.  Its value is a set of NXM fields or",
+            "sub-fields, each of which takes one of the forms `_field_[]` or",
+            "`_field_[_start_.._end_]`, e.g. `NXM_OF_IN_PORT[]`.  Please see `nicira-ext.h`",
+            "for a complete list of NXM field names.",
+            "",
+            "OpenSwitch ignores any invalid or unknown field specifications.",
+            "",
+            "+ When eviction is not enabled, via",
+            "[overflow_policy](Flow_Table.overflow_policy) or an OpenFlow 1.4",
+            "+ ``table mod,'' this column has no effect."
+          ],
+          "group": "/Flow_Table/Eviction Policy"
+        },
+        "external_ids": {
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "group": "/Flow_Table/Common Columns"
+        }
+      },
+      "title": "OpenFlow table configuration",
+      "doc": [
+        "Configuration for a particular OpenFlow table."
+      ]
+    }
+  }
+}

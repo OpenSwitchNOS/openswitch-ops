@@ -657,7 +657,7 @@ enum ovsrec_port_forwarding_state_proto_e {
 /* DHCPv6 Relay Configuration Keys */
 #define SYSTEM_DHCP_CONFIG_MAP_V6RELAY_ENABLED    "v6relay_enabled"
 #define SYSTEM_DHCP_CONFIG_MAP_V6RELAY_OPTION79_ENABLED                \
-                                       "v6relay_option79_enabled"
+	                               "v6relay_option79_enabled"
 
 /* lacp global configuration parameters */
 #define SYSTEM_LACP_CONFIG_MAP_LACP_SYSTEM_ID        "lacp-system-id"
