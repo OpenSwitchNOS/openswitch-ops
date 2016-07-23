@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "common/led.json#",
+  "name": "OpenSwitch",
+  "version": "0.1.8",
+  "tables": {
+    "LED": {
+      "columns": {
+        "id": {
+          "category": "status",
+          "type": "string",
+          "mutable": false,
+          "doc": [
+            "Logical name of the LED."
+          ],
+          "group": "/LED/Configuration"
+        },
+        "state": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "off",
+                "on",
+                "flashing"
+              ]
+            }
+          },
+          "doc": [
+            "State of the LED controls the lighting behavior."
+          ],
+          "group": "/LED/Configuration"
+        },
+        "status": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "uninitialized",
+                "ok",
+                "fault"
+              ]
+            },
+            "min": 0,
+            "max": 1
+          },
+          "ephemeral": true,
+          "doc": [
+            "Status of the LED is the current operational status."
+          ],
+          "group": "/LED/Status"
+        },
+        "hw_config": {
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "other_config": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "group": "/LED/Common Columns"
+        },
+        "external_ids": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          },
+          "group": "/LED/Common Columns"
+        }
+      },
+      "indexes": [
+        [
+          "id"
+        ]
+      ],
+      "title": "LEDs on various subsystems"
+    }
+  }
+}
