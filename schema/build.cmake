@@ -1,44 +1,65 @@
-# The functions in this file are called from the CMakeLists.txt file and
-# provide the regular workflow for the schema: sanitize the file to
-# remove the extensions and install them in the expected directory.
+# This function will process the master schema file to generate
+# the unified schema file, the extended schema file, and the IDL
+# constants files for C
+function(generate_database_schema MASTER_SCHEMA_FN)
+	set(unified_generator "${CMAKE_SOURCE_DIR}/schema/bin/unified_generator")
+	set(schemas_generator "${CMAKE_SOURCE_DIR}/schema/bin/schemas_generator")
 
-function(install_ovsschema OVSSCHEMA_PATH)
-	get_filename_component(ovsschema_name ${OVSSCHEMA_PATH} NAME_WE)
-	set(docschema_path "${CMAKE_CURRENT_SOURCE_DIR}/${ovsschema_name}.xml")
+	set(vswitch_extschema "${CMAKE_CURRENT_BINARY_DIR}/vswitch.extschema")
+	set(vswitch_ovsschema "${CMAKE_CURRENT_BINARY_DIR}/vswitch.ovsschema")
+	set(vswitch_xml "${CMAKE_CURRENT_BINARY_DIR}/vswitch.xml")
+	set(empty_values_header "${CMAKE_CURRENT_BINARY_DIR}/ops-empty-values.h")
+	set(metaschema "${CMAKE_CURRENT_SOURCE_DIR}/openswitch.metaschema.json")
 
-	install(FILES ${OVSSCHEMA_PATH} DESTINATION share/openvswitch)
+	file(GLOB python_scripts
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/*.py
+	)
 
-	if(EXISTS ${docschema_path})
-		install(FILES ${docschema_path} DESTINATION share/openvswitch)
-	endif()
-endfunction(install_ovsschema)
-
-# This function will process the given OVS schema file.
-function(process_ovsschema OVSSCHEMA_FN)
-	install_ovsschema(${OVSSCHEMA_FN})
-endfunction(process_ovsschema)
-
-# This function will process the given extended OVS schema file
-# to generate the corresponding OVS schema file.
-function(generate_ovsschema EXTSCHEMA_FN)
-	set(sanitize ${CMAKE_SOURCE_DIR}/schema/sanitize.py)
-
-	# OVS schema
-	string(REGEX REPLACE "\\.extschema$" ".ovsschema" ovsschema_fn ${EXTSCHEMA_FN})
-	set(extschema_path ${CMAKE_CURRENT_SOURCE_DIR}/${EXTSCHEMA_FN})
-	set(ovsschema_path ${CMAKE_CURRENT_BINARY_DIR}/${ovsschema_fn})
-	string(REGEX REPLACE "/" "__" target ${ovsschema_path})
+	file(GLOB json_schemas
+		${CMAKE_CURRENT_SOURCE_DIR}/common/*.json
+		${CMAKE_CURRENT_SOURCE_DIR}/docs/*.json
+	)
 
 	add_custom_command(
-		OUTPUT ${ovsschema_path}
-		COMMAND ${sanitize} ${extschema_path} ${ovsschema_path}
-		MAIN_DEPENDENCY ${extschema_path}
-		DEPENDS ${sanitize}
+		OUTPUT ${unified_schema}
+		COMMAND ${unified_generator}
+			${MASTER_SCHEMA_FN}
+			${unified_schema}
+		MAIN_DEPENDENCY ${MASTER_SCHEMA_FN}
+		DEPENDS ${unified_generator} ${json_schemas}
 	)
-	add_custom_target(generate-${target} DEPENDS ${ovsschema_path})
-	add_dependencies(ovsschema generate-${target})
 
-	# Install
-	install(FILES ${extschema_path} DESTINATION share/openvswitch)
-	install_ovsschema(${ovsschema_path})
-endfunction(generate_ovsschema)
+	add_custom_target(db_schema DEPENDS ${unified_schema})
+	add_dependencies(ovsschema db_schema)
+
+	add_custom_command(
+		OUTPUT ${vswitch_extschema}
+			${vswitch_ovsschema}
+			${vswitch_xml}
+			${empty_values_header}
+		COMMAND ${schemas_generator}
+			${unified_schema}
+			--extschema ${vswitch_extschema}
+			--ovsschema ${vswitch_ovsschema}
+			--xml ${vswitch_xml}
+			--metaschema ${metaschema}
+			--empty_values_header ${empty_values_header}
+			MAIN_DEPENDENCY ${unified_schema}
+			DEPENDS ${schemas_generator} ${python_scripts} ${metaschema}
+	)
+
+	add_custom_target(extschema
+		DEPENDS ${vswitch_extschema}
+			${vswitch_ovsschema}
+			${vswitch_xml}
+			${empty_values_header}
+	)
+	add_dependencies(ovsschema extschema)
+
+	install(FILES ${empty_values_header} DESTINATION include)
+	install(FILES ${unified_schema} DESTINATION share/openvswitch)
+	install(FILES ${vswitch_extschema} DESTINATION share/openvswitch)
+	install(FILES ${vswitch_ovsschema} DESTINATION share/openvswitch)
+	install(FILES ${vswitch_xml} DESTINATION share/openvswitch)
+
+endfunction(generate_database_schema)

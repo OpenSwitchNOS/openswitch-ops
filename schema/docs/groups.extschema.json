@@ -1,0 +1,694 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "groups.extschema.json#",
+  "name": "OpenSwitch",
+  "version": "0.1.8",
+  "groups": {
+    "/Power_supply/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Bridge/Bridge Status": {
+      "doc": [
+        "Status information about bridges."
+      ]
+    },
+    "/System/BroadView configuration": {
+      "doc": [
+        "The parameters in this group are used to configure BroadView agent. Parameter",
+        "enabled is used to enable/disable BroadView. Agent sends asynch reports to the",
+        "application at client_ip and client_port. Parameter agent_port is the port",
+        "number on which agent listens for client connections. The communication on agent",
+        "port is of request - response style."
+      ]
+    },
+    "/BGP_Neighbor/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Mirror/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/System/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Route/Protocol Specific": {
+      "doc": [
+        "The `protocol_specific` column contains key-value pairs that are used by the",
+        "owner of the entry. Example: If BGP created an entry BGP can populate these key-",
+        "value pairs for its internal use. These values may not add value to other",
+        "daemons"
+      ]
+    },
+    "/VRF/Source Interface Selection Configurations": {
+      "doc": [
+        "In case same key exists in \"source_interface\", \"source_ip\" columns, later gets",
+        "the priority."
+      ]
+    },
+    "/Bridge/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Interface/Tunnel Options": {
+      "doc": [
+        "These options apply to interfaces with [type](Interface.type) of `vxlan`.",
+        "",
+        "Each tunnel must be uniquely identified by the combination of",
+        "[type](Interface.type), [remote_ip](Interface.options.remote_ip),",
+        "[local_ip](Interface.options.local_ip), and [in_key](Interface.options.in_key).",
+        "If two ports are defined that are the same except one has an optional identifier",
+        "and the other does not, the more specific one is matched first.",
+        "[in_key](Interface.options.in_key) is considered more specific than",
+        "[local_ip](Interface.options.local_ip) if a port defines one and another port",
+        "defines the other."
+      ]
+    },
+    "/Interface/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/VRRP_Track_Entity/Status": {
+      "doc": [
+        "These are status parameters for a particular VRRP track entity."
+      ]
+    },
+    "/Subsystem/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/System/COPP Statistics": {
+      "doc": [
+        "Contains key-value pairs that report overall Control Plane Policing statistics",
+        "regarding packets/bytes delivered to the management CPU or packets/bytes dropped",
+        "due to excessive rate."
+      ]
+    },
+    "/Q_Profile/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Port/QoS configuration": {
+      "doc": [
+        "Specifies QoS (Quality of Service) port configuration options."
+      ]
+    },
+    "/NTP_Association/NTP Association Status": {
+      "doc": [
+        "Status information about NTP associations. For more info refer to",
+        "`http://doc.ntp.org/4.2.6p5/debug.html`"
+      ]
+    },
+    "/Manager/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/CLI_Alias/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/BGP_Route/Path attributes": {
+      "doc": [
+        "The `path_attributes` column contains key-value pairs that represent route",
+        "attributes."
+      ]
+    },
+    "/Q_Profile_Entry/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Interface/Module Information": {
+      "doc": [
+        "Information about the pluggable module inserted into the physical interface",
+        "socket."
+      ]
+    },
+    "/VRRP/Status": {
+      "doc": [
+        "VRRP group status items."
+      ]
+    },
+    "/VLAN/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/BGP_Neighbor/BGP Neighbor Statistics": {
+      "doc": [
+        "The `statistics` column contains various counters about this BGP neighbor."
+      ]
+    },
+    "/Interface/User Configuration": {
+      "doc": [
+        "The following fields are meant to be configured by the user. It represents the",
+        "configuration of the interface in the bridge."
+      ]
+    },
+    "/Port/L3 Configuration/Port level OSPFv2 Configurations": {
+      "doc": [
+        "The \"Port\" level OSPFv2 Routing Configurations."
+      ]
+    },
+    "/QoS_DSCP_Map_Entry/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Temp_sensor/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/MAC/status": {
+      "doc": [
+        "This column specifies the status of this entry in the table."
+      ]
+    },
+    "/MSTP_Instance/Status": {
+      "doc": [
+        "These are status parameters for a particular MSTP instance. These values will be",
+        "calculated at the time of protocol initialization."
+      ]
+    },
+    "/LED/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/System/Version Reporting": {
+      "doc": [
+        "These columns report the types and versions of the hardware and software running",
+        "OpenSwitch.  We recommend in general that software should test whether specific",
+        "features are supported instead of relying on version number checks.  These",
+        "values are primarily intended for reporting to human administrators."
+      ]
+    },
+    "/System/NTP configuration": {
+      "doc": [
+        "Specifies the NTP global configuration."
+      ]
+    },
+    "/Flow_Table/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Controller/Asynchronous Messages/Controller Rate Limiting/Controller Rate Limiting Statistics": {
+      "doc": [
+        "These values report the effects of rate limiting.  Their values are relative to",
+        "establishment of the most recent OpenFlow connection, or since rate limiting was",
+        "enabled, whichever happened more recently.  Each consists of two values, one",
+        "with `TYPE` replaced by `miss` for rate limiting flow table misses, and the",
+        "other with `TYPE` replaced by `action` for rate limiting packets sent by",
+        "OpenFlow actions.",
+        "",
+        "These statistics are reported only when controller rate limiting is enabled."
+      ]
+    },
+    "/Controller/Connection Parameters": {
+      "doc": [
+        "Additional configuration for a connection between the controller and the",
+        "OpenSwitch."
+      ]
+    },
+    "/Port/Port Statistics": {
+      "doc": [
+        "Key-value pairs that report port statistics.  The update period is controlled by",
+        "[stats-update-interval](System.other_config.stats-update-interval) in the",
+        "[System](System) table."
+      ]
+    },
+    "/Port/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/ACL_Entry/ACL L4 Port Configuration": {
+      "doc": [
+        "L4 Port: specifies the IPv4 L4 port to be used as the minimum value.  It is used",
+        "in conjunction with src/dst_l4_port_max and src/dst_l4_port_range_reverse to",
+        "determine the desired L4 port functionality:  Applicable to TCP and UDP",
+        "protocols."
+      ]
+    },
+    "/Manager/Connection Parameters": {
+      "doc": [
+        "Additional configuration for a connection between the manager and the OpenSwitch",
+        "Database."
+      ]
+    },
+    "/Interface/Interface Status": {
+      "doc": [
+        "Status information about interfaces attached to bridges, updated every 5",
+        "seconds.  Not all interfaces have all of these properties; virtual interfaces",
+        "don't have a link speed, for example.  Non-applicable columns will have empty",
+        "values."
+      ]
+    },
+    "/System/Database Configuration": {
+      "doc": [
+        "These columns primarily configure the OpenSwitch database (`ovsdb-server`), not",
+        "the OpenSwitch switch (`pswitchd`).  The OVSDB database also uses the",
+        "[ssl](System.ssl) settings.",
+        "",
+        "The OpenSwitch switch does read the database configuration to determine remote",
+        "IP addresses to which in-band control should apply."
+      ]
+    },
+    "/Mirror/Mirror Session Statistics": {
+      "doc": [
+        "Key-value pairs that report mirror statistics.  The counts are reset to zero",
+        "whenever the operation state transitions to active. The update period is",
+        "controlled by [stats-update-interval](System.other_config.stats-update-interval)",
+        "in table [System](System). No counts may be available initally until the first",
+        "update period has elasped.  If any key-value pairs remains missing, the hardware",
+        "does not support that count."
+      ]
+    },
+    "/Controller/Additional In-Band Configuration": {
+      "doc": [
+        "These values are considered only in in-band control mode (see",
+        "[connection_mode](Controller.connection_mode)).",
+        "",
+        "When multiple controllers are configured on a single bridge, there should be",
+        "only one set of unique values in these columns.  If different values are set for",
+        "these columns in different controllers, the effect is unspecified."
+      ]
+    },
+    "/System/QoS configuration": {
+      "doc": [
+        "Specifies QoS (Quality of Service) configuration options that are global or are",
+        "the configured default to use if no per-port override has been specified."
+      ]
+    },
+    "/Controller/Asynchronous Messages": {
+      "doc": [
+        "OpenFlow switches send certain messages to controllers spontanenously, that is,",
+        "not in response to any request from the controller.  These messages are called",
+        "``asynchronous messages.''  These columns allow asynchronous messages to be",
+        "limited or disabled to ensure the best use of network resources."
+      ]
+    },
+    "/Power_supply/Status": {
+      "doc": [
+        "If the PSU does not have a means to obtain information through software to",
+        "populate a field in a Status column, then that field will remain blank."
+      ]
+    },
+    "/Port/DHCP-Relay Statistics": {
+      "doc": [
+        "DHCP-Relay statistics counters for both IPv4 and IPv6. The update period is",
+        "controlled by [stats-update-interval](System.other_config.stats-update-interval)",
+        "in [System](System). If certain key is missing, then the assummed counter value",
+        "is 0."
+      ]
+    },
+    "/Port/Hardware Port Configuration": {
+      "doc": [
+        "The following fields are not meant to be configured by the user, but rather by",
+        "`portd` daemon that is responsible to consider user configuration and business",
+        "logic in order to determine hardware configuration."
+      ]
+    },
+    "/Port/Bonding Configuration": {
+      "doc": [
+        "A port that has more than one interface is a ``bonded port.'' Bonding allows for",
+        "load balancing and fail-over.",
+        "",
+        "The following modes (bond_mode) require the upstream switch to support 802.3ad",
+        "with successful LACP negotiation.",
+        "",
+        "These columns apply only to bonded ports.  Their values are otherwise ignored."
+      ]
+    },
+    "/BGP_Router/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Controller/Asynchronous Messages/Controller Rate Limiting": {
+      "doc": [
+        "A switch can forward packets to a controller over the OpenFlow protocol.",
+        "Forwarding packets this way at too high a rate can overwhelm a controller,",
+        "frustrate use of the OpenFlow connection for other purposes, increase the",
+        "latency of flow setup, and use an unreasonable amount of bandwidth.  Therefore,",
+        "OpenSwitch supports limiting the rate of packet forwarding to a controller.",
+        "",
+        "There are two main reasons in OpenFlow for a packet to be sent to a controller:",
+        "either the packet ``misses'' in the flow table, that is, there is no matching",
+        "flow, or a flow table action says to send the packet to the controller.",
+        "OpenSwitch limits the rate of each kind of packet separately at the configured",
+        "rate.  Therefore, the actual rate that packets are sent to the controller can be",
+        "up to twice the configured rate, when packets are sent for both reasons.",
+        "",
+        "This feature is specific to forwarding packets over an OpenFlow connection.  It",
+        "is not general-purpose QoS.  See the [QoS](QoS) table for quality of service",
+        "configuration."
+      ]
+    },
+    "/QoS_DSCP_Map_Entry/Hardware Default": {
+      "doc": [
+        "The key-value pairs document the hardware defaults for configuration columns in",
+        "this row."
+      ]
+    },
+    "/Flow_Table/Eviction Policy": {
+      "doc": [
+        "OpenSwitch supports limiting the number of flows that may be installed in a flow",
+        "table, via the [flow_limit](Flow_Table.flow_limit) column. When adding a flow",
+        "would exceed this limit, by default OpenSwitch reports an error, but there are",
+        "two ways to configure OpenSwitch to instead delete (``evict'') a flow to make",
+        "room for the new one:",
+        "",
+        "+ Set the [overflow_policy](Flow_Table.overflow_policy) column to `evict`.",
+        "+ Send an OpenFlow 1.4",
+        "+ ``table mod request'' to enable eviction for the flow table (e.g. `ovs-ofctl",
+        "-O OpenFlow14 mod-table br0 0 evict` to enable eviction on flow table 0 of",
+        "bridge `br0`).",
+        "",
+        "When a flow must be evicted due to overflow, the flow to evict is chosen through",
+        "an approximation of the following algorithm.  This algorithm is used regardless",
+        "of how eviction was enabled:",
+        "",
+        "1.  Divide the flows in the table into groups based on the values of the fields",
+        "or subfields specified in the [groups](Flow_Table.groups) column, so that all of",
+        "the flows in a given group have the same values for those fields.  If a flow",
+        "does not specify a given field, that field's value is treated as 0.  If",
+        "[groups](Flow_Table.groups) is empty, then all of the flows in the flow table",
+        "are treated as a single group.",
+        "1.  Consider the flows in the largest group, that is, the group that contains",
+        "the greatest number of flows.  If two or more groups all have the same largest",
+        "number of flows, consider the flows in all of those groups.",
+        "1.  If the flows under consideration have different importance values, eliminate",
+        "from consideration any flows except those with the lowest importance.",
+        "(``Importance,'' a 16-bit integer value attached to each flow, was introduced in",
+        "OpenFlow",
+        "1.4.  Flows inserted with older versions of OpenFlow always have an importance",
+        "of 0.)",
+        "1.  Among the flows under consideration, choose the flow that expires soonest",
+        "for eviction.",
+        "",
+        "The eviction process only considers flows that have an idle timeout or a hard",
+        "timeout.  That is, eviction never deletes permanent flows. (Permanent flows do",
+        "count against [flow_limit](Flow_Table.flow_limit).)"
+      ]
+    },
+    "/Route_Map/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Nexthop/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Port/Bonding Configuration/LACP Configuration": {
+      "doc": [
+        "LACP, the Link Aggregation Control Protocol, is an IEEE standard that allows",
+        "switches to automatically detect that they are connected by multiple links and",
+        "aggregate across those links.  These settings control LACP behavior."
+      ]
+    },
+    "/VLAN/ACL Configuration": {
+      "doc": [
+        "ACL applied to VLANs."
+      ]
+    },
+    "/System/Statistics": {
+      "doc": [
+        "The `statistics` column contains key-value pairs that report statistics about a",
+        "system running OpenSwitch.  These are updated periodically (by default, every 5",
+        "seconds).  Key-value pairs that cannot be determined or that do not apply to a",
+        "platform are omitted."
+      ]
+    },
+    "/Controller/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/BGP_Router/Configuration": {
+      "doc": [
+        "BGP_router includes all bgp config related information. The entries are created",
+        "on per asn basis."
+      ]
+    },
+    "/ACL/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Bridge/MSTP Status": {
+      "doc": [
+        "MSTP global status for all MSTIs."
+      ]
+    },
+    "/Prefix_List_Entry/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/MSTP_Instance_Port/Status": {
+      "doc": [
+        "These are status parameters for the port. These values will be calculated at the",
+        "time of protocol initialization."
+      ]
+    },
+    "/Fan/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/VLAN/Internal VLAN Config": {
+      "doc": [
+        "Information about how this VLAN is used internally by the system. VLAN could be",
+        "used for L3 interface, sflow, etc."
+      ]
+    },
+    "/Interface/Hardware Interface Information": {
+      "doc": [
+        "The following fields describes the hardware information of",
+        "[Interface](Interface). These values do not change through the life of the",
+        "system."
+      ]
+    },
+    "/System/Loop-protect Configuration": {
+      "doc": [
+        "Contains global configuration for the Loop-protect feature."
+      ]
+    },
+    "/VRRP/Statistics": {
+      "doc": [
+        "Various statistics related to this VRRP group (or VR instance)."
+      ]
+    },
+    "/Bridge/MSTP Configurations": {
+      "doc": [
+        "MSTP global configurations for all MSTIs."
+      ]
+    },
+    "/Queue/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Interface/Core Features/OpenFlow Port Number": {
+      "doc": [
+        "When a client adds a new interface, OpenSwitch chooses an OpenFlow port number",
+        "for the new port.  If the client that adds the port fills in",
+        "[ofport_request](Interface.ofport_request), then OpenSwitch tries to use its",
+        "value as the OpenFlow port number.  Otherwise, or if the requested port number",
+        "is already in use or cannot be used for another reason, OpenSwitch automatically",
+        "assigns a free port number.  Regardless of how the port number was obtained,",
+        "OpenSwitch then reports in [ofport](Interface.ofport) the port number actually",
+        "assigned.",
+        "",
+        "OpenSwitch limits the port numbers that it automatically assigns to the range 1",
+        "through 32,767, inclusive.  Controllers therefore have free use of ports 32,768",
+        "and up."
+      ]
+    },
+    "/Prefix_List/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/QoS_COS_Map_Entry/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/QoS_COS_Map_Entry/Hardware Default": {
+      "doc": [
+        "The key-value pairs document the hardware defaults for configuration columns in",
+        "this row."
+      ]
+    },
+    "/VRF/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Mirror/Mirroring Source(s) Configuration": {
+      "doc": [
+        "To be selected for mirroring, a given packet must enter or leave the bridge",
+        "through a selected port.  If a source port is in both the select_src_port and",
+        "select_dst_port sets, then both transmitted and received packets will be",
+        "mirrored."
+      ]
+    },
+    "/Port/ACL Configuration": {
+      "doc": [
+        "ACL applied to ports."
+      ]
+    },
+    "/Nexthop/Status": {
+      "doc": [
+        "Status information to indicate the current state of the nexthop."
+      ]
+    },
+    "/VLAN/ACL Status": {
+      "doc": [
+        "Status of applied ACLs and ACL statistics per VLAN."
+      ]
+    },
+    "/MSTP_Common_Instance_Port/Status": {
+      "doc": [
+        "These are status parameters for the common instance. These values will be",
+        "calculated from the time of protocol initialization."
+      ]
+    },
+    "/Interface/Hardware Interface Configuration": {
+      "doc": [
+        "The following fields are not meant to be configured by the user, but rather by",
+        "`intfd` daemon that is responsible to consider user configuration or the port",
+        "admin_state configuration and business logic in order to determine hardware",
+        "configuration. When port associated with the interface is configured to down the",
+        "hardware configuration is forced to down."
+      ]
+    },
+    "/Interface/Statistics": {
+      "doc": [
+        "Key-value pairs that report interface statistics.  The current implementation",
+        "updates these counters periodically.  The update period is controlled by [stats-",
+        "update-interval](System.other_config.stats-update-interval) in the",
+        "[System](System) table.",
+        "",
+        "If an interface does not support a given statistic, then that pair is omitted."
+      ]
+    },
+    "/SSL/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Port/Port Status": {
+      "doc": [
+        "Status information about ports attached to bridges."
+      ]
+    },
+    "/System/ECMP configuration": {
+      "doc": [
+        "Specifies the various ECMP (Equal Cost Multi-Path) configuration options."
+      ]
+    },
+    "/Route_Map_Entry/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Port/ACL Status": {
+      "doc": [
+        "Status of applied ACLs and ACLs statistics per port."
+      ]
+    },
+    "/Port/L3 Configuration/Virtual Router Configurations": {
+      "doc": [
+        "The \"Port\" level VRRP group Configurations."
+      ]
+    },
+    "/BGP_Neighbor/BGP Neighbor or Peer group Status Info": {
+      "doc": [
+        "The `status` column contains one or more informational entries indicating",
+        "various status values for this BGP neighbor."
+      ]
+    },
+    "/QoS/Common Columns": {
+      "doc": [
+        "The overall purpose of these columns is described under `Common Columns` at the",
+        "beginning of this document."
+      ]
+    },
+    "/Port/VLAN Configuration": {
+      "doc": [
+        "Bridge ports support the following types of VLAN configuration:",
+        "",
+        "+ __trunk__:    A trunk port carries packets on one or more VLANs specified in",
+        "the [trunks](Port.trunks) column (or all VLANs defined in [VLAN](VLAN) table if",
+        "trunks is empty or not specified). A packet that ingresses on a trunk port is in",
+        "the VLAN specified in its 802.1Q header, or VLAN 1 if the packet has no 802.1Q",
+        "header.  A packet that egresses through a trunk port will have an 802.1Q header",
+        "if it has a nonzero VLAN ID.    Any packet that ingresses on a trunk port tagged",
+        "with a VLAN that the port does not trunk is dropped.",
+        "+ __access__:    An access port carries packets on exactly one VLAN specified in",
+        "the [tag](Port.tag) column.  Packets egressing on an access port have no 802.1Q",
+        "header.    Any packet with an 802.1Q header with a nonzero VLAN ID that",
+        "ingresses on an access port is dropped, regardless of whether the VLAN ID in the",
+        "header is the access port's VLAN ID.",
+        "+ __native-tagged__:   A native-tagged port resembles a trunk port, with the",
+        "exception that a packet without an 802.1Q header that ingresses on a native-",
+        "tagged port is in the ``native VLAN'' (specified in the [tag](Port.tag) column).",
+        "+ __native-untagged__:   A native-untagged port resembles a native-tagged port,",
+        "with the exception that a packet that egresses on a native-untagged port in the",
+        "native VLAN will not have an 802.1Q header.",
+        "",
+        "A packet will only egress through bridge ports that carry the VLAN of the",
+        "packet, as described by the rules above."
+      ]
+    }
+  }
+}
