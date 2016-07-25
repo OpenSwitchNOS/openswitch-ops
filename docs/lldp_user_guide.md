@@ -1,15 +1,16 @@
-LLDP
+LLDP User Guide
 ======
 
-## Contents
-- [Contents](#contents)
+ ## Contents
+
+
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Configuring LLDP](#configuring-lldp)
 	- [Setting up the basic configuration](#setting-up-the-basic-configuration)
 	- [Setting up optional configurations](#setting-up-optional-configurations)
 	- [Verifying the configuration](#verifying-the-configuration)
-		- [Viewing LLDP Global Information](#viewing-lldp-global-information)
+		- [Viewing LLDP global information](#viewing-lldp-global-information)
 		- [Viewing LLDP Neighbors](#viewing-lldp-neighbors)
 		- [Viewing LLDP statistics](#viewing-lldp-statistics)
 		- [Viewing LLDP TLVs](#viewing-lldp-tlvs)
@@ -18,14 +19,15 @@ LLDP
 - [CLI](#cli)
 - [Related features](#related-features)
 
+<!-- /TOC -->
 ## Overview
-The Link Layer Discovery Protocol (LLDP) is an industry-standard, vendor-neutral method to allow networked devices to advertise capabilities, discover and identify other LLDP enabled devices and gather information in a LAN. The following bullet list contains some of the information gathered by LLDP:
+The Link Layer Discovery Protocol (LLDP) is an industry-standard, vendor-neutral method to allow networked devices to advertise capabilities, discover and identify other LLDP enabled devices, and gather information in a LAN. The following bullet list contains some of the information gathered by LLDP:
 
 - System name and description
 - Port name and description
 - VLAN name and identifier
 - IP network management address
-- Device Capabilities (for example, switch, router, or server)
+- Device Capabilities (for example, switch, route   r, or server)
 - MAC address and physical layer information
 - Power information
 
@@ -45,11 +47,10 @@ ops-as5712(config)#
 ops-as5712(config)# lldp enable
 ops-as5712(config)#
 ```
-Once LLDP is enabled, the switch begins to transmit advertisements from those ports that are configured to send LLDP packets.
+LLDP is enabled by default and the switch begins to transmit advertisements from those ports that are configured to send LLDP packets.
 
 3. Enable LLDP on interface.
-By using the `lldp transmit` and `lldp receive` commands, LLDP can be enabled or disabled on individual interfaces or configured to only
-send or only receive LLDP packets. Consider interface 1 which is connected to neighbor device,
+By using the `lldp transmit` and `lldp receive` commands, LLDP can be enabled or disabled on individual interfaces or configured to only send or only receive LLDP packets. Consider interface 1 which is connected to neighbor device,
 ```
 ops-as5712(config)# interface 1
 ops-as5712(config-if)# lldp receive
@@ -73,7 +74,7 @@ ops-as5712(config)#
 ```
 
 2. Setting the LLDP Hold Time.
-The `lldp holdtime` command sets the amount of time a receiving device should retain the information sent by the device.
+The `lldp holdtime` command sets the amount of time a receiving device retains the information sent by the device.
 ```
 ops-as5712(config)# lldp holdtime 5
 ops-as5712(config)#
@@ -97,7 +98,7 @@ ops-as5712(config)#
 ```
 
 4. Set the IP address to be used in the Management Address TLV.
-The `lldp management-address` command specifies the IP address used in the management address LLDP type-length-value (TLV) triplets. If this command is not configured, the IP address assigned to the management interface will be used in the management address LLDP type-length-value (TLV) triplets.
+The `lldp management-address` command specifies the IP address used in the management address LLDP type-length-value (TLV) triplets. If this command is not configured, the IP address assigned to the management interface is used in the management address LLDP type-length-value (TLV) triplets.
 ```
 ops-as5712(config)# lldp management-address 16.93.49.1
 ops-as5712(config)#
@@ -127,7 +128,7 @@ ops-as5712(config)#
 ```
 
 ### Verifying the configuration
-##### Viewing LLDP Global Information
+##### Viewing LLDP global information
 The `show lldp configuration` command displays LLDP configuration information configured above.
 ```
 ops-as5712# show lldp configuration
@@ -272,16 +273,16 @@ VLAN Name         : VLAN100
 ### Troubleshooting the configuration
 
 #### Condition
-- LLDP Neighbor information is not displayed even if neighbor is present.
-- System description is not displayed in neighbor info.
+- LLDP Neighbor information is not displayed even if the neighbor is present.
+- System description is not displayed in neighbor information.
 
 #### Cause
 - Interface may be down.
-- Neighbor may not support LLDP or feature is not enabled.
-- system description TLV may not be selected.
+- Neighbor may not support LLDP or the feature is not enabled.
+- System description TLV may not be selected.
 
 #### Remedy
-- Make interface administratively up by using 'no shutdown' command. Refer physical interface command reference. Neighbor should support LLDP feature and enabled.
+- Make the interface administratively up by using 'no shutdown' command. Refer to the physical interface command reference. The neighbor supports the LLDP feature and the enablement.
 - Select system description TLV using 'lldp select-tlv' command.
 
 ## CLI
