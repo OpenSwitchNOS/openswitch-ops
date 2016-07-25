@@ -6,7 +6,8 @@
     - [Show supported feature list](#show-supported-feature-list)
     - [Show basic diagnostic](#show-basic-diagnostic)
     - [Capture basic diagnostic to file](#capture-basic-diagnostic-to-file)
-    - [References](#references)
+    - [Timeout and User-interrupts](#timeout-and-userinterrupts)
+- [References](#references)
 
 ##Display commands
 ### Show supported feature list
@@ -130,5 +131,9 @@ None
 ```
 switch# diag-dump lldp basic lldp.txt
 ```
-##References
+### Timeout and User-interrupts
+There could be scenarios where user would like to terminate this command "Diag-dump" in the middle of execution. This can be achieved using CTRL-C and CTRL-Z signals. Incase of CTRL-C, this command will terminate within 10 secs and incase of CTRL-Z, it will terminate immediately. By default this command will auto terminate in 60 secs.
+
+Please Note, using interrupt signals (CTRL-Z,CTRL-C) after CTRL-C can lead to unexpected behavior. In such scenarios user might need to restart VTYSH process.
+## References
 * [Reference 1]`diagnostic_cli.md`

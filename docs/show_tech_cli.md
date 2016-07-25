@@ -5,6 +5,7 @@
     - [show tech list](#show-tech-list)
     - [show tech feature](#show-tech-feature)
     - [Show tech to file](#show-tech-to-file)
+    - [Timeout and User-interrupts](#timeout-and-userinterrupts)
 
 ## Display commands
 
@@ -221,3 +222,7 @@ switch# show tech basic localfile stbasic.sta force
 Show Tech output stored in file /tmp/stbasic.sta
 
 ```
+### Timeout and User-interrupts
+There could be scenarios where user would like to terminate this command "Show tech" in the middle of execution. This can be achieved using CTRL-C and CTRL-Z signals. Incase of CTRL-C, this command will terminate within 10 secs and incase of CTRL-Z, it will terminate immediately. By default each command within "Show tech" will auto terminate in 60 secs.
+
+Please Note, using interrupt signals (CTRL-Z,CTRL-C) after CTRL-C can lead to unexpected behavior. In such scenarios user might need to restart VTYSH process.
