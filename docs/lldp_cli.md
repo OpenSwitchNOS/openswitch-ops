@@ -1,42 +1,172 @@
 LLDP Commands
-======
-## Contents
 
-- [LLDP Configuration Commands](#lldp-configuration-commands)
-	- [Enable LLDP](#enable-lldp)
-	- [Disable LLDP](#disable-lldp)
-	- [Clear LLDP counters](#clear-lldp-counters)
-	- [Clear LLDP neighbor details](#clear-lldp-neighbor-details)
-	- [Set LLDP holdtime](#set-lldp-holdtime)
-	- [Set LLDP holdtime to default](#set-lldp-holdtime-to-default)
-	- [Set LLDP reinit delay](#set-lldp-reinit-delay)
-	- [Set LLDP reinit delay to default](#set-lldp-reinit-delay-to-default)
-	- [Set Management IP address](#set-management-ip-address)
-	- [Remove Management IP address](#remove-management-ip-address)
-	- [Select TLVs](#select-tlvs)
-	- [Remove TLVs](#remove-tlvs)
-	- [Set LLDP timer](#set-lldp-timer)
-	- [Set LLDP timer to default](#set-lldp-timer-to-default)
-	- [Enable LLDP transmission](#enable-lldp-transmission)
-	- [Disable LLDP transmission](#disable-lldp-transmission)
-	- [Enable LLDP reception](#enable-lldp-reception)
-	- [Disable LLDP reception](#disable-lldp-reception)
-- [LLDP Show Commands](#lldp-show-commands)
-	- [Show LLDP Configuration](#show-lldp-configuration)
-	- [Show LLDP TLV](#show-lldp-tlv)
-	- [Show LLDP Neighbor information](#show-lldp-neighbor-information)
-	- [Show LLDP neighbor information for the interface](#show-lldp-neighbor-information-for-the-interface)
-	- [Show LLDP Statistics](#show-lldp-statistics)
-	- [Show LLDP statistics for the interface](#show-lldp-statistics-for-the-interface)
-	- [Show LLDP local device information](#show-lldp-local-device-information)
+Contents
 
-## LLDP Configuration Commands
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+	- [LLDP configuration commands](#lldp-configuration-commands)
+		- [Enable LLDP](#enable-lldp)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Disable LLDP](#disable-lldp)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Clear LLDP counters](#clear-lldp-counters)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Clear LLDP neighbor details](#clear-lldp-neighbor-details)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Set LLDP holdtime](#set-lldp-holdtime)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Set LLDP holdtime to default](#set-lldp-holdtime-to-default)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Set LLDP reinit delay](#set-lldp-reinit-delay)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Set LLDP reinit delay to default](#set-lldp-reinit-delay-to-default)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Set management IP address](#set-management-ip-address)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Remove management IP address](#remove-management-ip-address)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Select TLVs](#select-tlvs)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Remove TLVs](#remove-tlvs)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Set LLDP timer](#set-lldp-timer)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Set LLDP timer to default](#set-lldp-timer-to-default)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Enable LLDP transmission](#enable-lldp-transmission)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Disable LLDP transmission](#disable-lldp-transmission)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Enable LLDP reception](#enable-lldp-reception)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Disable LLDP reception](#disable-lldp-reception)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+	- [LLDP show commands](#lldp-show-commands)
+		- [Show LLDP configuration](#show-lldp-configuration)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Show LLDP TLV](#show-lldp-tlv)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Show LLDP neighbor information](#show-lldp-neighbor-information)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Show LLDP neighbor information for the interface](#show-lldp-neighbor-information-for-the-interface)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Show LLDP statistics](#show-lldp-statistics)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Show LLDP statistics for the interface](#show-lldp-statistics-for-the-interface)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+		- [Show LLDP local device information](#show-lldp-local-device-information)
+			- [Syntax](#syntax)
+			- [Description](#description)
+			- [Authority](#authority)
+			- [Parameters](#parameters)
+			- [Examples](#examples)
+
+<!-- /TOC -->
+
+
+## LLDP configuration commands
 All LLDP configuration commands except `lldp transmission` and `lldp reception` work in config context.
 ### Enable LLDP
 #### Syntax
 `lldp enable`
 #### Description
-This command enables the LLDP (Link Layer Discovery Protocol) feature in the device.
+This command enables the LLDP (Link Layer Discovery Protocol) feature in the device. By default, LLDP is enabled on the device.
 #### Authority
 All users.
 #### Parameters
@@ -151,7 +281,7 @@ ops-as5712# configure terminal
 ops-as5712(config)# no lldp reinit
 ```
 
-### Set Management IP address
+### Set management IP address
 #### Syntax
 `lldp management-address ( <ipv4_address> | <ipv6_address>)`
 #### Description
@@ -171,7 +301,7 @@ ops-as5712# configure terminal
 ops-as5712(config)# lldp management-address 16.93.49.9
 ops-as5712(config)# lldp management-address 2001:db8:85a3::8a2e:370:7334
 ```
-### Remove Management IP address
+### Remove management IP address
 #### Syntax
 `no lldp management-address`
 #### Description
@@ -344,8 +474,8 @@ ops-as5712(config)# interface 1
 ops-as5712(config-if)# no lldp receive
 ```
 
-## LLDP Show Commands
-### Show LLDP Configuration
+## LLDP show commands
+### Show LLDP configuration
 #### Syntax
 `show lldp configuration`
 #### Description
@@ -409,7 +539,7 @@ System capabilities
 System description
 System name
 ```
-### Show LLDP Neighbor information
+### Show LLDP neighbor information
 #### Syntax
 `show lldp neighbor-info`
 #### Description
