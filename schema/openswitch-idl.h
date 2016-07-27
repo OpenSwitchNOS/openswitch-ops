@@ -949,6 +949,23 @@ enum ospf_nbr_statistics_e {
 #define OSPF_EXT_TYPE_STRING_TYPE1            "ext_type_1"
 #define OSPF_EXT_TYPE_STRING_TYPE2            "ext_type_2"
 
+/****************************** TACACS START *********************************/
+
+/******************* TACACS Global config from System Table ******************/
+#define SYSTEM_TACACS_CONFIG_PASSKEY          "passkey"
+#define SYSTEM_TACACS_CONFIG_TCP_PORT         "tcp_port"
+#define SYSTEM_TACACS_CONFIG_TIMEOUT          "timeout"
+
+/****************************** TACACS_SERVER TABLE **************************/
+#define MAX_TACACS_SERVERS                    64
+#define TACACS_SERVER_PASSKEY_DEFAULT         "testing123-1"
+#define TACACS_SERVER_TCP_PORT_DEFAULT        49
+#define TACACS_SERVER_TCP_PORT_DEFAULT_VAL    "49"
+#define TACACS_SERVER_TIMEOUT_DEFAULT         5
+#define TACACS_SERVER_TIMEOUT_DEFAULT_VAL     "5"
+
+/****************************** TACACS END ***********************************/
+
 /******************************** NTP START **********************************/
 /****************************** NTP_KEY TABLE ********************************/
 #define NTP_KEY_KEY_PASSWORD_LEN_MIN                    8
