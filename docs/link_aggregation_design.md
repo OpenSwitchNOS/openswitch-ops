@@ -35,7 +35,9 @@ static and dynamic LAGs is similar, so all validation is done in a single
 daemon.
 * Protocol and interface state is managed by lacpd: The state of the protocol is
 managed by lacpd and it is posted in OVSDB. Based on the protocol state lacpd
-sets the interface state (rx_enable and tx_disable)
+sets the interface state (rx_enable and tx_disable), except if interface is in
+ MLAG, in this case rx_enable and tx_disable are not updated, only bond status
+is updated in OVSDB.
 * The portd daemon manages Linux bond interface: Portd takes care of configuring
 other Linux interfaces and interface related setting such as VLANs, IP
 addresses, etc. This daemon already has the code to manage interface state,
@@ -220,6 +222,10 @@ For LACP specific configuration, the `other_config` map has three LACP specific
 keys. The `lacp-port-id` and `lacp-port-priority` keys are used to override the
 default values for the interface's Id and priority that are used in the LACP
 negotiation.
+
+For MLAG specific configuration, the `mclag_status` map has three LACP specific
+keys. The `actor_port_id`, `actor_key` and `actor_system_id` keys are used as part
+of PDUs when interface is part of MCLAG.
 
 The `lacp-aggregation-key` key is used to identify the aggregation key of the
 interface. When an interface is added to a LAG, it can only be eligible if the
