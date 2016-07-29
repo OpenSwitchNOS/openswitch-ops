@@ -4866,7 +4866,7 @@
 
           <p>
             A client should ideally set this column's value in the same
-            database transaction that it uses to create the interface.  OpenSwitch 
+            database transaction that it uses to create the interface.  OpenSwitch
             will honor a later request for a
             specific port number, although it might confuse some controllers:
             OpenFlow does not have a way to announce a port number change, so
@@ -6807,6 +6807,11 @@
           within the server-group that it belongs to.
       </column>
 
+      <column name="server_status" emptyValue="active">
+          Specifies the reachability status of the TACACS+ server
+          Default server_status is active.
+      </column>
+
   </table>
 
   <table name="AAA_Server_Group" title="AAA server-group configuration">
@@ -8638,7 +8643,7 @@
 
         <p>
           OpenSwitch permits a bridge to have any number of primary
-          controllers.  When multiple controllers are configured, OpenSwitch 
+          controllers.  When multiple controllers are configured, OpenSwitch
           connects to all of them simultaneously.  Because
           OpenFlow 1.0 does not specify how multiple controllers
           coordinate in interacting with a single switch, more than
@@ -8769,7 +8774,7 @@
         <dl>
           <dt><code>in-band</code></dt>
           <dd>In this mode, this controller's OpenFlow traffic travels over the
-          bridge associated with the controller.  With this setting, OpenSwitch 
+          bridge associated with the controller.  With this setting, OpenSwitch
           allows traffic to and from the controller regardless of the
           contents of the OpenFlow flow table.  (Otherwise, OpenSwitch
           would never be able to connect to the controller, because it did
