@@ -1347,6 +1347,11 @@
           Specifies the shared secret key between the TACACS+ client
           and the TACACS+ server. Default passkey is testing123-1.
       </column>
+
+      <column name="tacacs_config" key="authorization_enable" type='{"type": "boolean"}' emptyValue="false">
+          Specifies whether authorization with TACACS+ is enabled. The possible values are "true" and "false".
+          Default value is false.
+      </column>
     </group>
 
   </table>
