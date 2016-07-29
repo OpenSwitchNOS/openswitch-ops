@@ -952,6 +952,7 @@ enum ospf_nbr_statistics_e {
 /****************************** TACACS START *********************************/
 
 /******************* TACACS Global config from System Table ******************/
+#define SYSTEM_TACACS_CONFIG_PASSKEY          "authorization_enable"
 #define SYSTEM_TACACS_CONFIG_PASSKEY          "passkey"
 #define SYSTEM_TACACS_CONFIG_TCP_PORT         "tcp_port"
 #define SYSTEM_TACACS_CONFIG_TIMEOUT          "timeout"
