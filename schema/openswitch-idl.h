@@ -959,6 +959,7 @@ enum ospf_nbr_statistics_e {
 
 /****************************** TACACS_SERVER TABLE **************************/
 #define MAX_TACACS_SERVERS                    64
+#define TACACS_SERVER_AUTHOR_DEFAULT          "false"
 #define TACACS_SERVER_PASSKEY_DEFAULT         "testing123-1"
 #define TACACS_SERVER_TCP_PORT_DEFAULT        49
 #define TACACS_SERVER_TCP_PORT_DEFAULT_VAL    "49"
