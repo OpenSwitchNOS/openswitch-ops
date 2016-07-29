@@ -6807,6 +6807,11 @@
           within the server-group that it belongs to.
       </column>
 
+      <column name="server_status" emptyValue="active">
+          Specifies the reachability status of the TACACS+ server
+          Default server_status is active.
+      </column>
+
   </table>
 
   <table name="AAA_Server_Group" title="AAA server-group configuration">
