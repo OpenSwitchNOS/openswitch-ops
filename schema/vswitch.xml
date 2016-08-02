@@ -88,16 +88,16 @@
       using this category can be modified by the users.
     </li>
 
-    <p>
+    <li>
       Some column categories depend on the other column category. It means that the
       column category is not explicit. The value will be dynamically interpreted by taking
       the other column value. The tag "follows" inside the category is meant for that.
-    </p>
-    <p>
+    </li>
+    <li>
       In other cases the category must be interpreted using a specific row value itself.
       The column category will be calculated by mapping the specific enum value to the
       corresponding category. The tag "per-value" inside the category is meant for that.
-    </p>
+    </li>
   </ol>
 
   <table name="System" title="OpenSwitch top level configuration.">
@@ -2000,9 +2000,9 @@
         type='{"type": "string", "enum": ["set", ["EGP", "IBGP", "incomplete"]]}'>
         Matches BGP routes based on the origin of the specified route. The allowed values are below.
         <ol>
-        <li><mark>EGP</mark> - Indicates that the route is learned through EBGP.</li>
-        <li><mark>IGP</mark> - Indicates that the route is learned through IBGP.</li>
-        <li><mark>incomplete</mark> - Indicates that the origin of route is unknown. This occurs when a route is redistributed into BGP.</li>
+        <li><code>EGP</code> - Indicates that the route is learned through EBGP.</li>
+        <li><code>IGP</code> - Indicates that the route is learned through IBGP.</li>
+        <li><code>incomplete</code> - Indicates that the origin of route is unknown. This occurs when a route is redistributed into BGP.</li>
         </ol>
       </column>
       <column name="match" key="metric"
@@ -2058,9 +2058,9 @@
         type='{"type": "string", "enum": ["set", ["EGP", "IBGP", "incomplete"]]}'>
         Sets the origin attribute of a local BGP route. The allowed values are below.
         <ol>
-        <li><mark>EGP</mark> - Indicates that the route is learned through EBGP.</li>
-        <li><mark>IGP</mark> - Indicates that the route is learned through IBGP.</li>
-        <li><mark>incomplete</mark> - Indicates that the origin of route is unknown. This occurs when a route is redistributed into BGP.</li>
+        <li><code>EGP</code> - Indicates that the route is learned through EBGP.</li>
+        <li><code>IGP</code> - Indicates that the route is learned through IBGP.</li>
+        <li><code>incomplete</code> - Indicates that the origin of route is unknown. This occurs when a route is redistributed into BGP.</li>
         </ol>
       </column>
       <column name="set" key="weight"
@@ -2389,27 +2389,27 @@
            type='{"type":"string", "enum": ["set", ["IGP_CHANGED", "DAMPED", "HISTORY", "SELECTED", "VALID", "DMED_CHECK", "DMED_SELECTED", "STALE", "REMOVED", "COUNTED", "MULTIPATH"]]}'>
           Flags attibute of the BGP route.
           <ol>
-          <li><mark>DAMPED</mark> - Suppress routes from being advertised due to flapping.</li>
-          <li><mark>HISTORY</mark> - Router does not have a best path
+          <li><code>DAMPED</code> - Suppress routes from being advertised due to flapping.</li>
+          <li><code>HISTORY</code> - Router does not have a best path
                                      for the route based on historical information.</li>
-          <li><mark>STALE</mark> - Used with nonstop forwarding to indicate that the route is stale
+          <li><code>STALE</code> - Used with nonstop forwarding to indicate that the route is stale
                                    and needs to be refreshed when the peer is reestablished.</li>
-          <li><mark>VALID</mark> - Route has a valid next-hop.</li>
-          <li><mark>DMED_CHECK</mark> - Route is evaluated as part of an effort to identify preferred
+          <li><code>VALID</code> - Route has a valid next-hop.</li>
+          <li><code>DMED_CHECK</code> - Route is evaluated as part of an effort to identify preferred
                                         entry point into local AS from neighboring autonomous system.</li>
-          <li><mark>DMED_SELECTED</mark> - Route is selected as preferred entry point
+          <li><code>DMED_SELECTED</code> - Route is selected as preferred entry point
                                            into local AS from neighboring autonomous system.</li>
-          <li><mark>REMOVED</mark> - Route has been removed from list of advertised routes to neighboring
+          <li><code>REMOVED</code> - Route has been removed from list of advertised routes to neighboring
                                      autonomous system.</li>
-          <li><mark>SELECTED</mark> - Route had been selected as best path to destination prefix.</li>
-          <li><mark>COUNTED</mark> - Route has been included in internal prefix list count.</li>
-          <li><mark>MULTIPATH</mark> -Route has been included as part of multipath route selection to destination prefix.</li>
-          <li><mark>IGP_CHANGED</mark> - Set for routes exhanged over iBGP intradomain autonomous system networks.</li>
+          <li><code>SELECTED</code> - Route had been selected as best path to destination prefix.</li>
+          <li><code>COUNTED</code> - Route has been included in internal prefix list count.</li>
+          <li><code>MULTIPATH</code> -Route has been included as part of multipath route selection to destination prefix.</li>
+          <li><code>IGP_CHANGED</code> - Set for routes exhanged over iBGP intradomain autonomous system networks.</li>
       </ol>
       </column>
       <column name="origin">
           Origin of the BGP route.
-          Allowed values are <mark>egp</mark>,<mark>igp</mark>,<mark>incomplete</mark>
+          Allowed values are <code>egp</code>,<code>igp</code>,<code>incomplete</code>
           igp origin code specifies whether route entry originated from an Interior
           Gateway Protocol (IGP) and was advertised with a network router
           configuration command.
@@ -3543,14 +3543,6 @@
         </p>
       </column>
 
-      <column name="vlan_tunnel_keys" keyname="vlan">
-        <p>
-          Specifies translation from a vlan to the
-          <ref table="Logical_Switch"/>. If this is an access port,
-          only one key needs to be specified. VLAN 0 means that untagged
-          traffic on the port is mapped to the specified logical switch.
-        </p>
-      </column>
     </group>
 
     <group title="Bonding Configuration">
