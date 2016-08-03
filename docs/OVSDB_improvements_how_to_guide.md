@@ -9,11 +9,13 @@ This document describes how to use those improvements to OVSDB. These
 improvements are currently available only for the C IDL.
 
 ## Improvements
-1. [Partial update of map columns](#partial_map_updates)
-2. [On-demand fetching of non-monitored data](#on_demand_fetching)
-3. [Compound indexes](#compound_indexes)
+1. [Partial update of map columns](#partial-map-updates)
+2. [On-demand fetching of non-monitored data](#on-demand-fetching-of-non-monitored-data)
+3. [Compound indexes](#compound-Indexes)
+4. [Priority Sessions](#priority-sessions)
+5. [Wait Monitoring and Blocking Waits](#wait-monitoring-and-blocking-waits)
 
-## Partial update of map columns <a name="#partial_map_updates"></a>
+## Partial update of map columns
 
 ### How to use this feature
 
@@ -76,7 +78,7 @@ ovsdb_idl_txn_commit_block(myTxn);
 ovsdb_idl_txn_destroy(myTxn);
 ```
 
-## On-demand fetching of non-monitored data <a name="on_demand_fetching"></a>
+## On-demand fetching of non-monitored data
 
 ### Changes to the C IDL
 
@@ -164,7 +166,7 @@ sequence number changed, check if the request was already processed. To do this,
 use the `*_is_pending()` functions needs to be used. For example current
 example the correct function is: `ovsrec_interface_is_row_fetch_pending()`.
 
-## Compound Indexes <a name="#indexes"></a>
+## Compound Indexes
 
 ### C IDL API
 
@@ -380,3 +382,136 @@ const struct ovsrec_<table> *ovsrec_<table>_index_get_data(const struct ovsdb_id
 
 `ovsrec_<table>_index_get_data` returns a pointer to the replica's row that is
 pointed by the cursor, or NULL.
+
+## Priority Sessions
+
+
+### Usage from the C IDL
+
+To change the priority of a session with the IDL run the command
+`ovsdb_idl_set_identity`, that receives an IDL and the session name.
+That function must be called after the IDL receives the initial replica.
+
+With the function `ovsdb_idl_get_priority` the priority assigned by
+the OVSDB Server can be retrieved (after an `ovsdb_idl_run`).
+
+### Usage with ovsdb-client
+
+Call the ovsdb-client with:
+```
+ovsdb-client identify <name>
+```
+It returns the priority assigned to <name> by the OVSDB Server.
+
+### Priorities file
+
+The priority file is a JSON file with the identifiers as keys,
+and the corresponding priority as the value. For example:
+```
+{
+    "0": ["criticald", "cruciald", "urgentd"],
+    "7": ["exampled],
+    "15": ["notimportantd", "notcriticald"]
+}
+```
+
+The OVSDB Server receives the path to the priorities file with the
+--priority-file flag.
+
+That file can be updated and reloaded at runtime using ovs-appctl:
+```
+ovs-appctl -t ovsdb-server ovsdb-server/priority-reload
+```
+
+## Wait Monitoring and Blocking Waits
+
+The wait monitoring feature can be divided in monitoring blocking waits and
+performing blocking waits.
+
+### Wait Monitoring
+
+For monitoring a blocking wait the client must first tell OVSDB its intentions
+of monitoring some columns in a table. In the JSON RPC protocol there are the
+new methods `wait_monitor` and `wait_monitor_cancel` to do that.
+
+When using the IDL the process is like follows:
+
+```c
+/* Allocate a struct ovsdb_idl_wait_monitor_request to store
+ * the new wait monitored columns. */
+struct ovsdb_idl_wait_monitor_request wait_monitor_request;
+
+/* Initialize the request */
+ovsdb_idl_wait_monitor_create_txn(idl, &wait_monitor_request);
+
+/* Add or remove columns from the wait monitored columns set */
+ovsdb_idl_wait_monitor_add_column(&wait_monitor_request,
+                                  &ovsrec_table_example,
+                                  &ovsrec_example_col_examplecolumn);
+ovsdb_idl_wait_monitor_add_column(&wait_monitor_request,
+                                  &ovsrec_table_example,
+                                  &ovsrec_example_col_examplecolumn2);
+ovsdb_idl_wait_monitor_remove_column(&wait_monitor_request,
+                                     &ovsrec_table_example,
+                                     &ovsrec_example_col_examplecolumn2);
+ovsdb_idl_wait_monitor_add_column(&wait_monitor_request,
+                                  &ovsrec_table_othertable,
+                                  &ovsrec_example_col_column1);
+/* Send the wait monitor request to OVSDB Server (and check the result) */
+if (!ovsdb_idl_wait_monitor_send_txn(&wait_monitor_request)) {
+    /* Handle error*/
+}
+```
+
+The wait monitor request can be performed at any time during the execution of
+the program.
+
+### Processing blocking waits notifications
+
+After the client performs a `wait_monitor` it will receive `wait_update`
+notifications from the OVSDB Server, requesting it to unblock those waits. At
+this moment the client can perform other actions, for example: updating data.
+
+The client can iterate over the `wait_update` requests using the following code:
+
+```c
+struct ovsdb_idl_wait_update *req, *next;
+WAIT_UPDATE_FOR_EACH_SAFE(req, next, idl) {
+    /* Do something with req
+     * struct ovsdb_idl_wait_update includes the requested
+     * table, rows and columns.
+     */
+
+    /* Unblock the client's blocking_wait. If the blocking wait
+     * isn't unblocked then it will timeout and the whole
+     * transaction will fail. */
+    ovsdb_idl_wait_unblock(idl, req);
+
+    /* Remove the request from the requests list */
+    ovsdb_idl_wait_update_destroy(req);
+}
+```
+
+### Performing blocking waits
+A client can perform a `blocking_wait` operation that blocks a transaction
+until all the clients wait monitoring the columns requested unblock the
+request.
+
+With the IDL a `blocking_wait` is performed as follows:
+
+```c
+/* Create a transaction as usual */
+txn = ovsdb_idl_txn_create(idl);
+/* Create an ovsdb_idl_txn_wait_unblock */
+struct ovsdb_idl_txn_wait_unblock *wait_req;
+/* ovsdb_idl_txn_create_wait_until_unblock receives as parameter
+ * the requested table, and a timeout in milliseconds. */
+wait_req = ovsdb_idl_txn_create_wait_until_unblock(&ovsrec_table_example, 5000);
+/* Add columns or rows as desired, both fields could be empty */
+ovsdb_idl_txn_wait_until_unblock_add_column(wait_req, &ovsrec_example_col_testcolumn);
+ovsdb_idl_txn_wait_until_unblock_add_row(wait_req, (struct ovsdb_idl_row*) ovsrec_example_first(idl));
+/* Add the ovsdb_idl_txn_wait_unblock to the transaction */
+ovsdb_idl_txn_add_wait_until_unblock(txn, wait_req);
+/* Commit transaction, using the commit_block or the non-blocking commit */
+status = ovsdb_idl_txn_commit_block(txn);
+```

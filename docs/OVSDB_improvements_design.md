@@ -9,10 +9,12 @@ This document describes the design of those improvements to OVSDB. These
 improvements are currently available only for the C IDL.
 
 ## Improvements
-1. [Partial update of map columns](#Partial-update-of-map-columns)
-2. [On-demand fetching of non-monitored data](#On-demand-fetching-of-non-monitored-data)
-3. [Compound indexes](#Compound-Indexes)
-4. [jemalloc Memory Allocator](#jemalloc-Memory-Allocator)
+1. [Partial update of map columns](#partial-update-of-map-columns)
+2. [On-demand fetching of non-monitored data](#on-demand-fetching-of-non-monitored-data)
+3. [Compound indexes](#compound-indexes)
+4. [jemalloc Memory Allocator](#jemalloc-memory-allocator)
+5. [Priority Sessions](#priority-sessions)
+6. [Wait Monitoring and Blocking Waits](#wait-monitoring-and-blocking-waits)
 
 ## Partial update of map columns
 
@@ -139,10 +141,12 @@ The on-demand column fetch request for a row are traduced to:
 "columns": "<column-name>, uuid"
 }
 ```
+
 Once the request is sent, the row is marked with a pending fetch request. It
 will be pending until the replica is updated with the server reply.
 
 The on-demand column fetch request are traduced to:
+
 ```
 {
 "op": "select",
@@ -388,3 +392,248 @@ The results show a consistent better results of jemalloc over GLibC memory
 allocator.
 TCMalloc was faster in some benchmarks, but uses a lot more of RAM than
 jemalloc.
+
+## Priority Sessions
+
+### Background
+Different clients have different response time requirements from the OVSDB. A
+program used by a user could wait a little more than a daemon critical for the
+correct operation of the switch.
+
+With *priority sessions* it is possible to identify the clients within the OVSDB
+Server, and the server assigns a higher priority to the process that need it the
+most.
+
+This feature is composed of:
+
+* A new JSON RPC method (`identify`), that the client uses to identify
+  the session in the server.
+* A file given to the OVSDB Server, that has the priority that must be
+  assigned to each identifier.
+* An ovs-appctl command to reload that list.
+* The required changes in the OVSDB Server to implement the feature.
+* The ability to call the `identify` command from the ovsdb-client
+  (mostly for testing purposes).
+
+### Changes to JSON RPC
+
+The method `identify` was introduced. It has a single parameter the
+name or identifier of the session. The response is a integer between 0 and 15
+(including both) with the priority assigned by the server.
+
+```
+/* Request: */
+{
+    "method": "identify",
+    "params": [{"name": "<name or identifier of the session"}],
+    "id": ...
+}
+
+/* Response: */
+{
+    "error": null,
+    "result": {"priority": <integer between [0, 15]>,
+                "uuid": "server's uuid'"},
+    "id": ...
+}
+```
+
+In case that the server doesn't support this method then it will respond with
+an error.
+
+### Priorization Algorithm
+
+The priority sessions feature has 16 different priorities, being 8 the default
+priority, 0 the highest priority and 15 the lowest priority.
+
+The OVSDB Server process the requests inside a loop that iterates over all the
+connections. With this feature the OVSDB Server responds only to the sessions
+with the corresponding priority.
+
+The sessions with priority 0 are executed always, the sessions with priority 1
+are executed in 15 of each 16 iterations, the sessions with priority 2 are
+executed in 14 of each 16 iterations and so on. Therefore, the sessions are
+executed in at least the following percentage of iterations:
+
+| Priority | Percent of Iterations (at least) |
+|:--------:|:----------------------:|
+| 0  | 100.00% |
+| 1  | 93.75%  |
+| 2  | 87.50%  |
+| 3  | 81.25%  |
+| 4  | 75.00%  |
+| 5  | 68.75%  |
+| 6  | 62.50%  |
+| 7  | 56.25%  |
+| 8  | 50.00%  |
+| 9  | 43.75%  |
+| 10 | 37.50%  |
+| 11 | 31.25%  |
+| 12 | 25.00%  |
+| 13 | 18.75%  |
+| 14 | 12.50%  |
+| 15 | 6.25%   |
+
+To avoid iterations in which the OVSDB Server "does nothing" it process the
+transactions from sessions with a lower priority, in case it doesn't have any
+other session with the "current priority" (or a higher priority).
+
+### Priorities file
+
+Instead of allowing the client to request a priority, this system works with a
+priority file. This is a json file that has a JSON map with the identifiers and
+the assigned priority, like this:
+
+```
+{
+    "0": ["criticald", "cruciald", "urgentd"],
+    "7": ["exampled],
+    "15": ["notimportantd", "notcriticald"]
+}
+```
+
+In case that an identifier wasn't specified in this file then the OVSDB Server
+assigns it the default priority (8). The file can be reloaded at runtime, using
+an ovs-appctl command.
+
+## Wait Monitoring and Blocking Waits
+
+The Wait Monitoring Functionality introduces several new methods and operations
+over the RFC 7047 that allow to:
+
+* Receive a notification when other client performs a blocking wait over OVSDB
+  rows or columns for some table.
+* The client can wait until the monitoring process unblock the blocking wait
+  before attempting other operations, like read or write from OVSDB.
+
+Those new operations allow the clients to implement synchronization mechanisms
+over OVSDB, for example, a client can delay a read until other client finishes
+writing the requested data.
+
+### Changes over RFC 7047
+#### Wait Monitor
+The `wait_monitor` request allows the client to be notified whenever there is
+a delayed transaction waiting on certain columns.
+
+The request object has the following members:
+
+* `"method": "wait_monitor"`
+* `"params": [<db-name>, <nonnull-json-value>, <wait-monitor-requests>*]`
+* `"id": <nonnull-json-value>`
+
+The `<nonnull-json-value>` parameter in “params” is used to match subsequent
+`wait_update`s notifications (see below) to this request. The
+`<wait-monitor-requests>` object describe the columns to be tracked.
+
+`<wait-monitor-requests>`
+An JSON object with the following fields:
+* `"table": Name of the table (string)`
+* `"columns": [<column>*]`
+
+The response object has the following members:
+
+- `"result": Number of columns “wait monitored” in this request.`
+- `"error": null`
+- `"id": same “id” as request`
+
+Subsequently, when waits to the specified columns are issued, changes are
+automatically sent to the client using the
+[Wait Update Notification](Wait Update Notification). This monitoring persists
+until the JSON-RPC session terminates or until the client sends a
+`wait_monitor_cancel` JSON-RPC request.
+
+This operation is idempotent, and doesn’t fail if the columns were already
+`wait monitored`.
+
+#### Wait Monitor Cancellation
+
+The `wait_monitor_cancel` request cancels a previously issued `wait_monitor`
+request. The request object members are:
+
+* `method`: `wait_monitor`
+* `params`: `[<db-name>, <wait-monitor-cancel-requests>*]`
+* `id`: `<nonnull-json-value>`
+
+The `<wait-monitor-cancel-requests>` follow the same format of
+`<wait-monitor-requests>`. No more `wait_update` messages will be sent for
+those "wait monitored" columns.
+
+The response object has the following members:
+
+* `"result": <Number of columns “wait unmonitored” in this request>`
+* `"error”: null`
+* `"id": <same “id” as request>`
+
+#### Wait Update Notification
+
+The `wait_update` notification allows a client to notify a session that is wait
+monitoring any of the requested columns whenever any transaction become blocked,
+ “waiting” on the tables/columns that the client previously sent `wait_monitor`
+ for or unblocked for such a `blocking_wait` for any reason.
+
+The notification has the following members:
+
+* `"method": "wait_update"`
+* `"params": [<json-object>]`
+
+
+The `<json-object>` in params is a JSON object with the information required by
+the client to process the request. The members of the JSON object in `params`
+are:
+
+- `"update_id": <integer>`
+- `"state": "start" | "done": current wait update state`
+- `"table": <string>: name of table`
+- `"rows": [<row uuid>*]`
+- `"columns": [<column-name>*]`
+
+The `update_id` member is an integer used to uniquely identify each of the
+`wait_update` messages the ovsdb-server is processing.
+
+The `state` member may be set to `start` or `done` according to the processing
+stage of the request: the first `wait_update` message with `state` set to
+`start` is used to communicate to a wait monitoring session about the cells that
+ need to be updated to the database. This `wait_update` transaction should be
+ unblocked using a `wait_unblock` message sent by the wait
+monitoring session, and then a second `wait_update` with `state` set to `done`
+should be sent to the monitoring session to conclude blocking wait request.
+
+The `table` member specifies the name of the table in the request as a string.
+
+The request includes a vector `rows` with each of the row’s UUID converted to
+string in JSON format and a JSON array `columns` with each of the column names
+as an element.
+
+In case the transaction includes a column which is not being updated by any
+wait monitoring session, the `wait_update` messages for the transaction should
+not be sent and an error condition should be returned instead.
+
+#### Blocking wait
+
+The "blocking_wait" object contains the following members:
+
+* `"op": "blocking_wait"        required`
+* `"timeout": <integer>         optional`
+* `"table": <table>             required`
+* `"columns":[<column>*]        required`
+* `"rows": [<row>*]             required`
+
+There is no corresponding result object.
+
+The operation waits until all the wait-monitors that received wait-update
+notification send appropriate wait-unblock messages, get cancelled or the
+connection to them is dropped.
+
+If "timeout" is specified, then the transaction aborts after the specified
+number of milliseconds. The transaction is guaranteed to be attempted at
+least once before it aborts. A "timeout" of 0 will abort the transaction
+immediatly.
+
+The errors that may be returned are one of:
+
+* `"error": "timed out"`
+  * The "timeout" was reached before the transaction was able to complete.
+* `"error": "wait unsatisfiable"`
+  * At least one of the wait-monitors that received a wait-update notification
+  regarding this request dropped the connection, therefore this operation can’t
+  be ever unblocked.

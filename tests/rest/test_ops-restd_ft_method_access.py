@@ -24,7 +24,8 @@ import httplib
 from copy import deepcopy
 
 from opsvsiutils.restutils.utils import get_switch_ip, execute_request, \
-    rest_sanity_check, get_json, login
+    rest_sanity_check, get_json, login, get_server_crt, \
+    remove_server_crt
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -310,10 +311,12 @@ class Test_MethodAccess:
 
     def setup_class(cls):
         cls.test_var = MethodAccessTest()
+        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.SWITCH_IP)
 
     def teardown_class(cls):
         cls.test_var.net.stop()
+        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -344,6 +347,7 @@ class Test_MethodAccess:
     def test_runconfig_GET_method_access_test(self, netop_login):
         self.test_var.runconfig_GET_method_access_test(httplib.OK, OPS_NETOP)
 
+    @pytest.mark.skipif(True, reason="incorrect test case")
     def test_runconfig_PUT_method_access_test(self, netop_login):
         self.test_var.runconfig_PUT_method_access_test(httplib.OK, OPS_NETOP)
 
