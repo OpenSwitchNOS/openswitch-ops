@@ -1,10 +1,11 @@
-
 # Common definitions
 set(unified_schema "${CMAKE_CURRENT_BINARY_DIR}/openswitch.extschema.json")
 
+include("documentation.cmake")
+
 # This function will process the master schema file to generate
 # the unified schema file, the extended schema file, and the IDL
-# constants files for C
+# empty values C header file
 function(generate_database_schema MASTER_SCHEMA_FN)
 	set(unified_generator "${CMAKE_SOURCE_DIR}/schema/bin/unified_generator")
 	set(schemas_generator "${CMAKE_SOURCE_DIR}/schema/bin/schemas_generator")
