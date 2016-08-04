@@ -104,13 +104,32 @@
       "additionalProperties": false
     },
 
+    "enumConstraint": {
+      "type": "object",
+      "properties": {
+        "enum": {"$ref": "http://json-schema.org/draft-04/schema#/definitions/stringArray"}
+      },
+      "required": "enum",
+      "additionalProperties": false
+    },
+
+    "lengthConstraint": {
+      "type": "object",
+      "properties": {
+        "minLength": {"$ref": "http://json-schema.org/draft-04/schema#/definitions/positiveInteger"},
+        "maxLength": {"$ref": "http://json-schema.org/draft-04/schema#/definitions/positiveInteger"}
+      },
+      "additionalProperties": false
+    },
+
     "stringType": {
       "type": "object",
       "properties": {
         "type": {"type": "string", "pattern": "^string$"},
-        "enum": {"$ref": "http://json-schema.org/draft-04/schema#/definitions/stringArray"},
-        "minLength": {"$ref": "http://json-schema.org/draft-04/schema#/definitions/positiveInteger"},
-        "maxLength": {"$ref": "http://json-schema.org/draft-04/schema#/definitions/positiveInteger"}
+	"oneOf" [
+          {"$ref":"#/definitions/enumConstraint"},
+          {"$ref":"#/definitions/lengthConstraint"}
+        ]
       },
       "required": ["type"],
       "additionalProperties": false
