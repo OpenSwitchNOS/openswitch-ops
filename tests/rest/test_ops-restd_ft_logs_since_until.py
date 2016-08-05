@@ -29,13 +29,12 @@ import time
 import datetime
 
 from opsvsiutils.restutils.utils import execute_request, login, \
-    get_switch_ip, rest_sanity_check, get_json, get_server_crt, \
-    remove_server_crt
+    get_switch_ip, rest_sanity_check, get_json
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 OFFSET_TEST = 0
-LIMIT_TEST = 1000
+LIMIT_TEST = 10
 
 
 class myTopo(Topo):
@@ -188,10 +187,12 @@ class LogsSinceUntilTest (OpsVsiTest):
              "##########\n")
 
         bug_flag = True
+        until_test = "now"
 
-        self.LOGS_PATH = self.PATH + "?until=now"
+        self.LOGS_PATH = self.PATH + "?until=%s&offset=%s&limit=%s" % \
+            (until_test, OFFSET_TEST, LIMIT_TEST)
 
-        info("logs path %s\n" % self.LOGS_PATH)
+        info("logs path %s" % self.LOGS_PATH)
         status_code, response_data = execute_request(
             self.LOGS_PATH, "GET", None, self.SWITCH_IP,
             xtra_header=self.cookie_header)
@@ -261,12 +262,10 @@ class Test_LogsSinceUntil:
 
     def setup_class(cls):
         Test_LogsSinceUntil.test_var = LogsSinceUntilTest()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.SWITCH_IP)
 
     def teardown_class(cls):
         Test_LogsSinceUntil.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass

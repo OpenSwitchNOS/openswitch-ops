@@ -492,9 +492,6 @@ def configure(**kwargs):
     if retCode != 0:
         assert "Failed to configure an IPv6 address on interface 1 of SW2"
 
-@pytest.mark.timeout(600)
-@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
-"were enable")
 class Test_bgp_ipv6_prefix_list_configuration:
     def setup_class(cls):
         Test_bgp_ipv6_prefix_list_configuration.testObj = \

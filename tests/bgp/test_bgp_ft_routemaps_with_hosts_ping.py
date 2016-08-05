@@ -300,8 +300,6 @@ class bgpTest(OpsVsiTest):
         assert not result, "PING did not fail when it was supposed to."
 
 
-@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
-"were enable")
 class Test_bgpd_routemaps_with_hosts_ping:
     def setup(self):
         pass

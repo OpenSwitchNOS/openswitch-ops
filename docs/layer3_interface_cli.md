@@ -278,16 +278,10 @@ Interface 1 is up
             0 input error                0 dropped
             0 short frame                0 overrun
             0 CRC/FCS
-       L3:
-            ucast: 0 packets, 0 bytes
-            mcast: 0 packets, 0 bytes
  TX
             0 output packets             0 bytes
             0 input error               21 dropped
             0 collision
-       L3:
-            ucast: 0 packets, 0 bytes
-            mcast: 0 packets, 0 bytes
 ```
 Show specific interface in brief mode (interface: 1).
 ```
@@ -328,13 +322,9 @@ hostname# show interface vlan10
  Hardware: Ethernet, MAC Address: 70:72:cf:fd:e9:26
  IPv4 address 3.3.3.1/24
  RX
-       L3:
-            ucast: 0 packets, 0 bytes
-            mcast: 0 packets, 0 bytes
+            10 input packets              750 bytes
  TX
-       L3:
-            ucast: 0 packets, 0 bytes
-            mcast: 0 packets, 0 bytes
+            0 output packets             0 bytes
 ```
 
 ### show ip interface

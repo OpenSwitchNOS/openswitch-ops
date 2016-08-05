@@ -50,7 +50,7 @@ All Users
 | Parameter | Status   | Syntax |	Description |
 |-----------|----------|----------------------|
 | **L3_interface** | Required | System defined | Name of the interface. System defined.  |
-| **subinterface** | Required | Integer | Subinterface ID from 1 to 4294967293 |
+| **subinterface** | Required | Integer | Subinterface ID from 1 to 2147483647 |
 #### Examples
 ```
 ops-as5712# configure terminal
@@ -78,7 +78,7 @@ ops-as5712(config-subif)# ip address 16.93.50.2/24
 ###  Set or unset IPv6 addresses
 #### Syntax
 ```
-[no] ipv6 address <ipv6_address/prefix-length>
+[no] ip address <ipv6_address/prefix-length>
 ```
 #### Description
 This command sets or unsets the IPv6 address for a subinterface.
@@ -263,61 +263,6 @@ Sub         VLAN   Type   Mode    Status   Reason                    Speed     P
 Interface                                                            (Mb/s)    Ch#
 ...................................................................................................
   1.1        33    eth     ..     down    Administratively down       auto     ..
-```
-
-##Supportability Commands
-###Display event logs
-####Syntax
-show events category subinterface
-####Description
-This command displays all the events logged by sub-interfaces.
-
-Following events will be logged for sub-interfaces.
-- Create subinterface.
-- Configure subinterface with IPv4 address.
-- Configure subinterface with IPv6 address.
-- Configure subinterface with encapsulation dot 1Q vlan ID.
-- Configure subinterface with admin up.
-- Configure subinterface with admin down.
-- Remove IPv4 address.
-- Remove IPv6 address.
-- Remove encapsulation dot 1Q vlan ID.
-- Delete subinterface.
-
-####Authority
-All users
-####Examples
-```
-switch# show events category subinterafce
-2016-05-31:06:26:27.363923|ops-portd|10001|LOG_INFO|Sub-Interface 4.5, created
-2016-05-31:07:08:51.351755|ops-portd|10001|LOG_INFO|Sub-Interface 4.4, created
-2016-05-31:07:08:57.418705|ops-portd|10003|LOG_INFO|Sub-Interface 4.4, configured with ip address 10.1.1.1/24
-```
-###Daignostic Dump
-####Syntax
-diag-dump subinterface basic
-####Description
-This command will dump number of created subinterfaces.
-####Authority
-All users
-####Examples
-```
-switch# diag-dump subinterface basic
-=========================================================================
-[Start] Feature subinterface Time : Tue May 31 07:19:57 2016
-
-=========================================================================
--------------------------------------------------------------------------
-[Start] Daemon ops-portd
--------------------------------------------------------------------------
-Number of Configured sub-interfaces are : 2.
-
--------------------------------------------------------------------------
-[End] Daemon ops-portd
--------------------------------------------------------------------------
-=========================================================================
-[End] Feature subinterface
-=========================================================================
 ```
 ##References
 * [Reference 1]`interface_cli.md`

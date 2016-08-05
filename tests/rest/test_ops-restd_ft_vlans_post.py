@@ -26,8 +26,7 @@ import httplib
 import urllib
 
 from opsvsiutils.restutils.utils import execute_request, login, \
-    get_switch_ip, rest_sanity_check, get_container_id, \
-    get_server_crt, remove_server_crt
+    get_switch_ip, rest_sanity_check, get_container_id
 from opsvsiutils.restutils.swagger_test_utility import \
     swagger_model_verification
 
@@ -138,13 +137,11 @@ class TestPostBasicVlan:
 
     def setup_class(cls):
         TestPostBasicVlan.test_var = CreateBasicVlan()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
         cls.container_id = get_container_id(cls.test_var.net.switches[0])
 
     def teardown_class(cls):
         TestPostBasicVlan.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -233,12 +230,10 @@ class TestPostVlanInvalidName:
 
     def setup_class(cls):
         TestPostVlanInvalidName.test_var = CreateVlanInvalidName()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidName.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -323,12 +318,10 @@ class TestPostVlanInvalidId:
 
     def setup_class(cls):
         TestPostVlanInvalidId.test_var = CreateVlanInvalidId()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidId.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -414,12 +407,10 @@ class TestPostVlanInvalidDescription:
     def setup_class(cls):
         TestPostVlanInvalidDescription.test_var = \
             CreateVlanInvalidDescription()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidDescription.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -504,12 +495,10 @@ class TestPostVlanInvalidAdmin:
 
     def setup_class(cls):
         TestPostVlanInvalidAdmin.test_var = CreateVlanInvalidAdmin()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidAdmin.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -595,12 +584,10 @@ class TestPostVlanInvalidOtherConfig:
     def setup_class(cls):
         TestPostVlanInvalidOtherConfig.test_var = \
             CreateVlanInvalidOtherConfig()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidOtherConfig.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -686,12 +673,10 @@ class TestPostVlanInvalidExternalIds:
     def setup_class(cls):
         TestPostVlanInvalidExternalIds.test_var = \
             CreateVlanInvalidExternalIds()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanInvalidExternalIds.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -769,12 +754,10 @@ class TestPostVlanMissingFields:
 
     def setup_class(cls):
         TestPostVlanMissingFields.test_var = CreateVlanMissingFields()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostVlanMissingFields.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
@@ -866,12 +849,10 @@ class TestPostDuplicated:
 
     def setup_class(cls):
         TestPostDuplicated.test_var = CreateVlanDuplicated()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
 
     def teardown_class(cls):
         TestPostDuplicated.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass

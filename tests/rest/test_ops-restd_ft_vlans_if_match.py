@@ -25,8 +25,7 @@ import json
 import httplib
 from opsvsiutils.restutils.fakes import create_fake_vlan, FAKE_VLAN_DATA
 from opsvsiutils.restutils.utils import execute_request, login, \
-    rest_sanity_check, get_switch_ip, compare_dict, \
-    get_server_crt, remove_server_crt
+    rest_sanity_check, get_switch_ip, compare_dict
 from copy import deepcopy
 
 NUM_OF_SWITCHES = 1
@@ -106,11 +105,11 @@ class IfMatchVlanTest(OpsVsiTest):
 
         # Add If-Match: '"*"' to the request
         config_data = {'configuration': put_data}
-        headers = {"If-Match": '"*"'}
+        headers = {'"If-Match"': '"*"'}
         headers.update(self.cookie_header)
         status_code, response_data = execute_request(
             cond_path, "PUT", json.dumps(config_data), self.switch_ip,
-            xtra_header=headers)
+            False, headers)
 
         assert status_code == httplib.OK, "Error modifying a VLAN using "\
             "if-match option. Status code: %s Response data: %s "\
@@ -500,7 +499,6 @@ class Test_IfMatchVlan:
 
     def setup_class(cls):
         Test_IfMatchVlan.test_var = IfMatchVlanTest()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.switch_ip)
         create_fake_vlan(Test_IfMatchVlan.test_var.vlan_path,
                          Test_IfMatchVlan.test_var.switch_ip,
@@ -509,7 +507,6 @@ class Test_IfMatchVlan:
 
     def teardown_class(cls):
         Test_IfMatchVlan.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass

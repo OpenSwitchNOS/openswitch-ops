@@ -1,72 +1,44 @@
-# Diagnostic Dump Developer Guide
+# Developer Guide for Diagnostic Dump
 
 ## Contents
 
-
-
 - [Overview](#overview)
-- [Mapping a feature to its daemons](#mapping-a-feature-to-its-daemons)
-	- [Configuration file](#configuration-file)
+- [How to define the mapping between a feature and the daemon which implements that feature](#how-to-define-the-mapping-between-a-feature-and-the-daemon-which-implements-that-feature)
+	- [YAML configuration](#yaml-configuration)
 - [Diagnostics dump C API](#diagnostics-dump-c-api)
-	- [Header file](#header-file)
 - [Diagnostics dump Python API](#diagnostics-dump-python-api)
-	- [BBScript changes](#bbscript-changes)
-	- [Import Python module](#import-python-module)
-	- [Daemon init function](#daemon-init-function)
-	- [Example of a callback function definition](#example-of-a-callback-function-definition)
-	- [Example for AAA daemon](#example-for-aaa-daemon)
 - [Testing](#testing)
 	- [diag-dump list](#diag-dump-list)
 	- [diag-dump for a feature (basic) on CLI session](#diag-dump-for-a-feature-basic-on-cli-session)
 	- [diag-dump for a feature (basic) to a file](#diag-dump-for-a-feature-basic-to-a-file)
 		- [CT script](#ct-script)
-- [Frequently asked question](#frequently-asked-question)
 - [References](#references)
 
 
-
 ## Overview
-The diagnostic dump CLI command captures internal diagnostic information about features from their associated  daemons. Internally, it uses the unixctl mechanism to communicate with the daemons.
+The Diagnostic CLI captures internal diagnostic information about the requested features from the respective daemons. Internally it uses the unixctl mechanism to communicate with the daemons.
 
-## Mapping a feature to its daemons
+## Defining the mapping between a feature and its daemons
 
-### Configuration file
-Feature owners are required to map each feature to the daemons that implement the feature. This enables the  diagnostic dump module to determine the daemon with which to communicate when retrieving dumps. Mappings must be defined in the configuration file, which is: **ops-supportability/conf/ops_featuremapping.yaml**.
+### YAML configuration
+Feature owners are required to define the mapping between the feature and the daemons that implement the feature, so that the diagnostic module can understand which daemons it has to communicate to. This mapping should be defined in the configuration file in the ops-supportability repo under the path `ops-supportability/conf/ops_diagdump.yaml`.
 
+Example mappings:
 
-The file has the following structure (defined using YAML):
-```ditaa
-  -
-    feature_name: "feature1"
-    feature_desc: "Description1"
-    daemon:
-      - [name: "daemon1", 'diag_dump': "y"]
-      - [name: "daemon2", 'diag_dump': "n"]
-      - [name: "daemon3", 'diag_dump': "y"]
-  -
-    feature_name: "feature2"
-    feature_desc: "Description2"
-    daemon:
-      - [name: "daemon4", 'diag_dump': "y"]
-      - [name: "daemon5", 'diag_dump': "y"]
-      - [name: "daemon6", 'diag_dump': "y"]
-
-```
-
-
-A sample file with two features defined would look like this:
 ```ditaa
   -
     feature_name: "lldp"
     feature_desc: "Link Layer Discovery Protocol"
     daemon:
-      - [name: "ops-lldpd", 'diag_dump': "y"]
+      - "ops-lldpd"
 
   -
     feature_name: "lacp"
     feature_desc: "Link Aggregation Control Protocol"
     daemon:
-      - [name: "ops-lacpd", 'diag_dump': "y"]
+      - "ops-lldpd"
+      - "ops-fand"
+      - "ops-lacp"
 
 ```
 
@@ -79,24 +51,29 @@ Syntax of the callback function:
 static void cb_func_name(const char *feature, char **buf)
 ```
 
-Initialize the basic diagnostic framework in the daemon init routine by calling **INIT_DIAG_DUMP_BASIC** and passing the callback function name. For example:
+Initialize the basic diagnostic framework in the daemon init routine by calling `INIT_DIAG_DUMP_BASIC` and passing the callback function name.
 
+Example:
 ```
 INIT_DIAG_DUMP_BASIC(basic_diag_handler_cb)
 ```
 
-In summary, complete these steps:
-1. Define the callback function for basic diagnostic information collection. The  function should perform the following:
-    - Allocate a character buffer to hold the diagnostics information.
-    - Copy diagnostics information(text format) into the buffer.
-    - Null-terminate the buffer.
-2. Initialize the basic diagnostic framework in the daemon init routine.
-3. Enable diag-dump attribute for daemon in feature mapping yaml file.
+In summary, complete the following steps:
 
-**Note:** The diagnostic framework must free the buffer once it has been used.
+1. Define a callback function for collecting basic diagnostic information. The callback function should perform the following activities:
+	 a. Allocate character buffer to hold the diagnostics information.
+	 b. Copy the diagnostics information (text format) into the buffer.
+	 c. Null terminate the buffer.
+3. Initialize the basic diagnostic framework in the daemon init routine.
 
-#### BBscript
-Add the dependency **DEPENDS = ops-supportability** to the BBScript for the associated daemon.
+*Note: The diagnostics framework is responsible for freeing the allocated buffer once it is used.*
+
+
+### BBScript changes
+Add a dependency in BBScript for the respective daemon.
+```
+DEPENDS = "ops-supportability"
+```
 
 ### Header file
 Include diag_dump.h in the .c file.
@@ -105,7 +82,8 @@ Include diag_dump.h in the .c file.
 #include  <diag_dump.h>
 ```
 ### Daemon init function
-The daemon initialization routine should invoke this macro with the callback function. For example:
+The daemon initialization routine should invoke this macro with the callback function.
+For example:
 ```
 INIT_DIAG_DUMP_BASIC(lldpd_diag_dump_basic_cb)
 ```
@@ -129,17 +107,6 @@ static void lldpd_diag_dump_basic_cb(const char *feature , char **buf)
 }
 
 ```
-
-### Example of enabling diag-dump  attribute
-Enable diag-dump attribute in the file ops_featuremapping.yaml.
-```ditaa
-  -
-    feature_name: "lldp"
-    feature_desc: "Link Layer Discovery Protocol"
-    daemon:
-        - [name: "ops-lldpd", 'diag_dump': "y"]
-```
-
 ### Example for lldpd daemon
 
 ```ditaa
@@ -165,9 +132,6 @@ INIT_DIAG_DUMP_BASIC(lldpd_diag_dump_basic_cb);
  * Returns        : void
  */
 
-/* Determin buffer length for diag-dump and allocate required memory */
-#define  BUF_LEN  300
-
 static void lldpd_diag_dump_basic_cb(const char *feature , char **buf)
 {
     if (!buf)
@@ -184,12 +148,6 @@ static void lldpd_diag_dump_basic_cb(const char *feature , char **buf)
 }
 
 
-file: ops_featuremapping.yaml
-  -
-    feature_name: "lldp"
-    feature_desc: "Link Layer Discovery Protocol"
-    daemon:
-        - [name: "ops-lldpd", 'diag_dump': "y"]
 
 ```
 
@@ -202,18 +160,19 @@ Syntax of the callback function:
 cb_func_name(argv)
 ```
 
-Initialize the basic diagnostic framework in the daemon init routine by calling **init_diag_dump_basic** and passing the callback function name. For example:
+Initialize the basic diagnostic framework in the daemon init routine by calling `init_diag_dump_basic` and passing the callback function name.
 
+Example:
 ```ditaa
 ops_diagdump.init_diag_dump_basic(basic_diag_handler_cb)
 ```
 
 In summary, completed these steps:
-1. Add the dependency **ops-supportability** in the BBScript.
-2. Import Python module **ops_diagdump**.
+1. Add dependency "ops-supportability" in the BBScript.
+2. Import Python module ops_diagdump.
 3. Define a callback function for collecting basic diagnostic information. The callback function should perform the following activities:
-	 - Copy the diagnostics information (text format) into the buffer.
-	 - Return the buffer.
+	 a. Copy the diagnostics information (text format) into the buffer.
+	 b. Return the buffer.
 5. Initialize the basic diagnostic framework in the daemon init routine.
 
 
@@ -240,6 +199,7 @@ ops_diagdump.init_diag_dump_basic(diag_basic_handler)
 ### Example of a callback function definition
 
 ```ditaa
+
 def diag_basic_handler( argv ):
     # argv[0] is basic
     # argv[1] is feature name
@@ -247,6 +207,8 @@ def diag_basic_handler( argv ):
     buff = 'Diagnostic dump response for feature ' + feature + '.\n'
     buff = buff + 'diag-dump feature for AAA is not implemented'
     return buff
+
+
 ```
 ### Example for AAA daemon
 
@@ -270,26 +232,19 @@ def diag_basic_handler( argv ):
 ...
 ops_diagdump.init_diag_dump_basic(diag_basic_handler)
 ...
+
 ```
 
 ## Testing
 ### diag-dump list
-The **diag-dump list** command displays the list of features supported by the diag-dump CLI.
+The `diag-dump list` command displays the list of features supported by the diag-dump CLI.
 ### diag-dump for a feature (basic) on CLI session
-The **diag-dump <feature> basic** command displays basic diagnostic information of the specified feature.
+The `diag-dump <feature> basic` command displays basic diagnostic information of the specified feature.
 ### diag-dump for a feature (basic) to a file
-The **diag-dump <feature> basic <filename>** command captures diagnostic information to the specified file.
+The `diag-dump <feature> basic <file name>` command captures diagnostic information to the specified file.
 #### CT script
 Run the following CT test to verify that the diag-dump command is properly working with the configuration changes:
 `make devenv_ct_test src/ops-supportability/test/diag_dump_test.py`
-
-## Frequently asked question
-1) How to handle requests for different features implemented by the same daemon ?
-   diag-dump api passes feature name in callback function argument as char* . Use this
-   argument to understand the requested feature and populate feature related information .
-
-2) What is size of diag-dump buffer ?
-   Developer will decide the diag-dump buffer length.
 
 ## References
 

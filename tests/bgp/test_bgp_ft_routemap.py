@@ -515,8 +515,6 @@ class bgpTest(OpsVsiTest):
         info("### Previously denied network is now present in BGP2 ###\n")
 
 
-@pytest.mark.skipif(True, reason="Disabling because modular framework tests "
-"were enable")
 class Test_bgpd_routemap:
     def setup(self):
         pass

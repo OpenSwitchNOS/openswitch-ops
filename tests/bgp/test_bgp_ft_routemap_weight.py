@@ -199,11 +199,7 @@ def configure_route_map_set_weight(dut, routemap,weight):
     cmd = "route-map "+routemap+" permit 20"
     cmd1 = "set weight "+weight
     devIntReturn = dut.DeviceInteract(command=cmd)
-    retCode = devIntReturn.get('returnCode')
-    assert retCode == 0, "route-map command failed!"
     devIntReturn = dut.DeviceInteract(command=cmd1)
-    retCode = devIntReturn.get('returnCode')
-    assert retCode == 0, "set weight command failed!"
     return True
 
 
@@ -214,21 +210,16 @@ def configure_route_map_set_localpref(dut, routemap, as_num, localpref):
     cmd = "route-map "+routemap+" permit 20"
     cmd1 = "set local-preference "+localpref
     devIntReturn = dut.DeviceInteract(command=cmd)
-    retCode = devIntReturn.get('returnCode')
-    assert retCode == 0, "route-map command failed!"
     devIntReturn = dut.DeviceInteract(command=cmd1)
-    retCode = devIntReturn.get('returnCode')
-    assert retCode == 0, "set local-preference command failed!"
     return True
 
 
 def verify_bgp_routes(dut, network, next_hop):
-    retStruct = dut.VtyshShell(enter=True)
-    retCode = retStruct.returnCode()
-    assert retCode == 0, "Failed to enter vtysh prompt"
-    dump =  dut.DeviceInteract(command="show ip bgp")
-    if network in dump['buffer'] and next_hop in dump['buffer']:
-        return True
+    dump = SwitchVtyshUtils.vtysh_cmd(dut, "show ip bgp")
+    routes = dump.split(VTYSH_CR)
+    for route in routes:
+        if network in route and next_hop in route:
+            return True
     return False
 
 
@@ -286,9 +277,16 @@ def verify_routemap_set_weight(**kwargs):
     wait_for_route(switch2, "11.0.0.0", "0.0.0.0")
     wait_for_route(switch2, "9.0.0.0", "8.0.0.1")
 
-    switch2.VtyshShell(enter=True)
-    out = switch2.DeviceInteract(command="sh ip bgp")
-    assert '22' in out['buffer'] and '9.0.0.0' in out['buffer'], "Failed to configure 'set weight'"
+    dump = SwitchVtyshUtils.vtysh_cmd(switch2, "sh ip bgp")
+    set_weight_flag = False
+
+    lines = dump.split('\n')
+    for line in lines:
+        if '22' in line and '9.0.0.0' in line:
+            set_weight_flag = True
+
+    assert (set_weight_flag == True) , "Failed to configure 'set weight'"
+
     LogOutput('info',"### 'set weight' running succesfully ###\n")
 
 
@@ -330,9 +328,15 @@ def verify_routemap_set_localpref(**kwargs):
     wait_for_route(switch2, "11.0.0.0", "0.0.0.0")
     wait_for_route(switch2, "9.0.0.0", "8.0.0.1")
 
-    switch2.VtyshShell(enter=True)
-    out = switch2.DeviceInteract(command="sh ip bgp")
-    assert '45' in out['buffer'], "Failed to configure 'set local-preference'"
+    dump = SwitchVtyshUtils.vtysh_cmd(switch2, "sh ip bgp")
+    set_localpref_flag = False
+
+    lines = dump.split('\n')
+    for line in lines:
+        if '45' in line:
+            set_localpref_flag = True
+
+    assert (set_localpref_flag == True) , "Failed to configure 'set local-preference'"
     LogOutput('info',"'set local-preference' running succesfully")
 
 def configure(**kwargs):
@@ -390,7 +394,7 @@ def configure(**kwargs):
 
 
 
-    # For SW1 and SW2, configure bgp
+#    For SW1 and SW2, configure bgp
     LogOutput('info',"Configuring route context on SW1")
     result = enterRouterContext(switch1,AS_NUM1)
     assert result is True, "Failed to configure router Context on SW1"
@@ -422,14 +426,11 @@ def configure(**kwargs):
     assert result is True, "Failed to configur neighbor on SW2"
 
 
-@pytest.mark.skipif(True, reason="Disabling because modular framework tests \
-                                  were enable")
-@pytest.mark.timeout(600)
 class Test_bgp_redistribute_configuration:
     def setup_class(cls):
         Test_bgp_redistribute_configuration.testObj = \
             testEnviron(topoDict=topoDict)
-        # Get topology object
+        #    Get topology object
         Test_bgp_redistribute_configuration.topoObj = \
             Test_bgp_redistribute_configuration.testObj.topoObjGet()
 

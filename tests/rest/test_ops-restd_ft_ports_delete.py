@@ -23,8 +23,7 @@ import json
 import httplib
 
 from opsvsiutils.restutils.utils import execute_request, login, \
-    get_switch_ip, rest_sanity_check, create_test_port, \
-    get_server_crt, remove_server_crt
+    get_switch_ip, rest_sanity_check, create_test_port
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
@@ -144,7 +143,6 @@ class Test_DeletePort:
 
     def setup_class(cls):
         Test_DeletePort.test_var = DeletePortTest()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.SWITCH_IP)
         # Add a test port
         info("\n########## Creating Test Port  ##########\n")
@@ -155,7 +153,6 @@ class Test_DeletePort:
 
     def teardown_class(cls):
         Test_DeletePort.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass

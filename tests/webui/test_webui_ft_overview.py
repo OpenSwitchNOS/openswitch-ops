@@ -25,8 +25,7 @@ import httplib
 import urllib
 
 from opsvsiutils.restutils.utils import execute_request, get_switch_ip, \
-    get_json, rest_sanity_check, login, get_server_crt, \
-    remove_server_crt
+    get_json, rest_sanity_check, login
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -103,7 +102,6 @@ class Test_OverviewData(OpsVsiTest):
         info("\n########## System Data Validated ##########\n")
 
 
-@pytest.mark.skipif(True, reason="Test ported to modular framework")
 class Test_OverviewPage:
     def setup(self):
         pass
@@ -113,12 +111,10 @@ class Test_OverviewPage:
 
     def setup_class(cls):
         Test_OverviewPage.test_var = Test_OverviewData()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.SWITCH_IP)
 
     def teardown_class(cls):
         Test_OverviewPage.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass

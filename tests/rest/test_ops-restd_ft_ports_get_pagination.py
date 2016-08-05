@@ -26,8 +26,7 @@ import httplib
 import urllib
 
 from opsvsiutils.restutils.utils import execute_request, login, \
-    get_switch_ip, rest_sanity_check, create_test_ports, \
-    get_server_crt, remove_server_crt
+    get_switch_ip, rest_sanity_check, create_test_ports
 
 NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
@@ -368,7 +367,6 @@ class Test_QueryPortPagination:
 
     def setup_class(cls):
         Test_QueryPortPagination.test_var = QueryPortPaginationTest()
-        get_server_crt(cls.test_var.net.switches[0])
         rest_sanity_check(cls.test_var.SWITCH_IP)
         # Create NUM_PORTS test ports
         status_code = \
@@ -378,7 +376,6 @@ class Test_QueryPortPagination:
 
     def teardown_class(cls):
         Test_QueryPortPagination.test_var.net.stop()
-        remove_server_crt()
 
     def setup_method(self, method):
         pass
