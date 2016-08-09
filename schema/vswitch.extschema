@@ -353,16 +353,16 @@
             "max": 64
           }
         },
-        "tacacs_servers": {
+        "aaa_config": {
           "category": "configuration",
-          "relationship": "1:m",
+          "relationship": "reference",
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "Tacacs_Server"
-             },
-            "min": 0,
-            "max": 64
+              "refTable": "AAA"
+            },
+            "min":0,
+            "max":1
           }
         },
         "ecmp_config": {
@@ -544,15 +544,6 @@
                 "min": 0,
                 "max": 1
             }
-        },
-        "tacacs_config": {
-          "category": "configuration",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          }
         }
       },
       "isRoot": true,
@@ -6502,21 +6493,10 @@
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "AAA_Server_Group",
-              "refType" : "weak"
+              "refTable": "AAA_Server_Group"
            },
            "min":0,
            "max":1
-          }
-        },
-        "group_priority": {
-          "category": "status",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 64
-            }
           }
         }
       },
@@ -6540,9 +6520,7 @@
               "type": "integer",
               "minInteger": 1,
               "maxInteger": 65535
-            },
-            "min": 0,
-            "max": 1
+            }
           }
         },
         "passkey": {
@@ -6573,7 +6551,7 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 0,
+              "minInteger": 1,
               "maxInteger": 64
             }
           }
@@ -6584,20 +6562,22 @@
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "AAA_Server_Group",
-              "refType" : "weak"
-           },
-           "min":0,
-           "max":1
+              "refTable": "AAA_Server_Group"
+           }
           }
         },
-        "group_priority": {
+        "auth_type": {
           "category": "status",
           "type": {
             "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 64
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "pap",
+                  "chap"
+                ]
+              ]
             }
           }
         },
@@ -6606,16 +6586,21 @@
           "type": {
             "key": {
               "type": "string",
-              "maxLength": 10
-            },
-            "min": 0,
-            "max": 1
+              "enum": [
+                "set",
+                [
+                  "alive",
+                  "dead"
+                ]
+              ]
+            }
           }
         }
       },
       "indexes": [
         [
-          "ip_address"
+          "ip_address",
+          "tcp_port"
         ]
       ]
     },
@@ -6646,25 +6631,106 @@
               "maxLength": 32
             }
           }
-        },
-        "priority": {
-          "category": "status",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 1,
-              "maxInteger": 130
-            }
-          }
         }
       },
       "indexes": [
         [
           "group_name"
         ]
-      ],
+      ]
+    },
+    "AAA_Server_Group_AuthPrio": {
+      "columns": {
+        "session_type": {
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "default"
+                ]
+              ]
+            }
+          }
+        },
+        "group_id": {
+          "category": "configuration",
+          "relationship": "reference",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "AAA_Server_Group"
+            }
+          }
+        },
+        "priority": {
+          "category": "status",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": -1,
+              "maxInteger": 64
+            }
+          }
+        }
+      },
+      "indexes": [
+        [
+          "session_type",
+          "group_id",
+          "priority"
+        ]
+      ]
+    },
+    "AAA": {
+      "columns": {
+        "tacacs_global": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "tacacs_servers": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Tacacs_Server"
+             },
+            "min": 0,
+            "max": 64
+          }
+        },
+        "aaa_server_groups": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "AAA_Server_Group"
+            },
+            "min": 0,
+            "max": 64
+          }
+        },
+        "aaa_server_group_prio": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "AAA_Server_Group_AuthPrio"
+            }
+          }
+        }
+      },
       "isRoot": true,
-      "maxRows": 130
+      "maxRows": 1
     },
     "CLI_Alias": {
       "columns": {

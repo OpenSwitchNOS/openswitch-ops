@@ -1341,32 +1341,6 @@
       </column>
     </group>
 
-    <group title="TACACS+ configuration">
-      <p>
-        Specifies the TACACS+ global configuration.
-      </p>
-      <column name="tacacs_config" key="timeout" type='{"type":"integer", "minInteger": 0, "maxInteger": 60}'>
-         Specifies the timeout interval that the switch waits for response
-         from the TACACS+ server before declaring a timeout failure.
-         Default timeout value is 5 seconds.
-      </column>
-
-      <column name="tacacs_config" key="tcp_port" type='{"type":"integer", "minInteger": 1, "maxInteger": 65535}'>
-          Specifies the tcp port number used for exchanging TACACS+ messages
-          between the client and server. Default tcp port number is 49.
-      </column>
-
-      <column name="tacacs_config" key="passkey" type='{"type":"string"}'>
-          Specifies the shared secret key between the TACACS+ client
-          and the TACACS+ server. Default passkey is testing123-1.
-      </column>
-
-      <column name="tacacs_config" key="authorization_enable" type='{"type": "boolean"}' emptyValue="false">
-          Specifies whether authorization with TACACS+ is enabled. The possible values are "true" and "false".
-          Default value is false.
-      </column>
-    </group>
-
   </table>
 
   <table name="Subsystem" title="system board, daughter card, line card, etc.">
@@ -6781,11 +6755,6 @@
           Specifies the RADIUS server-group that it belongs to.
       </column>
 
-      <column name="group_priority">
-          Specifies the order in which RADIUS servers are configured
-          within the server-group that it belongs to.
-      </column>
-
   </table>
 
   <table name="Tacacs_Server" title="Tacacs server configuration">
@@ -6820,9 +6789,9 @@
           Specifies the TACACS+ server-group that it belongs to.
       </column>
 
-      <column name="group_priority">
-          Specifies the order in which TACACS+ servers are configured
-          within the server-group that it belongs to.
+      <column name="auth_type">
+          Specifies the authentication method (pap/chap) used.
+          Default is pap.
       </column>
 
       <column name="server_status" emptyValue="active">
@@ -6835,16 +6804,18 @@
   <table name="AAA_Server_Group" title="AAA server-group configuration">
       Contains list of RADIUS and TACACS+ server-groups comprising
       a list of respective servers.
+      Maximum of 61 user-defined groups are allowed and 3 are default groups.
 
       <column name="group_type">
           Either local, radius or tacacs+
           Group 0: local: Special group that contains no servers.
-                   More of a place-holder to capture the order to be followed for authentication
+                   More of a place-holder to capture the order to be followed
+                   for authentication
           Group 1: radius: Default group that contains all RADIUS servers
                    in the order in which they were configured.
           Group 2: tacacs+: Default group that contains all TACACS+ servers
                    in the order in which they were configured.
-          Group 3-130: User groups.
+          Group 3-64: User groups.
                        A RADIUS user-group will contain RADIUS servers alone
                        A TACACS+ user-group will contain TACACS+ servers alone
       </column>
@@ -6854,17 +6825,70 @@
           This can be max 32 bytes long.
           It can comprise of a group family or a group-name.
           Example:
-          group radius: A server group that consists of all defined RADIUS hosts
-          group tacacs+: A server group that consists of all defined TACACS+ hosts
+          group radius: Server group that consists of all defined RADIUS hosts
+          group tacacs+: Server group that consists of all defined TACACS+ hosts
           group name: A RADIUS or a TACACS+ group consisting of a list of
           all RADIUS or all TACACS+ servers respectively.
       </column>
 
+  </table>
+
+  <table name="AAA_Server_Group_AuthPrio" title="AAA server-group priority config">
+      Captures the priorities in which the server groups will be applied
+      to authenticate a user for a session_type.
+
+      <column name="session_type">
+          Refers to the type of user session.
+          For example: console, default, ssh, telnet etc.
+          Currently we do not distinguish and hence support the generic
+          "default" session.
+      </column>
+
+      <column name="group_id">
+          Specifies the local/RADIUS/TACACS+ server-group under consideration.
+      </column>
+
       <column name="priority">
-          Specifies the order in which AAA server-groups need to be applied
+          Specifies the priority of the server-group for given session-type
+          If no server groups are mentioned, the local authentication is used.
+          The local group has a default priority of 0
+          All other server-groups have a default priority of -1
+          A positive priority is applied to the server groups upon configuration.
       </column>
 
   </table>
+
+  <table name="AAA" title="AAA configuration">
+      Contains all configuration for AAA
+
+      <group title="TACACS+ global configuration">
+        <p>
+          Specifies the TACACS+ global configuration.
+        </p>
+        <column name="tacacs_global" key="timeout" type='{"type":"integer", "minInteger": 0, "maxInteger": 60}'>
+           Specifies the timeout interval that the switch waits for response
+           from the TACACS+ server before declaring a timeout failure.
+           Default timeout value is 5 seconds.
+        </column>
+
+        <column name="tacacs_global" key="tcp_port" type='{"type":"integer", "minInteger": 1, "maxInteger": 65535}'>
+            Specifies the tcp port number used for exchanging TACACS+ messages
+            between the client and server. Default tcp port number is 49.
+        </column>
+
+        <column name="tacacs_global" key="passkey" type='{"type":"string"}'>
+            Specifies the shared secret key between the TACACS+ client
+            and the TACACS+ server. Default passkey is "testing123-1".
+        </column>
+
+        <column name="tacacs_global" key="authorization_enable" type='{"type": "boolean"}' emptyValue="false">
+            Specifies whether authorization with TACACS+ is enabled. The possible values are "true" and "false".
+            Default value is false.
+        </column>
+      </group>
+
+  </table>
+
   <table name="Manager" title="OVSDB management connection.">
     <p>
       Configuration for a database connection to an OpenSwitch database
