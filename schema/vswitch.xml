@@ -875,6 +875,45 @@
       <column name="aaa" key="ssh_publickeyauthentication_enable" type='{"type": "boolean"}' emptyValue="true">
         Controls whether ssh public key authentication is enabled. Default is true.
       </column>
+      <group title="TACACS+ global configuration">
+        <p>
+          Specifies the TACACS+ global configuration.
+        </p>
+        <column name="aaa" key="tacacs_timeout"
+            type='{"type":"integer", "minInteger": 0, "maxInteger": 60}'
+            emptyValue="5">
+            Specifies the timeout interval that the switch waits for response
+            from the TACACS+ server before declaring a timeout failure.
+            Default timeout value is 5 seconds.
+        </column>
+
+        <column name="aaa" key="tacacs_tcp_port"
+            type='{"type":"integer", "minInteger": 1, "maxInteger": 65535}'
+            emptyValue="49">
+            Specifies the tcp port number used for exchanging TACACS+ messages
+            between the client and server. Default tcp port number is 49.
+        </column>
+
+        <column name="aaa" key="tacacs_passkey" type='{"type":"string"}'
+            emptyValue="testing123-1">
+            Specifies the shared secret key between the TACACS+ client
+            and the TACACS+ server. Default passkey is "testing123-1".
+        </column>
+
+        <column name="aaa" key="tacacs_auth"
+            type='{"type": "string", "enum": ["set", ["pap", "chap"]]}'
+            emptyValue="pap">
+            Specifies encoding to be used for the user password for tacacs+
+            based authentication.
+            By default <code>pap</code> is used.
+        </column>
+
+        <column name="aaa" key="tacacs_authorization_enable"
+            type='{"type": "boolean"}' emptyValue="false">
+            Specifies whether authorization with TACACS+ is enabled.
+            The possible values are "true" and "false". Default value is false.
+        </column>
+      </group>
       <column name="manager_options">
         Database clients to which the OpenSwitch database server should
         connect or to which it should listen, along with options for how these
@@ -921,6 +960,10 @@
       </column>
       <column name="radius_servers">
         Specifies radius servers configuration. See the <ref table="Radius_Server"/>
+        table for more information.
+      </column>
+      <column name="tacacs_servers">
+        Specifies tacacs+ server configuration. See the <ref table="Tacacs_Server"/>
         table for more information.
       </column>
       <column name="auto_provisioning_status" key="performed" type='{"type": "boolean"}' emptyValue="false">
@@ -6789,6 +6832,120 @@
           Specifies the number of retries to radius server if there is no response.
           Default retry value is 1.
       </column>
+
+      <column name="group">
+          Specifies the RADIUS server-group that it belongs to.
+      </column>
+
+  </table>
+
+  <table name="Tacacs_Server" title="Tacacs server configuration">
+      Contains list of TACACS+ servers configured for AAA
+      A maximum of 64 TACACS+ servers will be supported
+
+      <column name="ip_address">
+          IPV4/IPV6 address or FQDN of the TACACS+ server
+      </column>
+
+      <column name="tcp_port" emptyValue="49">
+          Specifies the tcp port number used for exchanging TACACS+ messages
+          between the client and server. Default tcp port number is 49.
+      </column>
+
+      <column name="passkey" emptyValue="testing123-1">
+          Specifies the shared secret key between the TACACS+ client
+          and the TACACS+ server. Default passkey is testing123-1.
+      </column>
+
+      <column name="timeout" emptyValue="5">
+          Specifies the timeout interval that the switch waits for response
+          from the TACACS+ server before declaring a timeout failure.
+          Default timeout value is 5 seconds.
+      </column>
+
+      <column name="auth_type" emptyValue="pap">
+          Specifies the authentication method (pap/chap) used.
+          Default is pap.
+      </column>
+
+      <column name="group">
+          Specifies the TACACS+ server-group that it belongs to.
+      </column>
+
+      <column name="priority">
+          Specifies the order in which TACACS+ servers are configured
+          within a server group.
+      </column>
+
+  </table>
+
+  <table name="AAA_Server_Group" title="AAA server-group configuration">
+      Contains a list of RADIUS and TACACS+ server-groups comprising
+      of a list of respective servers.
+      Maximum of 32 server-groups are allowed.
+      (3 are default family groups viz. "local", "radius", "tacacs+"
+      and 29 are user-defined groups)
+
+      <column name="group_type">
+          Either local, radius or tacacs+
+          Group 0: local: Special group that contains no servers.
+                   More of a place-holder to capture the order to be followed
+                   for authentication
+          Group 1: radius: Default family group containing all RADIUS servers
+                   in the order in which they were configured.
+          Group 2: tacacs+: Default family group containing all TACACS+ servers
+                   in the order in which they were configured.
+          Group 3-32: User groups.
+                   A RADIUS user-group will contain RADIUS servers alone
+                   A TACACS+ user-group will contain TACACS+ servers alone
+      </column>
+
+      <column name="group_name">
+          Specifies the unique name of the server-group.
+          This can be max 32 bytes long.
+          It can comprise of a group family or a group-name.
+          Example:
+          group radius: Server group that consists of all defined RADIUS hosts
+          group tacacs+: Server group that consists of all defined TACACS+ hosts
+          group name: A RADIUS or a TACACS+ group consisting of a list of
+          all RADIUS or all TACACS+ servers respectively.
+      </column>
+
+      <column name="is_static">
+          Specifies whether the server-group is static or user-defined.
+          The 3 default family groups (local, radius, tacacs) are static.
+          They are created during init time.
+          The other 29 groups are the user-defined
+      </column>
+
+  </table>
+
+  <table name="AAA_Server_Group_Prio" title="AAA server-group priority config">
+      Captures the priorities in which the server groups will be applied
+      to authenticate/authorize a user for a session_type.
+
+      <column name="session_type">
+          Refers to the type of user session.
+          For example: console, default, ssh, telnet etc.
+          Currently we do not distinguish between session types
+          and hence support the generic "default" session.
+      </column>
+
+      <column name="authentication_group_prio_list">
+          Specifies the list of AAA-server-groups and the order in which they
+          will be applied for authentication.
+          For example: 1="UUID1", 2="UUID2" ...
+          If no server groups are mentioned, the local authentication is used.
+          The local group has a default priority of 0
+          A positive priority is applied to the server groups upon configuration.
+      </column>
+
+      <column name="authorization_group_prio_list">
+          Specifies the list of AAA-server-groups and the order in which they
+          will be applied for authorization.
+          At least one group needs to be mentioned with a positive priority.
+      </column>
+
   </table>
 
   <table name="Manager" title="OVSDB management connection.">
