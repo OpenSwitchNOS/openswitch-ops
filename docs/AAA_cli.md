@@ -32,10 +32,10 @@
 
 #### Syntax
 ```
-aaa authentication login <local | radius [auth-type <pap | chap>]>
+aaa authentication login <local | radius [radius-auth <pap | chap>] | tacacs+ [tacacs-auth <pap | chap>]>
 ```
 #### Description
-Enables local authentication or RADIUS authentication. By default local authentication is enabled.
+Enables local authentication, RADIUS authentication, or TACACS+ authentication. By default local authentication is enabled.
 #### Authority
 Admin
 #### Parameters
@@ -44,14 +44,16 @@ Admin
 |------------|----------|------------------------------------------|
 | **local**  | Required | Literal | Enable local authentication. |
 | **radius** | Required | Literal | Enable RADIUS authentication. |
-| **chap**   | Optional | Literal | Use CHAP with RADIUS authentication. |
-| **pap**    | Optional | Literal | Use PAP with RADIUS authentication. |
+| **tacacs+** | Required | Literal | Enable TACACS authentication. |
+| **chap**   | Optional | Literal | Use CHAP with RADIUS/TACACS+ authentication. |
+| **pap**    | Optional | Literal | Use PAP with RADIUS/TACACS+ authentication. |
 
 #### Examples
 ```
     (config)# aaa authentication login local
     (config)# aaa authentication login radius
-    (config)# aaa authentication login radius auth-type chap
+    (config)# aaa authentication login radius radius-auth chap
+    (condig)# aaa authentication login tacacs+ tacacs-auth pap
 ```
 ### aaa authentication login fallback error local
 
@@ -84,7 +86,7 @@ Admin user.
 ```
 
 #### Description
-Create a TACACS+ or RADIUS server group.
+Create a TACACS+ or RADIUS server group. Then enter (config-sg) node
 
 #### Authority
 Admin user.
@@ -93,9 +95,9 @@ Admin user.
 
 | Parameter | Status   | Syntax | Description |
 |-----------|----------|----------------------|
+| **no** | Optional | Literal | Delete a TACACS+ or RADIUS server group. |
 | **tacacs+/radius** | Required| Literal | Create a TACACS+ or RADIUS server group. |
 | **group-name** | Required | String | Server group name. |
-| **no** | Optional | Literal | Delete a TACACS+ or RADIUS server group. |
 
 #### Examples
 ```
@@ -104,6 +106,30 @@ Admin user.
     (config)# no aaa group server tacacs+ tac1
 ```
 
+#### Syntax
+```
+[no] server <name | ipv4-addr>
+```
+
+#### Description
+Add a TACACS+ or RADIUS server to corresponding server group. Visible under (config-sg) node
+
+#### Authority
+Admin user.
+
+#### Parameters
+
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|----------------------|
+| **no** | Optional | Literal | Remove a server from server group. |
+| **name** | Required | Name-string of maximum length 57 characters or A.B.C.D. | The name or IPV4 address of the server. |
+
+#### Examples
+```
+    (config)# aaa group server tacacs+ sg1
+    (config-sg)#server 1.1.1.1
+    (config-sg)#no server 1.1.1.1
+```
 ### aaa authentication login default
 
 #### Syntax
@@ -222,8 +248,7 @@ Admin user.
 
 #### Syntax
 ```
-tacacs-server host <name|ipv4-address> [key passkey] [timeout timeout-value] [port port-number]
-[no] tacacs-server host <name|ipv4-address>
+[no] tacacs-server host <name|ipv4-address> [key passkey] [timeout timeout-val] [port port-num]
 ```
 
 #### Description
@@ -235,11 +260,11 @@ Admin user.
 #### Parameters
 | Parameter | Status   | Syntax | Description          |
 |-----------|----------|----------------------|
+| **no** | Optional | Literal | Delete a previously configured server. |
 | *name* | Required | Name-string of maximum length 57 characters or A.B.C.D. | The name or IPV4 address of the server. |
 | *passkey* | Optional | Key-string of maximum length 63 characters | The key used while communicating with the server. |
 | *timeout-val* | Optional | 1-60 | Timeout value |
 | *port-num* | Optional | 1-65535 | TCP port number |
-| **no** | Optional | Literal | Destroys a previously configured server. |
 
 #### Examples
 ```
