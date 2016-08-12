@@ -544,15 +544,6 @@
                 "min": 0,
                 "max": 1
             }
-        },
-        "tacacs_config": {
-          "category": "configuration",
-          "type": {
-            "key": "string",
-            "value": "string",
-            "min": 0,
-            "max": "unlimited"
-          }
         }
       },
       "isRoot": true,
@@ -972,7 +963,6 @@
                 [
                   "tftp",
                   "radius",
-                  "tacacs",
                   "all"
                 ]
               ]
@@ -6496,27 +6486,16 @@
             "max": 1
           }
         },
-        "group_id": {
+        "group": {
           "category": "configuration",
           "relationship": "reference",
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "AAA_Server_Group",
-              "refType" : "weak"
+              "refTable": "AAA_Server_Group"
            },
            "min":0,
            "max":1
-          }
-        },
-        "group_priority": {
-          "category": "status",
-          "type": {
-            "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 64
-            }
           }
         }
       },
@@ -6540,9 +6519,7 @@
               "type": "integer",
               "minInteger": 1,
               "maxInteger": 65535
-            },
-            "min": 0,
-            "max": 1
+            }
           }
         },
         "passkey": {
@@ -6568,54 +6545,46 @@
             "max": 1
           }
         },
-        "priority": {
+        "auth_type": {
           "category": "status",
           "type": {
             "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 64
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "pap",
+                  "chap"
+                ]
+              ]
             }
           }
         },
-        "group_id": {
+        "group": {
           "category": "configuration",
           "relationship": "reference",
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "AAA_Server_Group",
-              "refType" : "weak"
-           },
-           "min":0,
-           "max":1
+              "refTable": "AAA_Server_Group"
+            }
           }
         },
-        "group_priority": {
+        "priority": {
           "category": "status",
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": -1,
+              "minInteger": 1,
               "maxInteger": 64
             }
-          }
-        },
-        "server_status": {
-          "category": "status",
-          "type": {
-            "key": {
-              "type": "string",
-              "maxLength": 10
-            },
-            "min": 0,
-            "max": 1
           }
         }
       },
       "indexes": [
         [
-          "ip_address"
+          "ip_address",
+          "tcp_port"
         ]
       ]
     },
@@ -6647,14 +6616,14 @@
             }
           }
         },
-        "priority": {
+        "is_static": {
           "category": "status",
           "type": {
             "key": {
-              "type": "integer",
-              "minInteger": -1,
-              "maxInteger": 130
-            }
+              "type": "boolean"
+            },
+            "min": 0,
+            "max": 1
           }
         }
       },
@@ -6664,7 +6633,49 @@
         ]
       ],
       "isRoot": true,
-      "maxRows": 130
+      "maxRows": 32
+    },
+    "AAA_Server_Group_Prio": {
+      "columns": {
+        "session_type": {
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "set",
+                [
+                  "default"
+                ]
+              ]
+            }
+          }
+        },
+        "authentication_group_prio_list": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        },
+        "authorization_group_prio_list": {
+          "category": "configuration",
+          "type": {
+            "key": "string",
+            "value": "string",
+            "min": 0,
+            "max": "unlimited"
+          }
+        }
+      },
+      "indexes": [
+        [
+          "session_type"
+        ]
+      ],
+      "isRoot": true,
+      "maxRows": 32
     },
     "CLI_Alias": {
       "columns": {
