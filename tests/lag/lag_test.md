@@ -35,6 +35,10 @@ LAG Test Cases
 * [Static LAG statistics when aggregation members change](#static-lag-statistics-when-aggregation-members-change)
 * [Dynamic LAG statistics when aggregation members change](#dynamic-lag-statistics-when-aggregation-members-change)
 * [LAG statistics cleanup on aggregation recreation](#lag-statistics-cleanup-on-aggregation-recreation)
+* [Dynamic LAG with fallback in priority mode](#dynamic-lag-with-fallback-in-priority-mode)
+* [Dynamic LAG with fallback in priority mode and timeout](#dynamic-lag-with-fallback-in-priority-mode-and-timeout)
+* [Dynamic LAG fallback cli commands](#dynamic-lag-fallback-cli-commands)
+
 
 ## Create dynamic LAGs with different names
 ### Objective
@@ -1997,3 +2001,236 @@ To test LAG statistics cleanup do the following:
 #### Test fail criteria
  * The ping between the workstations fails.
  * The values reported by LAG statistics do not correspond with the LAG configuration and/or the counters with the sum of individual interfaces' counters.
+
+
+## Dynamic LAG with fallback in priority mode
+### Objective
+Verify that when lacp fallback is in priority mode and no partner is detected,
+only the interface with the highest priority forwards traffic.
+### Requirements
+The requirements for this test case are:
+
+ - 2 Switches running OpenSwitch
+ - 2 Workstations with IP addresses on the same range and capable of using iperf
+ - **FT file**: `ops-lacpd/ops-tests/feature/test_ft_lacp_fallback_priority.py`
+
+### Setup
+
+#### Topology diagram
+```ditaa
+ +-----------------+
+ |                 |
+ |  Workstation 1  |
+ |                 |
+ +-------+---------+
+         |
+         |
+   +-----+------+
+   |     3      |
+   |  switch 1  |
+   |   1   2    |
+   +---+---+----+
+       |   |
+       |   |     LAG 1
+       |   |
+   +---+---+----+
+   |   1   2    |
+   |  switch 2  |
+   |     3      |
+   +-----+------+
+         |
+         |
+ +-------+---------+
+ |                 |
+ |  Workstation 2  |
+ |                 |
+ +-----------------+
+```
+#### Test setup
+### Description
+Test case 1: When all the lag member interfaces have the same priority
+- Assign an IP address on the same range to each workstation.
+- Configure a L2 LAG on switches 1 and 2 and add interfaces 1 and 2.
+- Configure L2 LAGs and workstations interfaces with same VLAN.
+- Ping from workstation 1 to workstation 2.
+- Enable lacp fallback in both switches.
+- Disable lacp in siwtch 2.
+- On workstation 2, initiate an iperf UDP server.
+- On workstation 1, initiate an iperf UDP client and send traffic to the server in workstation 2.
+- Get the number of packets forwarded for each interface of the LAG in switch 1.
+- Enable lacp in siwtch 2.
+
+Test case 2: When the lag member interfaces have different priority
+- Set interface 1 lacp port priority to 10, and interface 2 lacp port priority to 2
+  in switch 1.
+- Disable lacp in siwtch 2.
+- On workstation 2, initiate an iperf UDP server.
+- On workstation 1, initiate an iperf UDP client and send traffic to the server in workstation 2.
+- Get the number of packets forwarded for each interface of the LAG in switch 1.
+
+
+### Test result criteria
+#### Test pass criteria
+ * The ping between the workstations succeeds.
+ * Only the interface with highest priority of the LAG is used to forward traffic when lacp in disabled in switch 2.
+   When both interfaces have the same priority, only one forwards traffic.
+
+#### Test fail criteria
+ * The ping between the workstations fails.
+ * The interface with lowest priority of the LAG is used to forward traffic when lacp in disabled in switch 2.
+   When both interfaces have the same priority, both forward traffic.
+
+
+## Dynamic LAG with fallback in priority mode and timeout
+### Objective
+Verify that when lacp fallback is in priority mode and partner is not detected,
+the period during which the interface with the highest priority forwards traffic
+is given by the fallback timeout.
+### Requirements
+The requirements for this test case are:
+
+ - 2 Switches running OpenSwitch
+ - 2 Workstations with IP addresses on the same range and capable of using iperf
+ - **FT file**: `ops-lacpd/ops-tests/feature/test_ft_lacp_fallback_timeout_priority.py`
+
+### Setup
+
+#### Topology diagram
+```ditaa
+ +-----------------+
+ |                 |
+ |  Workstation 1  |
+ |                 |
+ +-------+---------+
+         |
+         |
+   +-----+------+
+   |     3      |
+   |  switch 1  |
+   |   1   2    |
+   +---+---+----+
+       |   |
+       |   |     LAG 1
+       |   |
+   +---+---+----+
+   |   1   2    |
+   |  switch 2  |
+   |     3      |
+   +-----+------+
+         |
+         |
+ +-------+---------+
+ |                 |
+ |  Workstation 2  |
+ |                 |
+ +-----------------+
+```
+#### Test setup
+### Description
+Test case 1: When all the lag member interfaces have the same priority
+- Assign an IP address on the same range to each workstation.
+- Configure a L2 LAG on switches 1 and 2 and add interfaces 1 and 2.
+- Configure L2 LAGs and workstations interfaces with same VLAN.
+- Ping from workstation 1 to workstation 2.
+- Enable lacp fallback in both switches.
+- Set lacp fallback timeout to 60 seconds in both switches.
+- Disable lacp in siwtch 2.
+- On workstation 2, initiate an iperf UDP server.
+- On workstation 1, initiate an iperf UDP client and send traffic to the server in workstation 2.
+- Get the number of packets forwarded for each interface of the LAG in switch 1.
+- Sleep 20 seconds and repeat last 2 steps. Do the same one more time.
+- Wait until lacp timeout has expired.
+- On workstation 1, initiate an iperf UDP client and send traffic to the server in workstation 2.
+- Get the number of packets forwarded for each interface of the LAG in switch 1.
+- Enable lacp in siwtch 2.
+
+Test case 2: When the lag member interfaces have different priority
+- Set interface 1 lacp port priority to 10, and interface 2 lacp port priority to 2
+  in switch 1.
+- On workstation 2, initiate an iperf UDP server.
+- On workstation 1, initiate an iperf UDP client and send traffic to the server in workstation 2.
+- Get the number of packets forwarded for each interface of the LAG in switch 1.
+- Sleep 20 seconds and repeat last 2 steps. Do the same one more time.
+- Wait until lacp timeout has expired.
+- On workstation 1, initiate an iperf UDP client and send traffic to the server in workstation 2.
+- Get the number of packets forwarded for each interface of the LAG in switch 1.
+
+
+### Test result criteria
+#### Test pass criteria
+ * The ping between the workstations succeeds.
+ * Only the interface with highest priority of the LAG is used to forward traffic while the lacp fallback timeout has not expired.
+   When both interfaces have the same priority, only one forwards traffic.
+ * When the lacp fallback timeout has expired, none of the LAG interfaces forwards traffic.
+
+#### Test fail criteria
+ * The ping between the workstations fails.
+ * The interface with lowest priority of the LAG is used to forward traffic while the lacp fallback timeout has not expired.
+   When both interfaces have the same priority, both forward traffic.
+ * When the lacp fallback timeout has expired, at least one of the LAG interfaces forwards traffic.
+
+
+## Dynamic LAG fallback cli commands
+### Objective
+Verify cli command '[no] lacp fallback' sets lacp fallback mode properly.
+Verify cli command '[no] lacp fallback timeout <timeout>' sets lacp fallback timeout properly.
+### Requirements
+The requirements for this test case are:
+
+ - 2 Switches running OpenSwitch
+ - **FT file**: `ops-lacpd/ops-tests/feature/test_ft_lacp_fallback_vtysh.py`
+
+### Setup
+
+#### Topology diagram
+```ditaa
+   +-----+------+
+   |     3      |
+   |  switch 1  |
+   |   1   2    |
+   +---+---+----+
+       |   |
+       |   |     LAG 1
+       |   |
+   +---+---+----+
+   |   1   2    |
+   |  switch 2  |
+   |     3      |
+   +-----+------+
+```
+#### Test setup
+### Description
+Fallback mode:
+- Create a LAG on switches 1 and 2 and add interfaces 1 and 2.
+- Execute cli command 'lacp fallback' for LAG 1in switch 1.
+- Execute cli commands 'show lacp aggregates', 'show running-config' and 'show running-config interface'.
+- Execute cli command 'no lacp fallback' for LAG 1in switch 1.
+- Execute cli commands 'show lacp aggregates', 'show running-config' and 'show running-config interface'.
+
+Fallback timeout:
+- Execute cli command 'lacp fallback timeout 60' for LAG 1in switch 1.
+- Execute cli commands 'show lacp aggregates', 'show running-config' and 'show running-config interface'.
+- Execute cli command 'no lacp fallback timeout 60' for LAG 1in switch 1.
+- Execute cli commands 'show lacp aggregates', 'show running-config' and 'show running-config interface'.
+
+
+### Test result criteria
+#### Test pass criteria
+ * When fallback is enabled, 'show lacp aggregates' displays that lacp fallback is true, 'show running-config'
+   and 'show running-config interface' show that fallback is set.
+ * When fallback is disabled, 'show lacp aggregates' displays that lacp fallback is false, 'show running-config'
+   and 'show running-config interface' show that fallback is not set.
+ * When fallback timeout is set, 'show lacp aggregates', 'show running-config'
+   and 'show running-config interface' show that fallback timeout is set to 60.
+ * When fallback timeout is not set, 'show lacp aggregates' displays that lacp fallback timeout is zero,
+   'show running-config' and 'show running-config interface' show that fallback timeout is not set.
+
+#### Test fail criteria
+ * When fallback is enabled, 'show lacp aggregates' does not display that lacp fallback is true, 'show running-config'
+   or 'show running-config interface' does not show that fallback is set.
+ * When fallback is disabled, 'show lacp aggregates' does not display that lacp fallback is false, 'show running-config'
+   or 'show running-config interface' show that fallback is set.
+ * When fallback timeout is set, 'show lacp aggregates', 'show running-config'
+   or 'show running-config interface' does not show that fallback timeout is set to 60.
+ * When fallback timeout is not set, 'show lacp aggregates' does not display that lacp fallback timeout is zero,
+   'show running-config' or 'show running-config interface' show that fallback timeout is set.
