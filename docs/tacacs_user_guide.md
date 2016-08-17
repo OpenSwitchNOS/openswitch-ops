@@ -133,8 +133,7 @@ Out of these 3 are default server-groups (local, radius, tacacs+).
 Hence 29 user-defined groups are allowed.
 The user-defined group cannot be named "local", "radius" or "tacacs+".
 Predefined TACACS+ servers can then be added to this group.
-Whenever this is done, the server is removed from the default "tacacs+" family
-group and added to the user-defined group.
+The server continues to be part of the default "tacacs+" family group.
 For authentication using a server-group, the servers will be accessed in the
 same order in which they were added to the group.
 ```
@@ -145,8 +144,8 @@ same order in which they were added to the group.
 
 ### Deleting a server-group
 Only a pre-configured user-defined TACACS+ server-group can be deleted.
-On doing so, all the servers belonging to it are returned back and
-appended to the default "tacacs+" family group.
+The servers belonging to the group being deleted are still a part of the
+default "tacacs+" family group.
 ```
 switch(config)# no aaa group server tacacs+ <group-name>
 ```
@@ -172,7 +171,7 @@ switch(config)# aaa authentication login default group TacGroup1 TacGroup2 local
 
 ### Deleting authentication sequence
 A configured sequence of server-groups for authentication can be deleted
-by the following CLI - 
+by the following CLI -
 ```
 switch(config)# no aaa authentication login default
 ```

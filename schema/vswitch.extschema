@@ -6546,7 +6546,7 @@
           }
         },
         "auth_type": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": {
               "type": "string",
@@ -6557,7 +6557,9 @@
                   "chap"
                 ]
               ]
-            }
+            },
+            "min": 0,
+            "max": 1
           }
         },
         "group": {
@@ -6570,13 +6572,21 @@
             }
           }
         },
-        "priority": {
-          "category": "status",
+        "group_priority": {
+          "category": "configuration",
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 1,
-              "maxInteger": 64
+              "minInteger": 0
+            }
+          }
+        },
+        "default_priority": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 1
             }
           }
         }

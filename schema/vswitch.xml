@@ -6808,11 +6808,20 @@
 
       <column name="group">
           Specifies the TACACS+ server-group that it belongs to.
+          Can be the default family group or user-defined group.
       </column>
 
-      <column name="priority">
+      <column name="group_priority">
           Specifies the order in which TACACS+ servers are configured
-          within a server group.
+          within a server group. This is an increasing counter
+          starting with 1. In case this server is not part of a user
+          defined group, this will be set to 0.
+      </column>
+
+      <column name="default_priority">
+          Specifies the order in which TACACS+ servers are configured.
+          By default they are added to the default family group.
+          This is an increasing counter starting with 1.
       </column>
 
   </table>
