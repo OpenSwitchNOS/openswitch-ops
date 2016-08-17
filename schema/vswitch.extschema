@@ -6660,20 +6660,34 @@
             }
           }
         },
-        "authentication_group_prio_list": {
+        "authentication_group_prios": {
           "category": "configuration",
+          "relationship": "1:m",
           "type": {
-            "key": "string",
-            "value": "string",
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "AAA_Server_Group"
+            },
             "min": 0,
             "max": "unlimited"
           }
         },
-        "authorization_group_prio_list": {
+        "authorization_group_prios": {
           "category": "configuration",
+          "relationship": "1:m",
           "type": {
-            "key": "string",
-            "value": "string",
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            },
+            "value": {
+              "type": "uuid",
+              "refTable": "AAA_Server_Group"
+            },
             "min": 0,
             "max": "unlimited"
           }
