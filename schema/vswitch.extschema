@@ -5509,6 +5509,48 @@
               "type": "string"
             }
           }
+        },
+        "mcast_group_ip": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "string",
+                    "maxLength": 45
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "replication_group_ips": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "string",
+                    "maxLength": 45
+                },
+                "min": 0,
+                "max": "unlimited"
+            }
+        },
+        "vni_name": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "string"
+                },
+                "min": 0,
+                "max": 1
+            }
+        },
+        "vni_description": {
+            "category": "configuration",
+            "type": {
+                "key": {
+                    "type": "string"
+                },
+                "min": 0,
+                "max": 1
+            }
         }
       },
       "indexes": [
