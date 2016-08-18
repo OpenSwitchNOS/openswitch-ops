@@ -3826,6 +3826,25 @@
         to <code>false</code> to disable.
       </column>
 
+      <group title="Tunnel Options: vxlan only">
+        <p>
+          Only <code>vxlan</code> interfaces support these options.
+        </p>
+
+        <column name="options" key="vxlan_udp_port"
+                type='{"type": "integer"}'>
+          Optional. The udp port can be user configurable. It ranges from 0
+          to 65536. Default is 4789.
+        </column>
+
+        <column name="options" key="vxlan_udp_port"
+                type='{"type": "integer"}'>
+          Optional. The udp port can be user configurable. It ranges from 0
+          to 65536. Default is 4789.
+        </column>
+
+      </group>
+
       <group title="Tunnel Options: ipsec_gre only">
         <p>
           Only <code>ipsec_gre</code> interfaces support these options.
@@ -4519,6 +4538,65 @@
         </column>
         <column name="queue_tx_errors" keyname="queue_number">
           For each outbound queue, a count of the queue's total transmit errors or drops.
+        </column>
+      </group>
+      <group title="Statistics: VxLAN Statistics">
+        <column name="statistics" key="encap_bytes">
+          Number of encapsulated bytes.
+        </column>
+        <column name="statistics" key="encap_pkts">
+          Number of encapsulated packets.
+        </column>
+        <column name="statistics" key="encap_read_err">
+          Encapsulation read error.
+        </column>
+        <column name="statistics" key="encap_discard_runt">
+          Encapsulation discard runt.
+        </column>
+        <column name="statistics" key="encap_discard_vlan_range">
+          Encapsulation discard vlan range.
+        </column>
+        <column name="statistics" key="encap_discard_vlan_map">
+          Encapsulation discard vlan map.
+        </column>
+        <column name="statistics" key="encap_send_err">
+          Encapsulation send error.
+        </column>
+        <column name="statistics" key="encap_timeout">
+          Encapsulation timeout.
+        </column>
+        <column name="statistics" key="decap_bytes_total">
+          Total number of decapsulated bytes.
+        </column>
+        <column name="statistics" key="decap_pkts_total">
+          Total number of decapsulated packets.
+        </column>
+        <column name="statistics" key="decap_bytes">
+          Number of decapsulated bytes.
+        </column>
+        <column name="statistics" key="decap_pkts">
+          Number of decapsulated packets.
+        </column>
+        <column name="statistics" key="decap_runt">
+          Decapsulation runt.
+        </column>
+        <column name="statistics" key="decap_pkt_filter">
+          Decapsulation packet filter.
+        </column>
+        <column name="statistics" key="decap_bytes_filter">
+          Decapsulation bytes filter.
+        </column>
+        <column name="statistics" key="decap_discard_vxhdr">
+          Decapsulation discard vxhdr.
+        </column>
+        <column name="statistics" key="decap_discard_vlan_map">
+          Decapsulation discard vlan map.
+        </column>
+        <column name="statistics" key="decap_timeout">
+          Decapsulation timeout.
+        </column>
+        <column name="statistics" key="decap_sock_err">
+          Decapsulation socket error.
         </column>
       </group>
     </group>
@@ -6613,8 +6691,17 @@
         Tunnel key used in the overlay.
         For VXLAN, this is the VNI.
       </column>
-      <column name="from">
-        The entity managing the overlay.
+      <column name="mcast_group_ip">
+        Optional. Multicast group IP.
+      </column>
+      <column name="replication_group_ips">
+        Optional. Replication group IPs.
+      </column>
+      <column name="vni_name">
+        Name of the tunnel.
+      </column>
+      <column name="vni_description">
+        Description of the tunnel.
       </column>
   </table>
 
