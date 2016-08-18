@@ -210,6 +210,18 @@ enum ovsrec_interface_user_config_duplex_e {
     INTERFACE_USER_CONFIG_DUPLEX_FULL
 };
 
+#define INTERFACE_USER_CONFIG_MAP_ERROR_CONTROL                 "error_control"
+
+#define INTERFACE_USER_CONFIG_MAP_ERROR_CONTROL_NONE            "none"
+#define INTERFACE_USER_CONFIG_MAP_ERROR_CONTROL_FC_FEC          "fc-fec"
+#define INTERFACE_USER_CONFIG_MAP_ERROR_CONTROL_RS_FEC          "rs-fec"
+
+enum ovsrec_interface_user_config_error_control_e {
+    INTERFACE_USER_CONFIG_ERROR_CONTROL_NONE,
+    INTERFACE_USER_CONFIG_ERROR_CONTROL_FC_FEC,
+    INTERFACE_USER_CONFIG_ERROR_CONTROL_RS_FEC
+};
+
 #define INTERFACE_USER_CONFIG_MAP_LANE_SPLIT                    "lane_split"
 #define INTERFACE_USER_CONFIG_MAP_LANE_SPLIT_NO_SPLIT           "no-split"
 #define INTERFACE_USER_CONFIG_MAP_LANE_SPLIT_SPLIT              "split"
@@ -269,6 +281,18 @@ enum ovsrec_interface_hw_intf_config_pause_e {
 };
 
 #define INTERFACE_HW_INTF_CONFIG_MAP_MTU                        "mtu"
+
+#define INTERFACE_HW_INTF_CONFIG_MAP_ERROR_CONTROL              "error_control"
+
+#define INTERFACE_HW_INTF_CONFIG_MAP_ERROR_CONTROL_NONE         "none"
+#define INTERFACE_HW_INTF_CONFIG_MAP_ERROR_CONTROL_FC_FEC       "fc-fec"
+#define INTERFACE_HW_INTF_CONFIG_MAP_ERROR_CONTROL_RS_FEC       "rs-fec"
+
+enum ovsrec_interface_hw_intf_config_error_control_e {
+    INTERFACE_HW_INTF_CONFIG_ERROR_CONTROL_NONE,
+    INTERFACE_HW_INTF_CONFIG_ERROR_CONTROL_FC_FEC,
+    INTERFACE_HW_INTF_CONFIG_ERROR_CONTROL_RS_FEC
+};
 
 #define INTERFACE_HW_INTF_CONFIG_MAP_INTERFACE_TYPE             "interface_type"
 
