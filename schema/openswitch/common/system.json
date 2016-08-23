@@ -249,7 +249,7 @@
                   "then the crash count may be positive; if it is, the latter duration is the",
                   "amount of time since the most recent crash and restart.",
                   "",
-                  "There will be one key-value pair for each file in OpenSwitch's ``run directory''",
+                  "There will be one key-value pair for each file in OpenSwitch's *run directory*",
                   "(usually `/var/run/openvswitch`) whose name ends in `.pid`, whose contents are a",
                   "process ID, and which is locked by a running process.  The _name_ is taken from",
                   "the pidfile's name."
@@ -1350,6 +1350,23 @@
           ],
           "group": "/Database Configuration"
         },
+        "tacacs_servers": {
+          "category": "configuration",
+          "relationship": "1:m",
+          "type": {
+            "key": {
+              "type": "uuid",
+              "refTable": "Tacacs_Server"
+            },
+            "min": 0,
+            "max": 64
+          },
+          "doc": [
+            "Specifies tacacs+ servers configuration. See the [Tacacs_Server](Tacacs_Server)",
+            "table for more information."
+          ],
+          "group": "/Database Configuration"
+        },
         "ecmp_config": {
           "category": "configuration",
           "type": {
@@ -1420,6 +1437,18 @@
             "omitCodeGeneration": true,
             "valueType": "string",
             "valueMap": {
+              "fail_through": {
+                "type": "boolean",
+                "doc": [
+                  "This determines whether to access the next remote AAA server",
+                  "in case of an authentication failure from the current one",
+                  "If true, the next server in line will be accessed.",
+                  "If false, the authentication process will be aborted at the",
+                  "first instance of an authentication failure."
+                ],
+                "group": "/Database Configuration",
+                "emptyValue": "false"
+              },
               "radius_auth": {
                 "type": {
                   "type": "string",
@@ -1455,6 +1484,60 @@
                 ],
                 "group": "/Database Configuration",
                 "emptyValue": "false"
+              },
+              "tacacs_timeout": {
+                "type": {
+                   "type": "integer",
+                   "minInteger": 0,
+                   "maxInteger": 60
+                },
+                "doc": [
+                  "This column used for AAA feature. ",
+                  "Specifies the timeout interval that the switch waits for response",
+                  "from the TACACS+ server before declaring a timeout failure.",
+                  "Default timeout value is 5 seconds."
+                ],
+                "group": "/TACACS+ global configuration",
+                "emptyValue": "5"
+              },
+              "tacacs_tcp_port": {
+                "type": {
+                   "type": "integer",
+                   "minInteger": 1,
+                   "maxInteger": 65535
+                },
+                "doc": [
+                  "This column used for AAA feature. ",
+                  "Specifies the tcp port number used for exchanging TACACS+ messages",
+                  "between the client and server. Default tcp port number is 49."
+                ],
+                "group": "/TACACS+ global configuration",
+                "emptyValue": "49"
+              },
+              "tacacs_passkey": {
+                "type": "string",
+                "doc": [
+                  "This column used for AAA feature. ",
+                  "Specifies the shared secret key between the TACACS+ client",
+                  "and the TACACS+ server. Default passkey is 'testing123-1'."
+                ],
+                "group": "/TACACS+ global configuration",
+                "emptyValue": "testing123-1"
+              },
+             "tacacs_auth": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "pap",
+                    "chap"
+                  ]
+                },
+                "doc": [
+                  "Specifies encoding to be used for the user password for tacacs+",
+                  "authentication. By default `pap` is used."
+                ],
+                "group": "/TACACS+ global configuration",
+                "emptyValue": "pap"
               },
               "ssh_publickeyauthentication_enable": {
                 "type": "boolean",
