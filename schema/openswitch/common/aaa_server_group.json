@@ -62,9 +62,7 @@
             "The 3 default family groups (local, radius, tacacs) are static.",
             "They are created during init time.",
             "The other 29 groups are the user-defined"
-          ],
-          "min": 0,
-          "max": 1
+          ]
         }
       },
       "indexes": [
