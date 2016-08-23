@@ -89,10 +89,6 @@ class DeleteNonExistentVlan(OpsVsiTest):
             "Response status received: %s\n" % response_status
         info("Response status received: \"%s\"\n" % response_status)
 
-        assert response_data is "", \
-            "Response data received: %s\n" % response_data
-        info("Response data received: %s\n" % response_data)
-
         info("########## Executing DELETE for %s DONE "
              "##########\n" % self.vlan_path)
 
@@ -145,7 +141,7 @@ class DeleteExistentVlan(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_id = 1
+        self.vlan_id = 2
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.cookie_header = None

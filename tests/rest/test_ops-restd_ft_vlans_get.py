@@ -147,7 +147,7 @@ class QueryVlansAssociated(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_id = 1
+        self.vlan_id = 2
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.cookie_header = None
@@ -227,7 +227,7 @@ class QueryVlanByName(OpsVsiTest):
 
         self.path = "/rest/v1/system/bridges"
         self.switch_ip = get_switch_ip(self.net.switches[0])
-        self.vlan_id = 1
+        self.vlan_id = 2
         self.vlan_name = "fake_vlan"
         self.vlan_path = "%s/%s/vlans" % (self.path, DEFAULT_BRIDGE)
         self.cookie_header = None
@@ -237,7 +237,7 @@ class QueryVlanByName(OpsVsiTest):
 
         expected_configuration_data = {}
         expected_configuration_data["name"] = "%s" % self.vlan_name
-        expected_configuration_data["id"] = 1
+        expected_configuration_data["id"] = 2
         expected_configuration_data["description"] = "test_vlan"
         expected_configuration_data["admin"] = "up"
         #expected_configuration_data["other_config"] = {}
@@ -339,10 +339,6 @@ class QueryNonExistentVlanByName(OpsVsiTest):
         assert response_status == httplib.NOT_FOUND, \
             "Response status received: %s\n" % response_status
         info("Response status received: %s\n" % response_status)
-
-        assert response_data == "", \
-            "Response data received: %s" % response_data
-        info("Response data received: %s\n" % response_data)
 
         info("########## Executing GET to /system/bridges/{id}/vlans/{id} "
              "DONE ##########\n")

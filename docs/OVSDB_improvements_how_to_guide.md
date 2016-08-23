@@ -9,13 +9,13 @@ This document describes how to use those improvements to OVSDB. These
 improvements are currently available only for the C IDL.
 
 ## Improvements
-1. [Partial update of map columns](#partial_map_updates)
-2. [On-demand fetching of non-monitored data](#on_demand_fetching)
-3. [Compound indexes](#compound_indexes)
-4. [Priority Sessions](#Priority-Sessions)
-5. [Wait Monitoring and Blocking Waits](#Wait-Monitoring-and-Blocking-Waits)
+1. [Partial update of map columns](#partial-map-updates)
+2. [On-demand fetching of non-monitored data](#on-demand-fetching-of-non-monitored-data)
+3. [Compound indexes](#compound-Indexes)
+4. [Priority Sessions](#priority-sessions)
+5. [Wait Monitoring and Blocking Waits](#wait-monitoring-and-blocking-waits)
 
-## Partial update of map columns <a name="#partial_map_updates"></a>
+## Partial update of map columns
 
 ### How to use this feature
 
@@ -78,7 +78,7 @@ ovsdb_idl_txn_commit_block(myTxn);
 ovsdb_idl_txn_destroy(myTxn);
 ```
 
-## On-demand fetching of non-monitored data <a name="on_demand_fetching"></a>
+## On-demand fetching of non-monitored data
 
 ### Changes to the C IDL
 
@@ -166,7 +166,7 @@ sequence number changed, check if the request was already processed. To do this,
 use the `*_is_pending()` functions needs to be used. For example current
 example the correct function is: `ovsrec_interface_is_row_fetch_pending()`.
 
-## Compound Indexes <a name="#indexes"></a>
+## Compound Indexes
 
 ### C IDL API
 
@@ -477,6 +477,33 @@ The client can iterate over the `wait_update` requests using the following code:
 ```c
 struct ovsdb_idl_wait_update *req, *next;
 WAIT_UPDATE_FOR_EACH_SAFE(req, next, idl) {
+    /* Do something with req
+     * struct ovsdb_idl_wait_update includes the requested
+     * table, rows and columns.
+     */
+
+    /* Unblock the client's blocking_wait. If the blocking wait
+     * isn't unblocked then it will timeout and the whole
+     * transaction will fail. */
+    ovsdb_idl_wait_unblock(idl, req);
+
+    /* Remove the request from the requests list */
+    ovsdb_idl_wait_update_destroy(req);
+}
+```
+
+Additional to the `WAIT_UPDATE_FOR_EACH_SAFE` there is a `WAIT_UPDATE_FOR_EACH_POP`
+that automatically removes the request from the list, but *doesn't release its memory*,
+so the developer still *must release it* using `ovsdb_idl_wait_update_destroy`.
+
+This last one is useful if the developer is moving the request to an internal queue,
+to be processed later.
+
+It is used in a similar way to `WAIT_UPDATE_FOR_EACH_SAFE`:
+
+```c
+struct ovsdb_idl_wait_update *req;
+WAIT_UPDATE_FOR_EACH_POP(req, idl) {
     /* Do something with req
      * struct ovsdb_idl_wait_update includes the requested
      * table, rows and columns.
