@@ -7,22 +7,35 @@
     "Logical_Switch": {
       "columns": {
         "name": {
-          "category": "status",
-          "type": "string",
-          "mutable": false,
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": 1
+          },
           "doc": [
             "Name of the overlay network."
           ]
         },
         "description": {
-          "category": "status",
-          "type": "string",
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "min": 0,
+            "max": 1
+          },
           "doc": [
             "Description of the overlay network."
           ]
         },
         "bridge": {
-          "category": "status",
+          "category": "configuration",
           "relationship": "m:1",
           "type": {
             "key": {
@@ -31,12 +44,13 @@
               "refType": "weak"
             }
           },
+          "mutable": false,
           "doc": [
             "Reference to a [Bridge](Bridge) participating in the overlay."
           ]
         },
         "tunnel_key": {
-          "category": "status",
+          "category": "configuration",
           "type": {
             "key": {
               "type": "integer",
@@ -44,6 +58,7 @@
               "maxInteger": 4294967295
             }
           },
+          "mutable": false,
           "doc": [
             "Tunnel key used in the overlay. For VXLAN, this is the VNI."
           ]
@@ -60,6 +75,48 @@
           },
           "doc": [
             "The entity managing the overlay."
+          ]
+        },
+        "mcast_group_ip": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 45
+            },
+            "min": 0,
+            "max": 1
+          },
+          "doc": [
+            "Optional. Multicast group IP."
+          ]
+        },
+        "replication_group_ips": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 45
+            },
+            "min": 0,
+            "max": "unlimited"
+          },
+          "doc": [
+            "Optional. Replication group IPs."
+          ]
+        },
+        "ip_addr": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "maxLength": 45
+            },
+            "min": 0,
+            "max": 1
+          },
+          "doc": [
+            "Optional. Routed network IP address."
           ]
         }
       },
