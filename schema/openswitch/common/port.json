@@ -116,9 +116,9 @@
           "relationship": "reference",
           "type": {
             "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4094
+              "type": "uuid",
+              "refTable": "VLAN",
+              "refType": "weak"
             },
             "value": {
               "type": "uuid",

@@ -344,6 +344,125 @@
                   "Number of received ipv4 unicast bytes."
                 ],
                 "group": "/Statistics/Layer3/IP Statistics"
+              },
+              "encap_bytes": {
+                "type": "integer",
+                "doc": [
+                  "Number of encapsulated bytes."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "encap_pkts": {
+                "type": "integer",
+                "doc": [
+                  "Number of encapsulated packets."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "encap_read_err": {
+                "type": "integer",
+                "doc": [
+                  "Encapsulation read error."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "encap_discard_runt": {
+                "type": "integer",
+                "doc": [
+                  "Encapsulation discard runt."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "encap_discard_vlan_range": {
+                "type": "integer",
+                "doc": [
+                  "Encapsulation discard vlan range."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "encap_send_err": {
+                "type": "integer",
+                "doc": [
+                  "Encapsulation send error."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "encap_timeout": {
+                "type": "integer",
+                "doc": [
+                  "Encapsulation timeout."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_bytes_total": {
+                "type": "integer",
+                "doc": [
+                  "Total number of decapsulated bytes."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_pkts_total": {
+                "type": "integer",
+                "doc": [
+                  "Total number of decapsulated packets."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_bytes": {
+                "type": "integer",
+                "doc": [
+                  "Number of decapsulated bytes."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_pkts": {
+                "type": "integer",
+                "doc": [
+                  "Number of decapsulated packets."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_runt": {
+                "type": "integer",
+                "doc": [
+                  "Decapsulation runt."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_pkt_filter": {
+                "type": "integer",
+                "doc": [
+                  "Decapsulation packet filter."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_bytes_filter": {
+                "type": "integer",
+                "doc": [
+                  "Decapsulation bytes filter."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_discard_vxhdr": {
+                "type": "integer",
+                "doc": [
+                  "Decapsulation discard vxhdr."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_timeout": {
+                "type": "integer",
+                "doc": [
+                  "Decapsulation timeout."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
+              },
+              "decap_sock_err": {
+                "type": "integer",
+                "doc": [
+                  "Decapsulation socket error."
+                ],
+                "group": "/Statistics/VxLAN tunnel Statistics"
               }
             },
             "min": 0,
@@ -355,7 +474,8 @@
             "/Statistics/Statistics: Receive errors",
             "/Statistics/Statistics: Transmit errors",
             "/Statistics/Layer3/IP Statistics",
-            "/Statistics/sFlow Statistics"
+            "/Statistics/sFlow Statistics",
+            "/Statistics/VxLAN tunnel Statistics"
           ]
         },
         "queue_tx_bytes": {
@@ -1305,6 +1425,32 @@
                   "",
                   "+ An IPv4 address (not a DNS name), e.g. `192.168.0.123`. Only unicast endpoints",
                   "are supported."
+                ],
+                "group": "/Tunnel Options"
+              },
+              "tunnel_source_ip": {
+                "type": "string",
+                "doc": [
+                  "Required.  The the source IP address to be used for encapsulation.",
+                  "Either tunnel_source_ip or tunnel_source_intf needs to be specified but",
+                  "not both."
+                ],
+                "group": "/Tunnel Options"
+              },
+              "tunnel_source_intf": {
+                "type": "string",
+                "doc": [
+                  "Required.  The the source interface to be used as source IP.",
+                  "Either tunnel_source_ip or tunnel_source_intf needs to be specified but",
+                  "not both."
+                ],
+                "group": "/Tunnel Options"
+              },
+              "vxlan_udp_port": {
+                "type": "integer",
+                "doc": [
+                  "Required.  The udp port for vxlan.",
+                  "Default udp port is 4789"
                 ],
                 "group": "/Tunnel Options"
               }
