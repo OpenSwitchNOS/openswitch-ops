@@ -490,6 +490,19 @@
           ],
           "group": "/ACL Status"
         },
+        "tunnel_key": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0,
+              "maxInteger": 4294967295
+            }
+          },
+          "doc": [
+            "Tunnel key used in the overlay. For VXLAN, this is the VNI."
+          ]
+        },
         "other_config": {
           "category": "configuration",
           "type": {
