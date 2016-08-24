@@ -112,18 +112,16 @@
           }
         },
         "vlan_tunnel_keys": {
-          "category": "status",
+          "category": "configuration",
           "relationship": "reference",
           "type": {
             "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4094
+              "type": "uuid",
+              "refTable": "VLAN"
             },
             "value": {
               "type": "uuid",
-              "refTable": "Logical_Switch",
-              "refType": "weak"
+              "refTable": "Logical_Switch"
             },
             "min": 0,
             "max": 4095
