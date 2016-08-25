@@ -1437,6 +1437,18 @@
             "omitCodeGeneration": true,
             "valueType": "string",
             "valueMap": {
+              "fail_through": {
+                "type": "boolean",
+                "doc": [
+                  "This determines whether to access the next remote AAA server",
+                  "in case of an authentication failure from the current one",
+                  "If true, the next server in line will be accessed.",
+                  "If false, the authentication process will be aborted at the",
+                  "first instance of an authentication failure."
+                ],
+                "group": "/Database Configuration",
+                "emptyValue": "false"
+              },
               "radius_auth": {
                 "type": {
                   "type": "string",
