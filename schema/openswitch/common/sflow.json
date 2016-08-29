@@ -166,6 +166,35 @@
           ],
           "emptyValue": "ipv4"
         },
+        "other_config": {
+          "category": "configuration",
+          "type": {
+            "valueType": "string",
+            "valueMap": {
+              "sampling_direction": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "bidirectional",
+                    "ingress",
+                    "egress"
+                  ]
+                },
+                "doc": [
+                  "Determines whether sFlow sampling is enabled for ingress traffic or",
+                  "egress traffic or both. `ingress` samples ingress traffic only,",
+                  "`egress` samples egress traffic only and `bidirectional` samples both."
+                ],
+                "emptyValue": "bidirectional"
+              },
+            },
+            "min": 0,
+            "max": "unlimited"
+          },
+          "group": [
+            "/Common Columns"
+          ]
+        },
         "external_ids": {
           "category": "configuration",
           "type": {
