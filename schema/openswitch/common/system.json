@@ -1514,7 +1514,7 @@
                 "group": "/TACACS+ global configuration",
                 "emptyValue": "49"
               },
-              "tacacs_tcp_port": {
+              "tacacs_passkey": {
                 "type": "string",
                 "doc": [
                   "This column used for AAA feature. ",
@@ -1538,14 +1538,6 @@
                 ],
                 "group": "/TACACS+ global configuration",
                 "emptyValue": "pap"
-              },
-              "tacacs_authorization_enable": {
-                "type": "boolean",
-                "doc": [
-                  "Specifies whether authorization with TACACS+ is enabled. Default is false."
-                ],
-                "group": "/TACACS+ global configuration",
-                "emptyValue": "false"
               },
               "ssh_publickeyauthentication_enable": {
                 "type": "boolean",
