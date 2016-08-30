@@ -43,6 +43,7 @@
           "doc": [
             "Specifies the list of AAA-server-groups and the order in which they",
             "will be applied for authentication.",
+            "",
             "For example: 1=UUID1, 2=UUID2 ...",
             "If no server groups are mentioned, the local authentication is used.",
             "The local group has a default priority of 0",
@@ -68,6 +69,7 @@
           "doc": [
             "Specifies the list of AAA-server-groups and the order in which they",
             "will be applied for authorization.",
+            "",
             "For example: 1=UUID1, 2=UUID2 ...",
             "The local group has a default priority of 0",
             "A positive priority is applied to the server groups upon configuration."
