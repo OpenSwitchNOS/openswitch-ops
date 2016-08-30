@@ -8,7 +8,10 @@
       "columns": {
         "ip_address": {
           "category": "configuration",
-          "type": "string",
+          "key": {
+              "type": "string",
+              "maxLength": 45
+          }
           "mutable": false,
           "doc": [
             "IPV4/IPV6 address or FQDN of the TACACS+ server."
@@ -35,9 +38,7 @@
             "key": {
               "type": "string",
               "maxLength": 63
-            },
-            "min": 0,
-            "max": 1
+            }
           },
           "doc": [
             "Specifies the shared secret key between the TACACS+ client",
@@ -52,9 +53,7 @@
               "type": "integer",
               "minInteger": 1,
               "maxInteger": 60
-            },
-            "min": 0,
-            "max": 1
+            }
           },
           "doc": [
             "Specifies the timeout interval that the switch waits for response",
@@ -72,9 +71,7 @@
                 "pap",
                 "chap"
               ]
-            },
-            "min": 0,
-            "max": 1
+            }
           },
           "doc": [
             "Specifies the authentication method (pap/chap) used.",
