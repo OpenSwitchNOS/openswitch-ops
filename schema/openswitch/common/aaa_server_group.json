@@ -14,7 +14,7 @@
               "enum": [
                 "local",
                 "radius",
-                "tacacs+"
+                "tacacs"
               ]
             }
           },
