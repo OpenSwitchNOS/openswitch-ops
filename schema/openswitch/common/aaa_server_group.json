@@ -12,6 +12,7 @@
             "key": {
               "type": "string",
               "enum": [
+                "none",
                 "local",
                 "radius",
                 "tacacs_plus"
@@ -19,18 +20,22 @@
             }
           },
           "doc": [
-            "Either local, radius or tacacs+",
-            "Group 0: local: Special group that contains no servers.",
+            "Either none, local, radius or tacacs_plus",
+            "Group 0: none: Special group that contains no servers.",
+            "         Corresponds to no command authorization. All the commands",
+            "         will be authorized",
+            "",
+            "Group 1: local: Special group that contains no servers.",
             "         More of a place-holder to capture the order to be followed",
             "         for authentication",
             "",
-            "Group 1: radius: Default family group containing all RADIUS servers",
+            "Group 2: radius: Default family group containing all RADIUS servers",
             "         in the order in which they were configured.",
             "",
-            "Group 2: tacacs+: Default family group containing all TACACS+ servers",
+            "Group 3: tacacs_plus: Default family group containing all TACACS+ servers",
             "         in the order in which they were configured.",
             "",
-            "Group 3-32: User groups.",
+            "Group 4-32: User groups.",
             "         A RADIUS user-group will contain RADIUS servers alone",
             "         A TACACS+ user-group will contain TACACS+ servers alone"
           ],
