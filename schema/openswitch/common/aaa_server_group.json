@@ -12,6 +12,7 @@
             "key": {
               "type": "string",
               "enum": [
+                "none",
                 "local",
                 "radius",
                 "tacacs+"
