@@ -264,7 +264,8 @@ class QuerySortPortTest (OpsVsiTest):
             vlan_trunks = ["%s/%s" % (vlan_path, vlan_name)]
 
             update_test_field(
-                self.SWITCH_IP, self.PATH + "/Port-%s" % i, "vlan_trunks", vlan_trunks[0],
+                self.SWITCH_IP, self.PATH + "/Port-%s" % i,
+                "vlan_trunks", vlan_trunks[0],
                 self.cookie_header)
             expected_values.append(vlan_trunks)
 
@@ -276,7 +277,9 @@ class QuerySortPortTest (OpsVsiTest):
             "Retrieved more expected ports!"
 
         if self.non_null_col(json_data, "vlan_trunks"):
-            self.check_sort_expectations(expected_values, json_data, "vlan_trunks")
+            self.check_sort_expectations(expected_values,
+                                         json_data,
+                                         "vlan_trunks")
         info("\n########## End to sort port by trunks ##########\n")
 
     def test_port_sort_by_ip4_address(self, desc=False):
@@ -382,7 +385,7 @@ class QuerySortPortTest (OpsVsiTest):
 
         info("\n########## End Test to sort port by bond_mode ##########\n")
 
-    def test_port_sort_by_tag(self, desc=False):
+    def test_port_sort_by_vlan_tag(self, desc=False):
         info("\n########## Test to sort port by tag ##########\n")
 
         expected_values = []
@@ -395,7 +398,8 @@ class QuerySortPortTest (OpsVsiTest):
 
             value = ["%s/%s" % (vlan_path, vlan_name)]
             update_test_field(
-                self.SWITCH_IP, self.PATH + "/Port-%s" % i, "vlan_tag", value[0],
+                self.SWITCH_IP, self.PATH + "/Port-%s" % i,
+                "vlan_tag", value[0],
                 self.cookie_header)
             expected_values.append(value)
 
@@ -408,7 +412,8 @@ class QuerySortPortTest (OpsVsiTest):
             "Retrieved more expected ports!"
 
         if self.non_null_col(json_data, "vlan_tag"):
-            self.check_sort_expectations(expected_values, json_data, "vlan_tag")
+            self.check_sort_expectations(expected_values, json_data,
+                                         "vlan_tag")
 
         info("\n########## End Test to sort port by tag ##########\n")
 
