@@ -1500,20 +1500,6 @@
                 "group": "/TACACS+ global configuration",
                 "emptyValue": "5"
               },
-              "tacacs_tcp_port": {
-                "type": {
-                   "type": "integer",
-                   "minInteger": 1,
-                   "maxInteger": 65535
-                },
-                "doc": [
-                  "This column used for AAA feature. ",
-                  "Specifies the tcp port number used for exchanging TACACS+ messages",
-                  "between the client and server. Default tcp port number is 49."
-                ],
-                "group": "/TACACS+ global configuration",
-                "emptyValue": "49"
-              },
               "tacacs_passkey": {
                 "type": "string",
                 "doc": [
