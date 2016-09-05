@@ -4,7 +4,7 @@
 
 [TOC]
 
-High level design of ops-stpd
+Component design of ops-stpd
 ==============================
 
 The ops-stpd daemon manages to avoid bridge loops (multiple paths linking one segment to another, resulting in an infinite loop situation).
@@ -13,16 +13,12 @@ Responsibilities
 ----------------
 The ops-stpd daemon is responsible for managing all MSTP Instances defined by the user.
 
-Design choices
---------------
-N/A
-
 Relationships to external OpenSwitch entities
 ---------------------------------------------
 ```ditaa`
 +-------------+      +-------------+       +------+
-|             +------>Interfaces   +       +      +
-|             |      +		     +-------+ PEER +
+|             +------>Interfaces   |       |      |
+|             |      |		     +-------+ PEER |
 |             |      +-------------+       +------+
 | ops-stpd    |
 |             |
@@ -159,8 +155,8 @@ Status Columns are written into DB by ops-stpd by comparing configuration with p
 ###Columns used by ops-stpd to operate on LAG
 	Port:
         lacp_status:
-	        bond_status: used by ops-stpd to check if LAG state is "up".
-            bond_speed: used by ops-stpd to check the speed of LAG.
+		bond_status: used by ops-stpd to check if LAG state is "up".
+        bond_speed: used by ops-stpd to check the speed of LAG.
 
 ###Columns used by ops-switchd to program ASIC
 	MSTP_Common_Instance_Port:
@@ -169,55 +165,8 @@ Status Columns are written into DB by ops-stpd by comparing configuration with p
         port_state: used by ops-switchd to communicate to ASIC to Block/Forward.
 
 
-MSTP BPDU Format
-----------------
-```ditaa
-+--------------------------------------+
-|           Protocol Identifier        |1-2
-+--------------------------------------+
-|     Protocol Version Identifier      |3
-+--------------------------------------+
-|              BPDU Type               |4
-+--------------------------------------+
-|             CIST Flags               |5
-+--------------------------------------+
-|    	CIST Root Identifier           |6-13
-+--------------------------------------+
-|      CIST External Path cost         |14-17
-+--------------------------------------+
-|    CIST Regional Root Identifier     |18-25
-+--------------------------------------+
-|       CIST Port Identifier           |26-27
-+--------------------------------------+
-|           Message Age                |28-29
-+--------------------------------------+
-|             Max Age                  |30-31
-+--------------------------------------+
-|            Hello Time                |32-33
-+--------------------------------------+
-|          Forward Delay               |34-35
-+--------------------------------------+
-|        Version 1 Length = 0          |36
-+--------------------------------------+
-|         Version 3 Length             |37-38
-+--------------------------------------+
-|      MST configuration Identifier    |39-89
-+--------------------------------------+
-|      CIST Internal Path cost         |90-93
-+--------------------------------------+
-|       CIST Bridge Identifier         |94-101
-+--------------------------------------+
-|        CIST Remaining Hops           |102
-+--------------------------------------+
-| MSTI configuration Messages          |103 - 39(STP BPDU Length)+Version 3 Length(MSTP BPDU Length)
-+--------------------------------------+
-```
-When we configure only CIST and enable a spanning-tree MSTP BPDUs will be sent out with a length of 119 bytes incremented by 16 bytes for each instance.
-
-Maximum of 64 MSTP instances can be configured and each instance will have an exclusive,non-overlapping set of VLANs. Hence, the Maximum size of a packet can be 1147 bytes.
-
-Internal structure
-------------------
+Participating Modules
+---------------------
 The ops-stpd daemon has three operational threads:
 * ovsdb_thread
   This thread processes the typical OVSDB main loop, and handles any changes. Some changes are handled by passing messages to the mstpd_protocol_thread thread.
@@ -226,8 +175,13 @@ The ops-stpd daemon has three operational threads:
 * mstp_rx_pdu_thread
   This thread waits for MSTP BPDUs on interfaces. When a MSTP BPDU is received, it sends a message (including the packet data) to the mstpd_protocol_thread thread for processing through the state machines.
 
-OVSDB Event Handling
----------------
+OVSDB Thread Functioning
+------------------------
+This thread keeps listening on the tables and columns which MSTP is interested in (listed above).
+Updates its local cache, and trigger an event to Protocol thread if there is any change in Config parameters of schema.
+
+Protocol Thread Functioning
+---------------------------
 The ops-stpd daemon handles multiple events received from OVSDB updates.
 * L2-Port Add:
   When a L2-Port is created in OVSDB, daemon will creata a entry for CIST_port and MSTI_port if exists. Updates the daemon data structures and if MSTP is enabled it triggers the state machines which are relevant. Split/LAG ports does not have any special functionality from ops-stpd perspective.
@@ -245,46 +199,21 @@ The ops-stpd daemon handles multiple events received from OVSDB updates.
 * Packet Receive:
   The ops-stpd daemon process the MSTP BPDUs from the Peers, and compares with the config related parameters in the DB.
 
+RX PDU Thread Functioning
+---------------------------
+This thread keeps listening on the sockets using epoll mechanism.
+Whenever a packet is received from any of the sockets, this sends the packet to the MSTP Protocol thread for processing.
+
+
+Switchd MSTP Feature Plugin
+---------------------------
 Daemon calculates the priority vectors and takes a decision on the ports which has to be forwarded and blocked.
 ops-stpd also updates DB on the state changes/statistics/status parameters in interfaces based on priority vectors.
 
 Once daemon sets port state as Forwarding/Blocking/Learning, switchd plugin shall take care of setting the values into the ASIC.
 
-Daemon Restartablity
---------------------
-When a ops-stpd crashes, daemon cleans up the status and statistics columns on restart with the configuration columns intact in the DB.
 
-Other Feature Interactions
---------------------------
-
-As MSTP is one of the features that can bring up/down a port, it aligns with the  [Port Pecking Order Design](http://git.openswitch.net/cgit/openswitch/ops/plain/docs/port_state_pecking_order_design.md) which facilitates multiple such features to inter-operate. An example of such an interaction would be between LAG and MSTP.
-
-MSTP can operate over LAGs (static or dynamic) in the same way that it operates over physical interfaces.
-Please refer to [Link Aggregation Design](http://git.openswitch.net/cgit/openswitch/ops/tree/docs/link_aggregation_design.md)
-
-CoPP for MSTP
--------------
-The default CoPP profile for MSTP in OPS restricts number of MSTP BPDUs sent to CPU per second to 1000 packets and that MSTP packets will be sent on the highest priority queue "10" to the CPU.
-Refer to [CoPP User Guide](http://git.openswitch.net/cgit/openswitch/ops/plain/docs/CoPP_user_guide.md?h=rel/dill)
-
-Troubleshooting Support
------------------------
-ops-stpd daemon has some support for debugging in case of any issues.
-There are multiple options to troubleshoot ops-stpd daemon
-1. diag-dump mstp basic : This will dump all the relevant data from the ops-stpd daemon..
-2. Bash commands: To see the segregated data based on Instances or Ports. Below are the commands
-* ovs-appctl -t ops-stpd mstpd/ovsdb/cist
-* ovs-appctl -t ops-stpd mstpd/ovsdb/cist_port <port>
-* ovs-appctl -t ops-stpd mstpd/ovsdb/msti <msti>
-* ovs-appctl -t ops-stpd mstpd/ovsdb/msti_port <msti> <port>
-* ovs-appctl -t ops-stpd mstpd/daemon/cist
-* ovs-appctl -t ops-stpd mstpd/daemon/cist_port <port>
-* ovs-appctl -t ops-stpd mstpd/daemon/msti <msti>
-* ovs-appctl -t ops-stpd mstpd/daemon/msti_port <msti> <port>
-3. show tech mstp : This will show all the data related to MSTP.
-4. show events mstp: This will show all the events related to MSTP.
 
 References
 ----------
-*  [Port Pecking Order Design](http://git.openswitch.net/cgit/openswitch/ops/plain/docs/port_state_pecking_order_design.md)
 *  [MSTP CLI Document](http://git.openswitch.net/cgit/openswitch/ops/plain/docs/MSTP_cli.md?h=rel/dill)
