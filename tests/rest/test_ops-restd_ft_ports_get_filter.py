@@ -36,7 +36,7 @@ NUM_OF_SWITCHES = 1
 NUM_HOSTS_PER_SWITCH = 0
 
 NUM_FAKE_PORTS = 10
-DEFAULT_BRIDGE="bridge_normal"
+DEFAULT_BRIDGE = "bridge_normal"
 bridge_path = "/rest/v1/system/bridges"
 
 
@@ -257,8 +257,10 @@ class QueryFilterPortTest (OpsVsiTest):
     def test_port_filter_by_trunks(self):
         test_ports = ["Port-1", "Port-3", "Port-5"]
         test_field = "vlan_trunks"
-        test_old_value = ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN413"]
-        test_new_value = ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN414"]
+        test_old_value = \
+            ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN413"]
+        test_new_value = \
+            ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN414"]
 
         vlan_id = 414
         vlan_name = "VLAN414"
@@ -600,8 +602,10 @@ class QueryFilterPortTest (OpsVsiTest):
     def test_port_filter_by_tag(self):
         test_ports = ["Port-1", "Port-2", "Port-3", "Port-4", "Port-5"]
         test_field = "vlan_tag"
-        test_old_value = ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN654"]
-        test_new_value = ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN123"]
+        test_old_value = \
+            ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN654"]
+        test_new_value = \
+            ["/rest/v1/system/bridges/bridge_normal/vlans/VLAN123"]
 
         vlan_id = 123
         vlan_name = "VLAN123"

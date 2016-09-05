@@ -971,6 +971,7 @@ base-1    21.50          normal         normal
 base-3    18.50          normal         normal
 base-2    20.50          normal         normal
 ```
+
 ```
 switch#show system temperature detail
 
