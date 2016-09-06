@@ -5,6 +5,7 @@
 - [Authentication configuration commands](#authentication-configuration-commands)
     - [aaa authentication login](#aaa-authentication-login)
     - [aaa authentication login fallback error local](#aaa-authentication-login-fallback-error-local)
+    - [aaa authentication allow-fail-through](#aaa-authentication-allow-fail-through)
     - [aaa group server](#aaa-group-server)
     - [aaa authentication login default](#aaa-authentication-login-default)
     - [radius-server host](#radius-server-host)
@@ -77,6 +78,30 @@ Admin user.
     (config)# aaa authentication login fallback error local
     (config)# no aaa authentication login fallback error local
 ```
+
+### aaa authentication allow-fail-through
+
+#### Syntax
+```
+[no] aaa authentication allow-fail-through
+```
+#### Description
+Enables AAA fail-through - try the next TACACS+/RADIUS server according to priority if authentication fails at a server.
+
+#### Authority
+Admin user.
+#### Parameters
+
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|----------------------|
+| **no** | Optional | Literal | Disables AAA fail-through. |
+
+#### Examples
+```
+    (config)# aaa authentication allow-fail-through
+    (config)# no aaa authentication allow-fail-through
+```
+
 
 ### aaa group server
 
