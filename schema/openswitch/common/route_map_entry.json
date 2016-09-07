@@ -196,6 +196,41 @@
                 ],
                 "group": "/Global Route Map Entries Configuration"
               },
+              "prefix_list": {
+                "type": "string",
+                "doc": [
+                  "Matches routes based on prefix list."
+                ],
+                "group": "/Global Route Map Entries Configuration"
+              },
+              "as_path": {
+                "type": "string",
+                "doc": [
+                  "Matches routes based on AS path."
+                ],
+                "group": "/Global Route Map Entries Configuration"
+              },
+              "community": {
+                "type": "string",
+                "doc": [
+                  "Matches routes based on community list."
+                ],
+                "group": "/Global Route Map Entries Configuration"
+              },
+              "extcommunity": {
+                "type": "string",
+                "doc": [
+                  "Matches routes based on extended community list."
+                ],
+                "group": "/Global Route Map Entries Configuration"
+              },
+              "ipv6_prefix_list": {
+                "type": "string",
+                "doc": [
+                  "Matches routes based on IPv6 prefix list."
+                ],
+                "group": "/Global Route Map Entries Configuration"
+              },
               "ipv6_next_hop": {
                 "type": "string",
                 "doc": [
@@ -264,6 +299,15 @@
                   "Sets the site-of-origin extended community of a BGP route. The value is the",
                   "community attribute in the form AA:NN where AA can be either AS number or IP",
                   "address and NN is the community identifier."
+                ],
+                "group": "/Global Route Map Entries Configuration"
+              },
+              "comm_list": {
+                "type": "string",
+                "doc": [
+                  "Removes the community attributes from the eBGP routes identified in the",
+                  "specified community list. It also deletes matching communities for the route",
+                  "map."
                 ],
                 "group": "/Global Route Map Entries Configuration"
               },
