@@ -1,0 +1,292 @@
+# TACACS+
+
+## Contents
+
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Limitations](#limitations)
+- [Defaults](#defaults)
+- [Configuring TACACS+](#configuring-tacacs)
+  - [Adding global timeout](#adding-global-timeout)
+  - [Deleting global timeout](#deleting-global-timeout)
+  - [Adding global passkey](#adding-global-passkey)
+  - [Deleting global passkey](#deleting-global-passkey)
+  - [Adding global authentication mechanism](#adding-global-authentication-mechanism)
+  - [Deleting global authentication mechanism](#deleting-global-authentication-mechanism)
+  - [Adding a server](#adding-a-server)
+  - [Deleting a server](#deleting-a-server)
+  - [Adding a server-group](#adding-a-server-group)
+  - [Deleting a server-group](#deleting-a-server-group)
+  - [Configuring authentication sequence](#configuring-authentication-sequence)
+  - [Deleting authentication sequence](#deleting-authentication-sequence)
+- [Verifying the configuration](#verifying-the-configuration)
+  - [Viewing global config and TACACS+ servers](#viewing-global-config-and-tacacs-servers)
+- [CLI](#cli)
+
+## Overview
+TACACS+ is a protocol that handles authentication, authorization, and accounting (AAA) services.
+TACACS+ client functionality is supported on the switch.
+
+## Prerequisites
+- A TACACS+ server (either local or remote) is needed for AAA services.
+- OpenSwitch needs to have management interface UP and enabled.
+
+## Limitations
+- Currently only TACACS+ Authentication is supported.
+- A maximum of 64 TACACS+ servers can be configured.
+- Server can be configured with a unicast IPV4/IPV6 address or FQDN
+- A maximum of 28 user-defined AAA servers-groups can be configured.
+- No session-type (console/ssh/telnet) distinction will be made for authentication.
+- TACACS+ server reachability is over the management interface.
+
+## Defaults
+- The default authentication tcp-port is 49.
+- The default authentication timeout value is 5.
+- The default authentication key (shared-secret between client and server) is testing123-1.
+- The default authentication-protocol is pap
+
+## Configuring TACACS+
+Configure the terminal to change the CLI context to config context with the following commands:
+```
+switch# configure terminal
+switch(config)#
+```
+
+### Adding global timeout
+#### Syntax
+` tacacs-server timeout <1-60>`
+#### Description
+The timeout value specifies the number of seconds to wait for a response from TACACS+ server before moving to next TACACS+ server.
+If not specified, a default value of 5 seconds will be used.
+This can be over-ridden by a fine-grained per server timeout while configuring individual servers.
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *1-60* | Required | 1-60 | Timeout value |
+#### Examples
+```
+switch(config)# tacacs-server timeout 10
+```
+
+### Deleting global timeout
+#### Syntac
+`no tacacs-server timeout`
+#### Description
+Reset global timeout to default authentication timeout value *5*
+```
+switch(config)# no tacacs-server timeout
+```
+#### Authority
+All users.
+#### Examples
+```
+switch(config)# no tacacs-server timeout
+```
+
+### Adding global passkey
+#### Syntax
+`tacacs-server key WORD`
+#### Description
+This key is used as shared-secret for encrypting the communication between all tacacs-server and OpenSwitch.
+This can be over-ridden by a fine-grained per server passkey configuration.
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *WORD* | Required | String of maximum length 64 characters |  The key used while communicating with the server |
+#### Examples
+```
+switch(config)# tacacs-server key testing-key
+```
+The length of key should be less than 64 characters.
+
+### Deleting global passkey
+#### Syntax
+`no tacacs-server key`
+#### Description
+Reset global key to default authentication key value *testing123-1*.
+#### Authority
+All users.
+#### Examples
+```
+switch(config)# no tacacs-server key
+```
+
+### Adding global authentication mechanism
+#### Syntax
+`tacacs-server auth-type [pap/chap]`
+#### Description
+This is the authentication protocol to be used for communication with TACACS+ servers.
+This can be over-ridden by a fine-grained per server auth-type configuration.
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *pap/chap* | Required | Literal | Authentication protocol name |
+#### Examples
+```
+switch(config)# tacacs-server auth-type [pap/chap]
+```
+
+### Deleting global authentication mechanism
+#### Syntax
+`no tacacs-server auth-type`
+#### Description
+Reset global authentication mechanism to default authentication mechanism *pap*.
+#### Authority
+All users.
+#### Examples
+```
+switch(config)# no tacacs-server auth-type
+```
+
+### Adding a server
+#### Syntax
+`tacacs-server host <FQDN/IPv4/IPv6 address> [key passkey] [timeout <1-60>] [port <1-65535>] [auth-type pap/chap]`
+#### Description
+Add a TACACS+ SERVER and such configured TACACS+ server will be added to the default TACACS+ family group (named "tacacs_plus").
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *FQDN/IPv4/IPv6* | Required | FQDN of maximum length 45 characters, IPv4 or IPv6  | The name or IPv4/IPv6 address of the server. |
+| *passkey* | Optional | Key-string of maximum length 64 characters | The key used while communicating with the server |
+| *1-60* | Optional | 1-60 | Timeout value |
+| *1-65535* | Optional | 1-65535 | TCP port number |
+| *pap/chap* | Oprional | Literal | Authentication protocol name |
+#### Examples
+```
+switch(config)# tacacs-server host 1.1.1.1
+switch(config)# tacacs-server host 1.1.1.2 port 12
+switch(config)# tacacs-server host abc.com timeout 15
+switch(config)# tacacs-server host 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+switch(config)# tacacs-server host 1.1.1.3 key test-123 timeout 15 port 22 auth-type chap
+```
+
+### Deleting a server
+#### Syntax
+`tacacs-server host <FQDN/IPv4/IPv6> [port <1-65535>]`
+#### Description
+Delete a previously added TACACS+ server
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *FQDN/IPv4/IPv6* | Required | FQDN of maximum length 45 characters, IPv4 or IPv6  | The name or IPv4/IPv6 address of the server. |
+| *1-65535* | Optional | 1-65535 | TCP port number |
+If port number not provided, system will search TACACS+ server by host name and default authentication port *49*
+#### Examples
+```
+switch(config)# no tacacs-server host 1.1.1.1
+switch(config)# no tacacs-server host 1.1.1.2 port 12
+```
+
+### Adding a server-group
+#### Syntax
+`aaa group server tacacs+ WORD`
+#### Description
+Create a AAA server-group that contains 0 or more pre-configured TACACS+ servers.
+A maximum of 32 server-groups can be present in the system.
+Out of these 4 are default server-groups (local, radius, tacacs_plus, none).
+Hence 28 user-defined groups are allowed.
+The user-defined group cannot be named "local", "radius", "tacacs_plus" or "none".
+Predefined TACACS+ servers can then be added to this group.
+The server continues to be part of the default "tacacs_PLUS" family group.
+For authentication using a server-group, the servers will be accessed in the
+same order in which they were added to the group.
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *tacacs+* | Required| Literal | Create a TACACS+ server group. |
+| *WORD* | Required | String of maximum length 32 | Server group name. |
+#### Syntax
+`server <FQDN/IPv4/IPv6> [port <1-65535>]`
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *FQDN/IPv4/IPv6* | Required | FQDN of maximum length 45 characters, IPv4 or IPv6  | The name or IPv4/IPv6 address of the server. |
+| *1-65535* | Optional | 1-65535 | TCP port number |
+If port number not provided, system will search TACACS+ server by host name and default authentication port *49*
+#### Examples
+```
+switch(config)# aaa group server tacacs+ sg1
+switch(config-sg)# server 1.1.1.3 port 22
+```
+
+### Deleting a server-group
+#### Syntax
+`no aaa group server tacacs+ WORD`
+#### Description
+Only a pre-configured user-defined TACACS+ server-group can be deleted.
+The servers belonging to the group being deleted are still a part of the
+default "tacacs_plus" family group.
+#### Authority
+All users.
+#### Parameters
+| Parameter | Status   | Syntax | Description |
+|-----------|----------|--------|-------------|
+| *tacacs+* | Required| Literal | Create a TACACS+ server group. |
+| *WORD* | Required | String of maximum length 32 | Server group name. |
+#### Examples
+```
+switch(config)# no aaa group server tacacs+ sg1
+```
+
+### Configuring authentication sequence
+#### Syntax
+`aaa authentication login default <local | group group-list>`
+#### Description
+Preconfigured server groups can be sequenced to be accessed for authentication.
+The server groups will be accessed in the order in which they are mentioned
+in the following CLI.
+Also the servers within the groups will be accessed in the order in which
+they were added to the group.
+By default "local" authentication is triggered if no group is mentioned
+or if the mentioned list is exhausted.
+All servers will be accessed in a fail-through manner.
+Upon failure in connection or failure in authentication, the next server
+will be reached out to.
+#### Authority
+All users.
+#### Parameters
+| Parameter  | Status   | Syntax  | Description |
+|------------|----------|---------|-------------|
+| *local*  | Optional | Literal | Enable local authentication. |
+| *group-list* | Optional | String | Space separated group or family names  |
+**Notes:**
+1. Valid familty names are: local, tacacs+ and radius .
+2. Each group should be given only once in group-list.
+3. 'local' can be given at most once, either before 'group' literal or as part of group-list.
+4. Either the 'local' literal or user defined group-list must be given in command.
+
+#### Examples
+```
+switch(config)# aaa authentication login default group tacacs_plus radius local
+switch(config)# aaa authentication login default group TacGroup1 TacGroup2 local
+```
+
+### Deleting authentication sequence
+#### Syntax
+`no aaa authentication login default`
+#### Description
+Remove a configured sequence of server-groups for authentication
+#### Authority
+All users.
+#### Examples
+```
+switch(config)# no aaa authentication login default
+```
+
+## Verifying the configuration
+### Viewing global config and TACACS+ servers
+#### Description
+The `show tacacs-server` and `show tacacs-server detail` commands display the configured TACACS+ servers.
+Both the commands show the global parameters as well as per server configurations.
