@@ -8,23 +8,15 @@
       "columns": {
         "ip_address": {
           "category": "configuration",
-          "type": "string",
-          "mutable": false,
-          "doc": [
-            "IP address of the radius server configured."
-          ]
-        },
-        "priority": {
-          "category": "configuration",
           "type": {
             "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 64
+              "type": "string",
+              "maxLength": 45
             }
           },
+          "mutable": false,
           "doc": [
-            "Specifies the order in which radius servers are configured on the switch."
+            "IPV4/IPV6 address or FQDN of the RADIUS server."
           ]
         },
         "udp_port": {
@@ -32,11 +24,9 @@
           "type": {
             "key": {
               "type": "integer",
-              "minInteger": 0,
+              "minInteger": 1,
               "maxInteger": 65535
-            },
-            "min": 0,
-            "max": 1
+            }
           },
           "doc": [
             "Specifies the udp port number for authentication. Default udp port number for",
@@ -94,6 +84,25 @@
           ],
           "emptyValue": 1
         },
+        "auth_type": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "pap",
+                "chap"
+              ]
+            },
+            "min" : 0,
+            "max" : 1
+          },
+          "doc": [
+            "Specifies the authentication method (pap/chap) used.",
+            "Default is pap."
+          ],
+          "group": "/Core Features"
+        },
         "group": {
           "category": "configuration",
           "relationship": "reference",
@@ -108,11 +117,43 @@
           "doc": [
             "Specifies the RADIUS server-group that it belongs to."
           ]
+        },
+        "group_priority": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            }
+          },
+          "doc": [
+            "Specifies the order in which RADIUS servers are configured",
+            "within a server group. This is an increasing counter",
+            "starting with 1. In case this server is not part of a user",
+            "defined group, this will be set to 0."
+          ],
+          "emptyValue": 0
+        },
+        "default_priority": {
+          "category": "configuration",
+          "type": {
+            "key": {
+              "type": "integer",
+              "minInteger": 0
+            }
+          },
+          "doc": [
+            "Specifies the order in which RADIUS servers are configured.",
+            "By default they are added to the default family group.",
+            "This is an increasing counter starting with 1."
+          ],
+          "emptyValue": 0
         }
       },
       "indexes": [
         [
-          "ip_address"
+          "ip_address",
+          "udp_port"
         ]
       ],
       "title": "Radius server configuration",
