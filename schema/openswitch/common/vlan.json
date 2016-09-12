@@ -492,12 +492,15 @@
         },
         "tunnel_key": {
           "category": "configuration",
+          "relationship": "reference",
           "type": {
             "key": {
-              "type": "integer",
-              "minInteger": 0,
-              "maxInteger": 4294967295
-            }
+              "type": "uuid",
+              "refTable": "Logical_Switch",
+              "refType": "weak"
+            },
+            "min": 0,
+            "max": 1
           },
           "doc": [
             "Tunnel key used in the overlay. For VXLAN, this is the VNI."
