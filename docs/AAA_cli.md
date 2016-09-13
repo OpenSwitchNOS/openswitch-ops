@@ -5,16 +5,9 @@
 - [Authentication configuration commands](#authentication-configuration-commands)
     - [aaa authentication login](#aaa-authentication-login)
     - [aaa authentication login fallback error local](#aaa-authentication-login-fallback-error-local)
-    - [aaa authentication allow-fail-through](#aaa-authentication-allow-fail-through)
-    - [aaa group server](#aaa-group-server)
-    - [aaa authentication login default](#aaa-authentication-login-default)
     - [radius-server host](#radius-server-host)
     - [radius-server retries](#radius-server-retries)
     - [radius-server timeout](#radius-server-timeout)
-    - [tacacs-server](#tacacs-server)
-    - [tacacs-server timeout](#tacacs-server-timeout)
-    - [tacacs-server key](#tacacs-server-key)
-    - [tacacs-server port](#tacacs-server-port)
     - [ssh](#ssh)
 - [User configuration commands](#user-configuration-commands)
     - [user add](#user-add)
@@ -23,7 +16,6 @@
 - [Display commands](#display-commands)
     - [show aaa authentication](#show-aaa-authentication)
     - [show radius-server](#show-radius-server)
-    - [show tacacs-server](#show-tacacs-server)
     - [show SSH authentication-method](#show-ssh-authentication-method)
     - [show running-config](#show-running-config)
 
@@ -33,10 +25,10 @@
 
 #### Syntax
 ```
-aaa authentication login <local | radius [radius-auth <pap | chap>] | tacacs+ [tacacs-auth <pap | chap>]>
+aaa authentication login <local | radius [auth-type <pap | chap>]>
 ```
 #### Description
-Enables local authentication, RADIUS authentication, or TACACS+ authentication. By default local authentication is enabled.
+Enables local authentication or RADIUS authentication. By default local authentication is enabled.
 #### Authority
 Admin
 #### Parameters
@@ -45,16 +37,14 @@ Admin
 |------------|----------|------------------------------------------|
 | **local**  | Required | Literal | Enable local authentication. |
 | **radius** | Required | Literal | Enable RADIUS authentication. |
-| **tacacs+** | Required | Literal | Enable TACACS authentication. |
-| **chap**   | Optional | Literal | Use CHAP with RADIUS/TACACS+ authentication. |
-| **pap**    | Optional | Literal | Use PAP with RADIUS/TACACS+ authentication. |
+| **chap**   | Optional | Literal | Use CHAP with RADIUS authentication. |
+| **pap**    | Optional | Literal | Use PAP with RADIUS authentication. |
 
 #### Examples
 ```
     (config)# aaa authentication login local
     (config)# aaa authentication login radius
-    (config)# aaa authentication login radius radius-auth chap
-    (condig)# aaa authentication login tacacs+ tacacs-auth pap
+    (config)# aaa authentication login radius auth-type chap
 ```
 ### aaa authentication login fallback error local
 
@@ -78,118 +68,6 @@ Admin user.
     (config)# aaa authentication login fallback error local
     (config)# no aaa authentication login fallback error local
 ```
-
-### aaa authentication allow-fail-through
-
-#### Syntax
-```
-[no] aaa authentication allow-fail-through
-```
-#### Description
-Enables AAA fail-through - try the next TACACS+/RADIUS server according to priority if authentication fails at a server.
-
-#### Authority
-Admin user.
-#### Parameters
-
-| Parameter | Status   | Syntax | Description |
-|-----------|----------|----------------------|
-| **no** | Optional | Literal | Disables AAA fail-through. |
-
-#### Examples
-```
-    (config)# aaa authentication allow-fail-through
-    (config)# no aaa authentication allow-fail-through
-```
-
-
-### aaa group server
-
-#### Syntax
-```
-[no] aaa group server (tacacs+ | radius) <group-name>
-```
-
-#### Description
-Create a TACACS+ or RADIUS server group. Then enter (config-sg) node
-
-#### Authority
-Admin user.
-
-#### Parameters
-
-| Parameter | Status   | Syntax | Description |
-|-----------|----------|----------------------|
-| **no** | Optional | Literal | Delete a TACACS+ or RADIUS server group. |
-| **tacacs+/radius** | Required| Literal | Create a TACACS+ or RADIUS server group. |
-| **group-name** | Required | String | Server group name. |
-
-#### Examples
-```
-    (config)# aaa group server tacacs+ tac1
-    (config)# aaa group server radius rad1
-    (config)# no aaa group server tacacs+ tac1
-```
-
-#### Syntax
-```
-[no] server <name | ipv4-addr>
-```
-
-#### Description
-Add a TACACS+ or RADIUS server to corresponding server group. Visible under (config-sg) node
-
-#### Authority
-Admin user.
-
-#### Parameters
-
-| Parameter | Status   | Syntax | Description |
-|-----------|----------|----------------------|
-| **no** | Optional | Literal | Remove a server from server group. |
-| **name** | Required | Name-string of maximum length 57 characters or A.B.C.D. | The name or IPV4 address of the server. |
-
-#### Examples
-```
-    (config)# aaa group server tacacs+ sg1
-    (config-sg)#server 1.1.1.1
-    (config-sg)#no server 1.1.1.1
-```
-### aaa authentication login default
-
-#### Syntax
-```
-[no] aaa authentication login default <local | group group-list>
-```
-
-#### Description
-Enable AAA authentication and define the sequence in which different server-groups will be traversed.
-
-#### Authority
-Admin
-
-#### Parameters
-| Parameter  | Status   | Syntax  |      Description               |
-|------------|----------|------------------------------------------|
-| **local**  | Optional | Literal | Enable local authentication. |
-| **group-list** | Optional | String | Space separated group or family names  |
-| **no** | Optional | Literal | Disables AAA authentication. |
-
-Notes:
-1. Valid familty names are: local, tacacs+ and radius.
-2. Each group should be given only once in group-list.
-3. 'local' can be given at most once, either before 'group' literal or as part of group-list.
-4. Either the 'local' literal or user defined group-list must be given in command.
-
-#### Examples
-```
-    (config)# aaa authentication login default local
-    (config)# aaa authentication login default local group tacacs+ rad1 rad2
-    (config)# aaa authentication login default group tac1 tac2 radius local
-    (config)# aaa authentication login default group tac1 tac2 rad1 rad2
-    (config)# no aaa authentication login default local
-```
-
 ### radius-server host
 
 #### Syntax
@@ -267,112 +145,6 @@ Admin user.
 ```
     (config)# radius-server timeout 10
     (config)# no radius-server timeout 10
-```
-
-### tacacs-server
-
-#### Syntax
-```
-[no] tacacs-server host <name|ipv4-address> [key passkey] [timeout timeout-val] [port port-num]
-```
-
-#### Description
-Forms an association with a TACACS+ server.
-
-#### Authority
-Admin user.
-
-#### Parameters
-| Parameter | Status   | Syntax | Description          |
-|-----------|----------|----------------------|
-| **no** | Optional | Literal | Delete a previously configured server. |
-| *name* | Required | Name-string of maximum length 57 characters or A.B.C.D. | The name or IPV4 address of the server. |
-| *passkey* | Optional | Key-string of maximum length 63 characters | The key used while communicating with the server. |
-| *timeout-val* | Optional | 1-60 | Timeout value |
-| *port-num* | Optional | 1-65535 | TCP port number |
-
-#### Examples
-```
-s1(config)#tacacs-server host 1.1.1.2 port 1111 timeout 12 key test-key
-s1(config)#no tacacs-server host 1.1.1.2
-```
-
-### tacacs-server timeout
-
-#### Syntax
-```
-tacacs-server timeout <timeout-val>
-[no] tacacs-server timeout
-```
-
-#### Description
-Configure global timeout for TACACS+ servers. This will be the timeout value used when timeout is not configured using tacacs-server host command.
-
-#### Authority
-Admin user.
-
-#### Parameters
-| Parameter | Status   | Syntax | Description          |
-|-----------|----------|----------------------|
-| *timeout-val* | Required | 1-60 | Timeout value |
-| **no** | Optional | Literal | Remove the global TACACS+ server timeout. |
-
-#### Examples
-```
-switch(config)# tacacs-server timeout 12
-switch(config)# no tacacs-server timeout
-```
-
-### tacacs-server key
-
-#### Syntax
-```
-tacacs-server key <passkey>
-[no] tacacs-server key
-```
-
-#### Description
-Configure global passkey for TACACS+ servers. This will be the passkey value used when passkey is not configured using tacacs-server host command.
-
-#### Authority
-Admin user.
-
-#### Parameters
-| Parameter | Status   | Syntax | Description          |
-|-----------|----------|----------------------|
-| *passkey* | Required | Key-string of maximum length 63 characters | The key used while communicating with the server. |
-| **no** | Optional | Literal | Remove the global TACACS+ server passkey. |
-
-#### Examples
-```
-switch(config)# tacacs-server key sample-key
-switch(config)# no tacacs-server key
-```
-
-### tacacs-server port
-
-#### Syntax
-```
-tacacs-server port <port-num>
-[no] tacacs-server port
-```
-
-#### Description
-Configure global port for TACACS+ servers. This will be the port value used when port is not configured using tacacs-server host command.
-
-#### Authority
-Admin user.
-
-#### Parameters
-| Parameter | Status   | Syntax | Description          |
-|-----------|----------|----------------------|
-| *port-num* | Required | 1-65535 | TCP port number |
-| **no** | Optional | Literal | Remove the global TACACS+ server port. |
-
-#### Examples
-```
-switch(config)# tacacs-server port 1112
-switch(config)# no tacacs-server port
 ```
 
 ### ssh
@@ -525,72 +297,6 @@ N/A
       Retries            : 5
       Timeout            : 10
 ```
-### show tacacs-server
-#### Syntax
-```
-show tacacs-server [detail]
-```
-
-#### Description
-Shows the global parameters configured, if any. Also shows the information about each TACACS+ server added.
-
-#### Authority
-Admin user.
-
-#### Parameters
-| Parameter | Status   | Syntax | Description          |
-|-----------|----------|----------------------|
-| *detail* | Optional | Literal | Shows the details of TACACS+ servers |
-
-#### Examples
-```
-switch# show tacacs-server
-
-******** Global TACACS+ configuration *******
-Shared secret: testing123-1
-Timeout: 15
-Auth port: 49
-Number of servers: 2
-
------------------------------------------------------
-                   NAME             PORT  STATUS
------------------------------------------------------
-                 1.1.1.1              49
-                 abc.com              49
-
-```
-
-#### Key
-```
-NAME         : TACACS+ server FQDN/IPV4 address
-PORT         : TACACS+ server authentication port
-STATUS       : TACACS+ server reachability status
-```
-
-```
-switch# show tacacs-server detail
-
-******** Global TACACS+ configuration *******
-Shared secret: testing123-1
-Timeout: 15
-Auth port: 49
-Number of servers: 2
-
-***** TACACS+ Server information ******
-tacacs-server:1
- Server name:   : abc.com
- Auth port      : 49
- Shared secret    : testing123-1
- Timeout      : 15
-
-tacacs-server:2
- Server name:   : 1.1.1.1
- Auth port      : 49
- Shared secret    : testing123-1
- Timeout      : 15
-
-```
-
 ### show SSH authentication-method
 #### Syntax
 ```
