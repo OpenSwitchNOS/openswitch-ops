@@ -117,11 +117,13 @@
           "type": {
             "key": {
               "type": "uuid",
-              "refTable": "VLAN"
+              "refTable": "VLAN",
+              "refType": "weak"
             },
             "value": {
               "type": "uuid",
-              "refTable": "Logical_Switch"
+              "refTable": "Logical_Switch",
+              "refType": "weak"
             },
             "min": 0,
             "max": 4095
