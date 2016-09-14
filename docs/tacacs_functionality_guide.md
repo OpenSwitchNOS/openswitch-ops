@@ -98,7 +98,7 @@ All users.
 #### Parameters
 | Parameter | Status   | Syntax | Description |
 |-----------|----------|--------|-------------|
-| *WORD* | Required | String of maximum length 63 characters |  The key used while communicating with the server |
+| *WORD* | Required | String of maximum length 32 characters |  The key used while communicating with the server |
 #### Examples
 ```
 switch(config)# tacacs-server key testing-key
@@ -157,7 +157,7 @@ All users.
 | Parameter | Status   | Syntax | Description |
 |-----------|----------|--------|-------------|
 | *FQDN/IPv4/IPv6* | Required | FQDN of maximum length 45 characters, IPv4 or IPv6  | The name or IPv4/IPv6 address of the server. |
-| *passkey* | Optional | Key-string of maximum length 63 characters | The key used while communicating with the server |
+| *passkey* | Optional | Key-string of maximum length 32 characters | The key used while communicating with the server |
 | *1-60* | Optional | 1-60 | Timeout value |
 | *1-65535* | Optional | 1-65535 | TCP port number |
 | *pap/chap* | Optional | Literal | Authentication protocol name |
