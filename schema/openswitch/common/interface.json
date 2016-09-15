@@ -57,7 +57,8 @@
                 "internal",
                 "vlansubint",
                 "loopback",
-                "vxlan"
+                "vxlan",
+                "gre_ipv4"
               ]
             }
           },
@@ -81,8 +82,9 @@
             "IPv4/IPv6 address configuration, that remains up until it is deleted by",
             "administrator. Loopback interface IP address is used as router-id and source",
             "address by many protocols.",
-            "+ __`vxlan`__:  This is a vitual interface of type vxlan (L2 overlay over L3",
-            "network RFC 7348)."
+            "+ __`vxlan`__:  This is a virtual interface of type vxlan (L2 overlay over L3",
+            "network RFC 7348).",
+            "+ __`gre_ipv4`__:  This is a virtual interface of type GRE supporting IPv4."
           ],
           "group": "/System-Specific Details",
           "emptyValue": "system"
