@@ -57,7 +57,8 @@
                 "internal",
                 "vlansubint",
                 "loopback",
-                "vxlan"
+                "vxlan",
+                "gre_ipv4"
               ]
             }
           },
