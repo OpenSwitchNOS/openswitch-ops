@@ -7,58 +7,109 @@
 - [Verifying the configuration](#verifying-the-configuration)
     - [Viewing source-interface information](#viewing-source-interface-information)
     - [Viewing the snapshot of active configurations](#viewing-the-snapshot-of-active-configurations)
+- [Usage guidelines](#usage-guidelines)
 - [Related features](#related-features)
+
 
 ## Overview
 
-The source interface selection is used to set the IP address of an interface, or IP address-defined interface as the source interface for the TFTP protocol or all the specified protocols.
+The source interface selection is used to set the IP address of an interface,
+or IP address-defined interface as the source interface for the TFTP protocol
+or TACACS protocol or RADIUS protocol or all the specified protocols for which
+source IP addressis not configured.
 
 ### Syntax:
-`ip source-interface <protocol-ID | all>  <interface <id>| address <ip-address>>`
+`ip source-interface <protocol-ID | all>  <interface <id>| <ip-address>>`
 `[no] ip source-interface <protocol-ID | all>`
-`show  ip source-interface [tftp]`
+`show  ip source-interface [tftp | tacacs | radius]`
 
 ### Explanation of Parameters:
 
--protocol-ID--Specifies the  different software applications like telnet, tftp, radius, sflow etc. we can specify different source ips for different apps by using protocol-ID
+-protocol-ID--Specifies the  different software applications like telnet,
+tftp, radius, tacacs, sflow etc. we can specify different source ips for
+different apps by using protocol-ID
 
--all--Specifies same source IP for all applications.
--address--Sets the IP address of an interface as the source IP.
+-all--Specifies same source IP for all applications for which
+source IP addressis not configured.
+-ip-address--Sets the IP address of an interface as the source IP.
 -interface--Sets an interface as the source interface.
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of
+source interface selection is not implemented.
 
 ## Examples:
 ### Configuring the source-interface
 
 -Configuring a source-interface IP address to TFTP protocol
 
-ops-as5712(config)# ip source-interface tftp address 1.1.1.1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection to the TFTP protocol is not implemented.
+ops-as5712(config)# ip source-interface tftp 1.1.1.1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TFTP protocol is not implemented.
+
+-Configuring a source-interface IP address to TACACS protocol
+
+ops-as5712(config)# ip source-interface tacacs 1.1.1.1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TACACS protocol is not implemented.
+
+-Configuring a source-interface IP address to RADIUS protocol
+
+ops-as5712(config)# ip source-interface radius 1.1.1.1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the RADIUS protocol is not implemented.
 
 -Configuring a source-interface IP address to all the specified protocols
 
-ops-as5712(config)# ip source-interface all address 1.1.1.1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection for all the specicied protocols is not implemented.
+ops-as5712(config)# ip source-interface all 1.1.1.1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection for all the specicied protocols is not implemented.
 
 -Configuring a source-interface to TFTP protocol
 
 ops-as5712(config)# ip source-interface tftp interface 1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection to the TFTP protocol is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TFTP protocol is not implemented.
+
+-Configuring a source-interface to TACACS protocol
+
+ops-as5712(config)# ip source-interface tacacs interface 1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TACACS protocol is not implemented.
+
+-Configuring a source-interface to RADIUS protocol
+
+ops-as5712(config)# ip source-interface radius interface 1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the RADIUS protocol is not implemented.
 
 -Configuring a source-interface to all the specified protocols
 
 ops-as5712(config)# ip source-interface all interface 1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection for all the specicied protocols is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection for all the specicied protocols is not implemented.
 
 -Unconfigure the source-interface from the TFTP protocol.
 
 ops-as5712(config)# no ip source-interface tftp
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection to the TFTP protocol is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TFTP protocol is not implemented.
+
+-Unconfigure the source-interface from the TACACS protocol.
+
+ops-as5712(config)# no ip source-interface tacacs
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TACACS protocol is not implemented.
+
+-Unconfigure the source-interface from the RADIUS protocol.
+
+ops-as5712(config)# no ip source-interface radius
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the RADIUS protocol is not implemented.
 
 -Unconfigure the source-interface from all the specified protocols.
 
 ops-as5712(config)# no ip source-interface all
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection for all the specicied protocols is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection for all the specicied protocols is not implemented.
 
 ## Verifying the configuration
 ### Viewing source-interface information
@@ -74,6 +125,28 @@ Protocol        Source Interface
 tftp            1.1.1.1
 ```
 
+-Verify that the source-interface is on the TACACS protocol.
+```
+ops-as5712# show ip source-interface tacacs
+
+Source-interface Configuration Information
+
+Protocol        Source Interface
+--------        ----------------
+tacacs          1
+```
+
+-Verify that the source-interface is on the RADIUS protocol.
+```
+ops-as5712# show ip source-interface radius
+
+Source-interface Configuration Information
+
+Protocol        Source Interface
+--------        ----------------
+radius          1.1.1.1
+```
+
 -Verify that source-interface to all the specified protocols
 ```
 ops-as5712# show ip source-interface
@@ -83,9 +156,11 @@ Source-interface Configuration Information
 Protocol        Source Interface
 --------        ----------------
 tftp            1.1.1.1
+tacacs          1
+radius          1.1.1.1
 ```
 
--Verify that the source-interface from the TFTP protocol.
+-Verify that unconfiguring the source-interface from the TFTP protocol.
 ```
 ops-as5712# show ip source-interface tftp
 
@@ -116,8 +191,10 @@ Source-interface Configuration Information
 Protocol        Source Interface
 --------        ----------------
 tftp            1.1.1.1
+tacacs          1
+radius          1.1.1.1
 
-ops-as5712# show running-config interface
+ops-as5712# show running-config
 Current configuration:
 !
 !
@@ -125,9 +202,15 @@ Current configuration:
 interface 1
     no shutdown
     ip address 1.1.1.1/24
-source interface
-    1.1.1.1
+ip source interface tftp 1.1.1.1
+ip source interface tacacs interface 1
+ip source interface radius 1.1.1.1
+ip source interface all interface 1
 ```
+
+## Usage guidelines
+source_interface_utils library provides source-interface configuration
+of a protocol on a specific VRF.
 
 ## Related features
 No related features.
