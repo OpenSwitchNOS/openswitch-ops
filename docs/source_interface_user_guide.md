@@ -11,59 +11,74 @@
 
 ## Overview
 
-The source interface selection is used to set the IP address of an interface, or IP address-defined interface as the source interface for the TFTP protocol or all the specified protocols.
+The source interface selection is used to set the IP address of an interface,
+or IP address-defined interface as the source interface for the TFTP protocol
+or all the specified protocols.
 
 ### Syntax:
-`ip source-interface <protocol-ID | all>  <interface <id>| address <ip-address>>`
+`ip source-interface <protocol-ID | all>  <interface <id>| <ip-address>>`
 `[no] ip source-interface <protocol-ID | all>`
 `show  ip source-interface [tftp]`
 
 ### Explanation of Parameters:
 
--protocol-ID--Specifies the  different software applications like telnet, tftp, radius, sflow etc. we can specify different source ips for different apps by using protocol-ID
+-protocol-ID--Specifies the  different software applications like telnet, tftp,
+radius, sflow etc. we can specify different source ips for different apps by
+using protocol-ID
 
--all--Specifies same source IP for all applications.
--address--Sets the IP address of an interface as the source IP.
--interface--Sets an interface as the source interface.
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection is not implemented.
+-all-- Specifies same source IP for all applications.
+-ip-address-- Sets the IP address of an interface as the source IP.
+-interface-- Sets an interface as the source interface.
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection is not implemented.
 
 ## Examples:
 ### Configuring the source-interface
 
--Configuring a source-interface IP address to TFTP protocol
+- Configuring a source-interface IP address to TFTP protocol
 
-ops-as5712(config)# ip source-interface tftp address 1.1.1.1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection to the TFTP protocol is not implemented.
+ops-as5712(config)# ip source-interface tftp 1.1.1.1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TFTP protocol is not implemented.
 
 -Configuring a source-interface IP address to all the specified protocols
+for which source IP address
+is not configured.
 
-ops-as5712(config)# ip source-interface all address 1.1.1.1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection for all the specicied protocols is not implemented.
+ops-as5712(config)# ip source-interface all 1.1.1.1
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection for all the specicied protocols is not implemented.
 
--Configuring a source-interface to TFTP protocol
+- Configuring a source-interface to TFTP protocol
 
 ops-as5712(config)# ip source-interface tftp interface 1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection to the TFTP protocol is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of
+source interface selection to the TFTP protocol is not implemented.
 
--Configuring a source-interface to all the specified protocols
+- Configuring a source-interface to all the specified protocols for which
+source interface is not configured.
 
 ops-as5712(config)# ip source-interface all interface 1
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection for all the specicied protocols is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection for all the specicied protocols is not implemented.
 
--Unconfigure the source-interface from the TFTP protocol.
+- Unconfigure the source-interface from the TFTP protocol.
 
 ops-as5712(config)# no ip source-interface tftp
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection to the TFTP protocol is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of source
+interface selection to the TFTP protocol is not implemented.
 
--Unconfigure the source-interface from all the specified protocols.
+- Unconfigure the source-interface from all the specified protocols for
+which source interface is not configured..
 
 ops-as5712(config)# no ip source-interface all
-Note: As of now the CLI infra is ready, end to end functionality of source interface selection for all the specicied protocols is not implemented.
+Note: As of now the CLI infra is ready, end to end functionality of
+source interface selection for all the specicied protocols is not implemented.
 
 ## Verifying the configuration
 ### Viewing source-interface information
 
--Verify that the source-interface is on the TFTP protocol.
+- Verify that the source-interface is on the TFTP protocol.
 ```
 ops-as5712# show ip source-interface tftp
 
@@ -74,7 +89,7 @@ Protocol        Source Interface
 tftp            1.1.1.1
 ```
 
--Verify that source-interface to all the specified protocols
+- Verify that source-interface to all the specified protocols
 ```
 ops-as5712# show ip source-interface
 
@@ -85,7 +100,7 @@ Protocol        Source Interface
 tftp            1.1.1.1
 ```
 
--Verify that the source-interface from the TFTP protocol.
+- Verify that the source-interface from the TFTP protocol.
 ```
 ops-as5712# show ip source-interface tftp
 
@@ -96,7 +111,7 @@ Protocol        Source Interface
 tftp
 ```
 
--Verify that unconfiguring the source-interface from all the specified protocols.
+- Verify that unconfiguring the source-interface from all the specified protocols.
 ```
 ops-as5712# show ip source-interface
 
@@ -107,7 +122,7 @@ Protocol        Source Interface
 tftp
 ```
 
-### Viewing the snapshot of active configurations.
+### Viewing the snapshot of active configurations
 ```
 ops-as5712# show ip source-interface
 
@@ -117,7 +132,7 @@ Protocol        Source Interface
 --------        ----------------
 tftp            1.1.1.1
 
-ops-as5712# show running-config interface
+ops-as5712# show running-config
 Current configuration:
 !
 !
@@ -125,8 +140,8 @@ Current configuration:
 interface 1
     no shutdown
     ip address 1.1.1.1/24
-source interface
-    1.1.1.1
+ip source interface tftp 1.1.1.1
+ip source interface all interface 1
 ```
 
 ## Related features
