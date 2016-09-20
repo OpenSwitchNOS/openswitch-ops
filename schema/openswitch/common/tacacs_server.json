@@ -6,13 +6,9 @@
   "tables": {
     "Tacacs_Server": {
       "columns": {
-        "ip_address": {
+        "address": {
           "category": "configuration",
-          "type": {
-            "key": {
-              "type": "string",
-              "maxLength": 45
-            }
+          "type": "string"
           },
           "mutable": false,
           "doc": [
@@ -26,11 +22,13 @@
               "type": "integer",
               "minInteger": 1,
               "maxInteger": 65535
-            }
+            },
+            "min" : 0,
+            "max" : 1
           },
           "doc": [
             "Specifies the tcp port number used for exchanging TACACS+ messages",
-            "between the client and server. Default tcp port number is 49."
+            "between the client and server."
           ],
           "emptyValue": 49
         },
@@ -39,14 +37,14 @@
           "type": {
             "key": {
               "type": "string",
-              "maxLength": 32 
+              "maxLength": 32
             },
             "min" : 0,
             "max" : 1
           },
           "doc": [
             "Specifies the shared secret key between the TACACS+ client",
-            "and the TACACS+ server. Default passkey is testing123-1."
+            "and the TACACS+ server."
           ],
           "emptyValue": "testing123-1"
         },
@@ -63,8 +61,7 @@
           },
           "doc": [
             "Specifies the timeout interval that the switch waits for response",
-            "from the TACACS+ server before declaring a timeout failure.",
-            "Default timeout value is 5 seconds."
+            "from the TACACS+ server before declaring a timeout failure."
           ],
           "emptyValue": 5
         },
@@ -82,8 +79,7 @@
             "max" : 1
           },
           "doc": [
-            "Specifies the authentication method (pap/chap) used.",
-            "Default is pap."
+            "Specifies the authentication method (pap/chap) used."
           ],
           "emptyValue": "pap",
           "group": "/Core Features"
@@ -96,11 +92,13 @@
               "type": "uuid",
               "refTable": "AAA_Server_Group"
             },
-            "min": 0,
-            "max": 1
+            "min": 1,
+            "max": 2
           },
           "doc": [
-            "Specifies the TACACS+ server-group that it belongs to."
+            "Specifies the TACACS+ server-group that it belongs to.",
+            "It would belong to a family group 'tacacs_plus' group",
+            "and the user defined AAA server group"
           ]
         },
         "group_priority": {
@@ -109,15 +107,16 @@
             "key": {
               "type": "integer",
               "minInteger": 0
-            }
+            },
+            "min": 0,
+            "max": 1
           },
           "doc": [
             "Specifies the order in which TACACS+ servers are configured",
             "within a server group. This is an increasing counter",
             "starting with 1. In case this server is not part of a user",
-            "defined group, this will be set to 0."
-          ],
-          "emptyValue": 0
+            "defined group, this will be empty."
+          ]
         },
         "default_priority": {
           "category": "configuration",
@@ -125,26 +124,27 @@
             "key": {
               "type": "integer",
               "minInteger": 0
-            }
+            },
+            "min": 1,
+            "max": 1
           },
           "doc": [
             "Specifies the order in which TACACS+ servers are configured.",
             "By default they are added to the default family group.",
             "This is an increasing counter starting with 1."
-          ],
-          "emptyValue": 0
+          ]
         }
       },
       "indexes": [
         [
-          "ip_address",
+          "address",
           "tcp_port"
         ]
       ],
       "title": "TACACS+ server configuration",
       "doc": [
         "These TACACS+ servers are being used for authenticating when users wants to login",
-        "to the box."
+        "to the switch."
       ]
     }
   }
