@@ -1,4 +1,5 @@
-add_custom_target(ovsschema ALL)
+add_custom_target(database-schema ALL)
+add_custom_target(doc)
 
 # Rules for database schemas using the old format
 include("dbschemas.cmake")
