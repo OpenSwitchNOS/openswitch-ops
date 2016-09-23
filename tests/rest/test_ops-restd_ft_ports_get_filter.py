@@ -938,6 +938,8 @@ class QueryFilterPortTest (OpsVsiTest):
         info("\n########## Ending Port Filter Tests ##########\n")
 
 
+pytest.skip("Skipping this test case, as it needs
+             rework to handle different platforms")
 class Test_QueryFilterPort:
     def setup(self):
         pass
