@@ -110,7 +110,7 @@ A MST region forms a multiple spanning tree domain and is a component of a singl
 ### Setting up scenario 1 basic configuration
 Create a three switch topology as specified below.
 #### Physical Topology
-```
+ ```
 +-----------------------------------------------------------------------------+
 |    Region "A": Physical Topology                                            |
 |                            +----------------+                               |
@@ -137,7 +137,7 @@ Configure instance 1 and 2 as specified below:
 
 The logical and physical topologies resulting from these VLAN/instance groupings result in blocking on different links for different VLANs:
 #### Logical Topology
-```
+   ```
 +-----------------------------------------------------------------------------+
 |  Logical topology for Instance-1                                            |
 |                           +--------------------+                            |
@@ -155,7 +155,7 @@ The logical and physical topologies resulting from these VLAN/instance groupings
 |                                                                             |
 +-----------------------------------------------------------------------------+
 ```
-```
+ ```
 +-----------------------------------------------------------------------------+
 |  Logical topology for Instance-2                                            |
 |                           +--------------------+                            |
@@ -291,7 +291,7 @@ MSTP details on Non-Root switch:
 Duplicate packets on a VLAN, or packets not arriving on a LAN at all.
    - The allocation of VLANs to MSTIs may not be identical among all switches in a region.
    - Check the current instance to VLAN mapping by `show spanning-tree mst-config`:
-```
+       ```
         switch# sh spanning-tree mst-config
       MST configuration information
          MST config ID        : mst2
@@ -304,7 +304,7 @@ Duplicate packets on a VLAN, or packets not arriving on a LAN at all.
       1               10,11,12
       2               20,21,22
       switch#
-```
+      ```
 A switch intended to operate within a region does not receive traffic from other switches in the region.
    - An MSTP switch intended for a particular region may not have the same configuration name or region revision number as the other switches intended for the same region.
    - The set of VLANs configured on the switch may not match the set of VLANs configured on other switches in the intended region.
@@ -312,7 +312,7 @@ A switch intended to operate within a region does not receive traffic from other
 
 MSTP port roles are always blocked.
    - Check that the admin status for the corresponding ports are up using the `show interface` command:
-```
+    ```
     switch# show interface 1
 
     Interface 1 is up
@@ -336,14 +336,14 @@ MSTP port roles are always blocked.
                 0 collision
 
     switch#
-```
+    ```
 
 The network is not stable, convergence restarts after every few seconds.
    - Check the BPDU statistics using the `show spanning-tree detail` command.
    - Root bridge should not receive any non-root bridge BPDU after convergence is completed.
    - The `Number of topology changes` value should not increase rapidly if no network changes are happening.
    - On non-root bridges BPDU received should not increase, and on the other way BPDU sent count should not increase.
-```
+    ```
         switch# sh spanning-tree detail
         MST0
           Spanning tree status: Enabled
@@ -379,7 +379,7 @@ The network is not stable, convergence restarts after every few seconds.
         Designated port                            :2
         Number of transitions to forwarding state  : 0
         Bpdus sent 123508, received 2
-```
+    ```
 
    - Root switch should not get multiple topology change events from other non-root bridges. Check this using the `show events category mstp` command.
 ```
@@ -703,8 +703,8 @@ Information to debug an MSTP issue can be obtained by running the `show tech mst
 ```
 
 ##### MSTP events description
-```
-|Event                                                                 |Example|
+
+|Event                                                                |Example|
 |----------------------------------------------------------------------|------------|
 |MSTP Enabled                                                          |Spanning Tree Protocol enabled|
 |MSTP Disabled                                                         |Spanning Tree Protocol disabled|
@@ -721,11 +721,11 @@ Information to debug an MSTP issue can be obtained by running the `show tech mst
 |Port {port} unblocked on CIST                                         |Port 1 unblocked on CIST|
 |Port {port} blocked on MST{instance}                                  |Port 1 blocked on MST2|
 |Port {port} unblocked on MST{instance}                                |Port 1 unblocked for MST2|
-|{proto} Root Port changed from {old_port} to {new_port}               |MSTP Root port changed from 2 to 1|
-```
+|{proto} Root Port changed from {old_port} to {new_port}               |MSTP Root port chnaged from 2 to 1|
+
 <!--Provide a link to the CLI command related to the feature. The CLI files will be generated to a CLI directory.  -->
 ## CLI
 Click [here](http://git.openswitch.net/cgit/openswitch/ops/plain/docs/MSTP_cli.md) for the CLI commands related to the MSTP feature.
 
 ## Related features
-When configuring the switch for MSTP, it might also be necessary to configure the [Physical Interface](/documents/user/interface_user_guide) so that the interface to which a neighbour is connected acts as expected.
+When configuring the switch for MSTP, it might also be necessary to configure the [Physical Interface](/documents/user/interface_user_guide) so that the interface to which a neighbor is connected acts as expected.
