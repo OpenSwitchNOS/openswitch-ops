@@ -254,7 +254,6 @@ class systemTest(OpsVsiTest):
         info("\n########## Finished executing PUT request on %s ##########\n"
              % self.PATH)
 
-
 class Test_system:
     def setup(self):
         pass

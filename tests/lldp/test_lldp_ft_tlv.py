@@ -25,12 +25,10 @@ from opstestfw import Sleep
 # Topology definition
 topoDict = {"topoExecution": 1000,
             "topoTarget": "dut01 dut02",
-            "topoDevices": "dut01 dut02 wrkston01",
-            "topoLinks": "lnk01:dut01:dut02,lnk02:dut02:wrkston01",
+            "topoDevices": "dut01 dut02",
+            "topoLinks": "lnk01:dut01:dut02",
             "topoFilters": "dut01:system-category:switch,dut02:system-\
-                 category:switch,wrkston01:system-category:workstation, \
-                 wrkston01:\docker-image:host/freeradius-ubuntu"}
-
+                 category:switch"}
 
 def lldp_tlv(**kwargs):
     device1 = kwargs.get('device1', None)
