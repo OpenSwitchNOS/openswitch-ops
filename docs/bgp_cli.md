@@ -161,16 +161,16 @@ Admin user.
 | **no** | Optional | Literal | Removes the announced network for the eBGP router. |
 
 #### Examples
-The following configuration example shows that network 10.0.0.0/8 is announced to all neighbors:
+The following configuration example shows that network 20.0.0.0/8 is announced to all neighbors:
 
 ```
-s1(config-router)# network 10.0.0.0/8
+s1(config-router)# network 20.0.0.0/8
 s1(config)# do sh run
 Current configuration:
 !
 router bgp 6001
      bgp router-id 9.0.0.1
-     network 10.0.0.0/8
+     network 20.0.0.0/8
 ```
 
 ### maximum-paths
@@ -637,8 +637,8 @@ Admin user.
 
 ##### Examples
 ```
-s1(config-router)# neighbor 10.0.2.15 ebgp-multihop
-s1(config-router)# no neighbor 10.0.2.15 ebgp-multihop
+s1(config-router)# neighbor 20.0.2.15 ebgp-multihop
+s1(config-router)# no neighbor 20.0.2.15 ebgp-multihop
 ```
 
 #### neighbor filter-list
@@ -664,8 +664,8 @@ Admin user.
 
 ##### Examples
 ```
-s1(config-router)# neighbor 172.16.1.1 filter-list 1 out
-s1(config-router)# no neighbor 172.16.1.1 filter-list 1 out
+s1(config-router)# neighbor 192.18.1.1 filter-list 1 out
+s1(config-router)# no neighbor 192.18.1.1 filter-list 1 out
 ```
 
 #### neighbor prefix-list
@@ -691,8 +691,8 @@ Admin user.
 
 ##### Examples
 ```
-s1(config-router)# neighbor 10.23.4.2 prefix-list abc in
-s1(config-router)# no neighbor 10.23.4.2 prefix-list abc in
+s1(config-router)# neighbor 20.23.4.2 prefix-list abc in
+s1(config-router)# no neighbor 20.23.4.2 prefix-list abc in
 ```
 
 #### neighbor soft-reconfiguration
@@ -715,8 +715,8 @@ Admin user.
 
 ##### Examples
 ```
-s1(config-router)# neighbor 10.108.1.1 soft-reconfiguration inbound
-s1(config-router)# no neighbor 10.108.1.1 soft-reconfiguration inbound
+s1(config-router)# neighbor 20.108.1.1 soft-reconfiguration inbound
+s1(config-router)# no neighbor 20.108.1.1 soft-reconfiguration inbound
 ```
 
 #### neighbor ttl-security
@@ -740,8 +740,8 @@ Admin user.
 
 ##### Examples
 ```
-s1(config-router)# neighbor 10.1.1.1 ttl-security hops 2
-s1(config-router)# no neighbor 10.1.1.1 ttl-security hops 2
+s1(config-router)# neighbor 20.1.1.1 ttl-security hops 2
+s1(config-router)# no neighbor 20.1.1.1 ttl-security hops 2
 ```
 ### as-path access-list
 #### Syntax
@@ -1512,7 +1512,7 @@ Admin user.
 #### Examples
 ```
 s1(config)# ip prefix-list PLIST1 seq 5 deny 11.0.0.0/8
-s1(config)# ip prefix-list PLIST2 seq 10 permit 10.0.0.0/8
+s1(config)# ip prefix-list PLIST2 seq 10 permit 20.0.0.0/8
 s1(config)# no ip prefix-list PLIST1 seq 5 deny 11.0.0.0/8
 s1(config)# no ip prefix-list PLIST2
 ```
@@ -1642,7 +1642,7 @@ Origin codes: i - IGP, e - EGP, ? - incomplete
 Local router-id 9.0.0.1
    Network          Next Hop            Metric LocPrf Weight Path
 *> 11.0.0.0/8       0.0.0.0                  0      0  32768  i
-*> 12.0.0.0/8       10.10.10.2               0      0      0 2 5 i
+*> 12.0.0.0/8       20.10.10.2               0      0      0 2 5 i
 *  12.0.0.0/8       20.20.20.2               0      0      0 3 5 i
 *  12.0.0.0/8       30.30.30.2               0      0      0 4 5 i
 Total number of entries 4
@@ -1784,7 +1784,7 @@ None
 s1# show ip prefix-list
 ip prefix-list BGP_IN_: 5 entries
    seq 5 deny 11.0.0.0/8
-   seq 10 permit 10.0.0.0/8
+   seq 10 permit 20.0.0.0/8
    seq 15 permit 150.168.15.0/24 ge 25 le 28
    seq 20 permit 192.168.15.0/24 ge 27
    seq 25 deny 192.168.15.0/24 le 25
@@ -1811,7 +1811,7 @@ Admin user.
 #### Examples
 ```
 s1# show ip prefix-list BGP_IN_ seq 10
-   seq 10 permit 10.0.0.0/8
+   seq 10 permit 20.0.0.0/8
 ```
 ### show ip prefix list detail WORD
 #### Syntax
@@ -1836,7 +1836,7 @@ s1# show ip prefix-list detail BGP_IN_
 ip prefix-list BGP_IN_:
    count: 5, sequences: 5 - 25
    seq 5 deny 11.0.0.0/8
-   seq 10 permit 10.0.0.0/8
+   seq 10 permit 20.0.0.0/8
    seq 15 permit 150.168.15.0/24 ge 25 le 28
    seq 20 permit 192.168.15.0/24 ge 27
    seq 25 deny 192.168.15.0/24 le 25
