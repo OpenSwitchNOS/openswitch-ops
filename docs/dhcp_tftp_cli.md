@@ -70,7 +70,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)# range dynamic start-ip-address 10.0.0.1 end-ip-address 10.255.255.254 netmask 255.0.0.0 broadcast 10.255.255.255 match tags tag1,tag2,tag3 set tag tag4
+ops-as5712(config-dhcp-server)# range dynamic start-ip-address 20.0.0.1 end-ip-address 20.255.255.254 netmask 255.0.0.0 broadcast 20.255.255.255 match tags tag1,tag2,tag3 set tag tag4
 ```
 ### Removing DHCP dynamic configuration
 #### Syntax
@@ -95,7 +95,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)# no range dynamic start-ip-address 10.0.0.1 end-ip-address 10.255.255.254 netmask 255.0.0.0 broadcast 10.255.255.255 match tags tag1,tag2,tag3 set tag tag4
+ops-as5712(config-dhcp-server)# no range dynamic start-ip-address 20.0.0.1 end-ip-address 20.255.255.254 netmask 255.0.0.0 broadcast 20.255.255.255 match tags tag1,tag2,tag3 set tag tag4
 ```
 ### Setting DHCP static configuration
 #### Syntax
@@ -118,7 +118,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)#static 10.0.0.25 match-mac-addresses 36:d4:1b:12:ea:52 match-client-hostname 95_h2 set tags tag1,tag2,tag3 lease-duration 120
+ops-as5712(config-dhcp-server)#static 20.0.0.25 match-mac-addresses 36:d4:1b:12:ea:52 match-client-hostname 95_h2 set tags tag1,tag2,tag3 lease-duration 120
 ```
 ### Removing DHCP static configuration
 #### Syntax
@@ -141,7 +141,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)#no static 10.0.0.25 match-mac-addresses 36:d4:1b:12:ea:52 match-client-hostname 95_h2 set tags tag1,tag2,tag3 lease-duration 120
+ops-as5712(config-dhcp-server)#no static 20.0.0.25 match-mac-addresses 36:d4:1b:12:ea:52 match-client-hostname 95_h2 set tags tag1,tag2,tag3 lease-duration 120
 ```
 ### Setting DHCP options configuration using an option name
 #### Syntax
@@ -160,7 +160,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)#option set option-name Router option-value 10.0.0.1 match tags tag1,tag2,tag3
+ops-as5712(config-dhcp-server)#option set option-name Router option-value 20.0.0.1 match tags tag1,tag2,tag3
 ```
 ### Removing DHCP options configuration using an option name
 #### Syntax
@@ -179,7 +179,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)# no option set option-name Router option-value 10.0.0.1 match tags tag1,tag2,tag3
+ops-as5712(config-dhcp-server)# no option set option-name Router option-value 20.0.0.1 match tags tag1,tag2,tag3
 ```
 ### Setting DHCP options configuration using an option number
 #### Syntax
@@ -197,7 +197,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)#option set option-number 3 option-value 10.0.0.1 match tags tag1,tag2,tag3
+ops-as5712(config-dhcp-server)#option set option-number 3 option-value 20.0.0.1 match tags tag1,tag2,tag3
 ```
 ### Removing DHCP options configuration using an option number
 #### Syntax
@@ -216,7 +216,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)# no option set option-number 3 option-value 10.0.0.1 match tags tag1,tag2,tag3
+ops-as5712(config-dhcp-server)# no option set option-number 3 option-value 20.0.0.1 match tags tag1,tag2,tag3
 ```
 ### Setting DHCP match configuration using an option name
 #### Syntax
@@ -235,7 +235,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)# match set tag tag1 match-option-name Router match-option-value 10.0.0.1
+ops-as5712(config-dhcp-server)# match set tag tag1 match-option-name Router match-option-value 20.0.0.1
 ```
 ### Removing DHCP match configuration using an option name
 #### Syntax
@@ -253,7 +253,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)# no match set tag tag1 match-option-name Router match-option-value 10.0.0.1
+ops-as5712(config-dhcp-server)# no match set tag tag1 match-option-name Router match-option-value 20.0.0.1
 ```
 ### Setting DHCP match configuration using an option number
 #### Syntax
@@ -272,7 +272,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)# match set tag tag1 match-option-number 3 match-option-value 10.0.0.1
+ops-as5712(config-dhcp-server)# match set tag tag1 match-option-number 3 match-option-value 20.0.0.1
 ```
 ### Removing DHCP match configuration using an option number
 #### Syntax
@@ -291,7 +291,7 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# dhcp-server
-ops-as5712(config-dhcp-server)#no match set tag tag1 match-option-number 3 match-option-value 10.0.0.1
+ops-as5712(config-dhcp-server)#no match set tag tag1 match-option-number 3 match-option-value 20.0.0.1
 ```
 ### Setting DHCP BOOTP configuration
 #### Syntax
@@ -439,30 +439,30 @@ DHCP dynamic IP allocation configuration
 ----------------------------------------
 Name     Start IP Address    End IP Address    Netmask     Broadcast
 ----------------------------------------------------------------------------
-dynamic  10.0.0.1           10.255.255.254    255.0.0.0   10.255.255.255
+dynamic  20.0.0.1           20.255.255.254    255.0.0.0   20.255.255.255
 
 
 DHCP static IP allocation configuration
 ---------------------------------------
 IP Address  Hostname  Lease time  MAC-Address        Set tags
 ----------------------------------------------------------------------------
-10.0.0.25   95_h2     65          36:d4:1b:12:ea:52  tag1,tag2,tag3
+20.0.0.25   95_h2     65          36:d4:1b:12:ea:52  tag1,tag2,tag3
 
 
 DHCP options configuration
 --------------------------
 Option Number  Option Name       Option Value          ipv6   Match tags
 ----------------------------------------------------------------------------
-3              *                 10.0.0.1              False  tag1,tag2,tag3
-*              Router            10.0.0.1              False  tag1,tag2,tag3
+3              *                 20.0.0.1              False  tag1,tag2,tag3
+*              Router            20.0.0.1              False  tag1,tag2,tag3
 
 
 DHCP Match configuration
 ------------------------
 Option Number  Option Name       Option Value          Set tag
 --------------------------------------------------------------
-3              *                 10.0.0.1              tag1
-*              Router            10.0.0.1              tag1
+3              *                 20.0.0.1              tag1
+*              Router            20.0.0.1              tag1
 
 
 DHCP BOOTP configuration
@@ -486,8 +486,8 @@ No parameters.
 ops-as5712# show dhcp-server leases
 Expiry Time               MAC Address        IP Address  Hostname and Client-id
 -------------------------------------------------------------------------------
-Wed Sep 23 23:07:12 2015  df:36:12:1b:54:ea  10.0.0.5    95_h1            *
-Wed Sep 23 22:05:10 2015  36:d4:1b:12:ea:52  10.0.0.25   95_h2            *
+Wed Sep 23 23:07:12 2015  df:36:12:1b:54:ea  20.0.0.5    95_h1            *
+Wed Sep 23 22:05:10 2015  36:d4:1b:12:ea:52  20.0.0.25   95_h2            *
 ```
 
 ### Showing TFTP Server Configuration
