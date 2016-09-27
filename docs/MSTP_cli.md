@@ -684,13 +684,13 @@ All users.
 MST0
   Spanning tree status: Enabled
   Root ID    Priority    : 32768
-             MAC-Address : 70:72:cf:e1:b9:16
+             MAC-Address : XX:YY:ZZ:XY:YZ:ZX
              This bridge is the root
              Hello time(in seconds): 2  Max Age(in seconds): 20  Forward Delay(in seconds): 15
 
 
   Bridge ID  Priority    : 32768
-             MAC-Address : 70:72:cf:e1:b9:16
+             MAC-Address : XX:YY:ZZ:XY:YZ:ZX
              Hello time(in seconds): 2  Max Age(in seconds): 20  Forward Delay(in seconds): 15
 
 Port           Role           State      Cost    Priority   Type
@@ -708,7 +708,7 @@ All users.
 #### Examples ####
 ```
 MST0 is executing the mstp compatible Spanning Tree protocol
-  Bridge Identifier has priority 12, address: 70:72:cf:55:33:cd
+  Bridge Identifier has priority 12, address: XX:YY:ZZ:XY:YZ:ZX
   Configured Hello time(in seconds): 5  Forward delay(in seconds): 5  Max-age(in seconds):10  txHoldCount(in pps): 5
   We are the root of the spanning tree
   Topology change flag not set
@@ -720,18 +720,18 @@ MST0 is executing the mstp compatible Spanning Tree protocol
 
 Port 1 of MST0 is disabled_port
 Port path cost 0, Port priority 8
-Designated root has priority 4, address 70:72:cf:e1:b9:16
-Designated bridge has priority 4, address 70:72:cf:e1:b9:16
-Designated port has priority 4, address 70:72:cf:e1:b9:16
+Designated root has priority 4, address XX:YY:ZZ:XY:YZ:ZY
+Designated bridge has priority 4, address XX:YY:ZZ:XY:YZ:ZY
+Designated port has priority 4, address XX:YY:ZZ:XY:YZ:ZY
 Number of transitions to forwarding state: 0
 Link type is point_to_point by default, Internal
 Bpdus sent 0, received 0
 
 Port 2 of MST0 is disabled_port
 Port path cost 0, Port priority 8
-Designated root has priority 4, address 70:72:cf:e1:b9:16
-Designated bridge has priority 4, address 70:72:cf:e1:b9:16
-Designated port has priority 4, address  70:72:cf:e1:b9:16
+Designated root has priority 4, address XX:YY:ZZ:XY:YZ:ZY
+Designated bridge has priority 4, address XX:YY:ZZ:XY:YZ:ZY
+Designated port has priority 4, address  XX:YY:ZZ:XY:YZ:ZY
 Number of transitions to forwarding state: 0
 Link type is point_to_point by default, Internal
 Bpdus sent 0, received 0
@@ -767,7 +767,7 @@ All users.
 ```
 #### MST0
 Vlans mapped:
-Bridge         Address:70:72:cf:84:d1:56    priority:8
+Bridge         Address:XX:YY:ZZ:XY:YZ:XZ    priority:8
 Root
 Regional Root
 Operational    Hello time(in seconds): 2  Forward delay(in seconds):15  Max-age(in seconds):20  txHoldCount(in pps): 6
@@ -780,7 +780,7 @@ Port           Role           State      Cost       Priority   Type
 
 #### MST1
 Vlans mapped:  1
-Bridge         Address:70:72:cf:84:d1:56    Priority:8
+Bridge         Address:XX:YY:ZZ:XY:YZ:XZ    Priority:8
 Root           Address:                     Priority:8
                Port:0, Cost:20000, Rem Hops:0
 
@@ -801,7 +801,7 @@ All users.
 switch# show spanning-tree mst detail
 #### MST0
 Vlans mapped:
-Bridge         Address:70:72:cf:84:d1:56    priority:8
+Bridge         Address:XX:YY:ZZ:XY:YZ:XZ    priority:8
 Root
 Regional Root
 Operational    Hello time(in seconds): 2  Forward delay(in seconds):15  Max-age(in seconds):20  txHoldCount(in pps): 6
@@ -814,8 +814,8 @@ Port           Role           State      Cost       Priority   Type
 
 #### MST1
 Vlans mapped:  1
-Bridge         Address:70:72:cf:84:d1:56    Priority:8
-Root           Address:70:72:cf:05:02:b3    Priority:8
+Bridge         Address:XX:YY:ZZ:XY:YZ:XZ    Priority:8
+Root           Address:XX:YY:ZZ:XY:YZ:ZY    Priority:8
                Port:0, Cost:20000, Rem Hops:0
 
 Port           Role           State      Cost    Priority   Type
@@ -824,16 +824,16 @@ Port           Role           State      Cost    Priority   Type
 2              Disabled       Blocking   0       8          Point_to_point
 
 Port 1
-Designated root address            : 70:72:cf:05:02:b3
-Designated regional root address   : 70:72:cf:05:02:b3
-Designated bridge address          : 70:72:cf:05:02:b3
+Designated root address            : XX:YY:ZZ:XY:YZ:YZ
+Designated regional root address   : XX:YY:ZZ:XY:YZ:YZ
+Designated bridge address          : XX:YY:ZZ:XY:YZ:YZ
 Timers:    Message expires in 0 sec, Forward delay expiry:0, Forward transitions:0
 Bpdus sent 0, received 0
 
 Port 2
-Designated root address            : 70:72:cf:05:02:b3
-Designated regional root address   : 70:72:cf:05:02:b3
-Designated bridge address          : 70:72:cf:05:02:b3
+Designated root address            : XX:YY:ZZ:XY:YZ:YZ
+Designated regional root address   : XX:YY:ZZ:XY:YZ:YZ
+Designated bridge address          : XX:YY:ZZ:XY:YZ:YZ
 Timers:    Message expires in 0 sec, Forward delay expiry:0, Forward transitions:0
 Bpdus sent 0, received 0
 ```
@@ -849,7 +849,7 @@ All users.
 switch# sh spanning-tree mst 1
 #### MST1
 Vlans mapped:  1
-Bridge         Address:70:72:cf:84:d1:56    Priority:8
+Bridge         Address:XX:YY:ZZ:XY:YZ:XZ    Priority:8
 Root           Address:                     Priority:8
                Port:0, Cost:20000, Rem Hops:0
 
@@ -870,7 +870,7 @@ All users.
 switch# show spanning-tree mst 1 detail
 #### MST1
 Vlans mapped:  1
-Bridge         Address:70:72:cf:84:d1:56    Priority:8
+Bridge         Address:XX:YY:ZZ:XY:YZ:XZ    Priority:8
 Root           Address:                     Priority:8
                Port:0, Cost:20000, Rem Hops:0
 
@@ -880,16 +880,16 @@ Port           Role           State      Cost    Priority   Type
 2              Disabled       Blocking   0       8          Point_to_point
 
 Port 1
-Designated root address            : 70:72:cf:55:33:cd
-Designated regional root address   : 70:72:cf:55:33:cd
-Designated bridge address          : 70:72:cf:55:33:cd
+Designated root address            : XX:YY:ZZ:XY:YZ:ZY
+Designated regional root address   : XX:YY:ZZ:XY:YZ:ZY
+Designated bridge address          : XX:YY:ZZ:XY:YZ:ZY
 Timers:    Message expires in 0 sec, Forward delay expiry:0, Forward transitions:0
 Bpdus sent 0, received 0
 
 Port 2
-Designated root address            : 70:72:cf:55:33:cd
-Designated regional root address   : 70:72:cf:55:33:cd
-Designated bridge address          : 70:72:cf:55:33:cd
+Designated root address            : XX:YY:ZZ:XY:YZ:ZY
+Designated regional root address   : XX:YY:ZZ:XY:YZ:ZY
+Designated bridge address          : XX:YY:ZZ:XY:YZ:ZY
 Timers:    Message expires in 0 sec, Forward delay expiry:0, Forward transitions:0
 Bpdus sent 0, received 0
 ```
