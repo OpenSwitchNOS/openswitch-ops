@@ -113,7 +113,7 @@
             "and the user defined AAA server group"
           ]
         },
-        "group_priority": {
+        "user_group_priority": {
           "category": "configuration",
           "type": {
             "key": {
@@ -125,25 +125,24 @@
           },
           "doc": [
             "Specifies the order in which RADIUS servers are configured",
-            "within a server group. This is an increasing counter",
-            "starting with 1. In case this server is not part of a user",
-            "defined group, this will be empty."
+            "within a user defined server group. Priority is assigned",
+            "starting with 1 and incremental. In case this server is",
+            "not part of a user defined group, this will be empty."
           ]
         },
-        "default_priority": {
+        "default_group_priority": {
           "category": "configuration",
           "type": {
             "key": {
               "type": "integer",
               "minInteger": 1
-            },
-            "min": 1,
-            "max": 1
+            }
           },
           "doc": [
-            "Specifies the order in which RADIUS servers are configured.",
-            "By default they are added to the default family group.",
-            "This is an increasing counter starting with 1."
+            "Specifies the order in which a RADIUS server is configurad within",
+            "RADIUS default family group 'radius'.",
+            "By default all RADIUS servers should be added to default group 'radius'",
+            "Priority is assigned starting with 1 and incremental."
           ]
         }
       },
