@@ -321,8 +321,8 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# interface 1
-ops-as5712(config-if)# ip address 16.93.50.2/24
-ops-as5712(config-if)# ip address 16.93.50.3/24 secondary
+ops-as5712(config-if)# ip address 10.0.0.2/24
+ops-as5712(config-if)# ip address 10.0.0.3/24 secondary
 ```
 ### Remove IPv4 address for an interface
 #### Syntax
@@ -340,8 +340,8 @@ All users.
 ```
 ops-as5712# configure terminal
 ops-as5712(config)# interface 1
-ops-as5712(config-if)# no ip address 16.93.50.2/24
-ops-as5712(config-if)# no ip address 16.93.50.3/24 secondary
+ops-as5712(config-if)# no ip address 10.0.0.2/24
+ops-as5712(config-if)# no ip address 10.0.0.3/24 secondary
 ```
 
 ### Set IPv6 address for an interface
