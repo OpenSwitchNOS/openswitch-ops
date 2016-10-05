@@ -30,8 +30,8 @@ hostname# show arp
 ARP IPv4 Entries:
 ------------------
 IPv4 Address MAC Port Status
-16.78.111.116 48:0F:CF:AF:D1:C7 1 --
-16.78.112.117 48:0F:CF:AF:D1:C8 2 --
+XXX.XXX.XXX.XXX XX:XX:XX:XX:XX:XX 1 --
+XXX.XXX.XXX.XXX XX:XX:XX:XX:XX:XX 2 --
 
 ```
 
