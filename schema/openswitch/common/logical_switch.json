@@ -71,7 +71,9 @@
                 "hw-vtep"
               ],
               "type": "string"
-            }
+            },
+            "min": 0,
+            "max": 1
           },
           "doc": [
             "The entity managing the overlay."
