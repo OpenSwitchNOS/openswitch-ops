@@ -29,15 +29,19 @@ The information below shows you how to participate in the OpenSwitch community.
 Staying In Touch With the Community
 ===================================
 
-The best way to reach the OpenSwitch community is through our mailing lists
-or on IRC.
+The best way to reach the OpenSwitch community is through our mailing lists or on IRC.
 
 Mailing Lists
 -------------
 
 The OpenSwitch community has a mailing [list](http://lists.openswitch.net) communications.
+
 Please subscribe to this mailing list to stay current with discussions around
 OpenSwitch development.
+
+RocketChat
+---
+Coming soon - stay tuned
 
 IRC
 ---
@@ -60,5 +64,3 @@ To submit your first patch:
   have the Developers Certificate of Origin ([DCO](http://governance.openswitch.net/governance/contributor-onboarding.html#licensing-of-contributions)), which is needed for
   all commits.
 7. Push your changes using "git review".
-
-For more detail, please see [Getting Started](http://www.openswitch.net/develop/develophome#gettingstart)
